@@ -1,19 +1,226 @@
 @import "tailwindcss";
 
+/* ═══════════════════════════════════════════
+   五行元素配色系統 (Wu Xing Design System)
+   木 Wood · 火 Fire · 土 Earth · 金 Metal · 水 Water
+   ═══════════════════════════════════════════ */
+
 @theme {
-  --color-primary-50: #f0fdfa;
-  --color-primary-100: #ccfbf1;
-  --color-primary-500: #14b8a6;
-  --color-primary-600: #0d9488;
-  --color-secondary-50: #f8fafc;
-  --color-secondary-500: #64748b;
-  --color-secondary-900: #0f172a;
+  /* ── 木 Wood ── 成長・正常・通過・健康 */
+  --color-wood-50:  #f0f7f0;
+  --color-wood-100: #d4ead4;
+  --color-wood-200: #a8d5a8;
+  --color-wood-300: #79bf79;
+  --color-wood-400: #5aaa5a;
+  --color-wood-500: #3d8b3d;
+  --color-wood-600: #2d6a2d;
+  --color-wood-700: #1f4f1f;
+  --color-wood-800: #143514;
+  --color-wood-900: #0a1f0a;
+
+  /* ── 火 Fire ── 警示・注意・即時提醒・重點 */
+  --color-fire-50:  #fef6f0;
+  --color-fire-100: #fde8d4;
+  --color-fire-200: #fac9a0;
+  --color-fire-300: #f5a66b;
+  --color-fire-400: #ef8640;
+  --color-fire-500: #d96b22;
+  --color-fire-600: #b85418;
+  --color-fire-700: #8f4013;
+  --color-fire-800: #6b300e;
+  --color-fire-900: #4a2009;
+  --color-fire-deep: #c53030;
+
+  /* ── 土 Earth ── 穩定・總盤・主框架・背景基底 */
+  --color-earth-50:  #faf8f5;
+  --color-earth-100: #f5f0e8;
+  --color-earth-200: #e8dfd0;
+  --color-earth-300: #d4c8b0;
+  --color-earth-400: #bfad90;
+  --color-earth-500: #a69070;
+  --color-earth-600: #8a7558;
+  --color-earth-700: #6b5a43;
+  --color-earth-800: #4d4030;
+  --color-earth-900: #332b20;
+
+  /* ── 金 Metal ── 數字・業績・權重・主排名 */
+  --color-metal-50:  #faf9f6;
+  --color-metal-100: #f0ede5;
+  --color-metal-200: #ddd8c8;
+  --color-metal-300: #c4b998;
+  --color-metal-400: #b5a678;
+  --color-metal-500: #998a5c;
+  --color-metal-600: #7d6f45;
+  --color-metal-700: #5e5334;
+  --color-metal-800: #403924;
+  --color-metal-900: #2a2518;
+
+  /* ── 水 Water ── 資訊・系統・分析・輸入・冷靜 */
+  --color-water-50:  #f0f4f8;
+  --color-water-100: #d9e4f0;
+  --color-water-200: #b3c9e0;
+  --color-water-300: #7fa8cc;
+  --color-water-400: #5088b5;
+  --color-water-500: #36699e;
+  --color-water-600: #2b5580;
+  --color-water-700: #1f3f60;
+  --color-water-800: #162d45;
+  --color-water-900: #0d1b2a;
 }
 
+/* ── 全域基底 ── */
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #f8fafc;
-  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  background-color: var(--color-earth-50);
+  font-family: 'Inter', 'Noto Sans TC', system-ui, -apple-system, sans-serif;
+  color: var(--color-earth-900);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+/* ── 五行卡片系統 ── */
+.wx-card {
+  background: white;
+  border: 1px solid var(--color-earth-200);
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px rgba(51, 43, 32, 0.06);
+}
+
+.wx-card-header {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--color-earth-100);
+  background: var(--color-earth-50);
+  border-radius: 1rem 1rem 0 0;
+}
+
+/* ── 五行狀態系統 ── */
+.wx-pass   { color: var(--color-wood-600); background: var(--color-wood-50); border-color: var(--color-wood-200); }
+.wx-warn   { color: var(--color-fire-600); background: var(--color-fire-50); border-color: var(--color-fire-200); }
+.wx-fail   { color: var(--color-fire-deep); background: #fef2f2; border-color: #fecaca; }
+.wx-info   { color: var(--color-water-600); background: var(--color-water-50); border-color: var(--color-water-200); }
+.wx-gold   { color: var(--color-metal-600); background: var(--color-metal-50); border-color: var(--color-metal-200); }
+
+/* ── 五行按鈕系統 ── */
+.wx-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  transition: all 150ms ease;
+  cursor: pointer;
+  border: none;
+}
+.wx-btn:active { transform: scale(0.97); }
+
+.wx-btn-water {
+  background: linear-gradient(135deg, var(--color-water-600), var(--color-water-700));
+  color: white;
+  box-shadow: 0 2px 8px rgba(43, 85, 128, 0.25);
+}
+.wx-btn-water:hover { box-shadow: 0 4px 12px rgba(43, 85, 128, 0.35); }
+
+.wx-btn-wood {
+  background: linear-gradient(135deg, var(--color-wood-500), var(--color-wood-600));
+  color: white;
+  box-shadow: 0 2px 8px rgba(45, 106, 45, 0.25);
+}
+.wx-btn-wood:hover { box-shadow: 0 4px 12px rgba(45, 106, 45, 0.35); }
+
+.wx-btn-fire {
+  background: linear-gradient(135deg, var(--color-fire-500), var(--color-fire-600));
+  color: white;
+  box-shadow: 0 2px 8px rgba(184, 84, 24, 0.25);
+}
+
+.wx-btn-metal {
+  background: linear-gradient(135deg, var(--color-metal-500), var(--color-metal-600));
+  color: white;
+  box-shadow: 0 2px 8px rgba(125, 111, 69, 0.25);
+}
+
+/* ── 五行徽章 ── */
+.wx-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  border: 1px solid;
+}
+
+/* ── 金額高亮 ── */
+.wx-amount {
+  color: var(--color-metal-700);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── 側邊欄 ── */
+.wx-sidebar {
+  background: var(--color-water-900);
+  color: var(--color-water-200);
+}
+.wx-sidebar-active {
+  background: rgba(54, 105, 158, 0.2);
+  color: var(--color-water-100);
+}
+.wx-sidebar-hover:hover {
+  background: rgba(31, 63, 96, 0.5);
+}
+
+/* ── 表格 ── */
+.wx-table th {
+  background: var(--color-earth-50);
+  color: var(--color-earth-700);
+  font-weight: 600;
+  font-size: 0.8125rem;
+}
+.wx-table td {
+  color: var(--color-earth-800);
+}
+.wx-table tr:hover td {
+  background: var(--color-earth-50);
+}
+
+/* ── 動畫 ── */
+@keyframes wx-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.wx-animate-in {
+  animation: wx-fade-in 0.4s ease-out;
+}
+
+/* ── 修正紀錄 ── */
+.wx-fix-before {
+  text-decoration: line-through;
+  color: var(--color-fire-400);
+  font-size: 0.8125rem;
+}
+.wx-fix-after {
+  color: var(--color-wood-600);
+  font-weight: 600;
+  font-size: 0.8125rem;
+}
+.wx-fix-arrow::after {
+  content: '→';
+  margin: 0 0.375rem;
+  color: var(--color-earth-400);
+}
+
+/* ── 分組色帶 ── */
+.wx-group-a1 { border-left: 4px solid var(--color-fire-deep); }
+.wx-group-a2 { border-left: 4px solid var(--color-fire-400); }
+.wx-group-b  { border-left: 4px solid var(--color-metal-400); }
+.wx-group-c  { border-left: 4px solid var(--color-wood-400); }
+
+/* ── 自訂滾軸 ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: var(--color-earth-300); border-radius: 3px; }
+::-webkit-scrollbar-track { background: transparent; }

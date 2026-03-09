@@ -45,7 +45,12 @@ export function calculateAiScores(employees: Employee[]): Employee[] {
       stability: Math.round(stability * 10) / 10,
       suggestion: aiSuggestions[emp.name] || '保持穩定輸出，持續追單。',
     };
-  }).sort((a, b) => (b.aiScore ?? 0) - (a.aiScore ?? 0));
+  }).sort((a, b) => {
+    // 依【總業績】→【續單】→【追單】排序
+    if (b.total !== a.total) return b.total - a.total;
+    if (b.renewals !== a.renewals) return b.renewals - a.renewals;
+    return b.followUps - a.followUps;
+  });
 }
 
 /**
@@ -57,9 +62,9 @@ export function calculateAiScores(employees: Employee[]): Employee[] {
  */
 export function assignGroups(employees: Employee[]): Employee[] {
   const total = employees.length;
-  const a1Count = Math.max(Math.round(total * 0.20), 1);
-  const a2Count = Math.round(total * 0.25);
-  const cThreshold = 15000; // C 組門檻
+  const a1Count = Math.max(Math.round(total * 0.18), 1);
+  const a2Count = Math.round(total * 0.23);
+  const cThreshold = 17000; // C 組門檻
 
   return employees.map((emp, i) => {
     let group: string;
