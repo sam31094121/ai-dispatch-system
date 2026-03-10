@@ -1,7 +1,7 @@
 // ==========================================
 // 人工智慧商業帝國系統 V50 - 主入口
 // ==========================================
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   BarChart3, ClipboardList, User, UserPlus, BookOpen,
   LayoutDashboard, Search, Settings, ChevronRight, Megaphone,
@@ -11,7 +11,8 @@ import {
 import { cn } from '../lib/utils';
 import { rawEmployees, platforms } from '../data/mockData';
 import { calculateAiScores, assignGroups } from '../engine/aiEngine';
-import { analyzeTrends, generateMarketingSuggestions } from '../engine/trendEngine';
+import { analyzeTrends, type MarketingSuggestion } from '../engine/trendEngine';
+import { geminiService } from '../services/gemini.service';
 import { analyzeHighValueAbility, generateHighValueSuggestions, detectHighValueAlerts, generateTeamRally } from '../engine/highValueEngine';
 import type { Employee } from '../data/mockData';
 
@@ -87,10 +88,27 @@ export default function App() {
 
   // 趨勢分析 + 行銷建議
   const trends = useMemo(() => analyzeTrends(processedEmployees), [processedEmployees]);
-  const marketingSuggestions = useMemo(
-    () => generateMarketingSuggestions(processedEmployees, trends),
-    [processedEmployees, trends]
-  );
+  const [marketingSuggestions, setMarketingSuggestions] = useState<MarketingSuggestion[]>([]);
+  const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    async function fetchAi() {
+      setIsGeneratingAI(true);
+      try {
+        const suggestions = await geminiService.generateTeamSuggestions(processedEmployees);
+        if (active) setMarketingSuggestions(suggestions);
+      } catch (e) {
+        console.error('Gemini error:', e);
+      } finally {
+        if (active) setIsGeneratingAI(false);
+      }
+    }
+    if (processedEmployees.length > 0) {
+      fetchAi();
+    }
+    return () => { active = false; };
+  }, [processedEmployees]);
 
   // 高價成交 AI
   const hvProfiles = useMemo(() => analyzeHighValueAbility(processedEmployees), [processedEmployees]);
@@ -118,7 +136,14 @@ export default function App() {
       case 'marketer':
         return <MyDashboard employees={processedEmployees} />;
       case 'marketing':
-        return <MarketingAIDashboard suggestions={marketingSuggestions} trends={trends} />;
+        return isGeneratingAI ? (
+          <div className="flex h-64 flex-col items-center justify-center text-indigo-500 font-bold gap-4">
+            <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+            <span>Gemini AI 正在深度解析部隊戰力與生成行銷建議...</span>
+          </div>
+        ) : (
+          <MarketingAIDashboard suggestions={marketingSuggestions} trends={trends} />
+        );
       case 'hv_command':
         return <HighValueCommandCenter profiles={hvProfiles} suggestions={hvSuggestions} alerts={hvAlerts} teamRally={hvRally} />;
       case 'hv_personal':

@@ -66,8 +66,8 @@ export function ParseResultConfirmPage({
     try {
       setLoading(true);
       const result = await reportService.getParseResult(reportId);
-      setTotals(result.totals);
-      setDetails(result.details);
+      setTotals(result.totals as DailyReportTotals);
+      setDetails(result.details as DailyReportDetail[]);
       setMessage('');
     } catch (error: any) {
       setMessage(error?.responseMessage || error?.message || '讀取解析結果失敗');

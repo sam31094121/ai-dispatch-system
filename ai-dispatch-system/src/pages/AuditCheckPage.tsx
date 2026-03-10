@@ -65,7 +65,7 @@ export function AuditCheckPage({
         runLogicCheck: true,
         runCumulativeCheck: true,
       });
-      setResult(data);
+      setResult(data as unknown as AuditRunResult);
       setMessage(data.finalResult === '通過' ? '審計通過 ✅' : '審計發現異常 ⚠️');
     } catch (error: any) {
       setMessage(error?.responseMessage || error?.message || '審計執行失敗 ❌');

@@ -64,7 +64,7 @@ export function RankingDispatchPage({
       const rankingData = await rankingService.generate(reportDate);
       const dispatchData = await dispatchService.generate(reportDate);
 
-      setRanking(rankingData);
+      setRanking(rankingData as unknown as RankingGenerateResult);
       setDispatchResult(dispatchData);
       setMessage('');
     } catch (error: any) {

@@ -125,7 +125,7 @@ export const ParseResultPage: React.FC<{ onNavigate: (page: string) => void }> =
       <div className="wx-card overflow-hidden">
         <div className="wx-card-header"><h2 className="text-lg font-semibold" style={{ color: 'var(--color-earth-800)' }}>總計資料</h2></div>
         <div className="p-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          <TotalCard label="人數" value={totals.employeeCount} />
+          <TotalCard label="人數" value={totals.employeeCount || 0} />
           <TotalCard label="追單總數" value={totals.totalDispatchDeals} />
           <TotalCard label="續單總金額" value={totals.totalFollowAmount} isCurrency />
           <TotalCard label="總業績" value={totals.totalRevenue} isCurrency highlight />
