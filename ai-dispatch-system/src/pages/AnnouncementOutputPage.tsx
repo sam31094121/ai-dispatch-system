@@ -67,14 +67,7 @@ export function AnnouncementOutputPage({
   async function generate() {
     try {
       setLoading(true);
-      const result = await announcementService.generate({
-        reportDate,
-        includeFullText: true,
-        includeLineText: true,
-        includeShortText: true,
-        includeVoiceText: true,
-        includeManagerText: true,
-      });
+      const result = await announcementService.generate(reportDate);
       setData(result);
       setMessage('公告封裝成功 ✅');
       setTimeout(() => setMessage(''), 3000);

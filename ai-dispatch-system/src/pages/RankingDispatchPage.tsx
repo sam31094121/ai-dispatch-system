@@ -1,294 +1,251 @@
+// ═══════════════════════════════════════════════════════
+// RankingDispatchPage — 真實後端排名 + 派單 + 公告生成
+// 帝王能量配色系統（非假資料版）
+// ═══════════════════════════════════════════════════════
 import React, { useEffect, useState } from 'react';
 import { rankingService } from '../services/ranking.service';
+import type { RankingResult, RankingRow } from '../services/ranking.service';
 import { dispatchService } from '../services/dispatch.service';
-import type { RankingGenerateResult } from '../types/ranking';
-import type { DispatchGenerateResult, DispatchItem } from '../types/dispatch';
-import { PageBlock } from '../components/PageBlock';
-import { StatusBadge } from '../components/StatusBadge';
-import { formatMoney } from '../utils/formatters';
+import type { DispatchResult, DispatchItem } from '../services/dispatch.service';
+import { announcementService } from '../services/announcement.service';
+import type { AnnouncementOutput } from '../services/announcement.service';
+import { EMPEROR_UI, TU, MU, HUO, SHUI } from '../constants/wuxingColors';
 
 interface RankingDispatchPageProps {
   reportDate: string;
-  onAnnouncement?: (reportDate: string) => void;
 }
 
-const thStyle: React.CSSProperties = {
-  textAlign: 'right',
-  padding: '12px 16px',
-  borderBottom: '2px solid #e2e8f0',
-  whiteSpace: 'nowrap',
-  color: '#475569',
-  fontWeight: 700,
-  fontSize: 14,
+function fmt(n: number) { return '$' + n.toLocaleString(); }
+
+const GROUP_STYLE: Record<string, { accent: string; label: string }> = {
+  A1: { accent: TU.bright,  label: 'A1 突破之刃' },
+  A2: { accent: HUO.bright, label: 'A2 獵鷹部隊' },
+  B:  { accent: MU.bright,  label: 'B 磐石陣線'  },
+  C:  { accent: SHUI.text,  label: 'C 破風新銳'  },
 };
 
-const thLeftStyle: React.CSSProperties = {
-  ...thStyle,
-  textAlign: 'left',
-};
+function DispatchCard({ code, items }: { code: string; items: DispatchItem[] }) {
+  const gs = GROUP_STYLE[code] ?? GROUP_STYLE['C'];
+  return (
+    <div style={{ background: EMPEROR_UI.cardBg, border: '1px solid ' + gs.accent + '44', borderRadius: 14, padding: '18px 20px', flex: 1, minWidth: 240 }}>
+      <div style={{ fontWeight: 900, fontSize: 15, color: gs.accent, marginBottom: 14, paddingBottom: 8, borderBottom: '2px solid ' + gs.accent + '33', display: 'flex', justifyContent: 'space-between' }}>
+        <span>{gs.label}</span>
+        <span style={{ fontSize: 11, color: EMPEROR_UI.textMuted }}>{items.length} 人</span>
+      </div>
+      {items.length === 0 && <div style={{ color: EMPEROR_UI.textDim, fontSize: 13, fontStyle: 'italic' }}>目前無人</div>}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {items.map((item) => (
+          <div key={item.groupOrderNo} style={{ background: EMPEROR_UI.pageBg, border: '1px solid ' + EMPEROR_UI.borderMain, borderRadius: 10, padding: '12px 14px', position: 'relative' }}>
+            <div style={{ position: 'absolute', top: -9, left: -9, background: gs.accent, color: '#000', width: 22, height: 22, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: 11 }}>{item.groupOrderNo}</div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+              <div style={{ fontWeight: 800, fontSize: 15, color: EMPEROR_UI.textPrimary, paddingLeft: 10 }}>{item.employeeName}</div>
+              <div style={{ fontSize: 10, color: EMPEROR_UI.textMuted, background: EMPEROR_UI.cardBg, padding: '2px 8px', borderRadius: 20, border: '1px solid ' + EMPEROR_UI.borderAccent }}>總 #{item.rankNo}</div>
+            </div>
+            {item.suggestionText && (
+              <div style={{ fontSize: 12, color: EMPEROR_UI.textMuted, background: EMPEROR_UI.cardBg, padding: '5px 10px', borderRadius: 6, borderLeft: '2px solid ' + gs.accent }}>{item.suggestionText}</div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
-const tdStyle: React.CSSProperties = {
-  padding: '14px 16px',
-  borderBottom: '1px solid #e2e8f0',
-  verticalAlign: 'middle',
-  color: '#334155',
-  fontSize: 15,
-};
+function AnnouncementPanel({ output, onCopy }: { output: AnnouncementOutput; onCopy: (text: string, label: string) => void }) {
+  const tabs = [
+    { key: 'full',    label: '完整版',  text: output.fullText },
+    { key: 'line',    label: 'LINE 版', text: output.lineText },
+    { key: 'short',   label: '超短版',  text: output.shortText },
+    { key: 'voice',   label: '播報版',  text: output.voiceText },
+    { key: 'manager', label: '主管版',  text: output.managerText },
+  ];
+  const [active, setActive] = useState('full');
+  const current = tabs.find(t => t.key === active) ?? tabs[0];
+  return (
+    <div style={{ background: EMPEROR_UI.cardBg, border: '1px solid ' + TU.shadow, borderRadius: 14, padding: '18px 20px', marginTop: 20 }}>
+      <div style={{ fontWeight: 900, fontSize: 16, color: TU.bright, marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
+        📢 AI 公告輸出
+      </div>
+      <div style={{ display: 'flex', gap: 4, marginBottom: 12, flexWrap: 'wrap' }}>
+        {tabs.map(t => (
+          <button key={t.key} type="button" onClick={() => setActive(t.key)}
+            style={{ border: '1px solid ' + (t.key === active ? TU.shadow : EMPEROR_UI.borderAccent), borderRadius: 6, padding: '5px 14px', fontSize: 12, fontWeight: 700, cursor: 'pointer', background: t.key === active ? TU.void : EMPEROR_UI.pageBg, color: t.key === active ? TU.bright : EMPEROR_UI.textMuted }}>
+            {t.label}
+          </button>
+        ))}
+      </div>
+      <textarea readOnly value={current.text}
+        style={{ width: '100%', minHeight: 200, background: EMPEROR_UI.pageBg, border: '1px solid ' + EMPEROR_UI.borderAccent, borderRadius: 8, padding: '12px 14px', fontSize: 13, color: EMPEROR_UI.textSecondary, fontFamily: '"Microsoft JhengHei", monospace', lineHeight: 1.7, resize: 'vertical', boxSizing: 'border-box', outline: 'none' }}
+      />
+      <div style={{ marginTop: 10 }}>
+        <button type="button" onClick={() => onCopy(current.text, current.label)}
+          style={{ border: '1px solid ' + TU.shadow, borderRadius: 8, padding: '8px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer', background: TU.void, color: TU.bright, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          📋 複製 {current.label}
+        </button>
+      </div>
+    </div>
+  );
+}
 
-const buttonStyle: React.CSSProperties = {
-  border: 'none',
-  borderRadius: 8,
-  padding: '12px 20px',
-  fontWeight: 600,
-  fontSize: 14,
-  cursor: 'pointer',
-  transition: 'all 0.2s',
-  display: 'inline-flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
-};
-
-export function RankingDispatchPage({
-  reportDate,
-  onAnnouncement,
-}: RankingDispatchPageProps): React.ReactElement {
-  const [ranking, setRanking] = useState<RankingGenerateResult | null>(null);
-  const [dispatchResult, setDispatchResult] = useState<DispatchGenerateResult | null>(null);
+export function RankingDispatchPage({ reportDate }: RankingDispatchPageProps): React.ReactElement {
+  const [ranking, setRanking] = useState<RankingResult | null>(null);
+  const [dispatch, setDispatch] = useState<DispatchResult | null>(null);
+  const [announcement, setAnnouncement] = useState<AnnouncementOutput | null>(null);
   const [loading, setLoading] = useState(false);
+  const [annLoading, setAnnLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [copyMsg, setCopyMsg] = useState('');
 
   async function loadData() {
     try {
       setLoading(true);
-      const rankingData = await rankingService.generate(reportDate);
-      const dispatchData = await dispatchService.generate(reportDate);
-
-      setRanking(rankingData as unknown as RankingGenerateResult);
-      setDispatchResult(dispatchData);
       setMessage('');
-    } catch (error: any) {
-      setMessage(error?.responseMessage || error?.message || '生成名次或派單失敗 ❌');
+      const rankData = await rankingService.generate(reportDate);
+      setRanking(rankData);
+      const dispData = await dispatchService.generate(reportDate);
+      setDispatch(dispData);
+    } catch (err: unknown) {
+      const e = err as { responseMessage?: string; message?: string };
+      setMessage(e?.responseMessage || e?.message || '生成排名失敗 ❌ 請確認已完成業績輸入與審計');
     } finally {
       setLoading(false);
     }
   }
 
-  useEffect(() => {
-    void loadData();
-  }, [reportDate]);
-
-  function renderDispatchGroup(title: string, items: DispatchItem[], headerColor: string, bgColor: string) {
-    return (
-      <div
-        style={{
-          background: bgColor,
-          borderRadius: 16,
-          padding: 20,
-          border: '1px solid',
-          borderColor: headerColor,
-          minWidth: 280,
-          flex: 1,
-          boxShadow: '0 4px 12px rgba(0,0,0,0.02)',
-        }}
-      >
-        <h4 style={{ marginTop: 0, marginBottom: 16, color: headerColor, fontSize: 18, fontWeight: 800, borderBottom: `2px solid ${headerColor}`, paddingBottom: 8, display: 'inline-block' }}>
-          {title}
-        </h4>
-        
-        {items.length === 0 && <div style={{ color: '#94a3b8', fontStyle: 'italic', padding: 8 }}>目前無人編制於此</div>}
-        
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {items.map((item) => (
-            <div
-              key={`${title}-${item.groupOrderNo}-${item.employeeName}`}
-              style={{
-                background: '#ffffff',
-                padding: '16px',
-                borderRadius: 10,
-                border: '1px solid #e2e8f0',
-                position: 'relative',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-                cursor: 'default',
-              }}
-              onMouseOver={e => {
-                e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.06)';
-              }}
-              onMouseOut={e => {
-                e.currentTarget.style.transform = 'none';
-                e.currentTarget.style.boxShadow = 'none';
-              }}
-            >
-              <div style={{ position: 'absolute', top: -10, left: -10, background: headerColor, color: '#fff', width: 28, height: 28, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 13, border: '3px solid #fff' }}>
-                {item.groupOrderNo}
-              </div>
-              
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, paddingLeft: 8 }}>
-                <div style={{ fontWeight: 800, fontSize: 18, color: '#1e293b' }}>
-                  {item.employeeName}
-                </div>
-                <div style={{ fontSize: 13, color: '#64748b', background: '#f1f5f9', padding: '4px 8px', borderRadius: 999, fontWeight: 700 }}>
-                  總名次 #{item.rankNo}
-                </div>
-              </div>
-              
-              <div style={{ fontSize: 13, color: '#475569', background: '#f8fafc', padding: '8px 12px', borderRadius: 8, borderLeft: `3px solid ${headerColor}`, lineHeight: 1.5 }}>
-                <strong style={{ color: '#334155' }}>💡 派單策略：</strong>{item.suggestionText || '無特別指示'}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
+  async function generateAnnouncement() {
+    try {
+      setAnnLoading(true);
+      setMessage('');
+      const output = await announcementService.generate(reportDate);
+      setAnnouncement(output);
+    } catch (err: unknown) {
+      const e = err as { responseMessage?: string; message?: string };
+      setMessage(e?.responseMessage || e?.message || '生成公告失敗 ❌');
+    } finally {
+      setAnnLoading(false);
+    }
   }
 
+  function copyText(text: string, label: string) {
+    void navigator.clipboard.writeText(text).then(() => {
+      setCopyMsg('已複製「' + label + '」✓');
+      setTimeout(() => setCopyMsg(''), 2500);
+    });
+  }
+
+  useEffect(() => { void loadData(); }, [reportDate]);
+
+  const btnBase: React.CSSProperties = { border: 'none', borderRadius: 8, padding: '10px 18px', fontWeight: 700, fontSize: 14, cursor: 'pointer', transition: 'all 0.2s', display: 'inline-flex', alignItems: 'center', gap: 8 };
+
   return (
-    <div style={{ background: '#f8fafc', minHeight: '100%', padding: 24 }}>
-      <PageBlock
-        title="統合戰力：業績排名與智能派單"
-        rightSlot={
-          loading ? (
-            <StatusBadge label="引擎運算中..." tone="warn" />
-          ) : (
-            <StatusBadge label={`結算日：${reportDate}`} tone="info" />
-          )
-        }
-      >
-        {ranking && (
-          <div style={{ marginBottom: 40 }}>
-            <h3 style={{ margin: '0 0 16px 0', color: '#1e293b', fontSize: 18 }}>🏆 三大平台總營收戰報</h3>
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                gap: 16,
-                marginBottom: 24,
-              }}
-            >
-              <div style={{ background: '#ffffff', padding: '20px', borderRadius: 12, border: '1px solid #e2e8f0', borderLeft: '4px solid #3b82f6' }}>
-                <div style={{ fontSize: 13, color: '#64748b', fontWeight: 600, marginBottom: 8 }}>奕心專案</div>
-                <div style={{ fontSize: 24, fontWeight: 800, color: '#0f172a' }}>{formatMoney(ranking.summary.yixinTotalRevenue)}</div>
-              </div>
-              <div style={{ background: '#ffffff', padding: '20px', borderRadius: 12, border: '1px solid #e2e8f0', borderLeft: '4px solid #8b5cf6' }}>
-                <div style={{ fontSize: 13, color: '#64748b', fontWeight: 600, marginBottom: 8 }}>民視專案</div>
-                <div style={{ fontSize: 24, fontWeight: 800, color: '#0f172a' }}>{formatMoney(ranking.summary.minshiTotalRevenue)}</div>
-              </div>
-              <div style={{ background: '#ffffff', padding: '20px', borderRadius: 12, border: '1px solid #e2e8f0', borderLeft: '4px solid #f59e0b' }}>
-                <div style={{ fontSize: 13, color: '#64748b', fontWeight: 600, marginBottom: 8 }}>公司自營產品</div>
-                <div style={{ fontSize: 24, fontWeight: 800, color: '#0f172a' }}>{formatMoney(ranking.summary.companyTotalRevenue)}</div>
-              </div>
-              <div style={{ background: '#0f172a', padding: '20px', borderRadius: 12, border: '1px solid #1e293b', position: 'relative', overflow: 'hidden' }}>
-                <div style={{ position: 'absolute', top: -20, right: -20, width: 100, height: 100, background: '#38bdf8', opacity: 0.2, borderRadius: '50%', filter: 'blur(20px)' }}></div>
-                <div style={{ fontSize: 13, color: '#94a3b8', fontWeight: 600, marginBottom: 8 }}>💰 日結算總營業額</div>
-                <div style={{ fontSize: 28, fontWeight: 900, color: '#f8fafc', letterSpacing: '0.02em' }}>{formatMoney(ranking.summary.allTotalRevenue)}</div>
-              </div>
-            </div>
+    <div style={{ padding: 24, background: EMPEROR_UI.pageBg, minHeight: '100%', fontFamily: '"Microsoft JhengHei", system-ui, sans-serif' }}>
 
-            <h3 style={{ margin: '0 0 16px 0', color: '#1e293b', fontSize: 18 }}>⚔️ 英雄榜 (整合名次)</h3>
-            <div style={{ overflowX: 'auto', borderRadius: 12, border: '1px solid #e2e8f0', background: '#ffffff' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                  <tr style={{ background: '#f1f5f9' }}>
-                    <th style={{ ...thStyle, textAlign: 'center', width: 60 }}>🏆</th>
-                    <th style={thLeftStyle}>姓名</th>
-                    <th style={thStyle}>追單數</th>
-                    <th style={thStyle}>續單業績</th>
-                    <th style={thStyle}>總牌價業績</th>
-                    <th style={{ ...thStyle, color: '#059669' }}>💸 實收業績</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {ranking.rankings.map((row, index) => {
-                    const isTop3 = index < 3;
-                    return (
-                      <tr key={`${row.rankNo}-${row.employeeName}`} style={{ background: isTop3 ? '#fffbeb' : 'transparent', transition: 'background 0.2s' }} onMouseOver={e => !isTop3 && (e.currentTarget.style.background = '#f8fafc')} onMouseOut={e => !isTop3 && (e.currentTarget.style.background = 'transparent')}>
-                        <td style={{ ...tdStyle, textAlign: 'center', fontWeight: 900, fontSize: isTop3 ? 18 : 15, color: row.rankNo === 1 ? '#d97706' : row.rankNo === 2 ? '#64748b' : row.rankNo === 3 ? '#b45309' : '#94a3b8' }}>
-                          #{row.rankNo}
-                        </td>
-                        <td style={{ ...tdStyle, fontWeight: 800, color: '#1e293b', fontSize: 16 }}>
-                          {row.employeeName}
-                        </td>
-                        <td style={{ ...tdStyle, textAlign: 'right', fontFamily: 'monospace', fontSize: 16 }}>{row.totalFollowupCount}</td>
-                        <td style={{ ...tdStyle, textAlign: 'right', fontFamily: 'monospace', fontSize: 16 }}>{formatMoney(row.totalFollowupAmount)}</td>
-                        <td style={{ ...tdStyle, textAlign: 'right', fontFamily: 'monospace', fontSize: 16, color: '#475569' }}>{formatMoney(row.totalRevenueAmount)}</td>
-                        <td style={{ ...tdStyle, textAlign: 'right', fontFamily: 'monospace', fontSize: 16, fontWeight: 800, color: '#059669' }}>{formatMoney(row.totalActualAmount)}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+      {/* ── 摘要卡片 ── */}
+      {ranking && (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))', gap: 12, marginBottom: 24 }}>
+          {Object.entries(ranking.summary.platformBreakdown).map(([platform, revenue]) => (
+            <div key={platform} style={{ background: EMPEROR_UI.cardBg, border: '1px solid ' + EMPEROR_UI.borderAccent, borderLeft: '3px solid ' + TU.bright, borderRadius: 12, padding: '14px 16px' }}>
+              <div style={{ fontSize: 11, color: EMPEROR_UI.textMuted, fontWeight: 700, marginBottom: 6 }}>{platform}</div>
+              <div style={{ fontSize: 22, fontWeight: 900, color: TU.text }}>{fmt(revenue)}</div>
             </div>
+          ))}
+          <div style={{ background: EMPEROR_UI.sidebarBg, border: '1px solid ' + TU.shadow, borderLeft: '3px solid ' + TU.bright, borderRadius: 12, padding: '14px 16px', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', right: -8, top: -6, fontSize: 44, opacity: 0.07, pointerEvents: 'none' }}>💰</div>
+            <div style={{ fontSize: 11, color: EMPEROR_UI.textMuted, fontWeight: 700, marginBottom: 6 }}>💰 整合總業績</div>
+            <div style={{ fontSize: 26, fontWeight: 900, color: TU.bright }}>{fmt(ranking.summary.totalRevenue)}</div>
           </div>
-        )}
-
-        {dispatchResult && (
-          <div style={{ marginBottom: 32 }}>
-            <h3 style={{ margin: '0 0 16px 0', color: '#1e293b', fontSize: 18 }}>🎯 明日 AI 派單全域分組 (自動解鎖)</h3>
-            <div
-              style={{
-                display: 'flex',
-                gap: 20,
-                alignItems: 'stretch',
-                overflowX: 'auto',
-                paddingBottom: 8,
-              }}
-            >
-              {renderDispatchGroup('A1 突破之刃 (高單主力)', dispatchResult.groups.A1, '#dc2626', '#fef2f2')}
-              {renderDispatchGroup('A2 獵鷹部隊 (續單收割)', dispatchResult.groups.A2, '#ea580c', '#fff7ed')}
-              {renderDispatchGroup('B 磐石陣線 (量單主軸)', dispatchResult.groups.B, '#2563eb', '#eff6ff')}
-              {renderDispatchGroup('C 破風新銳 (補位成長)', dispatchResult.groups.C, '#059669', '#ecfdf5')}
-            </div>
+          <div style={{ background: EMPEROR_UI.cardBg, border: '1px solid ' + EMPEROR_UI.borderAccent, borderLeft: '3px solid ' + MU.bright, borderRadius: 12, padding: '14px 16px' }}>
+            <div style={{ fontSize: 11, color: EMPEROR_UI.textMuted, fontWeight: 700, marginBottom: 6 }}>參賽人數</div>
+            <div style={{ fontSize: 26, fontWeight: 900, color: MU.text }}>{ranking.rankings.length} 人</div>
           </div>
-        )}
-
-        <div style={{ display: 'flex', gap: 16, marginTop: 16, padding: '20px 0', borderTop: '1px solid #e2e8f0' }}>
-          <button
-            type="button"
-            onClick={loadData}
-            disabled={loading}
-            style={{
-              ...buttonStyle,
-              background: '#e2e8f0',
-              color: '#475569',
-              opacity: loading ? 0.7 : 1,
-            }}
-            onMouseOver={(e) => (e.currentTarget.style.background = '#cbd5e1')}
-            onMouseOut={(e) => (e.currentTarget.style.background = '#e2e8f0')}
-          >
-            🔄 重新洗牌計算
-          </button>
-
-          <button
-            type="button"
-            disabled={loading || !ranking}
-            onClick={() => onAnnouncement?.(reportDate)}
-            style={{
-              ...buttonStyle,
-              background: '#0f172a',
-              color: '#ffffff',
-            }}
-          >
-            封裝進入公告輸出 ➔
-          </button>
         </div>
+      )}
 
-        {message && (
-          <div
-            style={{
-              marginTop: 16,
-              padding: '12px 16px',
-              borderRadius: 8,
-              background: '#fffbeb',
-              color: '#92400e',
-              fontWeight: 600,
-              border: '1px solid #fde68a',
-            }}
-          >
-            {message}
+      {/* ── 英雄榜 ── */}
+      {ranking && ranking.rankings.length > 0 && (
+        <div style={{ background: EMPEROR_UI.cardBg, border: '1px solid ' + EMPEROR_UI.borderAccent, borderRadius: 14, padding: '18px 20px', marginBottom: 24 }}>
+          <div style={{ fontWeight: 900, fontSize: 16, color: TU.bright, marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
+            🏆 英雄榜（整合名次）
+            <span style={{ fontSize: 11, color: EMPEROR_UI.textMuted, fontWeight: 600 }}>依【總業績】→【續單】→【追單】</span>
           </div>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr style={{ background: EMPEROR_UI.sidebarBg }}>
+                  <th style={{ padding: '10px 14px', fontSize: 12, fontWeight: 800, color: EMPEROR_UI.textMuted, borderBottom: '1px solid ' + EMPEROR_UI.borderAccent, textAlign: 'center', width: 50 }}>名次</th>
+                  <th style={{ padding: '10px 14px', fontSize: 12, fontWeight: 800, color: EMPEROR_UI.textMuted, borderBottom: '1px solid ' + EMPEROR_UI.borderAccent, textAlign: 'left' }}>姓名</th>
+                  <th style={{ padding: '10px 14px', fontSize: 12, fontWeight: 800, color: EMPEROR_UI.textMuted, borderBottom: '1px solid ' + EMPEROR_UI.borderAccent, textAlign: 'right' }}>追單</th>
+                  <th style={{ padding: '10px 14px', fontSize: 12, fontWeight: 800, color: EMPEROR_UI.textMuted, borderBottom: '1px solid ' + EMPEROR_UI.borderAccent, textAlign: 'right' }}>續單業績</th>
+                  <th style={{ padding: '10px 14px', fontSize: 12, fontWeight: 800, color: EMPEROR_UI.textMuted, borderBottom: '1px solid ' + EMPEROR_UI.borderAccent, textAlign: 'right' }}>總業績</th>
+                  <th style={{ padding: '10px 14px', fontSize: 12, fontWeight: 800, color: TU.bright, borderBottom: '1px solid ' + EMPEROR_UI.borderAccent, textAlign: 'right' }}>實收</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ranking.rankings.map((row: RankingRow) => {
+                  const isTop3 = row.rankNo <= 3;
+                  const rankColor = row.rankNo === 1 ? TU.bright : row.rankNo === 2 ? EMPEROR_UI.textMuted : row.rankNo === 3 ? HUO.bright : EMPEROR_UI.textDim;
+                  return (
+                    <tr key={row.rankNo} style={{ background: isTop3 ? TU.abyss : 'transparent', transition: 'background 0.15s' }}>
+                      <td style={{ padding: '11px 14px', borderBottom: '1px solid ' + EMPEROR_UI.borderMain, textAlign: 'center', fontWeight: 900, fontSize: isTop3 ? 18 : 14, color: rankColor }}>#{row.rankNo}</td>
+                      <td style={{ padding: '11px 14px', borderBottom: '1px solid ' + EMPEROR_UI.borderMain, fontWeight: isTop3 ? 900 : 700, fontSize: 15, color: isTop3 ? EMPEROR_UI.textPrimary : EMPEROR_UI.textSecondary }}>{row.employeeName}</td>
+                      <td style={{ padding: '11px 14px', borderBottom: '1px solid ' + EMPEROR_UI.borderMain, textAlign: 'right', color: EMPEROR_UI.textSecondary }}>{row.totalFollowupCount}</td>
+                      <td style={{ padding: '11px 14px', borderBottom: '1px solid ' + EMPEROR_UI.borderMain, textAlign: 'right', color: EMPEROR_UI.textSecondary }}>{fmt(row.totalFollowupAmount)}</td>
+                      <td style={{ padding: '11px 14px', borderBottom: '1px solid ' + EMPEROR_UI.borderMain, textAlign: 'right', color: EMPEROR_UI.textSecondary }}>{fmt(row.totalRevenueAmount)}</td>
+                      <td style={{ padding: '11px 14px', borderBottom: '1px solid ' + EMPEROR_UI.borderMain, textAlign: 'right', fontWeight: 800, color: TU.bright }}>{fmt(row.totalActualAmount)}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* ── 派單分組 ── */}
+      {dispatch && (
+        <div style={{ marginBottom: 24 }}>
+          <div style={{ fontWeight: 900, fontSize: 16, color: HUO.bright, marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
+            🎯 明日 AI 派單分組
+          </div>
+          <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'flex-start' }}>
+            {(['A1', 'A2', 'B', 'C'] as const).map(code => (
+              <DispatchCard key={code} code={code} items={dispatch.groups[code] ?? []} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── 公告輸出 ── */}
+      {announcement && <AnnouncementPanel output={announcement} onCopy={copyText} />}
+
+      {/* ── 操作按鈕列 ── */}
+      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', padding: '16px 0', borderTop: '1px solid ' + EMPEROR_UI.borderAccent, marginTop: 8 }}>
+        <button type="button" onClick={loadData} disabled={loading}
+          style={{ ...btnBase, background: EMPEROR_UI.cardBg, color: EMPEROR_UI.textSecondary, border: '1px solid ' + EMPEROR_UI.borderAccent, opacity: loading ? 0.6 : 1 }}>
+          🔄 {loading ? '計算中…' : '重新生成排名與派單'}
+        </button>
+        <button type="button" onClick={generateAnnouncement} disabled={annLoading || !ranking}
+          style={{ ...btnBase, background: TU.void, color: TU.bright, border: '1px solid ' + TU.shadow, opacity: (annLoading || !ranking) ? 0.6 : 1 }}>
+          📢 {annLoading ? '生成中…' : '生成公告文稿'}
+        </button>
+        {announcement && (
+          <button type="button" onClick={() => copyText(announcement.fullText, '完整版')}
+            style={{ ...btnBase, background: MU.void, color: MU.bright, border: '1px solid ' + MU.shadow, fontSize: 13 }}>
+            📋 一鍵複製完整公告
+          </button>
         )}
-      </PageBlock>
+      </div>
+
+      {message && (
+        <div style={{ marginTop: 12, padding: '10px 16px', borderRadius: 8, background: HUO.abyss, color: HUO.bright, fontWeight: 700, fontSize: 14, border: '1px solid ' + HUO.shadow }}>
+          {message}
+        </div>
+      )}
+      {copyMsg && (
+        <div style={{ marginTop: 8, padding: '8px 16px', borderRadius: 8, background: MU.abyss, color: MU.bright, fontWeight: 700, fontSize: 13, border: '1px solid ' + MU.shadow }}>
+          {copyMsg}
+        </div>
+      )}
     </div>
   );
 }

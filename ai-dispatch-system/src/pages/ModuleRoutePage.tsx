@@ -7,7 +7,7 @@
 import React, { useMemo } from 'react';
 import { rawEmployees, platforms } from '../data/mockData';
 import { calculateAiScores, assignGroups } from '../engine/aiEngine';
-import { analyzeTrends } from '../engine/trendEngine';
+import { analyzeTrends, generateMarketingSuggestions } from '../engine/trendEngine';
 import {
   analyzeHighValueAbility,
   generateHighValueSuggestions,
@@ -45,19 +45,11 @@ function useLegacyData() {
     const withScores = calculateAiScores(rawEmployees);
     const employees = assignGroups(withScores);
     const trends = analyzeTrends(employees);
-    const suggestions = trends.map((t) => ({
-      employeeName: t.employeeName,
-      rank: t.rank,
-      trend: t.trend,
-      keyAdvice: t.keyAdvice,
-      urgency: t.urgency,
-      scripts: t.scripts,
-      trainingFocus: t.trainingFocus,
-    }));
+    const suggestions = generateMarketingSuggestions(employees, trends);
     const hvProfiles = analyzeHighValueAbility(employees);
-    const hvSuggestions = generateHighValueSuggestions(hvProfiles);
+    const hvSuggestions = generateHighValueSuggestions(hvProfiles, employees);
     const hvAlerts = detectHighValueAlerts(hvProfiles);
-    const teamRally = generateTeamRally(hvProfiles);
+    const teamRally = generateTeamRally(hvProfiles, '主管版');
     return { employees, platforms, trends, suggestions, hvProfiles, hvSuggestions, hvAlerts, teamRally };
   }, []);
 }
@@ -114,7 +106,7 @@ export function HvPersonalPage() {
       </PageBlock>
     );
   }
-  return <HighValuePersonalPage profile={topProfile} suggestions={hvSuggestions} />;
+  return <HighValuePersonalPage profiles={hvProfiles} suggestions={hvSuggestions} />;
 }
 
 /** 話術素材庫 */
@@ -125,7 +117,7 @@ export function HvScriptsPage() {
 /** 攻單名單 */
 export function HvTargetsPage() {
   const { hvProfiles } = useLegacyData();
-  return <CustomerTargetPage profiles={hvProfiles} />;
+  return <CustomerTargetPage />;
 }
 
 /** 高價訓練 */
@@ -137,7 +129,7 @@ export function HvTrainingPage() {
 /** 團隊喊話 */
 export function HvRallyPage() {
   const { hvProfiles, teamRally } = useLegacyData();
-  return <RallyAnnouncementPage profiles={hvProfiles} teamRally={teamRally} />;
+  return <RallyAnnouncementPage profiles={hvProfiles} />;
 }
 
 /** 播報總控台 */

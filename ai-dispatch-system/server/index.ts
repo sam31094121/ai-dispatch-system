@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { getDb } from './db/database.js';
 import { AUTO_FIX_RULES } from './config/autoFixRules.js';
+import { 執行後端系統自動維修 } from './services/serverRepairEngine.js';
 
 // Routes
 import authRoutes from './routes/auth.js';
@@ -10,6 +11,7 @@ import rankingRoutes from './routes/ranking.js';
 import dispatchRoutes from './routes/dispatch.js';
 import announcementRoutes from './routes/announcement.js';
 import historyRoutes from './routes/history.js';
+import repairRoutes from './routes/repair.js';
 
 const app = express();
 const PORT = 3001;
@@ -23,6 +25,24 @@ console.log('🔧 初始化 SQLite 資料庫...');
 getDb();
 console.log('✅ 資料庫就緒（12 張資料表已建立）');
 
+// ── 後端啟動時自動維修（規則二） ──
+console.log('');
+console.log('🔧 執行後端系統自動維修...');
+const 維修結果 = 執行後端系統自動維修();
+console.log('═══════════════════════════════════════════');
+console.log('   後端系統自動維修完成');
+console.log(`   輸入模組：保留 ${維修結果.保留模組.length} 個，停用 ${維修結果.停用模組.length} 個`);
+if (維修結果.衝突說明.length > 0) {
+  for (const 說明 of 維修結果.衝突說明) {
+    console.log(`   ⚠️ ${說明}`);
+  }
+} else {
+  console.log('   ✅ 無衝突，全部模組正常保留');
+}
+console.log(`   📝 維修紀錄已寫入 repair_logs 表`);
+console.log('═══════════════════════════════════════════');
+console.log('');
+
 // ── API v1 路由 ──
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/reports', reportRoutes);
@@ -30,6 +50,7 @@ app.use('/api/v1/rankings', rankingRoutes);
 app.use('/api/v1/dispatch', dispatchRoutes);
 app.use('/api/v1/announcements', announcementRoutes);
 app.use('/api/v1/history', historyRoutes);
+app.use('/api/v1/repair', repairRoutes);
 
 // ── 修正規則查詢 ──
 app.get('/api/v1/fix-rules', (_req, res) => {

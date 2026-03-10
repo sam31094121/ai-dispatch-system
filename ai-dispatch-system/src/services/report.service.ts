@@ -1,42 +1,51 @@
+// ═══════════════════════════════════════════════════════
+// report.service.ts — 真實後端串接版
+// ═══════════════════════════════════════════════════════
+import { apiPost, apiGet, apiPut } from './apiClient';
+
 export const reportService = {
-  async createReport(payload: any) {
-    return { id: Math.floor(Math.random() * 1000) };
+  async createReport(payload: Record<string, unknown>) {
+    const res = await apiPost<{ reportId: number }>('/reports', payload);
+    if (!res.success) throw Object.assign(new Error(res.message), { responseMessage: res.message });
+    return { id: Number(res.data.reportId) };
   },
-  async runParse(id: number, payload: any) {
-    return { success: true };
+
+  async runParse(id: number, _payload?: Record<string, unknown>) {
+    const res = await apiPost<unknown>(`/reports/${id}/parse`);
+    if (!res.success) throw Object.assign(new Error(res.message), { responseMessage: res.message });
+    return res.data;
   },
+
   async getParseResult(id: number) {
-    return {
+    const res = await apiGet<{
+      reportId: number;
       totals: {
-        totalCalls: 100,
-        assignedDealsCount: 10,
-        followupDealsCount: 5,
-        closingRatePercent: 15,
-        followupAmount: 50000,
-        cancelledReturnAmount: 0,
-        totalRevenueAmount: 50000,
-      },
-      details: [
-        {
-          id: 1,
-          employeeName: '測試員',
-          normalizedName: '測試員',
-          identityTag: '一般',
-          totalCalls: 50,
-          assignedDealsCount: 5,
-          followupDealsCount: 2,
-          closingRatePercent: 14,
-          followupAmount: 20000,
-          cancelledReturnAmount: 0,
-          totalRevenueAmount: 20000,
-        }
-      ]
-    };
+        followupDealsCount: number;
+        followupAmount: number;
+        totalRevenueAmount: number;
+        cancelledReturnAmount: number;
+      };
+      details: Array<{
+        id: number;
+        employeeName: string;
+        identityTag: string;
+        followupDealsCount: number;
+        followupAmount: number;
+        totalRevenueAmount: number;
+        cancelledReturnAmount: number;
+      }>;
+    }>(`/reports/${id}/parse-result`);
+    if (!res.success) throw Object.assign(new Error(res.message), { responseMessage: res.message });
+    return res.data;
   },
-  async updateTotals(id: number, payload: any) {
-    return { success: true };
+
+  async updateTotals(id: number, payload: Record<string, unknown>) {
+    const res = await apiPut<unknown>(`/reports/${id}/totals`, payload);
+    return res.data;
   },
-  async updateDetail(id: number, payload: any) {
-    return { success: true };
-  }
+
+  async updateDetail(detailId: number, payload: Record<string, unknown>) {
+    const res = await apiPut<unknown>(`/report-details/${detailId}`, payload);
+    return res.data;
+  },
 };

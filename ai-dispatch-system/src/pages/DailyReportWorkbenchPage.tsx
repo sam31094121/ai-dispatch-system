@@ -177,7 +177,6 @@ export function DailyReportWorkbenchPage(): React.ReactElement {
         {step === 'ranking' && reportDate && (
           <RankingDispatchPage
             reportDate={reportDate}
-            onAnnouncement={() => setStep('announcement')}
           />
         )}
 

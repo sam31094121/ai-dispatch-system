@@ -1,15 +1,29 @@
-import type { AnnouncementGeneratePayload } from '../types/announcement';
+// ═══════════════════════════════════════════════════════
+// announcement.service.ts — 真實後端串接版
+// ═══════════════════════════════════════════════════════
+import { apiPost, apiGet } from './apiClient';
+
+export interface AnnouncementOutput {
+  reportDate: string;
+  fullText: string;
+  lineText: string;
+  shortText: string;
+  voiceText: string;
+  managerText: string;
+}
 
 export const announcementService = {
-  async generate(payload: AnnouncementGeneratePayload) {
-    return {
-      reportDate: payload.reportDate,
-      fullText: '【全公司每日業績與排名公告】\n第一名：李玲玲 ...\n\nAI 派單：明日 A1 首當其衝...',
-      lineText: '📣 李玲玲 拿冠軍！A1 派單請準備。',
-      shortText: '明日派單照常',
-      voiceText: '大家好，今天第一名是...',
-      managerText: '主管報表：全日達成率 110%',
-      finalConfirmText: '已發送',
-    };
-  }
+  /** 生成公告文稿（需先完成排名） */
+  async generate(reportDate: string): Promise<AnnouncementOutput> {
+    const res = await apiPost<AnnouncementOutput>('/announcements/generate', { reportDate });
+    if (!res.success) throw Object.assign(new Error(res.message), { responseMessage: res.message });
+    return res.data;
+  },
+
+  /** 讀取已生成的公告 */
+  async get(reportDate: string): Promise<AnnouncementOutput | null> {
+    const res = await apiGet<AnnouncementOutput>(`/announcements/${reportDate}`);
+    if (!res.success) return null;
+    return res.data;
+  },
 };

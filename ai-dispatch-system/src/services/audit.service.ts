@@ -1,36 +1,48 @@
-import type { AuditRunPayload, ManualApprovePayload } from '../types/audit';
+// ═══════════════════════════════════════════════════════
+// audit.service.ts — 真實後端串接版
+// ═══════════════════════════════════════════════════════
+import { apiPost } from './apiClient';
 
+// Trigger Vite HMR cache invalidation
 export const auditService = {
-  async runAudit(reportId: number, payload: AuditRunPayload) {
-    return {
-      reportId,
-      consistencyResult: '失敗',
-      logicResult: '通過',
-      cumulativeResult: '通過',
-      finalResult: '失敗',
-      canGenerateRanking: false,
-      canGenerateDispatch: false,
-      canGenerateAnnounce: false,
-      auditSummary: '有1筆天地盤差額異常',
-      issues: [
-         {
-           id: 1,
-           reportId,
-           detailId: 5,
-           issueType: '天地盤差額',
-           issueLevel: '鎖死',
-           fieldName: 'totalRevenueAmount',
-           rawValue: '2026976',
-           expectedValue: '2025976',
-           diffValue: '1000',
-           suggestionText: '總計與加總差額不為零',
-           isResolved: false,
-           createdAt: '2026-03-09T10:00:00Z',
-         }
-      ]
-    };
+  /** 執行 AI 審計（審計失敗時 data 仍有結果，不拋錯） */
+  async runAudit(reportId: number, _payload?: Record<string, unknown>) {
+    const res = await apiPost<{
+      reportId: number;
+      consistencyResult: string;
+      logicResult: string;
+      cumulativeResult: string;
+      finalResult: string;
+      canGenerateRanking: number;
+      canGenerateDispatch: number;
+      canGenerateAnnounce: number;
+      auditSummary: string;
+      issues: Array<{
+        id: number;
+        reportId: number;
+        detailId: number | null;
+        issueType: string;
+        issueLevel: string;
+        fieldName: string | null;
+        rawValue: string | null;
+        expectedValue: string | null;
+        diffValue: string | null;
+        suggestionText: string | null;
+        isResolved: number;
+      }>;
+    }>(`/reports/${reportId}/audit`);
+    // 審計失敗 success=false 但 data 有結果，需照常回傳
+    if (!res.data) throw Object.assign(new Error(res.message), { responseMessage: res.message });
+    return res.data;
   },
-  async manualApprove(reportId: number, payload: ManualApprovePayload) {
-    return { reportId, approved: true };
-  }
+
+  /** 主管強行授權過件 */
+  async manualApprove(reportId: number, payload?: Record<string, unknown>) {
+    const res = await apiPost<{ reportId: number; approved: boolean }>(
+      `/reports/${reportId}/manual-approve`,
+      payload,
+    );
+    if (!res.success) throw Object.assign(new Error(res.message), { responseMessage: res.message });
+    return res.data;
+  },
 };
