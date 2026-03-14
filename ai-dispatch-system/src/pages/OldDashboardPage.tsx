@@ -180,7 +180,27 @@ export default function App() {
   const currentRole = roles.find(r => r.key === currentPage);
 
   return (
-    <div className="flex h-screen bg-slate-50 text-slate-900 overflow-hidden">
+    <div className="flex h-screen bg-slate-950 text-slate-100 overflow-hidden relative">
+      {/* 數位掃描線 */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '4px',
+        background: 'rgba(99, 102, 241, 0.2)',
+        boxShadow: '0 0 20px rgba(99, 102, 241, 0.4)',
+        zIndex: 999,
+        pointerEvents: 'none',
+        animation: 'scanning 8s linear infinite'
+      }} />
+
+      <style>{`
+        @keyframes scanning {
+          0% { transform: translateY(-100%); }
+          100% { transform: translateY(100vh); }
+        }
+      `}</style>
 
       {/* ─── 側邊導覽列 ─── */}
       <aside className={cn(

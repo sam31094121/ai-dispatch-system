@@ -32,8 +32,10 @@ function App() {
       <Routes>
         <Route path="/" element={<MainLayout />}>
 
-          {/* 首頁：每日業績極速直通樞紐 */}
-          <Route index element={<OneClickPipelinePage />} />
+          {/* 首頁：恢復為 V50 總控台 */}
+          <Route index element={<OldDashboardPage />} />
+          {/* 一鍵直通：作為獨立功能模組 */}
+          <Route path="pipeline" element={<OneClickPipelinePage />} />
           {/* 進階工作台：舊版多步驟工作台 */}
           <Route path="workbench-advanced" element={<DailyReportWorkbenchPage />} />
           
