@@ -1,9 +1,17 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { 取得保留中心設定 } from '../服務/系統自動維修服務';
 import { GROUP_ELEMENT, EMPEROR_UI, EMPEROR } from '../constants/wuxingColors';
 
 const SIDEBAR_WIDTH = 288;
+
+const NAV_GROUPS = [
+  { groupName: '主選單',    icon: '📊', centerKeys: ['老闆總控台', '業績輸入與智能審計中心', '主管派單台', '員工個人頁', 'AI行銷建議'] },
+  { groupName: '高價成交爆發', icon: '⚔️', centerKeys: ['高價總控台', '高價個人頁', '話術素材庫', '攻單名單', '高價訓練', '團隊喊話'] },
+  { groupName: '女聲智慧播報', icon: '🎙️', centerKeys: ['播報總控台', '播報稿管理', '播報風格', '播放控制'] },
+  { groupName: 'LINE群組轉傳', icon: '💬', centerKeys: ['LINE轉傳台', '轉傳規則'] },
+  { groupName: '系統管理',   icon: '⚙️', centerKeys: ['招聘管理', '訓練管理', '系統設定中心'] },
+];
 
 export function MainLayout() {
   const location = useLocation();
@@ -14,6 +22,7 @@ export function MainLayout() {
   }
 
   const activeCenters = useMemo(() => 取得保留中心設定(), []);
+  const activeCenterKeys = useMemo(() => new Set(activeCenters.map((c) => c.代碼)), [activeCenters]);
 
   return (
     <div style={{
@@ -96,37 +105,8 @@ export function MainLayout() {
 
           {/* ── 導覽群組 ── */}
           <nav style={{ padding: '12px 10px', flex: 1 }}>
-            {/* 固定的導覽群組，取代原本的 NAV_GROUPS */}
-            {[
-              {
-                groupName: '主選單',
-                icon: '📊',
-                centerKeys: ['老闆總控台', '業績輸入與智能審計中心', '主管派單台', '員工個人頁', 'AI行銷建議'],
-              },
-              {
-                groupName: '高價成交爆發',
-                icon: '⚔️',
-                centerKeys: ['高價總控台', '高價個人頁', '話術素材庫', '攻單名單', '高價訓練', '團隊喊話'],
-              },
-              {
-                groupName: '女聲智慧播報',
-                icon: '🎙️',
-                centerKeys: ['播報總控台', '播報稿管理', '播報風格', '播放控制'],
-              },
-              {
-                groupName: 'LINE群組轉傳',
-                icon: '💬',
-                centerKeys: ['LINE轉傳台', '轉傳規則'],
-              },
-              {
-                groupName: '系統管理',
-                icon: '⚙️',
-                centerKeys: ['招聘管理', '訓練管理', '系統設定中心'],
-              },
-            ]
-            .map((group) => {
-              const activeKeys = new Set(activeCenters.map((c) => c.代碼));
-              const validCenterKeys = group.centerKeys.filter((k) => activeKeys.has(k as any));
+            {NAV_GROUPS.map((group) => {
+              const validCenterKeys = group.centerKeys.filter((k) => activeCenterKeys.has(k as any));
               if (validCenterKeys.length === 0) return null;
 
               const el = GROUP_ELEMENT[group.groupName];

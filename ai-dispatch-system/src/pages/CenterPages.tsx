@@ -4,6 +4,7 @@ import { 執行系統自動維修 } from '../服務/系統自動維修服務';
 // 導入原始的各功能頁面
 import { DailyReportWorkbenchPage } from './DailyReportWorkbenchPage';
 import { DailyReportInputPage } from './DailyReportInputPage';
+import { OneClickPipelinePage } from './OneClickPipelinePage';
 import { RankingDispatchPage } from './RankingDispatchPage';
 import { AnnouncementPage } from './AnnouncementPage';
 import { SettingsPage } from './SettingsPage';
@@ -115,7 +116,7 @@ export function WorkbenchCenterPage() {
 
 // 2. 業績輸入與智能審計中心
 export function ReportCenterPage() { 
-  return <DailyReportInputPage onParsed={() => {}} />; 
+  return <OneClickPipelinePage />; 
 }
 
 // 3. 主管派單台
