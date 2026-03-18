@@ -1,0 +1,498 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Outfit:wght@300;400;600&display=swap');
+
+:root {
+  --bg:          transparent;
+  --panel-bg:    var(--背景-浮層);
+  --border:      rgba(255, 255, 255, 0.08); /* mapped to generic border */
+  --border-hi:   var(--金框);
+  --accent:      var(--皇家藍); /* Use royal blue for info */
+  --accent-dim:  var(--藍光);
+  --green:       var(--祖母綠);
+  --amber:       var(--黃寶石);
+  --red:         var(--紅寶石);
+  --text:        var(--次文字);
+  --text-bright: var(--主文字);
+  --text-data:   var(--黃寶石); /* or 主文字 */
+  --font-ui:     "Noto Sans TC", sans-serif;
+  --font-label:  "Orbitron", "Noto Sans TC", sans-serif;
+  --font-mono:   "Courier New", monospace;
+}
+
+/* ── 頁面 ── */
+.bd-page {
+  min-height: 100vh;
+  background: var(--bg);
+  background-image:
+    linear-gradient(rgba(0, 180, 220, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 180, 220, 0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  font-family: var(--font-ui);
+  color: var(--text-bright);
+  overflow-x: hidden;
+}
+
+/* ── 頂部狀態欄 ── */
+.bd-statusbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 28px;
+  background: rgba(3, 8, 18, 0.95);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+}
+
+.sb-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sb-live-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: dotPulse 2s ease-in-out infinite;
+}
+
+.sb-name {
+  font-family: var(--font-label);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--accent-dim);
+  text-transform: uppercase;
+}
+
+.sb-ver {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: rgba(0, 200, 240, 0.3);
+  letter-spacing: 0.1em;
+}
+
+.sb-stats {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sb-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 4px 14px;
+  border-left: 1px solid var(--border);
+}
+
+.sb-stat-k {
+  font-family: var(--font-label);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: rgba(0, 180, 220, 0.38);
+  text-transform: uppercase;
+}
+
+.sb-stat-v {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-bright);
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+}
+
+.sb-stat-v.hi { color: var(--green); text-shadow: 0 0 12px rgba(0, 224, 144, 0.3); }
+
+/* ── 主佈局 ── */
+.bd-hero {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 20px;
+  padding: 20px 24px 28px;
+  max-width: 1760px;
+  margin: 0 auto;
+}
+
+/* ── 面板基底 ── */
+.bd-panel {
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4), 0 24px 48px rgba(0, 0, 0, 0.5);
+}
+
+.bd-left  { padding: 28px; display: flex; flex-direction: column; gap: 18px; }
+.bd-right { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+
+/* ── 面板標頭 ── */
+.bd-panel-header { display: flex; flex-direction: column; gap: 4px; }
+
+.bdph-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-label);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--text-bright);
+  text-transform: uppercase;
+}
+
+.bdph-sub {
+  font-size: 12px;
+  color: var(--text);
+  letter-spacing: 0.06em;
+  padding-left: 16px;
+}
+
+/* ── 狀態指示燈 ── */
+.status-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
+  flex-shrink: 0;
+  animation: dotPulse 2.4s ease-in-out infinite;
+}
+
+.status-dot.dot-green { background: var(--green); box-shadow: 0 0 6px var(--green); }
+.status-dot.dot-amber { background: var(--amber); box-shadow: 0 0 6px var(--amber); animation: dotPulse 1.2s ease-in-out infinite; }
+.status-dot.dot-sm    { width: 5px; height: 5px; }
+
+/* ── 世界拓撲地圖 ── */
+.world-map-wrap {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+
+.world-svg { display: block; width: 100%; }
+
+.conn-flow {
+  animation: connFlow linear infinite;
+}
+
+@keyframes connFlow {
+  to { stroke-dashoffset: -27; }
+}
+
+.node-pulse-ring {
+  animation: ringPulse 3s ease-in-out infinite;
+}
+
+@keyframes ringPulse {
+  0%, 100% { r: 14; opacity: 0.4; }
+  50%       { r: 20; opacity: 0.12; }
+}
+
+/* ── ECG 吞吐量波形 ── */
+.ecg-section {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px 10px;
+}
+
+.ecg-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.ecg-label {
+  font-family: var(--font-label);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: rgba(0, 200, 240, 0.45);
+  text-transform: uppercase;
+  flex: 1;
+}
+
+.ecg-val {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--green);
+  letter-spacing: 0.05em;
+}
+
+.ecg-svg { display: block; width: 100%; height: 56px; }
+
+.ecg-line {
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 4px rgba(0, 200, 240, 0.25));
+  stroke-dasharray: 2000;
+  animation: ecgScroll 4s linear infinite;
+}
+
+@keyframes ecgScroll {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: -2000; }
+}
+
+/* ── 底部指標列 ── */
+.metrics-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.metric-card {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(0, 200, 240, 0.03), transparent);
+}
+
+.mc-live { border-color: rgba(0, 200, 240, 0.25); }
+.mc-live::before { background: linear-gradient(135deg, rgba(0, 200, 240, 0.07), transparent); }
+
+.mc-label {
+  font-family: var(--font-label);
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: rgba(0, 180, 220, 0.4);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.mc-value {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-bright);
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.mc-value.hi   { color: var(--accent); text-shadow: 0 0 14px rgba(0, 200, 240, 0.35); }
+.mc-value.warn { color: var(--amber);  text-shadow: 0 0 10px rgba(232, 160, 48, 0.25); }
+
+/* ── 右側區塊 ── */
+.rs-block {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.rs-grow { flex: 1; display: flex; flex-direction: column; }
+.rs-grow .event-log { flex: 1; }
+
+.rs-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-label);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: rgba(0, 180, 220, 0.42);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.rs-badge {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--green);
+  letter-spacing: 0.05em;
+}
+
+.rs-sub {
+  margin-left: 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--green);
+}
+
+/* ── 資料管道條 ── */
+.pipeline-list { display: flex; flex-direction: column; gap: 10px; }
+
+.pipe-row { display: flex; flex-direction: column; gap: 5px; }
+
+.pipe-label {
+  font-size: 11px;
+  color: var(--text);
+  letter-spacing: 0.04em;
+}
+
+.pipe-track-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pipe-track {
+  flex: 1;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.pipe-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--green));
+  box-shadow: 0 0 8px rgba(0, 200, 240, 0.3);
+  transition: width 0.6s ease;
+}
+
+.pipe-pct {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent);
+  min-width: 34px;
+  text-align: right;
+}
+
+/* ── 節點健康格 ── */
+.node-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-bottom: 8px;
+}
+
+.ng-cell {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.ng-ok   { background: rgba(0, 224, 144, 0.55); }
+.ng-warn { background: rgba(232, 160, 48, 0.85); box-shadow: 0 0 4px rgba(232, 160, 48, 0.4); }
+.ng-crit { background: rgba(224, 64, 96, 0.9);  box-shadow: 0 0 4px rgba(224, 64, 96, 0.4);  animation: critBlink 1s step-end infinite; }
+
+@keyframes critBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.25; }
+}
+
+.ng-legend {
+  display: flex;
+  gap: 14px;
+  font-size: 10px;
+  color: var(--text);
+  letter-spacing: 0.04em;
+}
+
+.leg-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 1.5px;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+.leg-dot.ok   { background: rgba(0, 224, 144, 0.6); }
+.leg-dot.warn { background: rgba(232, 160, 48, 0.85); }
+.leg-dot.crit { background: rgba(224, 64, 96, 0.9); }
+
+/* ── 事件日誌 ── */
+.event-log {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow: hidden;
+}
+
+.log-row {
+  display: flex;
+  gap: 10px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: rgba(160, 210, 230, 0.52);
+  border-left: 2px solid transparent;
+  transition: opacity 0.4s ease;
+}
+
+.log-row.log-new {
+  color: var(--text-bright);
+  border-left-color: var(--accent);
+  background: rgba(0, 200, 240, 0.05);
+  animation: logFlash 0.5s ease-out;
+}
+
+@keyframes logFlash {
+  0%   { background: rgba(0, 200, 240, 0.14); }
+  100% { background: rgba(0, 200, 240, 0.05); }
+}
+
+.log-ts {
+  color: rgba(0, 180, 220, 0.35);
+  flex-shrink: 0;
+  font-size: 10px;
+  padding-top: 1px;
+}
+
+.log-msg {
+  flex: 1;
+  word-break: break-word;
+}
+
+/* ── 共用動畫 ── */
+@keyframes dotPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.85); }
+}
+
+/* ── 5D 重力渦流與黑洞動畫 ── */
+@keyframes bhSpin    { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+@keyframes bhSpinR   { from{transform:rotate(360deg)} to{transform:rotate(0deg)} }
+@keyframes bhFlicker { 0%,100%{opacity:.12} 50%{opacity:.88} }
+@keyframes jetPulse  { 0%,100%{stroke-dashoffset:0;opacity:.1} 50%{stroke-dashoffset:24;opacity:.36} }
+@keyframes photon    { 0%,100%{filter:drop-shadow(0 0 10px rgba(255,180,50,.5))} 50%{filter:drop-shadow(0 0 26px rgba(255,230,100,.95)) drop-shadow(0 0 60px rgba(255,140,0,.5))} }
+@keyframes voidWin   { 0%,100%{box-shadow:0 0 40px rgba(0,229,200,.08),inset 0 0 60px rgba(0,0,20,.9)} 50%{box-shadow:0 0 90px rgba(124,77,255,.24),inset 0 0 60px rgba(0,0,20,.9)} }
+@keyframes rankSlide { from{opacity:0;transform:translateX(-22px)} to{opacity:1;transform:translateX(0)} }
+@keyframes parseFlash{ 0%,100%{opacity:1} 50%{opacity:.65;filter:brightness(1.5)} }
+@keyframes fadeIn    { from{opacity:0;} to{opacity:1;} }
+@keyframes eventHor  { 0%,100%{transform:scale(1);opacity:0.9;} 50%{transform:scale(1.03);opacity:1;} }
+
+/* ── 響應式 ── */
+@media (max-width: 1200px) {
+  .bd-hero { grid-template-columns: 1fr; }
+  .bd-right { max-height: none; }
+}
+
+@media (max-width: 760px) {
+  .metrics-row { grid-template-columns: repeat(2, 1fr); }
+  .bd-statusbar { flex-direction: column; gap: 8px; align-items: flex-start; }
+  .sb-stats { flex-wrap: wrap; }
+}

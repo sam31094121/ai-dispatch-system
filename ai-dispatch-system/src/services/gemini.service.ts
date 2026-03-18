@@ -172,7 +172,7 @@ ${rawText.slice(0, 800)}
       const model = genAI.getGenerativeModel({ model: MODEL_NAME });
       
       const prompt = `
-你是一位「人工智慧商業帝國系統」的頂級 AI 督導總監，同時熟悉高單價追單、續單與銷售心理學。
+你是一位「兆櫃AI派單系統」的頂級 AI 督導總監，同時熟悉高單價追單、續單與銷售心理學。
 現在我有一批當日結算的員工業績資料，我需要你依照每個人的數據表現，自動產生專屬的「行銷與派單督導建議」。
 請回傳一個 **嚴格符合 JSON 陣列格式** 的結果，不要加上 markdown codeblock（不用 \`\`\`json 標籤），直接回傳陣列的字串。
 

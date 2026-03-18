@@ -2,7 +2,6 @@
 // 歷史數據：2/28 基線 + 3/1~3/7 逐日累積
 // 三平台已預先合併（奕心 + 民視 + 公司）
 // ==========================================
-import type { Employee } from './mockData';
 
 export interface DailyRecord {
   date: string;
@@ -81,6 +80,32 @@ export const mar02Data: DailyRecord[] = [
   { date:'3/2', name:'許淑英', calls:0, dispatchClose:0, followupClose:1, renewalAmount:1350, revenue:1350 },
   // ⚠️ 吳義豐 3/2 邏輯盤異常：追續單金額 11,250 但業績 0
   { date:'3/2', name:'吳義豐', calls:0, dispatchClose:0, followupClose:2, renewalAmount:11250, revenue:0 },
+];
+
+// ─── 3/16 三平台合計 → 3/17 派單 ───
+// 審計：天地盤PASS / 邏輯盤PASS / 累積盤FAIL（民視追續通數44≠個別加總40）
+export const mar16Data: DailyRecord[] = [
+  { date:'3/16', name:'李玲玲',   calls:22, dispatchClose:0, followupClose:22, renewalAmount:592270, revenue:813920 },
+  { date:'3/16', name:'王珍珠',   calls:36, dispatchClose:0, followupClose:36, renewalAmount:371670, revenue:537020 },
+  { date:'3/16', name:'馬秋香',   calls:29, dispatchClose:0, followupClose:29, renewalAmount:408920, revenue:533670 },
+  { date:'3/16', name:'王梅慧',   calls:20, dispatchClose:0, followupClose:20, renewalAmount:337160, revenue:446210 },
+  { date:'3/16', name:'林沛昕',   calls:9,  dispatchClose:0, followupClose:9,  renewalAmount:253830, revenue:387238 },
+  { date:'3/16', name:'林宜靜',   calls:17, dispatchClose:0, followupClose:17, renewalAmount:220120, revenue:330340 },
+  { date:'3/16', name:'廖姿惠',   calls:13, dispatchClose:0, followupClose:13, renewalAmount:93460,  revenue:300000 },
+  { date:'3/16', name:'江麗勉',   calls:5,  dispatchClose:0, followupClose:5,  renewalAmount:250524, revenue:283184 },
+  { date:'3/16', name:'湯玉琦',   calls:13, dispatchClose:0, followupClose:13, renewalAmount:56010,  revenue:258774 },
+  { date:'3/16', name:'徐華妤',   calls:10, dispatchClose:0, followupClose:10, renewalAmount:150440, revenue:256950 },
+  { date:'3/16', name:'高如郁',   calls:11, dispatchClose:0, followupClose:11, renewalAmount:94370,  revenue:181108 },
+  { date:'3/16', name:'高美雲',   calls:8,  dispatchClose:0, followupClose:8,  renewalAmount:48350,  revenue:161850 },
+  { date:'3/16', name:'陳玲華',   calls:9,  dispatchClose:0, followupClose:9,  renewalAmount:78950,  revenue:138178 },
+  { date:'3/16', name:'蘇淑玲',   calls:7,  dispatchClose:0, followupClose:7,  renewalAmount:62750,  revenue:118746 },
+  { date:'3/16', name:'梁依萍',   calls:10, dispatchClose:0, followupClose:10, renewalAmount:49790,  revenue:97580  },
+  { date:'3/16', name:'鄭珮恩',   calls:19, dispatchClose:0, followupClose:19, renewalAmount:60385,  revenue:70885  },
+  { date:'3/16', name:'江沛林',   calls:4,  dispatchClose:0, followupClose:4,  renewalAmount:13370,  revenue:53590  },
+  { date:'3/16', name:'許淑英',   calls:8,  dispatchClose:0, followupClose:8,  renewalAmount:44640,  revenue:44640  },
+  { date:'3/16', name:'董昭蘭',   calls:4,  dispatchClose:0, followupClose:4,  renewalAmount:13665,  revenue:13665  },
+  { date:'3/16', name:'謝啟芳',   calls:1,  dispatchClose:0, followupClose:1,  renewalAmount:3264,   revenue:3264   },
+  { date:'3/16', name:'林佩君',   calls:1,  dispatchClose:0, followupClose:1,  renewalAmount:2490,   revenue:2490   },
 ];
 
 // ─── 2/28 平台級天地盤資料（審計用） ───

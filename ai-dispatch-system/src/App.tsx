@@ -3,7 +3,12 @@ import { MainLayout } from './layouts/MainLayout';
 
 import { DailyReportWorkbenchPage } from './pages/DailyReportWorkbenchPage';
 import { OneClickPipelinePage } from './pages/OneClickPipelinePage';
+import { HealingCashFlowPage } from './pages/HealingCashFlowPage';
 import OldDashboardPage from './pages/OldDashboardPage';
+import BigDataCorePage from './pages/BigDataCorePage';
+import SoulCorePage from './pages/SoulCorePage';
+import RankingPage from './pages/RankingPage'; // ⬇️ 新增：大數據雷達分析頁
+
 
 import {
   BossPage,
@@ -32,12 +37,24 @@ function App() {
       <Routes>
         <Route path="/" element={<MainLayout />}>
 
-          {/* 首頁：恢復為 V50 總控台 */}
-          <Route index element={<OldDashboardPage />} />
-          {/* 一鍵直通：作為獨立功能模組 */}
+          {/* 首頁：每日業績工作台（輸入→排名→派單→公告 一條龍） */}
+          <Route index element={<DailyReportWorkbenchPage />} />
+          {/* 一鍵直通管道 */}
           <Route path="pipeline" element={<OneClickPipelinePage />} />
-          {/* 進階工作台：舊版多步驟工作台 */}
-          <Route path="workbench-advanced" element={<DailyReportWorkbenchPage />} />
+          {/* 舊版動態儀表板（保留備用） */}
+          <Route path="dashboard" element={<OldDashboardPage />} />
+          
+          {/* 療癒金流：立體景深特效 */}
+          <Route path="healing" element={<HealingCashFlowPage />} />
+
+          {/* 大數據核心：立體全息自癒控制台 */}
+          <Route path="core" element={<BigDataCorePage />} />
+          
+          {/* 靈魂核心：虛空數據導入控制台 */}
+          <Route path="soul" element={<SoulCorePage />} />
+          
+          {/* ⬇️ AI 加強：大數據戰力分析與雷達圖 */}
+          <Route path="ranking" element={<RankingPage />} />
           
           <Route path="boss"       element={<BossPage />} />
           <Route path="dispatch"   element={<DispatchPage />} />
@@ -68,7 +85,7 @@ function App() {
 
         </Route>
 
-        {/* 恢復被刪除的舊版總控台路由 */}
+        {/* 舊版總控台備用路由 */}
         <Route path="/old" element={<OldDashboardPage />} />
 
         {/* 所有未知路由導回首頁 */}

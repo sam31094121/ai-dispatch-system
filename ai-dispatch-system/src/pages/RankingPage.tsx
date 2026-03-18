@@ -1,182 +1,404 @@
-import React, { useMemo } from 'react';
-import { useReportStore } from '../data/reportStore';
-import { generateRankings } from '../engine/rankingEngine';
-import type { GroupCode } from '../types/report';
-import { ChevronLeft, ArrowRight, Trophy, Medal, Star, TrendingUp, Lock } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { rawEmployees, aiSuggestions, platforms } from '../data/mockData';
+import type { Employee } from '../data/mockData';
+import { getGroupColor } from '../engine/aiEngine';
 
-const groupStyle: Record<GroupCode, { label: string; emoji: string; desc: string; colorVar: string; borderClass: string }> = {
-  A1: { label: 'A1 優先', emoji: '🔴', desc: '高單主力', colorVar: '--color-fire-deep', borderClass: 'wx-group-a1' },
-  A2: { label: 'A2 次優', emoji: '🟠', desc: '續單收割', colorVar: '--color-fire-400', borderClass: 'wx-group-a2' },
-  B:  { label: 'B 一般',  emoji: '🟡', desc: '一般量單', colorVar: '--color-metal-500', borderClass: 'wx-group-b' },
-  C:  { label: 'C 培養',  emoji: '🟢', desc: '補位培養', colorVar: '--color-wood-500', borderClass: 'wx-group-c' },
-};
+export default function RankingPage() {
+  const [selectedEmp, setSelectedEmp] = useState<Employee>(rawEmployees[0]);
+  const [viewMode, setViewMode] = useState<'emp' | 'plat'>('emp');
+  const [selectedPlatName, setSelectedPlatName] = useState<string>('');
+  const totalRev = useMemo(() => platforms.reduce((sum, p) => sum + p.revenue, 0), []);
 
-const rankIcon = (r: number) => {
-  if (r === 1) return <Trophy className="w-5 h-5" style={{ color: 'var(--color-metal-500)' }} />;
-  if (r === 2) return <Medal className="w-5 h-5" style={{ color: 'var(--color-earth-400)' }} />;
-  if (r === 3) return <Medal className="w-5 h-5" style={{ color: 'var(--color-metal-400)' }} />;
-  return <span className="w-5 h-5 flex items-center justify-center text-xs font-bold" style={{ color: 'var(--color-earth-400)' }}>{r}</span>;
-};
+  // 雷達圖配置
+  const SIZE = 280;
+  const CENTER = SIZE / 2;
+  const RAD = SIZE * 0.42; // 最大半徑
+  const LABELS = ['開口', '膽量', '收口', '價值', '承壓'];
+  const KEYS = ['open', 'brave', 'close', 'value', 'stress'] as const;
 
-export const RankingPage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavigate }) => {
-  const { currentParseResult } = useReportStore();
+  // 五角形頂點坐標計算 (角度 72度 / 0.4 * Math.PI)
+  const angleSlice = (Math.PI * 2) / 5;
 
-  const rankings = useMemo(() => {
-    if (!currentParseResult) return [];
-    return generateRankings(currentParseResult.details);
-  }, [currentParseResult]);
+  const radarPoints = useMemo(() => {
+    if (!selectedEmp.stats) return [];
+    return KEYS.map((key, i) => {
+      const val = selectedEmp.stats![key] || 0;
+      const r = (val / 100) * RAD;
+      const angle = angleSlice * i - Math.PI / 2; // 從頂部開始
+      return {
+        x: CENTER + r * Math.cos(angle),
+        y: CENTER + r * Math.sin(angle),
+      };
+    });
+  }, [selectedEmp, RAD, CENTER, angleSlice, KEYS]);
 
-  if (!currentParseResult) {
-    return (
-      <div className="flex flex-col items-center justify-center h-[60vh]">
-        <TrendingUp className="w-12 h-12 mb-4" style={{ color: 'var(--color-earth-400)' }} />
-        <h2 className="text-xl font-semibold" style={{ color: 'var(--color-earth-800)' }}>查無資料</h2>
-        <p className="mt-2" style={{ color: 'var(--color-earth-500)' }}>請先完成輸入、解析、審計</p>
-        <button onClick={() => onNavigate('daily_input')} className="wx-btn wx-btn-water mt-4">返回輸入窗口</button>
-      </div>
-    );
-  }
+  const radarPolygon = radarPoints.map(p => `${p.x},${p.y}`).join(' ');
 
-  // 骨牌防呆：審計未通過不顯示排名
-  if (!currentParseResult.isAuditPassed) {
-    return (
-      <div className="flex flex-col items-center justify-center h-[60vh]">
-        <Lock className="w-12 h-12 mb-4" style={{ color: 'var(--color-fire-400)' }} />
-        <h2 className="text-xl font-semibold" style={{ color: 'var(--color-earth-800)' }}>審計尚未通過</h2>
-        <p className="mt-2" style={{ color: 'var(--color-earth-500)' }}>必須先通過 AI 審計，才能生成排名與派單</p>
-        <p className="text-xs mt-1 font-medium" style={{ color: 'var(--color-fire-deep)' }}>⛔ 骨牌效應防呆：禁止跳過審計</p>
-        <button onClick={() => onNavigate('audit')} className="wx-btn wx-btn-water mt-4">前往 AI 審計</button>
-      </div>
-    );
-  }
-
-  const a1 = rankings.filter(r => r.groupCode === 'A1');
-  const a2 = rankings.filter(r => r.groupCode === 'A2');
-  const b = rankings.filter(r => r.groupCode === 'B');
-  const c = rankings.filter(r => r.groupCode === 'C');
-  const totalRevenue = rankings.reduce((s, r) => s + r.totalRevenue, 0);
+  // 背景網格線
+  const gridLevels = [0.2, 0.4, 0.6, 0.8, 1.0].map((lvl) => {
+    const r = RAD * lvl;
+    return Array.from({ length: 5 }, (_, i) => {
+      const angle = angleSlice * i - Math.PI / 2;
+      return `${CENTER + r * Math.cos(angle)},${CENTER + r * Math.sin(angle)}`;
+    }).join(' ');
+  });
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 wx-animate-in">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4" style={{ borderBottom: '1px solid var(--color-earth-200)' }}>
-        <div className="flex items-center gap-4">
-          <button onClick={() => onNavigate('audit')} className="p-2 rounded-full transition" style={{ color: 'var(--color-earth-500)' }}><ChevronLeft className="w-6 h-6" /></button>
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold" style={{ color: 'var(--color-metal-700)' }}>整合排名與派單</h1>
-            <p className="mt-1" style={{ color: 'var(--color-earth-500)' }}>{currentParseResult.date} · {currentParseResult.platform} · {rankings.length} 人</p>
+    <div style={{
+      display: 'grid', 
+      gridTemplateColumns: '240px 380px 1fr', // 🧭 全景三欄式 (左名單、中雷達、右數據)
+      height: '100vh', 
+      background: '#020617', 
+      color: '#e2e8f0',
+      fontFamily: 'system-ui, -apple-system, sans-serif', 
+      overflow: 'hidden'
+    }}>
+      
+      {/* ── 1. 左側：人員清單 (戰力排名) 📊 ── */}
+      <div style={{
+        borderRight: '1px solid rgba(0, 212, 255, 0.08)',
+        display: 'flex', flexDirection: 'column', 
+        background: 'rgba(3, 7, 18, 0.4)',
+        backdropFilter: 'blur(10px)', 
+        height: '100vh',
+        overflow: 'hidden'
+      }}>
+        <div style={{
+          padding: '12px 14px', borderBottom: '1px solid rgba(0, 212, 255, 0.08)',
+          background: 'linear-gradient(90deg, rgba(0,212,255,0.03), transparent)'
+        }}>
+          <h2 style={{ fontSize: 13, fontWeight: 900, color: '#00d4ff', margin: 0, letterSpacing: '1px', display:'flex', alignItems:'center', gap:5 }}>
+            <span style={{width:5, height:5, borderRadius:'50%', background:'#00D4FF', boxShadow:'0 0 6px #00D4FF'}} />
+            AI 戰力大數據中心
+          </h2>
+          <div style={{ fontSize: 8, color: 'rgba(0, 212, 255, 0.4)', marginTop: 2, fontFamily: 'monospace' }}>DATA_CORE v4.3</div>
+        </div>
+
+        <div style={{ flex: 1, overflowY: 'auto', padding: '8px' }}>
+          {[
+            { tag: 'A1', label: '🔴 A2｜高單主力' , color: '#EF4444' }, // 依據使用者 A1-C
+            { tag: 'A2', label: '🟠 A2｜續單收割', color: '#F59E0B' },
+            { tag: 'B',  label: '🟡 B 組｜一般量單', color: '#FBBF24' },
+            { tag: 'C',  label: '🟢 C 組｜觀察培養', color: '#10B981' }
+          ].map(grp => {
+            const emps = rawEmployees.filter(e => (e as any).group === grp.tag);
+            if (emps.length === 0) return null;
+            return (
+              <div key={grp.tag} style={{ marginBottom: 10 }}>
+                <div style={{ fontSize: 10, fontWeight: 900, color: grp.color, padding: '3px 6px', letterSpacing: '1px', background: `${grp.color}11`, borderRadius: 4, marginBottom: 3 }}>
+                  {grp.label}
+                </div>
+                {emps.map((m) => {
+                  const isActive = selectedEmp.name === m.name;
+                  return (
+                    <div
+                      key={m.name}
+                      onClick={() => setSelectedEmp(m)}
+                      style={{
+                        padding: '6px 10px', borderRadius: 6, marginBottom: 2, cursor: 'pointer',
+                        background: isActive ? 'rgba(0, 212, 255, 0.06)' : 'transparent',
+                        border: isActive ? '1px solid rgba(0, 212, 255, 0.2)' : '1px solid transparent',
+                        transition: 'all 0.1s', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <span style={{
+                          fontSize: 9, fontFamily: 'monospace', color: isActive ? '#00d4ff' : 'rgba(255,255,255,0.2)',
+                          width: 16
+                        }}>
+                          {String(m.rank).padStart(2, '0')}
+                        </span>
+                        <span style={{ fontSize: 12, fontWeight: isActive ? 800 : 500, color: isActive ? '#fff' : '#94a3b8' }}>
+                          {m.name}
+                        </span>
+                      </div>
+                      {m.stats && (
+                        <span style={{
+                          fontSize: 9, fontWeight: 900, color: '#00ff9c', fontFamily: 'monospace',
+                          background: 'rgba(0, 255, 156, 0.08)', padding: '1px 3px', borderRadius: 2
+                        }}>
+                          {m.stats.total}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── 2. 中側：3D 雷達圖 Hub 🔮 ── */}
+      <div style={{
+        padding: '16px', borderRight: '1px solid rgba(0, 212, 255, 0.08)',
+        display: 'flex', flexDirection: 'column', gap: '12px', justifyContent: 'center',
+        background: 'linear-gradient(135deg, rgba(2, 6, 23, 0.4), rgba(15, 23, 42, 0.1))',
+        position: 'relative', height: '100vh', overflow: 'hidden'
+      }}>
+        
+        {/* 🔱 平台業績分布 (最後優化看板) 🔱 */}
+        <div className="glass metalCard" style={{ padding: '12px', borderRadius: 12, border: '1px solid rgba(0, 212, 255, 0.15)', background: 'rgba(3, 7, 18, 0.4)' }}>
+          <div style={{ fontSize: 9, color: '#00d4ff', letterSpacing: '1.5px', fontWeight: 900, display: 'flex', alignItems: 'center', gap: 4 }}>
+            <span style={{ width: 4, height: 4, background: '#00D4FF', borderRadius: '50%', boxShadow: '0 0 4px #00d4ff' }} />
+            🌐 REAL-TIME CORE REV MATRIX
           </div>
-        </div>
-        <button onClick={() => onNavigate('announcement')} className="wx-btn wx-btn-metal">
-          <ArrowRight className="w-5 h-5" /> 生成公告
-        </button>
-      </div>
+          <div style={{ fontSize: 11, color: '#fff', fontWeight: 800, marginTop: 4 }}>即時營收流動網格</div>
+          <div style={{ fontSize: 7, color: 'rgba(0, 212, 255, 0.6)', letterSpacing: '0.5px', marginBottom: 2 }}>平台權重與金流動態分析</div>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {[
-          { label: '整合總業績', value: `$${totalRevenue.toLocaleString()}`, gradient: 'linear-gradient(135deg, var(--color-metal-500), var(--color-metal-700))' },
-          { label: '總人數', value: `${rankings.length} 人`, gradient: 'linear-gradient(135deg, var(--color-water-500), var(--color-water-700))' },
-          { label: 'A1 高單主力', value: `${a1.length} 人`, gradient: 'linear-gradient(135deg, #c53030, #9b2c2c)' },
-          { label: 'C 培養組', value: `${c.length} 人`, gradient: 'linear-gradient(135deg, var(--color-wood-500), var(--color-wood-700))' },
-        ].map(card => (
-          <div key={card.label} className="rounded-2xl p-5 text-white shadow-md" style={{ background: card.gradient }}>
-            <p className="text-xs font-medium opacity-80">{card.label}</p>
-            <p className="text-2xl font-bold mt-1">{card.value}</p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'center', marginTop: 10, borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: 6 }}>
+            <div>
+              <div style={{ fontSize: 8, color: '#94a3b8' }}>TOTAL ROLLING REV</div>
+              <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', textShadow: '0 0 10px rgba(0,212,255,0.3)', fontFamily: '"Orbitron", sans-serif' }}>${totalRev.toLocaleString()}</div>
+            </div>
+            <div style={{ fontSize: 9, color: '#00d4ff', background: 'rgba(0,212,255,0.08)', padding: '2px 6px', borderRadius: 4, fontWeight: 900 }}>3 PLATFORMS</div>
           </div>
-        ))}
-      </div>
 
-      {/* Ranking Table */}
-      <div className="wx-card overflow-hidden">
-        <div className="wx-card-header flex items-center gap-2">
-          <Trophy className="w-5 h-5" style={{ color: 'var(--color-metal-500)' }} />
-          <h2 className="text-lg font-semibold" style={{ color: 'var(--color-earth-800)' }}>整合名次表（依【總業績】→【續單】→【追單】）</h2>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm wx-table min-w-[700px]">
-            <thead>
-              <tr>
-                {['名次','姓名','追單','續單','總業績','實收','分組'].map(h => (
-                  <th key={h} className={`px-4 py-3 ${h === '姓名' ? 'text-left' : h === '名次' ? 'text-left' : 'text-right'}`}
-                    style={{ borderBottom: '1px solid var(--color-earth-200)' }}>{h === '分組' ? <span className="block text-center">{h}</span> : h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {rankings.map(r => (
-                <tr key={r.employeeName} className="transition" style={{ borderBottom: '1px solid var(--color-earth-50)' }}>
-                  <td className="px-4 py-3">{rankIcon(r.ranking)}</td>
-                  <td className="px-4 py-3 font-medium" style={{ color: 'var(--color-earth-800)' }}>{r.employeeName}{r.isNew ? <span className="text-xs ml-1" style={{ color: 'var(--color-water-500)' }}>（新人）</span> : ''}</td>
-                  <td className="px-4 py-3 text-right">{r.dispatchDeals}</td>
-                  <td className="px-4 py-3 text-right">${r.followAmount.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right wx-amount">${r.totalRevenue.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right">${r.totalActual.toLocaleString()}</td>
-                  <td className="px-4 py-3 text-center"><span className="wx-badge" style={{
-                    color: `var(${groupStyle[r.groupCode].colorVar})`,
-                    background: r.groupCode === 'A1' ? '#fef2f2' : r.groupCode === 'A2' ? 'var(--color-fire-50)' : r.groupCode === 'B' ? 'var(--color-metal-50)' : 'var(--color-wood-50)',
-                    borderColor: r.groupCode === 'A1' ? '#fecaca' : r.groupCode === 'A2' ? 'var(--color-fire-200)' : r.groupCode === 'B' ? 'var(--color-metal-200)' : 'var(--color-wood-200)',
-                  }}>{groupStyle[r.groupCode].label}</span></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Dispatch Groups */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {([['A1', a1], ['A2', a2], ['B', b], ['C', c]] as const).map(([code, members]) => {
-          const s = groupStyle[code];
-          return (
-            <div key={code} className={`wx-card p-5 ${s.borderClass}`}>
-              <h3 className="font-semibold mb-3" style={{ color: 'var(--color-earth-800)' }}>{s.emoji} {code}｜{s.desc} ({members.length}人)</h3>
-              <div className="space-y-2">
-                {members.map(m => (
-                  <div key={m.employeeName} className="text-sm flex justify-between items-center">
-                    <span style={{ color: 'var(--color-earth-700)' }}>{m.ranking}. {m.employeeName}</span>
-                    <span className="text-xs wx-amount">${m.totalRevenue.toLocaleString()}</span>
+          {/* 三平台 Matrix 矩陣 */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginTop: 10 }}>
+            {platforms.map(p => {
+              const rate = totalRev > 0 ? Math.round((p.revenue / totalRev) * 100) : 0;
+              const active = p.revenue > 0;
+              const color = p.name === '奕心' ? '#00ff9c' : p.name === '民視' ? '#00e5ff' : '#c084fc';
+              const analysis = p.name === '奕心' ? '主力' : p.name === '民視' ? '🚀爆發' : '潛力';
+              const glow = active ? `0 0 10px ${color}22` : 'none';
+              const points = p.name === '奕心' ? "0,15 10,8 20,13 30,5 40,12 50,2" : p.name === '民視' ? "0,15 10,12 20,5 30,8 40,3 50,0" : "0,18 10,14 20,16 30,12 40,15 50,10";
+              const isSelected = viewMode === 'plat' && selectedPlatName === p.name;
+              return (
+                <div key={p.name} 
+                  onClick={() => { 
+                    console.log('DEBUG: Platform clicked', p.name);
+                    setViewMode('plat'); 
+                    setSelectedPlatName(p.name); 
+                  }}
+                  style={{ 
+                    background: isSelected ? 'rgba(0, 212, 255, 0.08)' : active ? 'rgba(0, 212, 255, 0.03)' : 'rgba(255,255,255,0.01)', 
+                    padding: '8px', borderRadius: 8, 
+                    border: `1px solid ${isSelected ? color : active ? 'rgba(0, 212, 255, 0.15)' : 'rgba(255,255,255,0.03)'}`, 
+                    textAlign: 'center', position: 'relative', cursor: 'pointer',
+                    boxShadow: isSelected ? `0 0 15px ${color}44` : glow,
+                    transition: 'all 0.2s',
+                    transform: isSelected ? 'scale(1.02)' : 'none',
+                    zIndex: 10 // 確保點擊最高權
+                  }}
+                >
+                  <div style={{ fontSize: 10, fontWeight: 900, color: active ? '#fff' : '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 3 }}>
+                    {p.name} <span style={{ fontSize: 7, color: color, fontWeight: 800 }}>({analysis})</span>
                   </div>
-                ))}
-                {members.length === 0 && <p className="text-xs" style={{ color: 'var(--color-earth-400)' }}>（無）</p>}
+                  <div style={{ fontSize: 14, fontWeight: 900, color: color, fontFamily: 'Orbitron', margin: '2px 0' }}>{rate}%</div>
+                  <div style={{ fontSize: 9, color: active ? '#fff' : '#475569', fontWeight: 700 }}>${p.revenue.toLocaleString()}</div>
+                  <div style={{ height: 10, marginTop: 4 }}>
+                    <svg width="100%" height="100%" viewBox="0 0 50 20" preserveAspectRatio="none">
+                      <polyline points={points} fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 10, paddingTop: 6, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+            <div style={{ fontSize: 9, color: '#94a3b8' }}>TOTAL CYCLE <span style={{ color: '#fff', fontWeight: 900, fontFamily: 'Orbitron', marginLeft: 4 }}>${totalRev.toLocaleString()}</span></div>
+            <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.4)', display: 'flex', alignItems: 'center', gap: 3 }}>
+              <span>◈</span> 模組已安全降級
+            </div>
+          </div>
+        </div>
+
+        {/* 🔮 雷達圖 / 平台診斷 雙模切換 */}
+        <div className="glass metalCard" style={{
+          flex: 1, padding: '12px', borderRadius: 12,
+          background: 'rgba(3, 7, 18, 0.2)', border: '1px solid rgba(0, 212, 255, 0.08)',
+          display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative'
+        }}>
+          {viewMode === 'emp' ? (
+            <svg width={SIZE} height={SIZE} style={{ overflow: 'visible' }}>
+              {gridLevels.map((g, i) => (
+                <polygon key={i} points={g} fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
+              ))}
+              {Array.from({ length: 5 }).map((_, i) => {
+                const angle = angleSlice * i - Math.PI / 2;
+                return (
+                  <line
+                    key={i}
+                    x1={CENTER} y1={CENTER}
+                    x2={CENTER + RAD * Math.cos(angle)} y2={CENTER + RAD * Math.sin(angle)}
+                    stroke="rgba(0, 212, 255, 0.08)" strokeWidth="1"
+                  />
+                );
+              })}
+              {selectedEmp.stats ? (
+                <polygon
+                  points={radarPolygon}
+                  fill="rgba(0, 212, 255, 0.12)"
+                  stroke="#00d4ff"
+                  strokeWidth="1.5"
+                  style={{ filter: 'drop-shadow(0 0 6px rgba(0,212,255,0.4))' }}
+                />
+              ) : null}
+              {radarPoints.map((p, i) => (
+                <circle key={i} cx={p.x} cy={p.y} r="2.5" fill="#00d4ff" />
+              ))}
+              {Array.from({ length: 5 }).map((_, i) => {
+                const angle = angleSlice * i - Math.PI / 2;
+                const x = CENTER + (RAD + 14) * Math.cos(angle);
+                const y = CENTER + (RAD + 12) * Math.sin(angle);
+                const anchor = Math.abs(x - CENTER) < 10 ? 'middle' : x < CENTER ? 'end' : 'start';
+                return (
+                  <text
+                    key={i} x={x} y={y + 3} fill="rgba(255,255,255,0.4)" fontSize="8" fontWeight="800" textAnchor={anchor} fontFamily="sans-serif"
+                  >
+                    {LABELS[i]}
+                  </text>
+                );
+              })}
+            </svg>
+          ) : (
+            <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', padding: '8px' }}>
+              <div style={{ fontSize: 11, fontWeight: 900, color: '#00d4ff', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div>📊 {selectedPlatName} AI 深度診斷板</div>
+                <div onClick={() => setViewMode('emp')} style={{ cursor: 'pointer', fontSize: 8, color: '#94a3b8', background: 'rgba(255,255,255,0.05)', padding: '2px 6px', borderRadius: 4 }}>返回雷達圖 ↩</div>
+              </div>
+              <div style={{ flex: 1, marginTop: 12, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {/* 離目標差距 */}
+                <div style={{ background: 'rgba(255,255,255,0.02)', padding: '8px', borderRadius: 6, border: '1px solid rgba(0,212,255,0.05)' }}>
+                  <div style={{ fontSize: 8, color: '#64748b' }}>🎯 離月目標預警</div>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginTop: 2 }}>
+                    <div style={{ fontSize: 14, fontWeight: 900, color: '#fff', fontFamily: 'Orbitron' }}>$2,000,000</div>
+                    <div style={{ fontSize: 8, color: '#94a3b8' }}>/ 目標</div>
+                  </div>
+                  <div style={{ height: 4, background: 'rgba(255,255,255,0.05)', borderRadius: 2, marginTop: 4, overflow: 'hidden' }}>
+                    <div style={{ height: '100%', background: '#00e5ff', width: '65%', transition: 'width 0.5s' }} />
+                  </div>
+                </div>
+                {/* AI 診斷書 */}
+                <div style={{ background: 'rgba(0, 212, 255, 0.03)', padding: '8px', borderRadius: 6, border: '1px solid rgba(0,212,255,0.1)' }}>
+                  <div style={{ fontSize: 8, color: '#00d4ff', fontWeight: 900 }}>💡 AI 洞察建議</div>
+                  <p style={{ fontSize: 9, color: '#e2e8f0', margin: '4px 0 0', lineHeight: 1.5 }}>
+                    {selectedPlatName === '民視' 
+                      ? '目前【追續單】動能極強，離預定門檻僅差 35%。今日應強制加壓「大單攻頂」策略，提撥 10% 預算投射於馬秋香、王珍珠之核心名單。'
+                      : selectedPlatName === '奕心'
+                      ? '營收已突破穩定期，爆發點落在 B 組續單收尾。目前健康度評分 92，建議維持當前流速，防範大單退單風險。'
+                      : '潛力水位正在啟動，名次中段班適配性高。建議導入 AI 輔助媒合，優先將高價值開口名單配給 A 組人員進行洗單。'}
+                  </p>
+                </div>
               </div>
             </div>
-          );
-        })}
+          )}
+        </div>
       </div>
 
-      {/* Suggestions */}
-      <div className="wx-card overflow-hidden">
-        <div className="wx-card-header flex items-center gap-2">
-          <Star className="w-5 h-5" style={{ color: 'var(--color-metal-500)' }} />
-          <h2 className="text-lg font-semibold" style={{ color: 'var(--color-earth-800)' }}>每人一句：建議＋壓力＋激勵</h2>
-        </div>
-        <div className="divide-y" style={{ borderColor: 'var(--color-earth-50)' }}>
-          {rankings.map(r => (
-            <div key={r.employeeName} className="p-4 flex items-start gap-3">
-              <span className="wx-badge shrink-0 mt-0.5" style={{
-                color: `var(${groupStyle[r.groupCode].colorVar})`,
-                background: r.groupCode === 'C' ? 'var(--color-wood-50)' : r.groupCode === 'B' ? 'var(--color-metal-50)' : 'var(--color-fire-50)',
-                borderColor: r.groupCode === 'C' ? 'var(--color-wood-200)' : r.groupCode === 'B' ? 'var(--color-metal-200)' : 'var(--color-fire-200)',
-              }}>{r.groupCode}</span>
-              <div>
-                <span className="font-medium" style={{ color: 'var(--color-earth-800)' }}>{r.employeeName}</span>
-                <p className="text-sm mt-0.5" style={{ color: 'var(--color-earth-600)' }}>{r.suggestion}</p>
+      {/* ── 3. 右側：戰力分析數據 📊 ── */}
+      <div style={{
+        padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '12px',
+        overflowY: 'auto', height: '100vh', background: 'rgba(2, 6, 23, 0.1)'
+      }}>
+        
+        {/* 名稱與總分 */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div>
+            <h1 style={{ fontSize: 22, fontWeight: 900, margin: 0, color: '#fff', textShadow: '0 0 15px rgba(0,212,255,0.3)' }}>
+              {selectedEmp.name}
+            </h1>
+            <div style={{ fontSize: 9, color: '#94a3b8', marginTop: 2, letterSpacing: '0.3px' }}>
+              戰力核定：{selectedEmp.name === '李玲玲' || selectedEmp.name === '馬秋香' ? '爆發大單主攻手' : selectedEmp.stats && selectedEmp.stats.total > 70 ? '高價穩定手' : '潛力培養中'}
+            </div>
+          </div>
+          {selectedEmp.stats && (
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontSize: 8, color: '#00d4ff', letterSpacing: '1px', fontWeight: 900 }}>OVERALL SCORE</div>
+              <div style={{ fontSize: 26, fontWeight: 900, color: '#00e5ff', lineHeight: 1, textShadow: '0 0 15px #00e5ff66', fontFamily: 'Orbitron' }}>
+                {selectedEmp.stats.total}
               </div>
             </div>
-          ))}
+          )}
         </div>
-      </div>
 
-      {/* Execution Rules */}
-      <div className="p-5 rounded-2xl" style={{ background: 'var(--color-water-50)', border: '1px solid var(--color-water-200)' }}>
-        <h3 className="font-semibold mb-3" style={{ color: 'var(--color-water-700)' }}>📌 執行規則（鎖死）</h3>
-        <ul className="text-sm space-y-1.5 font-medium" style={{ color: 'var(--color-water-600)' }}>
-          <li>照順序派。前面全忙，才往後。</li>
-          <li>不得指定。不得跳位。</li>
-          <li>同客戶回撥，優先回原承接人。</li>
-        </ul>
+        {/* 各項數值 Bar */}
+        <div className="glass metalCard" style={{ padding: '14px', borderRadius: 12 }}>
+          <h3 style={{ fontSize: 11, color: '#94a3b8', marginTop: 0, marginBottom: 10, display:'flex', alignItems:'center', gap:4 }}>
+            <span style={{width:3, height:3, borderRadius:'50%', background:'#00D4FF', boxShadow:'0 0 6px #00D4FF'}} />
+            隱性指標六維度 (Metrics)
+          </h3>
+          <style>{`
+            @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&display=swap');
+            .font-cyber { font-family: 'Orbitron', 'Microsoft JhengHei', sans-serif; }
+            .glow-text-btn:hover { text-shadow: 0 0 8px rgba(0,212,255,0.8); background: rgba(0, 212, 255, 0.1) !important; }
+            .metric-label:hover { color: #00FF9C !important; text-shadow: 0 0 6px rgba(0,255,156,0.5); transform: translateX(2px); cursor: help; }
+          `}</style>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {selectedEmp.stats ? KEYS.map((key, i) => {
+              const val = selectedEmp.stats![key] || 0;
+              const tooltips: Record<string, string> = {
+                open: '開口破冰率：客戶在通話第 1 分鐘的對談意願、破冰話術精準度。',
+                brave: '膽量承現度：主動提出爆發單、引爆高價意向的膽識與勇氣。',
+                close: '收口轉單率：將話術總結推向成交、簽單、收款的終結能力。',
+                value: '價值貢獻度：客單價含金量、創造單筆利潤的階層貢獻。',
+                stress: '承壓穩定值：面對挫折、連續高壓作業下的耐力和情緒管控能力。'
+              };
+              return (
+                <div key={key}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, marginBottom: 4 }}>
+                    <span 
+                      className="metric-label"
+                      title={tooltips[key]} 
+                      style={{ color: '#fff', fontWeight: 700, transition: 'all 0.15s', display:'flex', alignItems:'center', gap:4 }}
+                    >
+                      <span>▫️</span> {LABELS[i]}
+                    </span>
+                    <span className="font-cyber" style={{ color: '#00d4ff', fontWeight: 900, textShadow: '0 0 6px rgba(0,212,255,0.2)' }}>{val}%</span>
+                  </div>
+                  <div style={{ height: 3, background: 'rgba(255,255,255,0.04)', borderRadius: 2, overflow: 'hidden', cursor: 'pointer' }}>
+                    <div style={{
+                      width: `${val}%`, height: '100%', background: 'linear-gradient(90deg, #00d4ff, #00ff9c)',
+                      borderRadius: 1, boxShadow: '0 0 4px rgba(0,212,255,0.4)',
+                      transition: 'width 0.4s ease-out'
+                    }} />
+                  </div>
+                </div>
+              );
+            }) : null}
+          </div>
+        </div>
+
+        {/* AI 個人建議 */}
+        {aiSuggestions[selectedEmp.name] ? (
+          <div className="glass metalCard" style={{
+            padding: '12px', borderRadius: 10, border: '1px solid rgba(0, 255, 156, 0.15)',
+            background: 'rgba(0, 255, 156, 0.01)', position: 'relative'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, fontWeight: 900, color: '#00ff9c', marginBottom: 5 }}>
+              <span>💡</span> AI 戰略指導建議
+            </div>
+            <p style={{ fontSize: 10, color: '#e2e8f0', lineHeight: 1.5, margin: 0, letterSpacing: '0.2px', fontFamily: '"Microsoft JhengHei", sans-serif' }}>
+              {aiSuggestions[selectedEmp.name].split(/(【[^】]+】)/g).map((p, i) => 
+                p.startsWith('【') && p.endsWith('】') 
+                  ? <span key={i} style={{ color: '#00ff9c', fontWeight: 900, textShadow: '0 0 4px rgba(0,255,156,0.2)' }}>{p}</span>
+                  : p
+              )}
+            </p>
+          </div>
+        ) : null}
+
+        {/* 📋 一鍵複製功能按鈕 */}
+        <button 
+          onClick={() => {
+            const text = `📣【AI 派單公告｜3/17 結算 → 3/18 派單順序】\n審計結果：數據通過\n整合總盤：實收 $5,476,572\n點選人員：${selectedEmp.name} (No.${selectedEmp.rank})\nAI戰略建議：\n${aiSuggestions[selectedEmp.name] || '無'}`;
+            navigator.clipboard.writeText(text);
+            alert('📋 戰力數據已複製！');
+          }}
+          className="glow-text-btn"
+          style={{
+            marginTop: 'auto', width: '100%', padding: '8px', borderRadius: 10, border: '1px solid rgba(0, 212, 255, 0.2)',
+            background: 'rgba(0, 212, 255, 0.04)', color: '#00d4ff', fontSize: 10, fontWeight: 900,
+            cursor: 'pointer', transition: 'all 0.1s', letterSpacing: '1px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6
+          }}
+        >
+          <span>📋</span> 複製 3/17 派單數據公告板
+        </button>
+
       </div>
     </div>
   );
-};
+}

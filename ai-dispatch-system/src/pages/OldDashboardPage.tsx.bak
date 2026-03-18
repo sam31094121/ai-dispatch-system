@@ -1,0 +1,811 @@
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import { rawEmployees, platforms } from '../data/mockData';
+import { calculateAiScores, assignGroups, calcHealthScore } from '../engine/aiEngine';
+import ThreeDataCore from '../components/ThreeDataCore';
+
+/* ═══════════════════════════════════════════════════════════
+   BIOTECH LIVING CSS — injected as style tag
+   ═══════════════════════════════════════════════════════════ */
+const BIOTECH_CSS = `
+  @keyframes bio-heartbeat {
+    0%,100% { transform: scale(1); opacity: 0.85; }
+    14% { transform: scale(1.12); opacity: 1; filter: brightness(1.3) drop-shadow(0 0 24px #00e5ff88); }
+    28% { transform: scale(0.97); opacity: 0.9; }
+    42% { transform: scale(1.07); opacity: 1; filter: brightness(1.2); }
+  }
+  @keyframes bio-breathe {
+    0%,100% { transform: scale(1); opacity: 0.7; }
+    50% { transform: scale(1.06); opacity: 1; }
+  }
+  @keyframes bio-breathe-slow {
+    0%,100% { transform: scale(1) translateY(0); opacity: 0.6; }
+    50% { transform: scale(1.04) translateY(-4px); opacity: 0.95; }
+  }
+  @keyframes bio-vein-pulse {
+    0%,100% { stroke-opacity: 0.3; stroke-width: 1.2; }
+    50% { stroke-opacity: 1; stroke-width: 2.2; filter: drop-shadow(0 0 6px #00ffd088); }
+  }
+  @keyframes bio-synapse {
+    0% { opacity: 0; r: 1; }
+    40% { opacity: 1; r: 4; }
+    80% { opacity: 0.4; r: 7; }
+    100% { opacity: 0; r: 10; }
+  }
+  @keyframes bio-cell-divide {
+    0% { transform: scale(1) rotate(0deg); }
+    25% { transform: scale(1.15) rotate(3deg); }
+    50% { transform: scale(0.95) rotate(-2deg); }
+    75% { transform: scale(1.08) rotate(1deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+  @keyframes bio-data-stream {
+    0% { stroke-dashoffset: 200; opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: 0.8; }
+    100% { stroke-dashoffset: 0; opacity: 0; }
+  }
+  @keyframes bio-particle-rise {
+    0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.9; }
+    100% { transform: translateY(-80px) translateX(var(--drift)) scale(0.2); opacity: 0; }
+  }
+  @keyframes bio-membrane-glow {
+    0%,100% { box-shadow: 0 0 20px rgba(0,229,200,0.15), inset 0 0 30px rgba(0,229,200,0.05); }
+    50% { box-shadow: 0 0 55px rgba(0,229,200,0.4), inset 0 0 50px rgba(0,229,200,0.12), 0 0 100px rgba(100,0,255,0.12); }
+  }
+  @keyframes bio-orbit-dna {
+    0% { transform: translate(-50%,-50%) rotate(0deg) rotateX(65deg); }
+    100% { transform: translate(-50%,-50%) rotate(360deg) rotateX(65deg); }
+  }
+  @keyframes bio-orbit-dna2 {
+    0% { transform: translate(-50%,-50%) rotate(360deg) rotateX(65deg) rotateZ(45deg); }
+    100% { transform: translate(-50%,-50%) rotate(0deg) rotateX(65deg) rotateZ(45deg); }
+  }
+  @keyframes bio-scan-sweep {
+    0% { transform: translate(-50%,-50%) rotate(0deg); opacity: 0.7; }
+    100% { transform: translate(-50%,-50%) rotate(360deg); opacity: 0.7; }
+  }
+  @keyframes bio-number-throb {
+    0%,100% { transform: scale(1); text-shadow: 0 0 10px rgba(0,255,200,0.4); }
+    50% { transform: scale(1.03); text-shadow: 0 0 30px rgba(0,255,200,0.9), 0 0 60px rgba(0,200,255,0.4); }
+  }
+  @keyframes bio-gauge-expand {
+    0%,100% { transform: scaleX(1); opacity: 0.8; }
+    50% { transform: scaleX(1.04); opacity: 1; filter: brightness(1.3); }
+  }
+  @keyframes bio-petri-float {
+    0%,100% { transform: translateY(0) rotate(0deg); }
+    33% { transform: translateY(-6px) rotate(0.5deg); }
+    66% { transform: translateY(-3px) rotate(-0.5deg); }
+  }
+  @keyframes bio-godray {
+    0%,100% { opacity: 0.04; transform: translateX(-50%) skewX(-12deg) scaleX(1); }
+    50% { opacity: 0.12; transform: translateX(-50%) skewX(-12deg) scaleX(1.15); }
+  }
+  @keyframes bio-hue-cycle {
+    0% { filter: hue-rotate(0deg) brightness(1); }
+    50% { filter: hue-rotate(30deg) brightness(1.1); }
+    100% { filter: hue-rotate(0deg) brightness(1); }
+  }
+  @keyframes bio-city-ping {
+    0% { r: 3; opacity: 1; }
+    100% { r: 14; opacity: 0; }
+  }
+  @keyframes bio-neural-flash {
+    0%,100% { opacity: 0.1; }
+    50% { opacity: 0.9; stroke-width: 2.5; filter: drop-shadow(0 0 5px #00ffd0); }
+  }
+  @keyframes bio-float-particle {
+    0% { opacity: 0; transform: translate(0,0) scale(0.5); }
+    30% { opacity: 1; }
+    100% { opacity: 0; transform: translate(var(--px),var(--py)) scale(1.5); }
+  }
+  @keyframes bio-dna-helix-shift {
+    0% { stroke-dashoffset: 0; }
+    100% { stroke-dashoffset: -60; }
+  }
+  @keyframes bio-vitality-pulse {
+    0%,100% { filter: brightness(1) drop-shadow(0 0 6px #00ffa040); }
+    50% { filter: brightness(1.5) drop-shadow(0 0 20px #00ffa0cc); }
+  }
+  @keyframes bio-revenue-flow {
+    0% { transform: translateY(20px); opacity: 0; }
+    30% { opacity: 1; }
+    100% { transform: translateY(-60px); opacity: 0; }
+  }
+  .bio-heartbeat { animation: bio-heartbeat 1.8s ease-in-out infinite; }
+  .bio-breathe { animation: bio-breathe 3.5s ease-in-out infinite; }
+  .bio-breathe-slow { animation: bio-breathe-slow 5s ease-in-out infinite; }
+  .bio-number-throb { animation: bio-number-throb 2s ease-in-out infinite; }
+  .bio-petri-float { animation: bio-petri-float 6s ease-in-out infinite; }
+  .bio-membrane { animation: bio-membrane-glow 4s ease-in-out infinite; }
+  .bio-hue-cycle { animation: bio-hue-cycle 8s ease-in-out infinite; }
+`;
+
+/* ─── Sub-components ─── */
+
+const BioParticle = ({ x, y, color, delay }: { x: number; y: number; color: string; delay: string }) => (
+  <div className="absolute pointer-events-none rounded-full"
+    style={{
+      left: x, top: y, width: 3, height: 3,
+      background: color,
+      boxShadow: `0 0 6px ${color}`,
+      '--px': `${(Math.random() - 0.5) * 40}px`,
+      '--py': `${-(Math.random() * 50 + 20)}px`,
+      animation: `bio-float-particle ${2 + Math.random() * 3}s ease-out ${delay} infinite`,
+    } as React.CSSProperties}
+  />
+);
+
+const GoldParticle = ({ delay, left }: { delay: string; left: string }) => (
+  <div className="absolute bottom-0 w-1 h-1 rounded-full pointer-events-none"
+    style={{
+      left,
+      background: 'radial-gradient(circle, #ffd700, #ff9500)',
+      boxShadow: '0 0 6px #ffd700aa',
+      animation: `bio-revenue-flow ${1.8 + Math.random() * 2}s ease-out ${delay} infinite`,
+    }}
+  />
+);
+
+/* Live counter that grows like a living organism */
+const useGrowingCounter = (start: number, rate: number, interval: number) => {
+  const [val, setVal] = useState(start);
+  useEffect(() => {
+    const t = setInterval(() => setVal(p => p + Math.floor(Math.random() * rate + rate * 0.4)), interval);
+    return () => clearInterval(t);
+  }, [rate, interval]);
+  return val;
+};
+
+/* City neural nodes */
+const CITIES = [
+  { name: '東京', cx: 295, cy: 100, color: '#00e5ff', delay: 0 },
+  { name: '倫敦', cx: 130, cy: 108, color: '#7c4dff', delay: 0.4 },
+  { name: '紐約', cx: 72, cy: 175, color: '#00ffa0', delay: 0.8 },
+  { name: '巴黎', cx: 155, cy: 68, color: '#ff6ec7', delay: 1.2 },
+  { name: '悉尼', cx: 310, cy: 265, color: '#ffd700', delay: 1.6 },
+  { name: '上海', cx: 290, cy: 168, color: '#00e5ff', delay: 2.0 },
+];
+
+/* ═══════════════════════════════════════════════════════════
+   BIO-SPHERE SVG — living neural globe
+   ═══════════════════════════════════════════════════════════ */
+const Biosphere = ({ liveMetric }: { liveMetric: number }) => {
+  const cx = 190, cy = 190, R = 190;
+  const synapseRef = useRef<SVGCircleElement[]>([]);
+  const [synapseCities, setSynapseCities] = useState([0, 2, 4]);
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      setSynapseCities([
+        Math.floor(Math.random() * 6),
+        Math.floor(Math.random() * 6),
+        Math.floor(Math.random() * 6),
+      ]);
+    }, 600);
+    return () => clearInterval(t);
+  }, []);
+
+  return (
+    <svg viewBox="0 0 380 380" className="w-full h-full" style={{ overflow: 'visible' }}>
+      <defs>
+        {/* Bio glow filter */}
+        <filter id="bio-glow">
+          <feGaussianBlur stdDeviation="3.5" result="blur" />
+          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+        <filter id="bio-glow-strong">
+          <feGaussianBlur stdDeviation="6" result="blur" />
+          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+        <filter id="bio-plasma">
+          <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="3" result="turb">
+            <animate attributeName="seed" from="0" to="100" dur="6s" repeatCount="indefinite" />
+          </feTurbulence>
+          <feDisplacementMap in="SourceGraphic" in2="turb" scale="8" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+
+        {/* Radial gradients for sphere */}
+        <radialGradient id="bio-sphere-grad" cx="35%" cy="30%" r="65%">
+          <stop offset="0%" stopColor="#00ffd0" stopOpacity="0.18" />
+          <stop offset="40%" stopColor="#00a0ff" stopOpacity="0.08" />
+          <stop offset="80%" stopColor="#4400ff" stopOpacity="0.12" />
+          <stop offset="100%" stopColor="#000" stopOpacity="0.6" />
+        </radialGradient>
+        <radialGradient id="bio-core-grad" cx="40%" cy="35%" r="60%">
+          <stop offset="0%" stopColor="#aaffee" stopOpacity="1" />
+          <stop offset="35%" stopColor="#00e5ff" stopOpacity="0.8" />
+          <stop offset="70%" stopColor="#0055aa" stopOpacity="0.6" />
+          <stop offset="100%" stopColor="#000820" stopOpacity="0.9" />
+        </radialGradient>
+        <radialGradient id="bio-membrane-grad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#00ffd0" stopOpacity="0.0" />
+          <stop offset="75%" stopColor="#00ffd0" stopOpacity="0.06" />
+          <stop offset="100%" stopColor="#00ffd0" stopOpacity="0.25" />
+        </radialGradient>
+        <linearGradient id="bio-vein-1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#00ffd0" stopOpacity="0.9" />
+          <stop offset="100%" stopColor="#7c4dff" stopOpacity="0.6" />
+        </linearGradient>
+        <linearGradient id="bio-vein-2" x1="100%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#ffd700" stopOpacity="0.9" />
+          <stop offset="100%" stopColor="#00e5ff" stopOpacity="0.5" />
+        </linearGradient>
+        <linearGradient id="bio-vein-3" x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#ff6ec7" stopOpacity="0.7" />
+          <stop offset="100%" stopColor="#00ffa0" stopOpacity="0.5" />
+        </linearGradient>
+        <radialGradient id="bio-scan-grad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#00ffd0" stopOpacity="0.5" />
+          <stop offset="60%" stopColor="#00ffd0" stopOpacity="0.2" />
+          <stop offset="100%" stopColor="#00ffd0" stopOpacity="0" />
+        </radialGradient>
+        <mask id="sphere-mask">
+          <circle cx={cx} cy={cy} r={R - 5} fill="white" />
+        </mask>
+      </defs>
+
+      {/* ── Outer bio-membrane rings ── */}
+      {[R + 28, R + 50, R + 72].map((r, i) => (
+        <circle key={i} cx={cx} cy={cy} r={r} fill="none"
+          stroke={['#00ffd0', '#7c4dff', '#00e5ff'][i]}
+          strokeOpacity={[0.12, 0.08, 0.05][i]}
+          strokeWidth={[2, 1.5, 1][i]}
+          strokeDasharray={i === 0 ? "3 7" : i === 1 ? "8 20" : "1 12"}
+          style={{ animation: `${i % 2 === 0 ? 'bio-orbit-dna' : 'bio-orbit-dna2'} ${22 + i * 12}s linear infinite`, transformOrigin: `${cx}px ${cy}px` }}
+        />
+      ))}
+
+      {/* ── Cellular lattice over sphere (grid mesh) ── */}
+      <g mask="url(#sphere-mask)" opacity="0.18">
+        {Array.from({ length: 9 }, (_, i) => (
+          <line key={`h${i}`} x1={cx - R} y1={cy - R + i * (R * 2 / 8)} x2={cx + R} y2={cy - R + i * (R * 2 / 8)}
+            stroke="#00ffd0" strokeWidth="0.4" />
+        ))}
+        {Array.from({ length: 9 }, (_, i) => (
+          <line key={`v${i}`} x1={cx - R + i * (R * 2 / 8)} y1={cy - R} x2={cx - R + i * (R * 2 / 8)} y2={cy + R}
+            stroke="#00e5ff" strokeWidth="0.4" />
+        ))}
+        {/* latitude arcs */}
+        {[-60, -30, 0, 30, 60].map((angle, i) => {
+          const ry = R * Math.cos(angle * Math.PI / 180);
+          const y = cy + R * Math.sin(angle * Math.PI / 180);
+          return <ellipse key={`lat${i}`} cx={cx} cy={y} rx={ry} ry={ry * 0.18} fill="none" stroke="#00ffd0" strokeWidth="0.5" strokeOpacity="0.6" />;
+        })}
+        {/* meridian arcs */}
+        {[0, 45, 90, 135].map((angle, i) => (
+          <ellipse key={`mer${i}`} cx={cx} cy={cy} rx={R * 0.15} ry={R} fill="none"
+            stroke="#7c4dff" strokeWidth="0.5" strokeOpacity="0.5"
+            style={{ transform: `rotate(${angle}deg)`, transformOrigin: `${cx}px ${cy}px` }} />
+        ))}
+      </g>
+
+      {/* ── Main sphere body ── */}
+      <circle cx={cx} cy={cy} r={R - 5} fill="url(#bio-sphere-grad)" />
+      <circle cx={cx} cy={cy} r={R - 5} fill="url(#bio-membrane-grad)"
+        className="bio-breathe" style={{ transformOrigin: `${cx}px ${cy}px` }} />
+
+      {/* ── Bio-luminescent vein network ── */}
+      <g filter="url(#bio-plasma)" opacity="0.85">
+        {CITIES.map((city, i) => (
+          <path key={i}
+            d={`M${cx},${cy} Q${(cx + city.cx) / 2 + (Math.random() - 0.5) * 40},${(cy + city.cy) / 2 + (Math.random() - 0.5) * 40} ${city.cx},${city.cy}`}
+            fill="none"
+            stroke={city.color}
+            strokeWidth="1.4"
+            strokeDasharray="6 5"
+            style={{
+              animation: `bio-neural-flash ${2 + i * 0.4}s ease-in-out ${city.delay}s infinite`,
+              filter: `drop-shadow(0 0 4px ${city.color})`,
+            }}
+          />
+        ))}
+      </g>
+
+      {/* ── DNA helix conduits (branching veins) ── */}
+      <g opacity="0.5">
+        <path d={`M${cx},${cy} C${cx - 60},${cy - 80} ${cx + 40},${cy - 120} ${cx - 20},${cy - 160}`}
+          fill="none" stroke="url(#bio-vein-1)" strokeWidth="1.2" strokeDasharray="8 4"
+          style={{ animation: 'bio-dna-helix-shift 2s linear infinite' }} />
+        <path d={`M${cx},${cy} C${cx + 70},${cy - 40} ${cx + 110},${cy + 60} ${cx + 90},${cy + 130}`}
+          fill="none" stroke="url(#bio-vein-2)" strokeWidth="1" strokeDasharray="6 5"
+          style={{ animation: 'bio-dna-helix-shift 2.5s linear infinite reverse' }} />
+        <path d={`M${cx},${cy} C${cx - 90},${cy + 50} ${cx - 70},${cy + 120} ${cx - 30},${cy + 155}`}
+          fill="none" stroke="url(#bio-vein-3)" strokeWidth="1" strokeDasharray="7 4"
+          style={{ animation: 'bio-dna-helix-shift 3s linear infinite' }} />
+      </g>
+
+      {/* ── Bio-scan sweep ── */}
+      <g style={{ transformOrigin: `${cx}px ${cy}px`, animation: 'bio-scan-sweep 10s linear infinite' }}>
+        <path d={`M${cx},${cy} L${cx + R - 5},${cy} A${R - 5},${R - 5} 0 0,1 ${cx + (R - 5) * Math.cos(60 * Math.PI / 180)},${cy + (R - 5) * Math.sin(60 * Math.PI / 180)} Z`}
+          fill="url(#bio-scan-grad)" opacity="0.25" />
+      </g>
+
+      {/* ── Sphere highlight (specular) ── */}
+      <ellipse cx={cx - R * 0.25} cy={cy - R * 0.3} rx={R * 0.28} ry={R * 0.16}
+        fill="white" opacity="0.07" style={{ filter: 'blur(8px)' }} />
+
+      {/* ── Sphere border (membrane) ── */}
+      <circle cx={cx} cy={cy} r={R - 5} fill="none"
+        stroke="#00ffd0" strokeWidth="1.5" strokeOpacity="0.4"
+        style={{ animation: 'bio-heartbeat 1.8s ease-in-out infinite', transformOrigin: `${cx}px ${cy}px` }}
+      />
+
+      {/* ── Core pulsing heart ── */}
+      <circle cx={cx} cy={cy} r={28} fill="url(#bio-core-grad)"
+        className="bio-heartbeat" style={{ transformOrigin: `${cx}px ${cy}px` }} />
+      <circle cx={cx} cy={cy} r={14} fill="#aaffee"
+        style={{ opacity: 0.9, filter: 'blur(3px)', animation: 'bio-heartbeat 1.8s ease-in-out 0.1s infinite', transformOrigin: `${cx}px ${cy}px` }} />
+
+      {/* ── Live metric inside core ── */}
+      <text x={cx} y={cy - 8} textAnchor="middle" fill="#00ffd0"
+        fontSize="13" fontWeight="900" letterSpacing="1"
+        style={{ animation: 'bio-number-throb 2s ease-in-out infinite', filter: 'drop-shadow(0 0 8px #00ffd0)' }}>
+        {liveMetric.toLocaleString()}
+      </text>
+      <text x={cx} y={cy + 6} textAnchor="middle" fill="rgba(0,255,208,0.55)" fontSize="6" fontWeight="bold" letterSpacing="4">
+        DATA/SEC
+      </text>
+
+      {/* ── City neural nodes ── */}
+      {CITIES.map((city, i) => (
+        <g key={i}>
+          {/* Synaptic ping rings */}
+          <circle cx={city.cx} cy={city.cy} r={3} fill={city.color} opacity="0.9"
+            style={{ filter: `drop-shadow(0 0 5px ${city.color})` }} />
+          <circle cx={city.cx} cy={city.cy} r={3} fill="none" stroke={city.color} strokeWidth="1"
+            style={{ animation: `bio-city-ping 2s ease-out ${city.delay}s infinite` }} />
+          <circle cx={city.cx} cy={city.cy} r={3} fill="none" stroke={city.color} strokeWidth="0.5"
+            style={{ animation: `bio-city-ping 2s ease-out ${city.delay + 0.4}s infinite` }} />
+          {/* City label */}
+          <text x={city.cx} y={city.cy - 10} textAnchor="middle" fill={city.color}
+            fontSize="7.5" fontWeight="bold" letterSpacing="1"
+            style={{ filter: `drop-shadow(0 0 4px ${city.color})` }}>
+            {city.name}
+          </text>
+          {/* Synaptic spark flash */}
+          {synapseCities.includes(i) && (
+            <circle cx={city.cx} cy={city.cy} r={2} fill="white" opacity="0.9"
+              style={{ animation: 'bio-synapse 0.5s ease-out forwards' }} />
+          )}
+        </g>
+      ))}
+    </svg>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════════
+   VITALITY GAUGE — organic breathing gauge
+   ═══════════════════════════════════════════════════════════ */
+const VitalityGauge = ({ score }: { score: number }) => {
+  const pct = Math.min(100, Math.max(0, score));
+  const angle = -135 + (pct / 100) * 270;
+  const r = 52, cx = 64, cy = 64;
+  const arcLen = 2 * Math.PI * r * (270 / 360);
+  const filled = arcLen * (pct / 100);
+
+  return (
+    <div className="flex flex-col items-center gap-1">
+      <svg viewBox="0 0 128 100" className="w-28 h-22" style={{ overflow: 'visible' }}>
+        <defs>
+          <linearGradient id="gauge-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#00ffa0" />
+            <stop offset="50%" stopColor="#00e5ff" />
+            <stop offset="100%" stopColor="#7c4dff" />
+          </linearGradient>
+          <filter id="gauge-glow">
+            <feGaussianBlur stdDeviation="2.5" result="blur" />
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        </defs>
+        {/* Track */}
+        <circle cx={cx} cy={cy} r={r} fill="none"
+          stroke="rgba(0,255,160,0.1)" strokeWidth="8"
+          strokeDasharray={`${arcLen} 999`}
+          strokeDashoffset={-arcLen * (45 / 360) * (360 / 270)}
+          strokeLinecap="round"
+          transform={`rotate(-225 ${cx} ${cy})`} />
+        {/* Filled arc */}
+        <circle cx={cx} cy={cy} r={r} fill="none"
+          stroke="url(#gauge-grad)" strokeWidth="8"
+          strokeDasharray={`${filled} 999`}
+          strokeDashoffset={-arcLen * (45 / 360) * (360 / 270)}
+          strokeLinecap="round"
+          filter="url(#gauge-glow)"
+          transform={`rotate(-225 ${cx} ${cy})`}
+          style={{ animation: 'bio-gauge-expand 1.8s ease-in-out infinite', transformOrigin: `${cx}px ${cy}px` }} />
+        {/* Needle */}
+        <line
+          x1={cx} y1={cy}
+          x2={cx + r * 0.7 * Math.cos((angle - 90) * Math.PI / 180)}
+          y2={cy + r * 0.7 * Math.sin((angle - 90) * Math.PI / 180)}
+          stroke="#00ffa0" strokeWidth="2" strokeLinecap="round"
+          style={{ filter: 'drop-shadow(0 0 5px #00ffa0)', animation: 'bio-vitality-pulse 1.8s ease-in-out infinite' }}
+        />
+        <circle cx={cx} cy={cy} r={5} fill="#00ffa0" style={{ filter: 'drop-shadow(0 0 8px #00ffa0)' }} />
+        {/* Score value */}
+        <text x={cx} y={cy + 24} textAnchor="middle" fill="#00ffa0" fontSize="20" fontWeight="900"
+          style={{ filter: 'drop-shadow(0 0 8px #00ffa0aa)', animation: 'bio-number-throb 1.8s ease-in-out infinite' }}>
+          {score}
+        </text>
+        <text x={cx} y={cy + 34} textAnchor="middle" fill="rgba(0,255,160,0.5)" fontSize="6" letterSpacing="3">
+          VITALITY
+        </text>
+      </svg>
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════════
+   MODULE CARD — bio-petri dish
+   ═══════════════════════════════════════════════════════════ */
+const BioModule = ({ label, desc, route, color, delay }: {
+  label: string; desc: string; route: string; color: string; delay: string;
+}) => {
+  // 🟢 效能優化：快取隨機係數防止 40ms 高頻重繪時微幅抖動與 CPU 耗損
+  const rnd = React.useMemo(() => ({
+    floatDur: 5 + Math.random() * 2,
+    breatheDur: 3 + Math.random(),
+    pts: Array.from({ length: 5 }, (_, i) => ({
+      x: (10 + Math.random() * 80) + '%',
+      y: (20 + Math.random() * 60) + '%',
+      delay: `${i * 0.7 + Math.random()}s`
+    }))
+  }), []);
+
+  return (
+    <Link to={route}
+      className="relative overflow-hidden rounded-2xl flex flex-col items-start gap-3 p-4 group transition-all duration-300 hover:-translate-y-2"
+      style={{
+        background: `radial-gradient(circle at 30% 20%, ${color}18 0%, ${color}06 50%, transparent 80%),
+          linear-gradient(135deg, rgba(0,20,30,0.85) 0%, rgba(0,10,20,0.95) 100%)`,
+        border: `1px solid ${color}30`,
+        animation: `bio-petri-float ${rnd.floatDur}s ease-in-out ${delay} infinite`,
+        boxShadow: `0 4px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)`,
+      }}>
+      {/* Bio-membrane shimmer top */}
+      <div className="absolute inset-x-0 top-0 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{ background: `linear-gradient(90deg, transparent, ${color}80, transparent)` }} />
+      {/* Particle swarm background */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-2xl">
+        {rnd.pts.map((p, i) => (
+          <BioParticle key={i}
+            x={p.x as any}
+            y={p.y as any}
+            color={color}
+            delay={p.delay}
+          />
+        ))}
+      </div>
+    {/* Circular bio-glow icon */}
+    <div className="relative w-10 h-10 rounded-full flex items-center justify-center z-10 transition-transform duration-300 group-hover:scale-110"
+      style={{
+        background: `radial-gradient(circle at 35% 35%, ${color}40, ${color}10)`,
+        border: `1px solid ${color}50`,
+        boxShadow: `0 0 20px ${color}30, inset 0 0 10px ${color}15`,
+        animation: `bio-breathe ${rnd.breatheDur}s ease-in-out ${delay} infinite`,
+      }}>
+      <div className="w-3 h-3 rounded-full" style={{ background: color, boxShadow: `0 0 8px ${color}` }} />
+    </div>
+    <div className="z-10">
+      <p className="text-sm font-black tracking-wide transition-colors duration-300 group-hover:brightness-125"
+        style={{ color, textShadow: `0 0 10px ${color}60` }}>
+        {label}
+      </p>
+      <p className="text-[11px] mt-0.5 font-medium" style={{ color: 'rgba(180,220,230,0.5)' }}>{desc}</p>
+    </div>
+    {/* Corner membrane decoration */}
+    <div className="absolute bottom-0 right-0 w-16 h-16 rounded-full pointer-events-none opacity-20"
+      style={{
+        background: `radial-gradient(circle at 70% 70%, ${color}, transparent 70%)`,
+        filter: 'blur(10px)',
+      }} />
+  </Link>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════════
+   MAIN PAGE
+   ═══════════════════════════════════════════════════════════ */
+export default function Homepage() {
+  const liveMetric   = useGrowingCounter(9_087_808, 180, 40);
+  const liveRevenue  = useGrowingCounter(2_428_366, 12, 400);
+
+  const processedEmployees = useMemo(() => assignGroups(calculateAiScores(rawEmployees)), []);
+  const healthScore = calcHealthScore(processedEmployees);
+
+  return (
+    <>
+      <style>{BIOTECH_CSS}</style>
+
+      {/* ── Global god-ray background ── */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        {[15, 35, 55, 72, 88].map((left, i) => (
+          <div key={i} className="absolute bottom-0 w-24 h-screen pointer-events-none"
+            style={{
+              left: `${left}%`,
+              background: `linear-gradient(0deg, ${['#00ffd020','#7c4dff15','#00e5ff18','#ffd70012','#00ffa015'][i]} 0%, transparent 60%)`,
+              animation: `bio-godray ${6 + i * 2}s ease-in-out ${i * 1.2}s infinite`,
+              transform: 'translateX(-50%) skewX(-12deg)',
+            }} />
+        ))}
+        {/* Deep ambient radials */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[800px] rounded-full pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(0,229,255,0.04) 0%, transparent 60%)', animation: 'bio-breathe-slow 8s ease-in-out infinite' }} />
+        <div className="absolute bottom-1/3 left-1/3 w-[600px] h-[600px] rounded-full pointer-events-none"
+          style={{ background: 'radial-gradient(circle, rgba(124,77,255,0.05) 0%, transparent 55%)', animation: 'bio-breathe-slow 10s ease-in-out 2s infinite' }} />
+      </div>
+
+      <div className="relative z-10 space-y-6 animate-fadeIn bio-hue-cycle">
+
+        {/* ══════════════════════════════════════════════════════
+            A. HERO — Living Bio-Sphere Command Console
+            ══════════════════════════════════════════════════════ */}
+        <section className="relative overflow-hidden rounded-3xl p-0"
+          style={{
+            background: 'linear-gradient(135deg, rgba(0,10,20,0.95) 0%, rgba(0,5,15,0.98) 100%)',
+            border: '1px solid rgba(0,229,200,0.12)',
+            boxShadow: '0 0 60px rgba(0,229,200,0.06), 0 30px 80px rgba(0,0,0,0.6)',
+          }}>
+
+          {/* Organic membrane border glow */}
+          <div className="absolute inset-0 rounded-3xl pointer-events-none bio-membrane" />
+
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-0 items-center min-h-[500px]">
+
+            {/* ── LEFT: Titles & metrics ── */}
+            <div className="lg:col-span-2 p-8 space-y-6 relative z-10">
+              {/* Status badge */}
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full"
+                style={{
+                  background: 'rgba(0,229,200,0.08)',
+                  border: '1px solid rgba(0,229,200,0.25)',
+                  backdropFilter: 'blur(8px)',
+                }}>
+                <div className="w-2 h-2 rounded-full bio-heartbeat"
+                  style={{ background: '#00ffd0', boxShadow: '0 0 10px #00ffd0' }} />
+                <span className="text-[10px] font-black tracking-[3px]" style={{ color: '#00ffd0' }}>
+                  全球神經網絡已完全覺醒
+                </span>
+              </div>
+
+              {/* Title */}
+              <div>
+                <h1 className="text-4xl lg:text-5xl font-black leading-tight mb-1"
+                  style={{
+                    background: 'linear-gradient(135deg, #aaffee 0%, #00e5ff 40%, #7c4dff 80%, #ff6ec7 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    filter: 'drop-shadow(0 0 20px rgba(0,229,255,0.3))',
+                  }}>
+                  兆櫃<br />生命引擎
+                </h1>
+                <p className="text-xs font-black tracking-[4px] mt-2"
+                  style={{ color: 'rgba(0,229,200,0.55)' }}>
+                  GLOBAL BIOTECH SYMBIOTIC LIFE ENGINE CONSOLE
+                </p>
+              </div>
+
+              <p className="text-sm leading-relaxed" style={{ color: 'rgba(160,210,220,0.65)' }}>
+                AI 與人類命運共同體同步脈動。每一筆數據、每一個決策，
+                都在呼吸、成長、共生。有機神經網絡全天候動態優化。
+              </p>
+
+              {/* ── Bio metric trio ── */}
+              <div className="grid grid-cols-1 gap-3">
+
+                {/* DATA/SEC */}
+                <div className="relative overflow-hidden rounded-2xl p-4"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(0,229,200,0.08) 0%, rgba(0,0,0,0.4) 100%)',
+                    border: '1px solid rgba(0,229,200,0.2)',
+                  }}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-[9px] font-black tracking-[4px] mb-1" style={{ color: 'rgba(0,229,200,0.5)' }}>
+                        LIVE DATA THROUGHPUT
+                      </p>
+                      <p className="text-2xl font-black font-mono bio-number-throb tabular-nums"
+                        style={{ color: '#00ffd0', textShadow: '0 0 20px rgba(0,255,208,0.8)' }}>
+                        {liveMetric.toLocaleString()}
+                      </p>
+                      <p className="text-[8px] tracking-[5px] mt-0.5" style={{ color: 'rgba(0,229,200,0.4)' }}>DATA / SEC</p>
+                    </div>
+                    {/* Miniature cell-divide visual */}
+                    <div className="relative w-12 h-12">
+                      <div className="absolute inset-0 rounded-full bio-breathe"
+                        style={{ border: '1px solid rgba(0,255,208,0.3)', background: 'rgba(0,255,208,0.04)' }} />
+                      <div className="absolute inset-2 rounded-full bio-heartbeat"
+                        style={{ background: 'radial-gradient(circle, rgba(0,255,208,0.5), transparent)', transformOrigin: 'center' }} />
+                    </div>
+                  </div>
+                  {/* Wave line */}
+                  <svg className="absolute bottom-0 left-0 w-full h-6 opacity-20" viewBox="0 0 200 20" preserveAspectRatio="none">
+                    <path d="M0 15 Q25 5 50 12 T100 8 T150 12 T200 10 L200 20 L0 20Z" fill="#00ffd0" style={{ animation: 'bio-breathe 3s ease-in-out infinite' }} />
+                  </svg>
+                </div>
+
+                {/* Revenue + Vitality row */}
+                <div className="grid grid-cols-2 gap-3">
+                  {/* Revenue */}
+                  <div className="relative overflow-hidden rounded-2xl p-4"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(255,215,0,0.08) 0%, rgba(0,0,0,0.4) 100%)',
+                      border: '1px solid rgba(255,215,0,0.2)',
+                    }}>
+                    <p className="text-[8px] font-black tracking-[3px] mb-1" style={{ color: 'rgba(255,215,0,0.5)' }}>REVENUE USD</p>
+                    <p className="text-lg font-black font-mono bio-number-throb tabular-nums"
+                      style={{ color: '#ffd700', textShadow: '0 0 15px rgba(255,215,0,0.7)' }}>
+                      ${liveRevenue.toLocaleString()}
+                    </p>
+                    {/* Gold particle swarm */}
+                    <div className="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
+                      {[...Array(6)].map((_, i) => (
+                        <GoldParticle key={i} delay={`${i * 0.4}s`} left={`${15 + i * 12}%`} />
+                      ))}
+                    </div>
+                    {/* Up-arrow glow */}
+                    <div className="absolute bottom-3 right-3 text-lg font-black" style={{ color: '#ffd700', filter: 'drop-shadow(0 0 8px #ffd700)', animation: 'bio-revenue-flow 2s ease-in-out infinite' }}>↑</div>
+                  </div>
+
+                  {/* Vitality gauge */}
+                  <div className="relative overflow-hidden rounded-2xl p-3 flex items-center justify-center"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(0,255,160,0.06) 0%, rgba(0,0,0,0.4) 100%)',
+                      border: '1px solid rgba(0,255,160,0.2)',
+                    }}>
+                    <VitalityGauge score={healthScore} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex gap-3 pt-1">
+                <Link to="/dispatch"
+                  className="flex-1 text-center py-3 rounded-xl text-sm font-black tracking-wider transition-all duration-300 hover:brightness-110 hover:-translate-y-0.5 active:scale-95"
+                  style={{
+                    background: 'linear-gradient(135deg, #00e5ff 0%, #00a0cc 100%)',
+                    color: '#000820',
+                    boxShadow: '0 0 30px rgba(0,229,255,0.4), 0 4px 15px rgba(0,0,0,0.3)',
+                  }}>
+                  ⚡ 一鍵智能派單
+                </Link>
+                <Link to="/boss"
+                  className="px-4 py-3 rounded-xl text-sm font-black tracking-wider transition-all duration-300 hover:-translate-y-0.5"
+                  style={{
+                    background: 'rgba(0,229,200,0.08)',
+                    border: '1px solid rgba(0,229,200,0.25)',
+                    color: '#00ffd0',
+                  }}>
+                  生命總控台 →
+                </Link>
+              </div>
+            </div>
+
+            {/* ── RIGHT: Bio-Sphere ── */}
+            <div className="lg:col-span-3 relative flex items-center justify-center p-6" style={{ minHeight: 460 }}>
+              {/* Outer atmospheric glow */}
+              <div className="absolute inset-0 pointer-events-none"
+                style={{
+                  background: 'radial-gradient(ellipse at 50% 50%, rgba(0,229,200,0.06) 0%, transparent 65%)',
+                  animation: 'bio-breathe-slow 6s ease-in-out infinite',
+                }} />
+              <div className="relative w-full max-w-[440px] aspect-square bio-hue-cycle flex items-center justify-center scale-110">
+                <ThreeDataCore liveMetric={liveMetric} />
+              </div>
+              {/* Floating data labels around sphere */}
+              {[
+                { text: '神經元連接', val: '847,293', color: '#00e5ff', top: '8%', left: '5%' },
+                { text: '生物信號/S', val: '12,847', color: '#00ffa0', top: '15%', right: '0%' },
+                { text: '細胞分裂率', val: '99.7%', color: '#7c4dff', bottom: '20%', left: '2%' },
+                { text: '共生指數', val: 'A++', color: '#ffd700', bottom: '12%', right: '5%' },
+              ].map((item, i) => (
+                <div key={i} className="absolute text-right pointer-events-none"
+                  style={{
+                    top: item.top, bottom: item.bottom,
+                    left: item.left, right: item.right,
+                    animation: `bio-breathe ${4 + i}s ease-in-out ${i * 0.8}s infinite`,
+                  }}>
+                  <p className="text-[8px] font-bold tracking-widest" style={{ color: `${item.color}80` }}>{item.text}</p>
+                  <p className="text-sm font-black" style={{ color: item.color, textShadow: `0 0 10px ${item.color}` }}>{item.val}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ══════════════════════════════════════════════════════
+            B. LIVE BIO-STATS ROW
+            ══════════════════════════════════════════════════════ */}
+        <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { label: '實收總攻', value: `$${platforms.reduce((s, p) => s + p.revenue, 0).toLocaleString()}`, color: '#00ffa0', icon: '◈', desc: '全球收益流' },
+            { label: '公司健康度', value: `${healthScore} 分`, color: '#00e5ff', icon: '◎', desc: '生命力指標' },
+            { label: '目前派單量', value: `${(processedEmployees.length * 1.8).toFixed(0)} 單`, color: '#7c4dff', icon: '◇', desc: '活躍任務節點' },
+            { label: '活躍調度員', value: `${processedEmployees.length} 人`, color: '#ffd700', icon: '◉', desc: '神經元操作員' },
+          ].map((item, i) => (
+            <div key={i} className="relative overflow-hidden rounded-2xl p-4 group hover:-translate-y-1 transition-all duration-300"
+              style={{
+                background: `linear-gradient(135deg, ${item.color}0a 0%, rgba(0,5,15,0.9) 100%)`,
+                border: `1px solid ${item.color}25`,
+                boxShadow: `0 4px 30px rgba(0,0,0,0.4), inset 0 1px 0 ${item.color}15`,
+                animation: `bio-petri-float ${5 + i * 1.2}s ease-in-out ${i * 0.5}s infinite`,
+              }}>
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <p className="text-[9px] font-black tracking-[3px] mb-1" style={{ color: `${item.color}70` }}>{item.label}</p>
+                  <p className="text-xl font-black font-mono bio-number-throb tabular-nums"
+                    style={{ color: item.color, textShadow: `0 0 15px ${item.color}80` }}>
+                    {item.value}
+                  </p>
+                  <p className="text-[8px] mt-0.5" style={{ color: `${item.color}50` }}>{item.desc}</p>
+                </div>
+                <div className="text-2xl bio-breathe" style={{ color: item.color, filter: `drop-shadow(0 0 8px ${item.color})` }}>
+                  {item.icon}
+                </div>
+              </div>
+              {/* Bio-wave bottom */}
+              <svg className="absolute bottom-0 left-0 w-full h-8 opacity-15" viewBox="0 0 100 20" preserveAspectRatio="none">
+                <path d={`M0 15 Q20 ${5 + i * 2} 50 12 T100 ${8 + i} L100 20 L0 20Z`}
+                  fill={item.color}
+                  style={{ animation: `bio-breathe ${3 + i * 0.5}s ease-in-out ${i * 0.4}s infinite` }} />
+              </svg>
+              {/* Particle background */}
+              {[...Array(3)].map((_, j) => (
+                <BioParticle key={j}
+                  x={20 + j * 25 + '%' as any}
+                  y={30 + j * 15 + '%' as any}
+                  color={item.color}
+                  delay={`${j * 0.8 + i * 0.3}s`}
+                />
+              ))}
+            </div>
+          ))}
+        </section>
+
+        {/* ══════════════════════════════════════════════════════
+            C. MODULE BIO-PETRI GRID
+            ══════════════════════════════════════════════════════ */}
+        <section className="space-y-3">
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-5 rounded-full bio-heartbeat"
+              style={{ background: 'linear-gradient(180deg, #00ffd0, #7c4dff)', boxShadow: '0 0 10px #00ffd0' }} />
+            <h3 className="text-xs font-black tracking-[5px]"
+              style={{ color: 'rgba(0,229,200,0.5)' }}>
+              快速調度中樞 — RAPID DISPATCH NEXUS
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {[
+              { label: '一鍵智能派單', desc: '即時名單審查', route: '/dispatch', color: '#00ffa0', delay: '0s' },
+              { label: '戰力分析矩陣', desc: 'AI 神經矩陣', route: '/boss', color: '#7c4dff', delay: '0.4s' },
+              { label: '招聘管理節點', desc: '人員吞吐配置', route: '/hiring', color: '#00e5ff', delay: '0.8s' },
+              { label: '審核生命中心', desc: '指標計分核算', route: '/workbench-advanced', color: '#ff6ec7', delay: '1.2s' },
+              { label: '系統引擎設定', desc: '主動引擎配置', route: '/settings', color: '#ffd700', delay: '1.6s' },
+            ].map((item, i) => (
+              <BioModule key={i} {...item} />
+            ))}
+          </div>
+        </section>
+
+        {/* ══════════════════════════════════════════════════════
+            D. BOTTOM BIO-SIGNATURE
+            ══════════════════════════════════════════════════════ */}
+        <div className="flex items-center justify-center gap-4 py-3 opacity-30">
+          {['◦', '○', '◎', '○', '◦'].map((s, i) => (
+            <span key={i} className="text-xs" style={{ color: '#00ffd0', animation: `bio-breathe ${2 + i * 0.3}s ease-in-out ${i * 0.2}s infinite` }}>{s}</span>
+          ))}
+          <span className="text-[8px] font-black tracking-[6px]" style={{ color: '#00ffd060' }}>
+            GLOBAL BIOTECH SYMBIOTIC LIFE ENGINE — 兆櫃 AI 派單系統
+          </span>
+          {['◦', '○', '◎', '○', '◦'].map((s, i) => (
+            <span key={i} className="text-xs" style={{ color: '#7c4dff', animation: `bio-breathe ${2 + i * 0.3}s ease-in-out ${(4 - i) * 0.2}s infinite` }}>{s}</span>
+          ))}
+        </div>
+
+      </div>
+    </>
+  );
+}

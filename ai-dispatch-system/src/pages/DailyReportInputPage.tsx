@@ -12,7 +12,7 @@ import { StatusBadge } from '../components/StatusBadge';
 import { EMPEROR_UI, TU, MU, HUO, SHUI, JIN, EMPEROR } from '../constants/wuxingColors';
 
 interface DailyReportInputPageProps {
-  onParsed?: (payload: { reportId: number; reportDate: string }) => void;
+  onParsed?: (payload: { reportId: number; reportDate: string; personCount: number }) => void;
 }
 
 // ── 帝王配色輸入框樣式 ──
@@ -77,6 +77,7 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
   const [detectMsg, setDetectMsg] = useState('');
   const [autoFilled, setAutoFilled] = useState<Set<string>>(new Set());
   const [pastedImage, setPastedImage] = useState<string | null>(null);
+  const [personCount, setPersonCount] = useState<number | null>(null);
 
   const [countdown, setCountdown] = useState<number | null>(null);
   const cdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -233,9 +234,10 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
         conflicts: [],
       });
 
+      setPersonCount(parseResult.details.length);
       setSuccess(true);
       setMessage(`解析完成！報表 #${report.id} · 共 ${parseResult.details.length} 人 · 自動跳往解析結果`);
-      onParsed?.({ reportId: report.id, reportDate: form.reportDate });
+      onParsed?.({ reportId: report.id, reportDate: form.reportDate, personCount: parseResult.details.length });
     } catch (err: any) {
       setMessage(err?.responseMessage || err?.message || '建立或解析失敗，請確認後端是否運行。');
     } finally {
@@ -252,6 +254,7 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
     setSuccess(false);
     setCreatedId(null);
     setPastedImage(null);
+    setPersonCount(null);
   }
 
   // ── 靈魂注入：即時時鐘 + 系統生命脈搏 ──
@@ -288,33 +291,6 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
     { key: 'rawTextContent',label: '內容', val: form.rawTextContent.trim() },
   ];
 
-  // ── AI 全流程十步 ──
-  const AI_FLOW_STEPS = [
-    { n: '01', label: '原始文字保存',       color: SHUI },
-    { n: '02', label: '格式清洗',           color: SHUI },
-    { n: '03', label: '結構解析',           color: SHUI },
-    { n: '04', label: '自動修正低風險錯誤', color: MU   },
-    { n: '05', label: '衝突分級',           color: MU   },
-    { n: '06', label: '智能審計',           color: MU   },
-    { n: '07', label: '數據模擬',           color: TU   },
-    { n: '08', label: '整合排名',           color: HUO  },
-    { n: '09', label: '軍團派單',           color: HUO  },
-    { n: '10', label: '公告生成',           color: JIN  },
-  ];
-
-  const AUTO_FEATURES = [
-    '自動清洗格式', '自動辨識總計與個人資料', '自動修正常見格式錯誤',
-    '自動檢查衝突與矛盾', '自動模擬數據影響', '自動生成整合名次',
-    '自動生成明日派單順序', '自動生成公告版／LINE版／播報版',
-  ];
-
-  const LOCK_RULES = [
-    '原始資料只輸入一次，所有頁面共用同一份正式資料',
-    'AI 可自動優化格式與低風險錯誤，不得私自亂改核心金額、成交數、通數',
-    '若有衝突或矛盾，必須清楚提示，不得靜默修改',
-    '審計未通過，禁止生成派單與公告',
-    '排名、派單、公告只能來自審計通過後的正式資料',
-  ];
 
   return (
     <Fragment>
@@ -325,14 +301,27 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
         0%{background-position:0 0} 100%{background-position:0 100%}
       }
       @keyframes nodeCount { from{transform:scale(1)} to{transform:scale(1.06)} }
+      @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+      @keyframes fieldGlow { 0%,100%{box-shadow:0 0 4px ${MU.bright}44} 50%{box-shadow:0 0 10px ${MU.bright}99} }
+      @keyframes checkPop { 0%{transform:scale(0.4);opacity:0} 60%{transform:scale(1.3)} 100%{transform:scale(1);opacity:1} }
+      @keyframes loadRing { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+      @keyframes countUp { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+      @keyframes streamDot { 0%,100%{opacity:0.2} 50%{opacity:1} }
+      @keyframes charBarGlow { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.3)} }
+      @keyframes stepActivate { 0%{transform:scale(0.96);opacity:0.7} 100%{transform:scale(1);opacity:1} }
+      @keyframes badgePulse { 0%,100%{box-shadow:0 0 4px ${MU.bright}44,inset 0 0 4px transparent} 50%{box-shadow:0 0 14px ${MU.bright}cc,inset 0 0 6px ${MU.bright}22} }
       .soul-cursor::after {
         content:'█'; color:${SHUI.bright}; animation:cursorBlink 1s step-end infinite;
       }
       .soul-node { animation:dataPulse 2s ease-in-out infinite; }
-      .soul-detect-spin {
-        display:inline-block; animation:spin 1s linear infinite;
-      }
-      @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+      .soul-detect-spin { display:inline-block; animation:spin 1s linear infinite; }
+      .field-check { animation:checkPop 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+      .step-activate { animation:stepActivate 0.3s ease-out forwards; }
+      .stream-dot1 { animation:streamDot 1.2s ease-in-out 0s infinite; }
+      .stream-dot2 { animation:streamDot 1.2s ease-in-out 0.3s infinite; }
+      .stream-dot3 { animation:streamDot 1.2s ease-in-out 0.6s infinite; }
+      .badge-active { animation:badgePulse 2s ease-in-out infinite; }
+      .char-bar-fill { animation:charBarGlow 2s ease-in-out infinite; }
     `}</style>
     <div style={{ background: EMPEROR_UI.pageBg, minHeight: '100vh', padding: 0, fontFamily: '"Microsoft JhengHei", system-ui, sans-serif' }}>
 
@@ -340,8 +329,8 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
       <div style={{
         background: `linear-gradient(135deg, ${EMPEROR_UI.cardBg}, ${EMPEROR_UI.sidebarBg})`,
         borderBottom: `1px solid ${EMPEROR_UI.borderAccent}`,
-        padding: '14px 24px',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10,
+        padding: '9px 18px',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8,
       }}>
         <div>
           <div style={{ fontSize: 17, fontWeight: 900, letterSpacing: '0.02em', display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -349,8 +338,8 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
             <span style={{ color: EMPEROR_UI.textPrimary }}>① 每日業績輸入中心</span>
             <span style={{ background: TU.void, color: TU.bright, border: `1px solid ${TU.shadow}`, borderRadius: 5, padding: '1px 8px', fontSize: 11 }}>V2</span>
           </div>
-          <div style={{ fontSize: 11, color: EMPEROR_UI.textMuted, marginTop: 3 }}>
-            貼上截圖或文字 → AI 自動辨識 → 自動解析 → 審計 → 派工
+          <div style={{ fontSize: 10, color: EMPEROR_UI.textDim, marginTop: 2 }}>
+            貼上截圖或文字 → 辨識 → 解析 → 審計 → 派工
           </div>
         </div>
         {/* 右側生命脈搏儀表板 */}
@@ -392,7 +381,7 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
         </div>
       </div>
 
-      <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <div style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
 
         {/* ── AI 辨識狀態條 ── */}
         {detectMsg && (
@@ -464,52 +453,90 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
           </div>
         )}
 
-        {/* ── 原始日報輸入框（核心）── */}
+        {/* ══ 核心輸入區：全版超大貼上框 ══ */}
         <div>
-          <label style={{ ...fieldLabel, fontSize: 13 }}>
-            <span style={{ color: EMPEROR_UI.textSecondary }}>原始日報輸入框</span>
-            <span style={{ fontSize: 11, color: EMPEROR_UI.textDim }}>
-              · 貼文字或 Ctrl+V 截圖，AI 自動辨識
-            </span>
-          </label>
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            marginBottom: 8, flexWrap: 'wrap', gap: 6,
+          }}>
+            <label style={{ ...fieldLabel, fontSize: 14, margin: 0 }}>
+              <span style={{ fontSize: 20 }}>📋</span>
+              <span style={{ color: EMPEROR_UI.textPrimary, fontWeight: 900 }}>貼上業績日報</span>
+              <span style={{ fontSize: 11, color: EMPEROR_UI.textDim }}>
+                → AI 自動解析 → 排名 → 派單 → 公告
+              </span>
+            </label>
+            {form.rawTextContent && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ height: 4, width: 80, borderRadius: 4, background: EMPEROR_UI.borderMain, overflow: 'hidden' }}>
+                  <div className="char-bar-fill" style={{
+                    height: '100%', borderRadius: 4,
+                    background: form.rawTextContent.length > 500 ? `linear-gradient(90deg,${SHUI.core},${MU.bright})` : SHUI.shadow,
+                    width: `${Math.min(100, (form.rawTextContent.length / 2000) * 100)}%`,
+                    transition: 'width 0.3s',
+                  }} />
+                </div>
+                <span style={{ fontSize: 11, color: form.rawTextContent.length > 100 ? SHUI.bright : EMPEROR_UI.textDim, fontFamily: '"Fira Code", monospace', fontWeight: 700 }}>
+                  {form.rawTextContent.length} 字
+                </span>
+              </div>
+            )}
+          </div>
           <div
             style={{
               position: 'relative',
-              border: `2px dashed ${form.rawTextContent ? TU.shadow : EMPEROR_UI.borderMain}`,
-              borderRadius: 12,
-              background: form.rawTextContent ? TU.abyss : EMPEROR_UI.sidebarBg,
+              border: form.rawTextContent
+                ? `2px solid ${TU.shadow}`
+                : `2px dashed ${SHUI.shadow}`,
+              borderRadius: 14,
+              background: form.rawTextContent
+                ? `linear-gradient(180deg, ${TU.abyss}, ${EMPEROR_UI.sidebarBg})`
+                : EMPEROR_UI.sidebarBg,
               transition: 'border-color 0.3s, background 0.3s',
               cursor: 'text',
+              boxShadow: form.rawTextContent
+                ? `0 0 0 1px ${TU.core}22, 0 4px 24px rgba(0,0,0,0.4)`
+                : `0 2px 12px rgba(0,0,0,0.3)`,
             }}
             onClick={() => textareaRef.current?.focus()}
           >
+            {/* 空白時的大引導文字 */}
             {!form.rawTextContent && (
               <div style={{
                 position: 'absolute', inset: 0, display: 'flex',
                 flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                pointerEvents: 'none', gap: 10,
+                pointerEvents: 'none', gap: 12,
               }}>
+                {/* 主要 CTA */}
                 <div style={{
-                  fontFamily: '"Fira Code", monospace', fontSize: 13,
-                  color: SHUI.bright, letterSpacing: '0.1em', opacity: 0.7,
-                  display: 'flex', alignItems: 'center', gap: 6,
+                  fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 900,
+                  color: SHUI.core, letterSpacing: '-0.01em', lineHeight: 1.1,
+                  textAlign: 'center',
                 }}>
-                  <span style={{ color: SHUI.core }}>SYS://INPUT</span>
-                  <span className="soul-cursor" />
+                  Ctrl + V
                 </div>
-                <div style={{ fontSize: 15, fontWeight: 800, color: EMPEROR_UI.textMuted, letterSpacing: '0.04em' }}>
-                  Ctrl + V 貼上截圖或日報文字
+                <div style={{
+                  fontSize: 'clamp(14px, 1.8vw, 18px)', fontWeight: 800,
+                  color: EMPEROR_UI.textMuted, letterSpacing: '0.04em', textAlign: 'center',
+                }}>
+                  貼上業績日報文字或截圖
                 </div>
-                <div style={{ fontSize: 11, color: EMPEROR_UI.textDim, letterSpacing: '0.06em' }}>
-                  AI 將自動辨識日期 · 平台 · 模式 · 並啟動派工解析
-                </div>
-                <div style={{ display: 'flex', gap: 16, marginTop: 6, fontFamily: 'serif' }}>
-                  {[
-                    { ch: '水', p: SHUI }, { ch: '木', p: MU },
-                    { ch: '土', p: TU  }, { ch: '火', p: HUO },
-                  ].map(({ ch, p }) => (
-                    <span key={ch} style={{ fontSize: 16, color: p.core, opacity: 0.35, letterSpacing: '0.1em' }}>{ch}</span>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center', marginTop: 4 }}>
+                  {['AI 自動辨識日期', '自動識別平台', '自動排名', '自動生成派單', '自動生成公告'].map(tag => (
+                    <span key={tag} style={{
+                      fontSize: 11, padding: '3px 10px', borderRadius: 20,
+                      background: SHUI.abyss, border: `1px solid ${SHUI.shadow}`,
+                      color: SHUI.text, letterSpacing: '0.04em',
+                    }}>{tag}</span>
                   ))}
+                </div>
+                <div style={{
+                  fontFamily: '"Fira Code", monospace', fontSize: 11,
+                  color: SHUI.bright, letterSpacing: '0.1em', opacity: 0.5,
+                  display: 'flex', alignItems: 'center', gap: 6, marginTop: 4,
+                }}>
+                  <span>SYS://AWAITING_INPUT</span>
+                  <span className="soul-cursor" />
                 </div>
               </div>
             )}
@@ -519,60 +546,81 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
               onChange={e => set('rawTextContent', e.target.value)}
               placeholder=""
               style={{
-                width: '100%', border: 'none', borderRadius: 12,
-                padding: '20px', fontSize: 13, outline: 'none',
+                width: '100%', border: 'none', borderRadius: 14,
+                padding: '16px', fontSize: 13, outline: 'none',
                 background: 'transparent',
                 color: EMPEROR_UI.textSecondary,
-                minHeight: form.rawTextContent ? 280 : 180,
+                minHeight: form.rawTextContent ? 260 : 200,
                 resize: 'vertical',
                 fontFamily: '"Fira Code", "Consolas", monospace',
-                lineHeight: 1.7, boxSizing: 'border-box',
+                lineHeight: 1.8, boxSizing: 'border-box',
               }}
             />
           </div>
-          {form.rawTextContent && (
-            <div style={{ fontSize: 11, color: EMPEROR_UI.textDim, marginTop: 4, textAlign: 'right' }}>
-              {form.rawTextContent.length} 字元
-            </div>
-          )}
         </div>
 
         {/* ── AI 辨識結果欄位 ── */}
         <div style={{
-          background: EMPEROR_UI.cardBg, border: `1px solid ${EMPEROR_UI.borderAccent}`, borderRadius: 14, padding: 18,
+          background: EMPEROR_UI.cardBg, border: `1px solid ${EMPEROR_UI.borderAccent}`, borderRadius: 12, padding: '12px 14px',
         }}>
-          <div style={{ fontSize: 12, fontWeight: 800, color: EMPEROR_UI.brandGold, marginBottom: 14, letterSpacing: '0.08em', display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span>🤖</span> AI 自動辨識結果
-            {[form.reportDate, form.platformName, form.reportMode].every(Boolean) && (
-              <span style={{ marginLeft: 6, color: MU.bright, fontWeight: 900 }}>✓ 全部就緒 → 準備解析</span>
+          <div style={{ fontSize: 11, fontWeight: 800, color: EMPEROR_UI.brandGold, marginBottom: 10, letterSpacing: '0.08em', display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+            <span>{detecting ? <span className="soul-detect-spin" style={{ display: 'inline-block', fontSize: 14 }}>🤖</span> : '🤖'}</span>
+            <span>AI 自動辨識結果</span>
+            {detecting && (
+              <span style={{ display: 'flex', gap: 3, alignItems: 'center', marginLeft: 4 }}>
+                <span className="stream-dot1" style={{ width: 5, height: 5, borderRadius: '50%', background: TU.bright, display: 'inline-block' }} />
+                <span className="stream-dot2" style={{ width: 5, height: 5, borderRadius: '50%', background: TU.bright, display: 'inline-block' }} />
+                <span className="stream-dot3" style={{ width: 5, height: 5, borderRadius: '50%', background: TU.bright, display: 'inline-block' }} />
+                <span style={{ fontSize: 10, color: TU.text, marginLeft: 4, letterSpacing: '0.06em' }}>辨識中…</span>
+              </span>
+            )}
+            {!detecting && [form.reportDate, form.platformName, form.reportMode].every(Boolean) && (
+              <span className="badge-active" style={{ marginLeft: 4, color: MU.bright, fontWeight: 900, background: MU.abyss, padding: '2px 10px', borderRadius: 6, border: `1px solid ${MU.shadow}`, fontSize: 11 }}>
+                ✓ 全部就緒 → 準備解析
+              </span>
+            )}
+            {!detecting && ![form.reportDate, form.platformName, form.reportMode].every(Boolean) && form.rawTextContent.length > 10 && (
+              <span style={{ marginLeft: 4, color: EMPEROR_UI.textDim, fontWeight: 700, fontSize: 10, display: 'flex', gap: 6 }}>
+                {!form.reportDate && <span style={{ color: HUO.text, background: HUO.abyss, padding: '1px 7px', borderRadius: 4, border: `1px solid ${HUO.shadow}` }}>○ 日期待填</span>}
+                {!form.platformName && <span style={{ color: HUO.text, background: HUO.abyss, padding: '1px 7px', borderRadius: 4, border: `1px solid ${HUO.shadow}` }}>○ 平台待填</span>}
+                {!form.reportMode && <span style={{ color: HUO.text, background: HUO.abyss, padding: '1px 7px', borderRadius: 4, border: `1px solid ${HUO.shadow}` }}>○ 模式待填</span>}
+              </span>
             )}
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 8 }}>
 
             {/* 報表日期 */}
             <div>
               <label style={fieldLabel}>
-                報表日期
-                {isAF('reportDate') && <span style={{ color: MU.bright, fontSize: 10, fontWeight: 900 }}>AI 填入</span>}
+                <span style={{ color: form.reportDate ? MU.bright : EMPEROR_UI.textDim, fontSize: 13, transition: 'color 0.2s' }} className={form.reportDate ? 'field-check' : ''}>
+                  {form.reportDate ? '✓' : '○'}
+                </span>
+                <span style={{ color: form.reportDate ? EMPEROR_UI.textPrimary : EMPEROR_UI.textMuted, transition: 'color 0.2s' }}>報表日期</span>
+                {isAF('reportDate') && <span style={{ marginLeft: 4, color: MU.bright, fontSize: 10, fontWeight: 900, background: MU.abyss, padding: '1px 6px', borderRadius: 4, border: `1px solid ${MU.shadow}` }}>AI 填入</span>}
+                {form.reportDate && !isAF('reportDate') && <span style={{ marginLeft: 4, fontSize: 10, color: SHUI.bright, letterSpacing: '0.04em' }}>手動</span>}
               </label>
               <input
                 type="date"
                 value={form.reportDate}
                 onChange={e => set('reportDate', e.target.value)}
-                style={isAF('reportDate') ? inputAutoFill : inputBase}
+                style={isAF('reportDate') ? inputAutoFill : form.reportDate ? { ...inputBase, border: `1.5px solid ${SHUI.shadow}`, background: SHUI.abyss } : inputBase}
               />
             </div>
 
             {/* 平台 */}
             <div>
               <label style={fieldLabel}>
-                平台
-                {isAF('platformName') && <span style={{ color: MU.bright, fontSize: 10, fontWeight: 900 }}>AI 填入</span>}
+                <span style={{ color: form.platformName ? MU.bright : EMPEROR_UI.textDim, fontSize: 13, transition: 'color 0.2s' }} className={form.platformName ? 'field-check' : ''}>
+                  {form.platformName ? '✓' : '○'}
+                </span>
+                <span style={{ color: form.platformName ? EMPEROR_UI.textPrimary : EMPEROR_UI.textMuted, transition: 'color 0.2s' }}>平台</span>
+                {isAF('platformName') && <span style={{ marginLeft: 4, color: MU.bright, fontSize: 10, fontWeight: 900, background: MU.abyss, padding: '1px 6px', borderRadius: 4, border: `1px solid ${MU.shadow}` }}>AI 填入</span>}
+                {form.platformName && <span style={{ marginLeft: 'auto', fontSize: 11, fontWeight: 900, color: TU.bright }}>{form.platformName}</span>}
               </label>
               <select
                 value={form.platformName}
                 onChange={e => set('platformName', e.target.value as any)}
-                style={isAF('platformName') ? inputAutoFill : inputBase}
+                style={isAF('platformName') ? inputAutoFill : form.platformName ? { ...inputBase, border: `1.5px solid ${SHUI.shadow}`, background: SHUI.abyss } : inputBase}
               >
                 <option value="">請選擇平台</option>
                 {平台選項.map(p => <option key={p} value={p}>{p}</option>)}
@@ -582,13 +630,17 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
             {/* 報表模式 */}
             <div>
               <label style={fieldLabel}>
-                報表模式
-                {isAF('reportMode') && <span style={{ color: MU.bright, fontSize: 10, fontWeight: 900 }}>AI 填入</span>}
+                <span style={{ color: form.reportMode ? MU.bright : EMPEROR_UI.textDim, fontSize: 13, transition: 'color 0.2s' }} className={form.reportMode ? 'field-check' : ''}>
+                  {form.reportMode ? '✓' : '○'}
+                </span>
+                <span style={{ color: form.reportMode ? EMPEROR_UI.textPrimary : EMPEROR_UI.textMuted, transition: 'color 0.2s' }}>報表模式</span>
+                {isAF('reportMode') && <span style={{ marginLeft: 4, color: MU.bright, fontSize: 10, fontWeight: 900, background: MU.abyss, padding: '1px 6px', borderRadius: 4, border: `1px solid ${MU.shadow}` }}>AI 填入</span>}
+                {form.reportMode && <span style={{ marginLeft: 'auto', fontSize: 11, fontWeight: 900, color: HUO.bright }}>{form.reportMode}</span>}
               </label>
               <select
                 value={form.reportMode}
                 onChange={e => set('reportMode', e.target.value as any)}
-                style={isAF('reportMode') ? inputAutoFill : inputBase}
+                style={isAF('reportMode') ? inputAutoFill : form.reportMode ? { ...inputBase, border: `1.5px solid ${SHUI.shadow}`, background: SHUI.abyss } : inputBase}
               >
                 <option value="">請選擇模式</option>
                 {報表模式選項.map(m => <option key={m} value={m}>{m}</option>)}
@@ -597,7 +649,11 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
 
             {/* 備註 */}
             <div>
-              <label style={fieldLabel}>備註</label>
+              <label style={fieldLabel}>
+                <span style={{ color: form.noteText ? SHUI.bright : EMPEROR_UI.textDim, fontSize: 13 }}>{form.noteText ? '✓' : '○'}</span>
+                <span style={{ color: EMPEROR_UI.textMuted }}>備註</span>
+                <span style={{ marginLeft: 'auto', fontSize: 10, color: EMPEROR_UI.textDim }}>選填</span>
+              </label>
               <input
                 value={form.noteText}
                 onChange={e => set('noteText', e.target.value)}
@@ -611,8 +667,8 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
         {/* ── 操作列 ── */}
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
           <button type="button" onClick={reset} style={{
-            border: `1px solid ${EMPEROR_UI.borderAccent}`, borderRadius: 8, padding: '10px 18px',
-            fontWeight: 700, fontSize: 13, cursor: 'pointer',
+            border: `1px solid ${EMPEROR_UI.borderAccent}`, borderRadius: 7, padding: '8px 14px',
+            fontWeight: 700, fontSize: 12, cursor: 'pointer',
             background: EMPEROR_UI.cardBg, color: EMPEROR_UI.textMuted,
             letterSpacing: '0.04em',
           }}>
@@ -622,22 +678,44 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
           <button
             type="button"
             onClick={submit}
-            disabled={loading || !isValid}
+            disabled={loading || !isValid || success}
             style={{
-              border: 'none', borderRadius: 8, padding: '11px 28px',
-              fontWeight: 900, fontSize: 14, cursor: isValid && !loading ? 'pointer' : 'not-allowed',
-              background: loading
+              position: 'relative', overflow: 'hidden',
+              border: success ? `1.5px solid ${MU.bright}` : 'none',
+              borderRadius: 8, padding: '11px 28px',
+              fontWeight: 900, fontSize: 14,
+              cursor: isValid && !loading && !success ? 'pointer' : 'not-allowed',
+              background: success
+                ? `linear-gradient(135deg, ${MU.abyss}, ${MU.void})`
+                : loading
                 ? TU.void
                 : isValid
                 ? `linear-gradient(135deg, ${TU.core}, ${HUO.base})`
                 : EMPEROR_UI.cardBg,
-              color: isValid ? EMPEROR_UI.textPrimary : EMPEROR_UI.textDim,
-              boxShadow: isValid && !loading ? `0 4px 20px ${TU.bright}44` : 'none',
-              transition: 'all 0.2s',
+              color: isValid || success ? EMPEROR_UI.textPrimary : EMPEROR_UI.textDim,
+              boxShadow: success
+                ? `0 0 18px ${MU.bright}66`
+                : isValid && !loading ? `0 4px 20px ${TU.bright}44` : 'none',
+              transition: 'all 0.3s',
               letterSpacing: '0.06em',
-              textShadow: isValid && !loading ? `0 0 16px ${TU.bright}66` : 'none',
+              textShadow: success ? `0 0 12px ${MU.bright}` : isValid && !loading ? `0 0 16px ${TU.bright}66` : 'none',
+              display: 'flex', alignItems: 'center', gap: 8,
             }}>
-            {loading ? '🤖 AI 解析中…' : '💰 立即執行 AI 解析'}
+            {loading && (
+              <span style={{
+                width: 14, height: 14, borderRadius: '50%',
+                border: `2px solid ${TU.shadow}`,
+                borderTopColor: TU.bright,
+                display: 'inline-block',
+                animation: 'loadRing 0.8s linear infinite',
+                flexShrink: 0,
+              }} />
+            )}
+            <span>
+              {success
+                ? `✅ 完成 #${createdId}${personCount !== null ? ` · ${personCount} 人` : ''}`
+                : loading ? 'AI 解析中…' : '💰 立即執行 AI 解析'}
+            </span>
           </button>
 
           {/* 欄位進度圓點 */}
@@ -663,7 +741,7 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
         {/* ── 結果訊息 ── */}
         {message && (
           <div style={{
-            padding: '14px 20px', borderRadius: 12,
+            padding: '9px 14px', borderRadius: 9,
             background: success ? MU.void : HUO.void,
             border: `1px solid ${success ? MU.shadow : HUO.shadow}`,
             color: success ? MU.text : HUO.text,
@@ -681,69 +759,95 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
           </div>
         )}
 
-        {/* ── 智能結果預告（未提交前顯示）── */}
-        {!success && (
-          <div style={{ background: JIN.abyss, border: `1px solid ${JIN.shadow}`, borderLeft: `3px solid ${JIN.core}`, borderRadius: 12, padding: '16px 20px' }}>
-            <div style={{ fontSize: 12, fontWeight: 900, color: JIN.bright, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8, letterSpacing: '0.06em' }}>
-              <span style={{ fontFamily: 'serif' }}>金</span> 智能結果預告
-              <span style={{ fontSize: 10, color: JIN.core, fontWeight: 600 }}>· 提交後系統自動產出</span>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 6 }}>
-              {['解析結果 & 異常清單', '修正建議報告', '今日整合名次', '明日 AI 派單順序', '每人建議＋壓力＋激勵', '公告完整版', 'LINE 精簡版', '播報版'].map(item => (
-                <div key={item} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: JIN.text, opacity: 0.7 }}>
-                  <span style={{ color: JIN.core, flexShrink: 0 }}>◎</span>{item}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* ── AI 全流程十步 ── */}
-        <div style={{ background: EMPEROR.obsidian, border: `1px solid ${EMPEROR_UI.borderMain}`, borderRadius: 12, padding: '16px 20px' }}>
-          <div style={{ fontSize: 12, fontWeight: 900, color: EMPEROR_UI.textSecondary, marginBottom: 12, letterSpacing: '0.06em' }}>
-            ⚡ AI 全流程啟動後，系統依序執行
-          </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-            {AI_FLOW_STEPS.map((s, i) => (
-              <div key={s.n} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 5, background: s.color.abyss, border: `1px solid ${s.color.shadow}`, borderRadius: 6, padding: '4px 10px', fontSize: 11 }}>
-                  <span style={{ color: s.color.core, fontVariantNumeric: 'tabular-nums' }}>{s.n}</span>
-                  <span style={{ color: s.color.text }}>{s.label}</span>
-                </div>
-                {i < AI_FLOW_STEPS.length - 1 && <span style={{ color: EMPEROR_UI.textDim, fontSize: 11 }}>›</span>}
+        {/* ── AI 派單流程進度（提交前：可點擊各步驟說明；提交後：即時狀態追蹤）── */}
+        <div style={{
+          background: EMPEROR.obsidian,
+          border: `1px solid ${EMPEROR_UI.borderAccent}`,
+          borderRadius: 10, padding: '10px 14px',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+          gap: 8,
+        }}>
+          {([
+            {
+              step: '①', label: '貼上業績',
+              desc: form.rawTextContent ? `${form.rawTextContent.length} 字` : '文字或截圖',
+              color: SHUI,
+              active: Boolean(form.rawTextContent),
+              done: Boolean(form.rawTextContent),
+              spinning: false,
+              badge: form.rawTextContent ? `${form.rawTextContent.length}字` : null,
+            },
+            {
+              step: '②', label: 'AI 解析',
+              desc: loading ? '解析中…' : personCount !== null ? `辨識 ${personCount} 人` : '辨識人員明細',
+              color: SHUI,
+              active: loading || success,
+              done: success,
+              spinning: loading,
+              badge: personCount !== null ? `${personCount}人` : loading ? '…' : null,
+            },
+            {
+              step: '③', label: '智能審計',
+              desc: success ? '天地盤/邏輯盤 ✓' : '天地盤/邏輯盤',
+              color: MU,
+              active: success,
+              done: success,
+              spinning: false,
+              badge: success ? 'PASS' : null,
+            },
+            {
+              step: '④', label: '排名派單',
+              desc: success ? 'A1/A2/B/C分組 →' : 'A1/A2/B/C分組',
+              color: HUO,
+              active: success,
+              done: success,
+              spinning: false,
+              badge: success && createdId ? `#${createdId}` : null,
+            },
+            {
+              step: '⑤', label: '公告生成',
+              desc: success ? 'LINE/播報/完整版 →' : 'LINE/播報/完整版',
+              color: JIN,
+              active: success,
+              done: success,
+              spinning: false,
+              badge: null,
+            },
+          ] as const).map((s, i) => (
+            <div key={i} className={s.active ? 'step-activate' : ''} style={{
+              display: 'flex', flexDirection: 'column', gap: 6,
+              padding: '12px 14px', borderRadius: 10,
+              background: s.active ? s.color.void : s.color.abyss,
+              border: `1px solid ${s.active ? s.color.shadow : s.color.abyss}`,
+              borderBottom: `3px solid ${s.active ? s.color.bright : s.color.shadow}`,
+              transition: 'all 0.3s',
+              position: 'relative', overflow: 'hidden',
+            }}>
+              {s.active && (
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, transparent, ${s.color.bright}, transparent)`, animation: 'dataPulse 1.5s ease-in-out infinite' }} />
+              )}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                {s.spinning
+                  ? <span style={{ width: 11, height: 11, borderRadius: '50%', border: `1.5px solid ${s.color.shadow}`, borderTopColor: s.color.bright, display: 'inline-block', animation: 'loadRing 0.8s linear infinite', flexShrink: 0 }} />
+                  : <span style={{ fontSize: 11, color: s.active ? s.color.bright : s.color.core, fontWeight: 900, fontFamily: 'monospace' }}>{s.step}</span>
+                }
+                <span style={{ fontSize: 13, fontWeight: 900, color: s.active ? s.color.text : s.color.shadow }}>{s.label}</span>
+                {s.badge && (
+                  <span className="countUp" style={{
+                    marginLeft: 'auto', fontSize: 10, fontWeight: 900,
+                    color: s.color.bright, background: s.color.abyss,
+                    padding: '1px 6px', borderRadius: 4,
+                    border: `1px solid ${s.color.shadow}`,
+                    fontFamily: '"Fira Code", monospace',
+                    animation: 'countUp 0.4s ease-out',
+                  }}>{s.badge}</span>
+                )}
+                {s.done && !s.badge && <span style={{ marginLeft: 'auto', fontSize: 10, color: s.color.bright }}>✓</span>}
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ── 系統功能說明 + 鎖死規則 ── */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-          {/* 自動功能 */}
-          <div style={{ background: SHUI.abyss, border: `1px solid ${SHUI.shadow}22`, borderLeft: `3px solid ${SHUI.core}`, borderRadius: 10, padding: '14px 16px' }}>
-            <div style={{ fontSize: 11, fontWeight: 900, color: SHUI.bright, marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ fontFamily: 'serif' }}>水</span> 系統自動支援
+              <div style={{ fontSize: 10, color: s.active ? s.color.text : EMPEROR_UI.textDim, opacity: 0.75, letterSpacing: '0.04em' }}>{s.desc}</div>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-              {AUTO_FEATURES.map(f => (
-                <div key={f} style={{ fontSize: 11, color: SHUI.text, display: 'flex', alignItems: 'center', gap: 6, opacity: 0.8 }}>
-                  <span style={{ color: SHUI.core, flexShrink: 0 }}>·</span>{f}
-                </div>
-              ))}
-            </div>
-          </div>
-          {/* 鎖死規則 */}
-          <div style={{ background: HUO.abyss, border: `1px solid ${HUO.shadow}22`, borderLeft: `3px solid ${HUO.core}`, borderRadius: 10, padding: '14px 16px' }}>
-            <div style={{ fontSize: 11, fontWeight: 900, color: HUO.bright, marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ fontFamily: 'serif' }}>火</span> 鎖死規則
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              {LOCK_RULES.map((r, i) => (
-                <div key={i} style={{ fontSize: 11, color: HUO.text, display: 'flex', alignItems: 'flex-start', gap: 6, opacity: 0.8 }}>
-                  <span style={{ color: HUO.core, flexShrink: 0, marginTop: 1 }}>{i + 1}.</span><span>{r}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+          ))}
         </div>
 
       </div>

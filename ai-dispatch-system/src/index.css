@@ -1,226 +1,372 @@
 @import "tailwindcss";
 
-/* ═══════════════════════════════════════════
-   五行元素配色系統 (Wu Xing Design System)
-   木 Wood · 火 Fire · 土 Earth · 金 Metal · 水 Water
-   ═══════════════════════════════════════════ */
+/* =========================================================
+   兆櫃AI派單系統｜深空科技前端核心 v10.0
+   哲學：量子深黑 × 電漿青藍 × 神經綠 × 帝王金點綴
+   ========================================================= */
 
-@theme {
-  /* ── 木 Wood ── 成長・正常・通過・健康 */
-  --color-wood-50:  #f0f7f0;
-  --color-wood-100: #d4ead4;
-  --color-wood-200: #a8d5a8;
-  --color-wood-300: #79bf79;
-  --color-wood-400: #5aaa5a;
-  --color-wood-500: #3d8b3d;
-  --color-wood-600: #2d6a2d;
-  --color-wood-700: #1f4f1f;
-  --color-wood-800: #143514;
-  --color-wood-900: #0a1f0a;
-
-  /* ── 火 Fire ── 警示・注意・即時提醒・重點 */
-  --color-fire-50:  #fef6f0;
-  --color-fire-100: #fde8d4;
-  --color-fire-200: #fac9a0;
-  --color-fire-300: #f5a66b;
-  --color-fire-400: #ef8640;
-  --color-fire-500: #d96b22;
-  --color-fire-600: #b85418;
-  --color-fire-700: #8f4013;
-  --color-fire-800: #6b300e;
-  --color-fire-900: #4a2009;
-  --color-fire-deep: #c53030;
-
-  /* ── 土 Earth ── 穩定・總盤・主框架・背景基底 */
-  --color-earth-50:  #faf8f5;
-  --color-earth-100: #f5f0e8;
-  --color-earth-200: #e8dfd0;
-  --color-earth-300: #d4c8b0;
-  --color-earth-400: #bfad90;
-  --color-earth-500: #a69070;
-  --color-earth-600: #8a7558;
-  --color-earth-700: #6b5a43;
-  --color-earth-800: #4d4030;
-  --color-earth-900: #332b20;
-
-  /* ── 金 Metal ── 數字・業績・權重・主排名 */
-  --color-metal-50:  #faf9f6;
-  --color-metal-100: #f0ede5;
-  --color-metal-200: #ddd8c8;
-  --color-metal-300: #c4b998;
-  --color-metal-400: #b5a678;
-  --color-metal-500: #998a5c;
-  --color-metal-600: #7d6f45;
-  --color-metal-700: #5e5334;
-  --color-metal-800: #403924;
-  --color-metal-900: #2a2518;
-
-  /* ── 水 Water ── 資訊・系統・分析・輸入・冷靜 */
-  --color-water-50:  #f0f4f8;
-  --color-water-100: #d9e4f0;
-  --color-water-200: #b3c9e0;
-  --color-water-300: #7fa8cc;
-  --color-water-400: #5088b5;
-  --color-water-500: #36699e;
-  --color-water-600: #2b5580;
-  --color-water-700: #1f3f60;
-  --color-water-800: #162d45;
-  --color-water-900: #0d1b2a;
+:root {
+  color-scheme: dark;
 }
 
-/* ── 全域基底 ── */
+/* ── 全局深空背景動畫 ── */
+@keyframes floating-bg {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes sentient-pulse {
+  0%   { transform: scale(1); opacity: 0.85; }
+  50%  { transform: scale(1.08); opacity: 1; filter: brightness(1.15); }
+  100% { transform: scale(1); opacity: 0.85; }
+}
+
+@keyframes sentient-border {
+  0%   { border-color: rgba(0, 212, 255, 0.20); filter: drop-shadow(0 0 4px rgba(0, 212, 255, 0.08)); }
+  50%  { border-color: rgba(139, 92, 246, 0.22); filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.12)); }
+  100% { border-color: rgba(0, 212, 255, 0.20); filter: drop-shadow(0 0 4px rgba(0, 212, 255, 0.08)); }
+}
+
+.sentient-badge   { animation: sentient-pulse 3s ease-in-out infinite !important; display: inline-block !important; transform-origin: center !important; }
+.sentient-border  { animation: sentient-border 4s ease-in-out infinite !important; transition: border-color 0.5s ease-in-out !important; }
+
+.sentient-bg {
+  background:
+    radial-gradient(ellipse 55% 40% at 20% 15%, rgba(0, 212, 255, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 45% 35% at 80% 25%, rgba(139, 92, 246, 0.05) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 50% 80%, rgba(0, 255, 156, 0.03) 0%, transparent 65%),
+    linear-gradient(180deg, #060A14 0%, #04070F 100%) !important;
+  background-size: 200% 200% !important;
+  animation: floating-bg 25s ease-in-out infinite !important;
+}
+
+/* ── CSS 變數（統一科技配色系統）── */
+:root {
+  /* 背景層 */
+  --bg-0:    #03050C;
+  --bg-1:    #060A14;
+  --bg-2:    #0B1222;
+  --panel:   '#080D1A';
+  --panel-2: '#0C1428';
+
+  /* 電漿核心色 */
+  --plasma-blue:   #00D4FF;
+  --plasma-blue-s: rgba(0, 212, 255, 0.18);
+  --quantum-cyan:  #7DF9FF;
+  --neuro-green:   #00FF9C;
+  --neuro-green-s: rgba(0, 255, 156, 0.15);
+  --burst-purple:  #8B5CF6;
+  --burst-purple-s:rgba(139, 92, 246, 0.20);
+  --data-gold:     #F2C200;
+  --data-gold-s:   rgba(242, 194, 0, 0.18);
+
+  /* 舊名稱保留（向下相容）*/
+  --data-blue:       #00D4FF;
+  --data-blue-soft:  rgba(0, 212, 255, 0.18);
+  --engine-gold:     #F2C200;
+  --engine-gold-soft:rgba(242, 194, 0, 0.18);
+  --success-green:   #00FF9C;
+  --danger-red:      #FF4D6A;
+  --accent-purple:   #8B5CF6;
+
+  /* 文字 */
+  --text-main: #E8F4FF;
+  --text-sub:  #7DF9FF;
+  --text-weak: #4A7FA0;
+
+  /* 邊框 */
+  --line:        rgba(0, 212, 255, 0.10);
+  --line-strong: rgba(0, 212, 255, 0.20);
+
+  /* 陰影 / 光暈 */
+  --shadow-black:  rgba(0, 0, 0, 0.65);
+  --glow-blue:     0 0 30px rgba(0, 212, 255, 0.25);
+  --glow-gold:     0 0 30px rgba(242, 194, 0, 0.20);
+  --glow-purple:   0 0 30px rgba(139, 92, 246, 0.22);
+  --glow-green:    0 0 30px rgba(0, 255, 156, 0.20);
+
+  /* 圓角 */
+  --radius-xl: 24px;
+  --radius-lg: 18px;
+  --radius-md: 14px;
+}
+
+/* ── 全局 body — 深空量子底 ── */
 body {
   margin: 0;
-  min-width: 320px;
+  color: var(--text-main);
+  font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  background:
+    radial-gradient(ellipse 70% 45% at 75% 20%, rgba(0, 212, 255, 0.10) 0%, transparent 50%),
+    radial-gradient(ellipse 55% 40% at 25% 18%, rgba(139, 92, 246, 0.08) 0%, transparent 48%),
+    radial-gradient(ellipse 80% 60% at 50% 90%, rgba(0, 255, 156, 0.04) 0%, transparent 60%),
+    linear-gradient(180deg, #060A14 0%, #03050C 100%);
+  background-attachment: fixed;
   min-height: 100vh;
-  background-color: var(--color-earth-50);
-  font-family: 'Inter', 'Noto Sans TC', system-ui, -apple-system, sans-serif;
-  color: var(--color-earth-900);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── 五行卡片系統 ── */
-.wx-card {
-  background: white;
-  border: 1px solid var(--color-earth-200);
-  border-radius: 1rem;
-  box-shadow: 0 1px 3px rgba(51, 43, 32, 0.06);
+/* ── 殼層容器 ── */
+.app-shell { min-height: 100vh; background: transparent; }
+
+/* ── 通用卡片 / 導覽 ── */
+.topbar,
+.sidebar,
+.dashboard-card,
+.hero-panel {
+  background: linear-gradient(180deg, rgba(0,212,255,0.03) 0%, rgba(0,0,0,0.01) 100%), #080D1A;
+  border: 1px solid rgba(0, 212, 255, 0.10);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.65);
 }
 
-.wx-card-header {
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid var(--color-earth-100);
-  background: var(--color-earth-50);
-  border-radius: 1rem 1rem 0 0;
+/* ── 標題文字 ── */
+.system-title {
+  font-size: 32px; font-weight: 900; letter-spacing: 0.02em;
+  color: var(--text-main);
+}
+.system-subtitle { font-size: 14px; font-weight: 600; color: var(--text-sub); }
+
+/* ── Hero 面板 ── */
+.hero-panel {
+  position: relative; border-radius: var(--radius-xl);
+  overflow: hidden; padding: 32px; isolation: isolate;
+}
+.hero-panel::before {
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 68% 45%, rgba(0, 212, 255, 0.10) 0%, transparent 30%),
+    radial-gradient(circle at 30% 65%, rgba(139, 92, 246, 0.08) 0%, transparent 28%);
+  pointer-events: none;
 }
 
-/* ── 五行狀態系統 ── */
-.wx-pass   { color: var(--color-wood-600); background: var(--color-wood-50); border-color: var(--color-wood-200); }
-.wx-warn   { color: var(--color-fire-600); background: var(--color-fire-50); border-color: var(--color-fire-200); }
-.wx-fail   { color: var(--color-fire-deep); background: #fef2f2; border-color: #fecaca; }
-.wx-info   { color: var(--color-water-600); background: var(--color-water-50); border-color: var(--color-water-200); }
-.wx-gold   { color: var(--color-metal-600); background: var(--color-metal-50); border-color: var(--color-metal-200); }
+.hero-title { font-size: 48px; line-height: 1.1; font-weight: 900; margin: 0 0 12px; }
+.hero-title .highlight { color: var(--plasma-blue); text-shadow: var(--glow-blue); }
+.hero-desc { max-width: 640px; font-size: 16px; line-height: 1.75; color: var(--text-sub); }
 
-/* ── 五行按鈕系統 ── */
-.wx-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.625rem 1.25rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  border-radius: 0.5rem;
-  transition: all 150ms ease;
-  cursor: pointer;
-  border: none;
-}
-.wx-btn:active { transform: scale(0.97); }
-
-.wx-btn-water {
-  background: linear-gradient(135deg, var(--color-water-600), var(--color-water-700));
-  color: white;
-  box-shadow: 0 2px 8px rgba(43, 85, 128, 0.25);
-}
-.wx-btn-water:hover { box-shadow: 0 4px 12px rgba(43, 85, 128, 0.35); }
-
-.wx-btn-wood {
-  background: linear-gradient(135deg, var(--color-wood-500), var(--color-wood-600));
-  color: white;
-  box-shadow: 0 2px 8px rgba(45, 106, 45, 0.25);
-}
-.wx-btn-wood:hover { box-shadow: 0 4px 12px rgba(45, 106, 45, 0.35); }
-
-.wx-btn-fire {
-  background: linear-gradient(135deg, var(--color-fire-500), var(--color-fire-600));
-  color: white;
-  box-shadow: 0 2px 8px rgba(184, 84, 24, 0.25);
+/* ── 全球數據核 ── */
+.global-core-wrap {
+  position: relative; width: 420px; height: 420px;
+  margin: 0 auto; perspective: 1000px;
+  animation: energy-hue 28s linear infinite;
 }
 
-.wx-btn-metal {
-  background: linear-gradient(135deg, var(--color-metal-500), var(--color-metal-600));
-  color: white;
-  box-shadow: 0 2px 8px rgba(125, 111, 69, 0.25);
+@keyframes energy-hue {
+  0%   { filter: hue-rotate(0deg) brightness(1); }
+  50%  { filter: hue-rotate(15deg) brightness(1.05); }
+  100% { filter: hue-rotate(0deg) brightness(1); }
 }
 
-/* ── 五行徽章 ── */
-.wx-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.125rem 0.625rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  border-radius: 9999px;
-  border: 1px solid;
+.global-core {
+  position: absolute; inset: 50%;
+  width: 220px; height: 220px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(0,212,255,0.15) 0%, transparent 30%),
+    radial-gradient(circle at 70% 75%, rgba(139,92,246,0.10) 0%, transparent 28%),
+    linear-gradient(135deg, rgba(0,212,255,0.06) 0%, rgba(8,13,26,0.8) 45%, rgba(3,5,12,0.95) 100%);
+  border: 1px solid rgba(0,212,255,0.08);
+  backdrop-filter: blur(10px) saturate(160%);
+  box-shadow:
+    inset -15px -15px 35px rgba(0,0,0,0.55),
+    inset 10px 10px 25px rgba(0,212,255,0.03),
+    0 0 0 8px rgba(0,212,255,0.03),
+    0 0 55px rgba(0,212,255,0.18),
+    0 0 100px rgba(139,92,246,0.10),
+    0 40px 80px rgba(0,0,0,0.7);
+  overflow: hidden; transform-style: preserve-3d;
 }
 
-/* ── 金額高亮 ── */
-.wx-amount {
-  color: var(--color-metal-700);
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
+.global-core::after {
+  content: ""; position: absolute; inset: -10%; border-radius: 50%;
+  background:
+    repeating-linear-gradient(90deg, transparent, transparent 15px, rgba(0,212,255,0.06) 16px),
+    repeating-linear-gradient(0deg, transparent, transparent 15px, rgba(0,212,255,0.06) 16px);
+  mask-image: radial-gradient(circle at 50% 50%, black 65%, transparent 100%);
+  animation: mesh-rotate 40s linear infinite;
+  mix-blend-mode: screen;
 }
 
-/* ── 側邊欄 ── */
-.wx-sidebar {
-  background: var(--color-water-900);
-  color: var(--color-water-200);
-}
-.wx-sidebar-active {
-  background: rgba(54, 105, 158, 0.2);
-  color: var(--color-water-100);
-}
-.wx-sidebar-hover:hover {
-  background: rgba(31, 63, 96, 0.5);
+@keyframes mesh-rotate {
+  0%   { transform: rotate(0deg) scale(1); }
+  100% { transform: rotate(360deg) scale(1); }
 }
 
-/* ── 表格 ── */
-.wx-table th {
-  background: var(--color-earth-50);
-  color: var(--color-earth-700);
-  font-weight: 600;
-  font-size: 0.8125rem;
+/* ── 掃描光 ── */
+.core-sweep {
+  position: absolute; inset: 50%; width: 250px; height: 250px;
+  transform: translate(-50%,-50%); border-radius: 50%;
+  background: conic-gradient(from 0deg, rgba(0,212,255,0.35) 0deg, rgba(139,92,246,0.15) 50deg, transparent 80deg, transparent 360deg);
+  mix-blend-mode: screen; animation: sweep 9s linear infinite; pointer-events: none;
 }
-.wx-table td {
-  color: var(--color-earth-800);
-}
-.wx-table tr:hover td {
-  background: var(--color-earth-50);
+@keyframes sweep {
+  0%   { transform: translate(-50%,-50%) rotate(0deg); }
+  100% { transform: translate(-50%,-50%) rotate(360deg); }
 }
 
-/* ── 動畫 ── */
-@keyframes wx-fade-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+/* ── 數據環 ── */
+.data-ring {
+  position: absolute; inset: 50%; transform: translate(-50%,-50%);
+  border-radius: 50%;
+  border: 1px dashed rgba(0, 212, 255, 0.30);
+  box-shadow: 0 0 35px rgba(0, 212, 255, 0.12);
+  transform-style: preserve-3d;
 }
-.wx-animate-in {
-  animation: wx-fade-in 0.4s ease-out;
+.data-ring::before {
+  content: ""; position: absolute; inset: -1px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+.data-ring.r1 { width: 270px; height: 270px; animation: spin-slow 20s linear infinite; border-color: rgba(0,212,255,0.25); }
+.data-ring.r2 { width: 335px; height: 335px; animation: spin-reverse 32s linear infinite; border-color: rgba(139,92,246,0.18); }
+.data-ring.r3 { width: 395px; height: 395px; animation: spin-slow 42s linear infinite; border-color: rgba(0,255,156,0.12); }
+
+@keyframes spin-slow    { 0% { transform: translate(-50%,-50%) rotate(0deg); } 100% { transform: translate(-50%,-50%) rotate(360deg); } }
+@keyframes spin-reverse { 0% { transform: translate(-50%,-50%) rotate(360deg); } 100% { transform: translate(-50%,-50%) rotate(0deg); } }
+
+/* ── 軌道 ── */
+.data-orbit {
+  position: absolute; inset: 50%; width: 375px; height: 375px;
+  transform: translate(-50%,-50%) rotate(22deg); border-radius: 50%;
+  border-top:    3px solid rgba(0, 212, 255, 0.55);
+  border-left:   2px solid rgba(0, 212, 255, 0.12);
+  border-right:  2px solid rgba(139, 92, 246, 0.35);
+  border-bottom: 3px solid rgba(139, 92, 246, 0.12);
+  animation: orbit-tilt 16s ease-in-out infinite alternate;
+}
+@keyframes orbit-tilt {
+  0%   { transform: translate(-50%,-50%) rotate(22deg) rotateX(0deg); }
+  100% { transform: translate(-50%,-50%) rotate(22deg) rotateX(20deg); }
 }
 
-/* ── 修正紀錄 ── */
-.wx-fix-before {
-  text-decoration: line-through;
-  color: var(--color-fire-400);
-  font-size: 0.8125rem;
+/* ── 浮動數據節點 ── */
+.data-node {
+  position: absolute; width: 8px; height: 8px;
+  border-radius: 50%; background: var(--plasma-blue);
+  box-shadow: 0 0 14px var(--plasma-blue), 0 0 4px #fff;
 }
-.wx-fix-after {
-  color: var(--color-wood-600);
-  font-weight: 600;
-  font-size: 0.8125rem;
+.data-node::after {
+  content: ""; position: absolute; inset: -6px; border-radius: 50%;
+  border: 1px solid rgba(0,212,255,0.4);
+  animation: node-ping 1.6s ease-out infinite;
 }
-.wx-fix-arrow::after {
-  content: '→';
-  margin: 0 0.375rem;
-  color: var(--color-earth-400);
+@keyframes node-ping {
+  0%   { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+.data-node.n1 { top: 12%; left: 35%; animation: float 6s ease-in-out infinite; }
+.data-node.n2 { top: 40%; left: 15%; background: var(--burst-purple); box-shadow: 0 0 14px var(--burst-purple), 0 0 4px #fff; animation: float 5s ease-in-out infinite reverse; }
+.data-node.n2::after { border-color: rgba(139,92,246,0.4); }
+.data-node.n3 { top: 65%; left: 82%; animation: float 7s ease-in-out infinite 1s; }
+.data-node.n4 { top: 25%; left: 80%; background: var(--neuro-green); box-shadow: 0 0 14px var(--neuro-green), 0 0 4px #fff; animation: float 4s ease-in-out infinite 0.5s; }
+.data-node.n4::after { border-color: rgba(0,255,156,0.4); }
+.data-node.n5 { top: 85%; left: 40%; background: var(--data-gold); box-shadow: 0 0 14px var(--data-gold), 0 0 4px #fff; animation: float 6s ease-in-out infinite reverse 1.5s; }
+.data-node.n5::after { border-color: rgba(242,194,0,0.4); }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%       { transform: translateY(-10px) scale(1.1); }
 }
 
-/* ── 分組色帶 ── */
-.wx-group-a1 { border-left: 4px solid var(--color-fire-deep); }
-.wx-group-a2 { border-left: 4px solid var(--color-fire-400); }
-.wx-group-b  { border-left: 4px solid var(--color-metal-400); }
-.wx-group-c  { border-left: 4px solid var(--color-wood-400); }
+/* ── 引擎底座 ── */
+.engine-base {
+  position: absolute; left: 50%; bottom: 34px;
+  width: 220px; height: 58px; transform: translateX(-50%);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(0,212,255,0.18) 0%, rgba(0,212,255,0.04) 40%, rgba(0,0,0,0.32) 100%),
+    linear-gradient(180deg, #0C1428 0%, #080D1A 100%);
+  border: 1px solid rgba(0,212,255,0.22);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.55), 0 0 28px rgba(0,212,255,0.15);
+}
+.engine-base::before {
+  content: ""; position: absolute; left: 50%; top: -12px;
+  width: 120px; height: 20px; transform: translateX(-50%);
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(0,212,255,0.65) 0%, rgba(0,212,255,0.08) 70%, transparent 100%);
+  filter: blur(6px);
+}
 
-/* ── 自訂滾軸 ── */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-thumb { background: var(--color-earth-300); border-radius: 3px; }
-::-webkit-scrollbar-track { background: transparent; }
+/* ── 指標卡片 ── */
+.metric-card {
+  border-radius: var(--radius-lg); padding: 20px;
+  background: linear-gradient(180deg, rgba(0,212,255,0.04) 0%, rgba(0,0,0,0.02) 100%), #080D1A;
+  border: 1px solid rgba(0,212,255,0.10);
+}
+.metric-title { font-size: 13px; color: var(--text-weak); font-weight: 700; }
+.metric-value { margin-top: 10px; font-size: 30px; font-weight: 900; color: var(--plasma-blue); letter-spacing: 0.02em; }
+
+/* ── 按鈕 ── */
+.btn-primary {
+  background: linear-gradient(135deg, #0066CC 0%, #00A8FF 100%);
+  color: #fff; border: 1px solid rgba(0,212,255,0.25);
+  border-radius: 14px; padding: 14px 22px; font-weight: 800;
+  box-shadow: 0 0 30px rgba(0,212,255,0.22);
+}
+.btn-secondary {
+  background: linear-gradient(135deg, #6D28D9 0%, #8B5CF6 100%);
+  color: #fff; border: 1px solid rgba(139,92,246,0.25);
+  border-radius: 14px; padding: 14px 22px; font-weight: 800;
+  box-shadow: 0 0 30px rgba(139,92,246,0.20);
+}
+
+/* ── 數據光束 ── */
+.data-beam { animation: beam-flow 1.5s linear infinite; }
+@keyframes beam-flow {
+  from { stroke-dashoffset: 40; }
+  to   { stroke-dashoffset: 0; }
+}
+
+/* ── 淡入 ── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn { animation: fadeIn 0.8s ease-out both; }
+
+/* ── Tailwind 覆寫 ── */
+
+/* =========================================================
+   兆櫃 3D 螢光力核心 Class 庫 (AIGC 自動連動)
+   ========================================================= */
+
+@keyframes float3D    { 0%,100%{transform:translateY(0) translateZ(0) rotateX(0deg)} 33%{transform:translateY(-12px) translateZ(18px) rotateX(1.5deg)} 66%{transform:translateY(-6px) translateZ(8px) rotateX(-1deg)} }
+@keyframes textDepth  { 0%,100%{text-shadow:1px 2px 0 #00e5ff,2px 4px 0 rgba(0,0,0,.9),0 0 30px rgba(0,229,200,.7),0 0 60px rgba(0,229,200,.3),0 0 100px rgba(0,229,200,.1)} 50%{text-shadow:1px 2px 0 #7c4dff,2px 4px 0 rgba(0,0,0,.9),0 0 50px rgba(124,77,255,.9),0 0 100px rgba(124,77,255,.4),0 0 160px rgba(0,229,200,.2)} }
+@keyframes neonFlare  { 0%,100%{filter:drop-shadow(0 0 8px #00e5ff) drop-shadow(0 0 20px rgba(0,229,200,.5))} 25%{filter:drop-shadow(0 0 18px #7c4dff) drop-shadow(0 0 40px rgba(124,77,255,.6)) drop-shadow(0 0 80px rgba(124,77,255,.2))} 50%{filter:drop-shadow(0 0 22px #00e5ff) drop-shadow(0 0 50px rgba(0,229,200,.8)) drop-shadow(0 0 100px rgba(0,229,200,.25))} 75%{filter:drop-shadow(0 0 16px #ffd700) drop-shadow(0 0 36px rgba(255,215,0,.5))} }
+@keyframes cardLift   { 0%,100%{transform:translateY(0) translateZ(0) rotateY(0deg);box-shadow:0 4px 20px rgba(0,0,0,.6),0 0 0 rgba(0,229,200,0)} 50%{transform:translateY(-6px) translateZ(20px) rotateY(0.5deg);box-shadow:0 20px 60px rgba(0,0,0,.8),0 0 30px rgba(0,229,200,.18)} }
+@keyframes pulseRing3D{ 0%{opacity:.7;transform:translate(-50%,-50%) scale(1) translateZ(0)} 100%{opacity:0;transform:translate(-50%,-50%) scale(2.8) translateZ(80px)} }
+@keyframes hologram   { 0%,100%{opacity:.85;transform:scaleY(1)} 48%{opacity:.92;transform:scaleY(1.002)} 50%{opacity:.7;transform:scaleY(.998) skewX(.4deg)} 52%{opacity:.9;transform:scaleY(1.001)} }
+@keyframes glitchDepth{ 0%,88%,100%{transform:none;text-shadow:1px 2px 0 #00e5ff,2px 4px 0 rgba(0,0,0,.9)} 89%{transform:translate(-2px,0) skewX(4deg);text-shadow:-2px 2px 0 #f0f,4px 2px 0 #0ff,1px 3px 0 rgba(0,0,0,.9)} 91%{transform:translate(2px,0) skewX(-2deg);text-shadow:2px 2px 0 #0f0,1px 3px 0 rgba(0,0,0,.9)} 93%{transform:none;text-shadow:1px 2px 0 #00e5ff,2px 4px 0 rgba(0,0,0,.9)} }
+@keyframes orbitGlow  { 0%,100%{stroke-opacity:.15;stroke-width:.6} 50%{stroke-opacity:.7;stroke-width:2;filter:drop-shadow(0 0 6px #00e5ff)} }
+@keyframes depthPulse { 0%,100%{box-shadow:0 0 20px rgba(0,229,200,.12),inset 0 0 30px rgba(0,229,200,.04),0 8px 32px rgba(0,0,0,.6)} 50%{box-shadow:0 0 60px rgba(0,229,200,.35),inset 0 0 60px rgba(0,229,200,.10),0 20px 60px rgba(0,0,0,.9),0 0 100px rgba(124,77,255,.15)} }
+@keyframes floatIcon  { 0%,100%{transform:translateY(0) scale(1) rotateZ(0deg)} 50%{transform:translateY(-8px) scale(1.12) rotateZ(3deg)} }
+@keyframes scanV      { 0%{left:-3px;opacity:0} 5%{opacity:.8} 95%{opacity:.5} 100%{left:102%;opacity:0} }
+@keyframes perspShift { 0%,100%{transform:perspective(800px) rotateY(0deg) translateZ(0)} 50%{transform:perspective(800px) rotateY(1.5deg) translateZ(8px)} }
+@keyframes shm       { 0%{background-position:200% center} 100%{background-position:-200% center} }
+@keyframes hb        { 0%,100%{transform:scale(1);opacity:.85} 8%{transform:scale(1.22);opacity:1;filter:brightness(2.1)} 20%{transform:scale(.91);opacity:.87} }
+
+.glass {
+  background: linear-gradient(145deg,rgba(0,15,35,.65),rgba(0,8,22,.75)) !important;
+  backdrop-filter: blur(28px) !important; -webkit-backdrop-filter: blur(28px) !important;
+  border: 1px solid rgba(0,229,200,.18) !important;
+  box-shadow: 0 8px 40px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.09) !important;
+}
+.glass-deep {
+  background: rgba(0,6,20,.82) !important; backdrop-filter: blur(36px) !important;
+  border: 1px solid rgba(0,229,200,.10) !important;
+}
+.metalCard { position:relative !important; overflow:hidden !important; transform-style: preserve-3d !important; }
+.metalCard::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background: linear-gradient(90deg,transparent,rgba(255,255,255,.22),rgba(0,229,200,.4),rgba(255,255,255,.22),transparent);
+  border-radius:inherit; pointer-events:none; z-index:2;
+}
+.depthCard { animation: depthPulse 5s ease-in-out infinite !important; }
+
+.shimmerTxt {
+  background: linear-gradient(90deg,#00ffd0,#7c4dff,#00e5ff,#ff6ec7,#ffd700,#00ffd0);
+  background-size: 250% auto; -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; animation: shm 3.2s linear infinite !important;
+  filter: drop-shadow(0 0 12px rgba(0,229,200,.55)) drop-shadow(0 2px 0 rgba(0,0,0,.9));
+}
+

@@ -1,60 +1,50 @@
 // ════════════════════════════════════════════════════
-// 帝王能量聚財色彩系統 — 全球大數據 AI 深淺自動變化
-// 核心哲學：黃金本體在發熱，不俗亮，是有權威的財氣爆發
+// 兆櫃AI派單系統 — 深空科技色彩核心 v10.0
+// 哲學：量子深黑底座 × 電漿霓虹 × 數據藍金雙軸
+// 科技感關鍵：冷冽深藍 + 電漿青綠 + 帝王金點綴
 // ════════════════════════════════════════════════════
 
-// ── 帝王能量核心色彩原典 ──
+// ── 深空科技核心原色 ──
 export const EMPEROR = {
-  // 黑曜金底 — 所有能量的根基，萬物起源
-  obsidian:    '#0A0A0A',
-  obsidianMid: '#111111',
-  obsidianSurf:'#1A1A1A',
+  // 量子深黑底 — 宇宙黑，比純黑更有深度
+  obsidian:     '#03050C',
+  obsidianMid:  '#060A14',
+  obsidianSurf: '#0C1220',
 
-  // 帝王濃金 — 尊貴、聚財、厚重穩定
-  imperialGold: '#D4AF37',
+  // 數據藍 — AI核心電漿色，最主要科技色
+  imperialGold:  '#00D4FF',   // 原imperialGold → 電漿青藍（品牌主色）
 
-  // 琉璃亮金 — 金的高光層次、發光質感
-  glazedGold:   '#F8E08E',
+  // 量子亮藍 — 高光層、數據流
+  glazedGold:    '#7DF9FF',   // 原glazedGold → 量子霓虹藍
 
-  // 帝王綠 — 財氣活化、高級生命力
-  imperialGreen: '#0F7A4A',
+  // 神經綠 — 系統存活信號、AI神經網路
+  imperialGreen: '#00FF9C',   // 原imperialGreen → 神經電漿綠
 
-  // 火焰琥珀橘 — 點燃能量、爆發戰力
-  flameAmber:   '#D96C06',
+  // 爆發紫 — 高壓能量爆發、A1派單
+  flameAmber:    '#8B5CF6',   // 原flameAmber → 電漿深紫
 
-  // 輔助深色層
-  deepGold:    '#8B7520',
-  midGold:     '#B8941E',
-  softGold:    '#EDD97A',
-  ashGold:     '#5A4D18',
-  warmBlack:   '#181410',
+  // 輔助色
+  deepGold:    '#2A4A7F',   // 深空藍（次要文字）
+  midGold:     '#3B6BBF',   // 中調藍
+  softGold:    '#93C5FD',   // 柔和天藍
+  ashGold:     '#1E3A5F',   // 深藍灰
+  warmBlack:   '#050A14',   // 極深藍黑
 } as const;
 
-// ── AI 自動深淺變化 — 全球大數據色彩計算 ──
-// 原理：以黑曜金底為基底，疊加帝王色彩的不同透明度層次
-// 深層（bg/容器）→ 中層（邊框/陰影）→ 表層（文字/高光）
+// ── AI 自動深淺演算 ──
 function makeGoldShades(hex: string) {
   return {
-    // 最深層 — 接近純黑，帶色調記憶
     abyss:  blendWithBlack(hex, 0.04),
-    // 容器底色 — 黑曜中透出色調
     void:   blendWithBlack(hex, 0.10),
-    // 邊框/分隔 — 約 20% 色彩濃度
     shadow: blendWithBlack(hex, 0.22),
-    // 核心基色 — 40% 飽和
     core:   blendWithBlack(hex, 0.45),
-    // 主體色 — 原色 80%
     base:   blendWithBlack(hex, 0.80),
-    // 亮色 — 原色 + 微白提亮
     bright: hex,
-    // 輝光 — 原色 + 更多白
     glow:   lighten(hex, 0.25),
-    // 文字色（深底上可讀）
     text:   lighten(hex, 0.45),
   };
 }
 
-// ── 工具函式：黑色混合（模擬大數據深淺演算法）──
 function blendWithBlack(hex: string, ratio: number): string {
   const r = parseInt(hex.slice(1, 3), 16);
   const g = parseInt(hex.slice(3, 5), 16);
@@ -75,7 +65,7 @@ function lighten(hex: string, ratio: number): string {
   return `#${nr.toString(16).padStart(2, '0')}${ng.toString(16).padStart(2, '0')}${nb.toString(16).padStart(2, '0')}`;
 }
 
-// ── 五行帝王能量色板 ──
+// ── 五行科技色板 interface ──
 export interface WuxingPalette {
   element: string;
   name: string;
@@ -103,109 +93,113 @@ function makePalette(
   return {
     element, name, description: desc,
     ...s,
-    // 漸層：從黑曜底 → 色調暗層 → 核心色（三段AI深淺）
     gradient: `linear-gradient(135deg, ${EMPEROR.warmBlack} 0%, ${s.void} 40%, ${s.shadow} 80%, ${s.core} 100%)`,
     glowShadow: `0 0 24px ${primary}44, 0 0 60px ${primary}22, inset 0 1px 0 ${secondary}33`,
   };
 }
 
-// ── 土：帝王濃金（首選 · 主體 · 聚財核心）──
+// ── 土：數據藍（AI核心主色 · 電漿青藍）──
 export const TU: WuxingPalette = makePalette(
-  '土', '帝王濃金',
-  '尊貴厚重 · 黃金財庫 · 權威爆發',
-  EMPEROR.imperialGold,
-  EMPEROR.glazedGold,
+  '土', '數據藍核',
+  '量子電漿 · AI核心 · 數據藍聚能',
+  '#00D4FF',
+  '#7DF9FF',
 );
 
-// ── 木：帝王綠（財氣活化 · 高級生命力）──
+// ── 木：神經電漿綠（系統生命 · 數據流）──
 export const MU: WuxingPalette = makePalette(
-  '木', '帝王綠',
-  '財氣活水 · 龍脈生機 · 高端尊貴',
-  EMPEROR.imperialGreen,
-  EMPEROR.glazedGold,
+  '木', '神經綠',
+  '神經網路 · 系統生命 · 電漿活化',
+  '#00FF9C',
+  '#00D4FF',
 );
 
-// ── 火：火焰琥珀橘（爆發點燃 · 戰力衝擊）──
+// ── 火：爆發深紫（高壓能量 · 派單引擎）──
 export const HUO: WuxingPalette = makePalette(
-  '火', '火焰琥珀橘',
-  '爆發戰力 · 烈火衝擊 · 財氣點燃',
-  EMPEROR.flameAmber,
-  EMPEROR.imperialGold,
+  '火', '量子紫',
+  '爆發高壓 · 量子紫能 · 派單爆衝',
+  '#8B5CF6',
+  '#C4B5FD',
 );
 
-// ── 金：琉璃亮金（高光層次 · 鏡面精準）──
+// ── 金：帝王金（業績高光 · 數據勝利）──
 export const JIN: WuxingPalette = {
-  element: '金', name: '琉璃亮金',
-  description: '高光層次 · 鏡面精準 · 金屬尊貴',
-  abyss:  '#0E0D08',
-  void:   '#1C1A0F',
-  shadow: '#3A360F',
-  core:   '#7A6F20',
-  base:   '#C8A830',
-  bright: EMPEROR.glazedGold,
-  glow:   lighten(EMPEROR.glazedGold, 0.3),
-  text:   lighten(EMPEROR.glazedGold, 0.5),
-  gradient: `linear-gradient(135deg, ${EMPEROR.warmBlack} 0%, #1C1A0F 40%, #3A360F 80%, #7A6F20 100%)`,
-  glowShadow: `0 0 24px ${EMPEROR.glazedGold}55, 0 0 60px ${EMPEROR.imperialGold}22, inset 0 1px 0 ${EMPEROR.glazedGold}44`,
+  element: '金', name: '帝王金',
+  description: '業績高光 · 數據勝利 · 黃金標誌',
+  abyss:  '#0A0900',
+  void:   '#141200',
+  shadow: '#2A2500',
+  core:   '#5A4E00',
+  base:   '#B89600',
+  bright: '#F2C200',
+  glow:   '#FFE066',
+  text:   '#FFD700',
+  gradient: `linear-gradient(135deg, #0A0900 0%, #141200 40%, #2A2500 80%, #5A4E00 100%)`,
+  glowShadow: `0 0 24px #F2C20055, 0 0 60px #B8960022, inset 0 1px 0 #FFE06644`,
 };
 
-// ── 水：黑曜深金（底蘊力量 · 深層積累）──
+// ── 水：深空藍（底蘊積累 · 宇宙深層）──
 export const SHUI: WuxingPalette = {
-  element: '水', name: '黑曜深金',
-  description: '深層積累 · 底蘊爆發 · 暗潮涌動',
-  abyss:  '#070706',
-  void:   '#0F0E09',
-  shadow: '#221F0E',
-  core:   '#3D3818',
-  base:   '#5A5020',
-  bright: '#8A7A30',
-  glow:   '#AA9840',
-  text:   '#C8B060',
-  gradient: `linear-gradient(135deg, #070706 0%, #0F0E09 40%, #221F0E 80%, #3D3818 100%)`,
-  glowShadow: `0 0 24px #8A7A3055, 0 0 60px #5A502033, inset 0 1px 0 #8A7A3033`,
+  element: '水', name: '深空藍',
+  description: '宇宙深層 · 底蘊積累 · 暗藍爆發',
+  abyss:  '#020510',
+  void:   '#050C20',
+  shadow: '#0D1A3A',
+  core:   '#1A3570',
+  base:   '#2455AA',
+  bright: '#3B82F6',
+  glow:   '#60A5FA',
+  text:   '#93C5FD',
+  gradient: `linear-gradient(135deg, #020510 0%, #050C20 40%, #0D1A3A 80%, #1A3570 100%)`,
+  glowShadow: `0 0 24px #3B82F655, 0 0 60px #1A357033, inset 0 1px 0 #60A5FA33`,
 };
 
 // ── 中心對應五行 ──
 export const CENTER_ELEMENT: Record<string, WuxingPalette> = {
-  'workbench':       TU,    // 每日業績樞紐 → 土（帝王濃金·核心聚財）
-  'report-center':   SHUI,  // 業績輸入審計 → 水（黑曜深金·底層積累）
-  'dispatch-center': HUO,   // 軍團派單中心 → 火（火焰琥珀·爆發作戰）
-  'announce-center': JIN,   // 公告播報中心 → 金（琉璃亮金·精準傳達）
-  'hv-center':       TU,    // 高價成交中心 → 土（帝王濃金·招財磁場）
-  'line-center':     SHUI,  // LINE 轉傳中心 → 水（黑曜深金·流通傳遞）
-  'talent-center':   MU,    // 人才管理中心 → 木（帝王綠·培育生長）
-  'system-center':   JIN,   // 系統設定中心 → 金（琉璃亮金·結構精密）
+  'workbench':       TU,
+  'report-center':   SHUI,
+  'dispatch-center': HUO,
+  'announce-center': JIN,
+  'hv-center':       TU,
+  'line-center':     SHUI,
+  'talent-center':   MU,
+  'system-center':   JIN,
 };
 
 // ── 群組對應五行 ──
 export const GROUP_ELEMENT: Record<string, WuxingPalette> = {
-  '每日核心流程': TU,   // 土 — 帝王濃金，聚財核心啟動
-  '業務作戰':     HUO,  // 火 — 火焰琥珀橘，爆發衝鋒
-  '管理後台':     JIN,  // 金 — 琉璃亮金，精密結構管理
+  '主選單':        TU,
+  '每日核心流程':  TU,
+  '高價成交爆發':  HUO,
+  '女聲智慧播報':  JIN,
+  'LINE群組轉傳':  SHUI,
+  '業務作戰':      HUO,
+  '系統管理':      JIN,
+  '管理後台':      JIN,
 };
 
-// ── 全局帝王能量 UI 常量 ──
+// ── 全局深空科技 UI 常量 ──
 export const EMPEROR_UI = {
-  // 全局背景 — 黑曜金底
-  pageBg:     EMPEROR.obsidianMid,
-  sidebarBg:  EMPEROR.obsidian,
-  cardBg:     '#161410',
-  cardBorder: '#2A2416',
+  // 全局背景 — 量子深黑
+  pageBg:     '#04070F',
+  sidebarBg:  '#03050C',
+  cardBg:     '#080D1A',
+  cardBorder: '#0F1A30',
 
-  // 帝王金光流 — 品牌主色
-  brandGold:  EMPEROR.imperialGold,
-  brandGlow:  EMPEROR.glazedGold,
-  brandGreen: EMPEROR.imperialGreen,
-  brandFire:  EMPEROR.flameAmber,
+  // 品牌主色 — 電漿青藍軸
+  brandGold:  '#00D4FF',     // 電漿青藍（品牌主色）
+  brandGlow:  '#7DF9FF',     // 量子高光藍
+  brandGreen: '#00FF9C',     // 神經電漿綠
+  brandFire:  '#8B5CF6',     // 爆發量子紫
 
   // 文字層次
-  textPrimary:   EMPEROR.glazedGold,   // 主標題
-  textSecondary: EMPEROR.imperialGold, // 副標題
-  textMuted:     EMPEROR.deepGold,     // 輔助說明
-  textDim:       EMPEROR.ashGold,      // 最淡
+  textPrimary:   '#E8F4FF',    // 主文字 — 冷白
+  textSecondary: '#7DF9FF',    // 副標題 — 量子藍
+  textMuted:     '#4A7FA0',    // 輔助 — 深藍灰
+  textDim:       '#1E3A5F',    // 最淡 — 深空藍
 
   // 分隔線 / 邊框
-  borderMain:    '#2A2416',
-  borderAccent:  '#4A3C18',
-  borderGold:    `${EMPEROR.imperialGold}55`,
+  borderMain:    '#0D1A30',
+  borderAccent:  '#0F2A4A',
+  borderGold:    'rgba(0,212,255,0.25)',
 };

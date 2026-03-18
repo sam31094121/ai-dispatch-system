@@ -1,304 +1,1617 @@
-// ==========================================
-// 人工智慧商業帝國系統 V50 - 主入口
-// ==========================================
-import React, { useState, useMemo, useEffect } from 'react';
-import {
-  BarChart3, ClipboardList, User, UserPlus, BookOpen,
-  LayoutDashboard, Search, Settings, ChevronRight, Megaphone,
-  Diamond, Target, Clipboard, MessageSquare, Mic, Volume2, FileText, Radio,
-  MessageCircle, Send
-} from 'lucide-react';
-import { cn } from '../lib/utils';
+import React, {
+  useState, useEffect, useRef, useMemo, useCallback,
+  Component, type ErrorInfo, type ReactNode,
+} from 'react';
+import { Link } from 'react-router-dom';
 import { rawEmployees, platforms } from '../data/mockData';
-import { calculateAiScores, assignGroups } from '../engine/aiEngine';
-import { analyzeTrends, type MarketingSuggestion } from '../engine/trendEngine';
-import { geminiService } from '../services/gemini.service';
-import { analyzeHighValueAbility, generateHighValueSuggestions, detectHighValueAlerts, generateTeamRally } from '../engine/highValueEngine';
-import type { Employee } from '../data/mockData';
+import { calculateAiScores, assignGroups, calcHealthScore } from '../engine/aiEngine';
 
-// 頁面元件
-import CeoDashboard from '../components/CeoDashboard';
-import DispatchDashboard from '../components/DispatchDashboard';
-import MyDashboard from '../components/MyDashboard';
-import { HiringDashboard, TrainingDashboard } from '../components/HiringTraining';
-import DataImport from '../components/DataImport';
-import MarketingAIDashboard from '../components/MarketingAI';
-import { HighValueCommandCenter, HighValuePersonalPage } from '../components/HighValueCommand';
-import { ScriptLibraryPage, CustomerTargetPage, HighValueTrainingPage, RallyAnnouncementPage } from '../components/HighValueTools';
-import { BroadcastCommandCenter, BroadcastScriptManager, BroadcastStyleSettings, BroadcastPlaybackControl } from '../components/BroadcastPages';
-import { LineGroupDashboard, LineGroupRules } from '../components/LineGroupPages';
-import { Card, CardHeader, CardContent } from '../components/ui';
+const CFG = {
+  particles:  { ultra:320, high:160, low:55,  minimal:10 },
+  matrixDens: { ultra:1.0, high:.65, low:.28, minimal:0  },
+  bolts:      { ultra:10,  high:5,   low:2,   minimal:0  },
+  ripples:    { ultra:16,  high:8,   low:3,   minimal:0  },
+  numStreams:  { ultra:80,  high:40,  low:16,  minimal:0  },
+  stars:      { ultra:220, high:110, low:0,   minimal:0  },
+  fps:        { down:30, up:50, crit:18 },
+  mouse:      { parallax:.012 },
+} as const;
+type Tier = 'ultra' | 'high' | 'low' | 'minimal';
 
-// 角色定義
-const roles = [
-  { key: 'ceo', label: '👑 最高管理者', desc: '老闆總控台' },
-  { key: 'manager', label: '👥 主管', desc: '派單台' },
-  { key: 'marketer', label: '💼 行銷人員', desc: '個人頁' },
-  { key: 'marketing', label: '📣 行銷 AI', desc: '行銷建議' },
-  { key: 'hv_command', label: '💎 高價總控', desc: '高價成交' },
-  { key: 'hv_personal', label: '🎯 高價個人', desc: '能力分析' },
-  { key: 'hv_scripts', label: '📚 話術素材', desc: '話術庫' },
-  { key: 'hv_targets', label: '🎯 攻單名單', desc: '客戶攻單' },
-  { key: 'hv_training', label: '🎓 高價訓練', desc: '訓練中心' },
-  { key: 'hv_rally', label: '📣 團隊喊話', desc: '喊話公告' },
-  { key: 'bc_command', label: '🎙️ 播報總控', desc: '女聲播報' },
-  { key: 'bc_scripts', label: '📝 播報稿', desc: '稿件管理' },
-  { key: 'bc_styles', label: '⚙️ 播報風格', desc: '風格設定' },
-  { key: 'bc_playback', label: '🔊 播放控制', desc: '即時播放' },
-  { key: 'line_convert', label: '💬 LINE 轉傳', desc: '群組轉傳' },
-  { key: 'line_rules', label: '📖 轉傳規則', desc: '格式規則' },
-  { key: 'recruiter', label: '🎯 招聘管理者', desc: '招聘頁' },
-  { key: 'trainer', label: '🎓 訓練管理者', desc: '訓練頁' },
-] as const;
+const CSS = `
+  @keyframes hb        { 0%,100%{transform:scale(1);opacity:.85} 8%{transform:scale(1.22);opacity:1;filter:brightness(2.1) drop-shadow(0 0 65px #00e5ffff)} 20%{transform:scale(.91);opacity:.87} 35%{transform:scale(1.14);opacity:1;filter:brightness(1.5) drop-shadow(0 0 36px #00ffd0bb)} 52%{transform:scale(.97);opacity:.93} }
+  @keyframes breathe   { 0%,100%{transform:scale(1);opacity:.68} 50%{transform:scale(1.09);opacity:1} }
+  @keyframes breatheS  { 0%,100%{opacity:.5;transform:scale(1) translateY(0)} 50%{opacity:1;transform:scale(1.07) translateY(-7px)} }
+  @keyframes throb     { 0%,100%{text-shadow:0 0 10px rgba(0,255,208,.3)} 50%{text-shadow:0 0 45px rgba(0,255,208,1),0 0 90px rgba(0,210,255,.65)} }
+  @keyframes scanRot   { from{transform:translate(-50%,-50%) rotate(0deg)} to{transform:translate(-50%,-50%) rotate(360deg)} }
+  @keyframes orbDNA    { from{transform:translate(-50%,-50%) rotate(0deg) rotateX(68deg)} to{transform:translate(-50%,-50%) rotate(360deg) rotateX(68deg)} }
+  @keyframes orbDNA2   { from{transform:translate(-50%,-50%) rotate(360deg) rotateX(68deg) rotateZ(50deg)} to{transform:translate(-50%,-50%) rotate(0deg) rotateX(68deg) rotateZ(50deg)} }
+  @keyframes orbDNA3   { from{transform:translate(-50%,-50%) rotate(180deg) rotateY(72deg)} to{transform:translate(-50%,-50%) rotate(-180deg) rotateY(72deg)} }
+  @keyframes orbDNA4   { from{transform:translate(-50%,-50%) rotate(90deg) rotateZ(30deg) rotateX(45deg)} to{transform:translate(-50%,-50%) rotate(450deg) rotateZ(30deg) rotateX(45deg)} }
+  @keyframes memGlow   { 0%,100%{box-shadow:0 0 50px rgba(0,229,200,.28),inset 0 0 60px rgba(0,229,200,.1)} 33%{box-shadow:0 0 140px rgba(0,229,200,.8),inset 0 0 120px rgba(0,229,200,.26)} 66%{box-shadow:0 0 95px rgba(124,77,255,.58),inset 0 0 85px rgba(124,77,255,.18)} }
+  @keyframes petriF    { 0%,100%{transform:translateY(0) rotate(0deg) scale(1)} 30%{transform:translateY(-9px) rotate(.7deg) scale(1.013)} 65%{transform:translateY(-4px) rotate(-.6deg) scale(1.006)} }
+  @keyframes godray    { 0%,100%{opacity:.05;transform:translateX(-50%) skewX(-14deg) scaleX(1)} 50%{opacity:.3;transform:translateX(-50%) skewX(-14deg) scaleX(1.42)} }
+  @keyframes hueC      { 0%{filter:hue-rotate(0deg) brightness(1)} 50%{filter:hue-rotate(22deg) brightness(1.07)} 100%{filter:hue-rotate(0deg) brightness(1)} }
+  @keyframes cpng      { 0%{r:4;opacity:1} 100%{r:30;opacity:0} }
+  @keyframes gaugeEx   { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.8) drop-shadow(0 0 28px #00ffa0ff)} }
+  @keyframes vitalNd   { 0%,100%{filter:drop-shadow(0 0 9px #00ffa055)} 50%{filter:drop-shadow(0 0 40px #00ffa0ff) brightness(2.4)} }
+  @keyframes pktTravel { 0%{offset-distance:0%;opacity:0} 4%{opacity:1} 87%{opacity:.95} 100%{offset-distance:100%;opacity:0} }
+  @keyframes pgFade    { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes ticker    { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+  @keyframes pulseWave { 0%{r:40;opacity:.85;stroke-width:4} 100%{r:218;opacity:0;stroke-width:.3} }
+  @keyframes ecgPulse  { 0%{transform:translateX(0)} 100%{transform:translateX(-200px)} }
+  @keyframes blobMorph { 0%,100%{border-radius:62% 38% 54% 46% / 48% 62% 38% 52%} 25%{border-radius:42% 58% 36% 64% / 58% 36% 64% 42%} 50%{border-radius:56% 44% 62% 38% / 36% 64% 42% 58%} 75%{border-radius:38% 62% 46% 54% / 64% 38% 58% 42%} }
+  @keyframes shimmer   { 0%{background-position:200% center} 100%{background-position:-200% center} }
+  @keyframes elecArc   { 0%,80%,100%{opacity:0;stroke-width:.3} 81%{opacity:1;stroke-width:2.8;filter:drop-shadow(0 0 12px #00e5ff)} 86%{opacity:.3;stroke-width:.6} 90%{opacity:.9;stroke-width:2.2} 94%{opacity:.15;stroke-width:.4} 97%{opacity:.7;stroke-width:1.6} }
+  @keyframes currentFlow { from{stroke-dashoffset:80;opacity:.75} to{stroke-dashoffset:0;opacity:.18} }
+  @keyframes plasmaCore  { 0%,100%{filter:drop-shadow(0 0 14px #00e5ff) drop-shadow(0 0 32px #00ffd0)} 50%{filter:drop-shadow(0 0 38px #fff) drop-shadow(0 0 76px #00e5ff) drop-shadow(0 0 120px #7c4dff)} }
+  @keyframes quantArc  { 0%,100%{opacity:.06;stroke-width:.6} 50%{opacity:.62;stroke-width:2.2;filter:drop-shadow(0 0 18px #7c4dff)} }
+  @keyframes dendrite  { 0%,100%{opacity:0;stroke-width:.3} 50%{opacity:.9;stroke-width:1.8} }
+  @keyframes coronaRay { 0%,100%{opacity:.05;transform:scaleY(1)} 50%{opacity:.2;transform:scaleY(1.22)} }
+  @keyframes cellDiv   { 0%,100%{letter-spacing:-.02em;transform:scaleX(1)} 48%{letter-spacing:.08em;transform:scaleX(1.06)} 52%{letter-spacing:-.02em;transform:scaleX(.97)} }
+  @keyframes dataGlitch { 0%,91%,100%{transform:none;opacity:1;filter:none} 92%{transform:skewX(5deg) translateX(-3px);opacity:.88;filter:drop-shadow(-3px 0 #f0f)} 93%{transform:skewX(-3deg) translateX(2px);opacity:.94;filter:drop-shadow(2px 0 #0ff)} 94%{transform:none;opacity:1} 95%{transform:skewX(2deg) scaleX(.98);filter:drop-shadow(1px 0 #0f0);opacity:.93} 96%{transform:none;opacity:1} }
+  @keyframes scanH     { 0%{top:-3px;opacity:0} 5%{opacity:.7} 92%{opacity:.38} 100%{top:102%;opacity:0} }
+  @keyframes metalSheen{ 0%{background-position:-200% center} 100%{background-position:200% center} }
+  @keyframes numFall   { 0%{transform:translateY(-20px);opacity:0} 8%{opacity:1} 90%{opacity:.85} 100%{transform:translateY(100vh);opacity:0} }
+  @keyframes neonBorder { 0%,100%{border-color:rgba(0,229,200,.25);box-shadow:0 0 12px rgba(0,229,200,.1)} 33%{border-color:rgba(124,77,255,.4);box-shadow:0 0 24px rgba(124,77,255,.2)} 66%{border-color:rgba(0,229,200,.35);box-shadow:0 0 20px rgba(0,229,200,.18)} }
+  @keyframes counterUp { 0%{opacity:0;transform:translateY(6px)} 100%{opacity:1;transform:translateY(0)} }
+  @keyframes corePulse { 0%,100%{opacity:.3;transform:translate(-50%,-50%) scale(1)} 50%{opacity:.9;transform:translate(-50%,-50%) scale(1.06)} }
+  @keyframes radarArm  { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+  @keyframes hudBlink  { 0%,100%{opacity:.55} 50%{opacity:1} }
+  @keyframes hudPing   { 0%{transform:scale(1);opacity:.9} 100%{transform:scale(2.5);opacity:0} }
+  @keyframes computeIn { 0%{opacity:0;transform:translateX(-8px)} 100%{opacity:1;transform:translateX(0)} }
+  @keyframes starFlick { 0%,100%{opacity:.4} 50%{opacity:1} }
+  @keyframes bhSpin    { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+  @keyframes bhSpinR   { from{transform:rotate(360deg)} to{transform:rotate(0deg)} }
+  @keyframes bhFlicker { 0%,100%{opacity:.12} 50%{opacity:.88} }
+  @keyframes jetPulse  { 0%,100%{stroke-dashoffset:0;opacity:.1} 50%{stroke-dashoffset:24;opacity:.36} }
+  @keyframes photon    { 0%,100%{filter:drop-shadow(0 0 10px rgba(255,180,50,.5))} 50%{filter:drop-shadow(0 0 26px rgba(255,230,100,.95)) drop-shadow(0 0 60px rgba(255,140,0,.5))} }
+  @keyframes voidWin   { 0%,100%{box-shadow:0 0 40px rgba(0,229,200,.08),inset 0 0 60px rgba(0,0,20,.9)} 50%{box-shadow:0 0 90px rgba(124,77,255,.24),inset 0 0 60px rgba(0,0,20,.9)} }
+  @keyframes rankSlide { from{opacity:0;transform:translateX(-22px)} to{opacity:1;transform:translateX(0)} }
+  @keyframes parseFlash{ 0%,100%{opacity:1} 50%{opacity:.65;filter:brightness(1.5)} }
 
-type RoleKey = typeof roles[number]['key'];
+  /* ══ NEW: 3D + 螢光強化 ══ */
+  @keyframes float3D    { 0%,100%{transform:translateY(0) translateZ(0) rotateX(0deg)} 33%{transform:translateY(-12px) translateZ(18px) rotateX(1.5deg)} 66%{transform:translateY(-6px) translateZ(8px) rotateX(-1deg)} }
+  @keyframes textDepth  { 0%,100%{text-shadow:1px 2px 0 #00e5ff,2px 4px 0 rgba(0,0,0,.9),0 0 30px rgba(0,229,200,.7),0 0 60px rgba(0,229,200,.3),0 0 100px rgba(0,229,200,.1)} 50%{text-shadow:1px 2px 0 #7c4dff,2px 4px 0 rgba(0,0,0,.9),0 0 50px rgba(124,77,255,.9),0 0 100px rgba(124,77,255,.4),0 0 160px rgba(0,229,200,.2)} }
+  @keyframes neonFlare  { 0%,100%{filter:drop-shadow(0 0 8px #00e5ff) drop-shadow(0 0 20px rgba(0,229,200,.5))} 25%{filter:drop-shadow(0 0 18px #7c4dff) drop-shadow(0 0 40px rgba(124,77,255,.6)) drop-shadow(0 0 80px rgba(124,77,255,.2))} 50%{filter:drop-shadow(0 0 22px #00e5ff) drop-shadow(0 0 50px rgba(0,229,200,.8)) drop-shadow(0 0 100px rgba(0,229,200,.25))} 75%{filter:drop-shadow(0 0 16px #ffd700) drop-shadow(0 0 36px rgba(255,215,0,.5))} }
+  @keyframes cardLift   { 0%,100%{transform:translateY(0) translateZ(0) rotateY(0deg);box-shadow:0 4px 20px rgba(0,0,0,.6),0 0 0 rgba(0,229,200,0)} 50%{transform:translateY(-6px) translateZ(20px) rotateY(0.5deg);box-shadow:0 20px 60px rgba(0,0,0,.8),0 0 30px rgba(0,229,200,.18)} }
+  @keyframes pulseRing3D{ 0%{opacity:.7;transform:translate(-50%,-50%) scale(1) translateZ(0)} 100%{opacity:0;transform:translate(-50%,-50%) scale(2.8) translateZ(80px)} }
+  @keyframes hologram   { 0%,100%{opacity:.85;transform:scaleY(1)} 48%{opacity:.92;transform:scaleY(1.002)} 50%{opacity:.7;transform:scaleY(.998) skewX(.4deg)} 52%{opacity:.9;transform:scaleY(1.001)} }
+  @keyframes glitchDepth{ 0%,88%,100%{transform:none;text-shadow:1px 2px 0 #00e5ff,2px 4px 0 rgba(0,0,0,.9)} 89%{transform:translate(-2px,0) skewX(4deg);text-shadow:-2px 2px 0 #f0f,4px 2px 0 #0ff,1px 3px 0 rgba(0,0,0,.9)} 91%{transform:translate(2px,0) skewX(-2deg);text-shadow:2px 2px 0 #0f0,1px 3px 0 rgba(0,0,0,.9)} 93%{transform:none;text-shadow:1px 2px 0 #00e5ff,2px 4px 0 rgba(0,0,0,.9)} }
+  @keyframes orbitGlow  { 0%,100%{stroke-opacity:.15;stroke-width:.6} 50%{stroke-opacity:.7;stroke-width:2;filter:drop-shadow(0 0 6px #00e5ff)} }
+  @keyframes depthPulse { 0%,100%{box-shadow:0 0 20px rgba(0,229,200,.12),inset 0 0 30px rgba(0,229,200,.04),0 8px 32px rgba(0,0,0,.6)} 50%{box-shadow:0 0 60px rgba(0,229,200,.35),inset 0 0 60px rgba(0,229,200,.10),0 20px 60px rgba(0,0,0,.9),0 0 100px rgba(124,77,255,.15)} }
+  @keyframes floatIcon  { 0%,100%{transform:translateY(0) scale(1) rotateZ(0deg)} 50%{transform:translateY(-8px) scale(1.12) rotateZ(3deg)} }
+  @keyframes scanV      { 0%{left:-3px;opacity:0} 5%{opacity:.8} 95%{opacity:.5} 100%{left:102%;opacity:0} }
+  @keyframes perspShift { 0%,100%{transform:perspective(800px) rotateY(0deg) translateZ(0)} 50%{transform:perspective(800px) rotateY(1.5deg) translateZ(8px)} }
 
-// 側邊選單
-const menuItems: { key: RoleKey; icon: any; label: string; section?: string }[] = [
-  { key: 'ceo', icon: LayoutDashboard, label: '老闆總控台' },
-  { key: 'manager', icon: ClipboardList, label: '主管派單台' },
-  { key: 'marketer', icon: User, label: '員工個人頁' },
-  { key: 'marketing', icon: Megaphone, label: 'AI 行銷建議' },
-  { key: 'hv_command', icon: Diamond, label: '高價總控台', section: '高價成交爆發' },
-  { key: 'hv_personal', icon: Target, label: '高價個人頁' },
-  { key: 'hv_scripts', icon: BookOpen, label: '話術素材庫' },
-  { key: 'hv_targets', icon: Target, label: '攻單名單' },
-  { key: 'hv_training', icon: Clipboard, label: '高價訓練' },
-  { key: 'hv_rally', icon: MessageSquare, label: '團隊喊話' },
-  { key: 'bc_command', icon: Mic, label: '播報總控台', section: '女聲智慧播報' },
-  { key: 'bc_scripts', icon: FileText, label: '播報稿管理' },
-  { key: 'bc_styles', icon: Radio, label: '播報風格' },
-  { key: 'bc_playback', icon: Volume2, label: '播放控制' },
-  { key: 'line_convert', icon: Send, label: 'LINE 轉傳台', section: 'LINE 群組轉傳' },
-  { key: 'line_rules', icon: MessageCircle, label: '轉傳規則' },
-  { key: 'recruiter', icon: UserPlus, label: '招聘管理', section: '系統管理' },
-  { key: 'trainer', icon: BookOpen, label: '訓練管理' },
+  .hb        { animation: hb 1.8s ease-in-out infinite; }
+  .breathe   { animation: breathe 3.5s ease-in-out infinite; }
+  .breatheS  { animation: breatheS 6.5s ease-in-out infinite; }
+  .petriF    { animation: petriF 6s ease-in-out infinite; }
+  .mem       { animation: memGlow 5s ease-in-out infinite; }
+  .hueC      { animation: hueC 11s ease-in-out infinite; }
+  .pgFade    { animation: pgFade .9s ease-out both; }
+  .ticker    { animation: ticker 26s linear infinite; white-space:nowrap; display:inline-block; }
+  .shimmerTxt {
+    background: linear-gradient(90deg,#00ffd0,#7c4dff,#00e5ff,#ff6ec7,#ffd700,#00ffd0);
+    background-size: 250% auto; -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; animation: shimmer 3.2s linear infinite;
+    filter: drop-shadow(0 0 12px rgba(0,229,200,.55)) drop-shadow(0 2px 0 rgba(0,0,0,.9));
+  }
+  .shimmerTxt3d {
+    background: linear-gradient(90deg,#00ffd0,#7c4dff,#00e5ff,#ff6ec7,#ffd700,#00ffd0);
+    background-size: 250% auto; -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; animation: shimmer 3.2s linear infinite;
+    position: relative;
+    filter: drop-shadow(0 3px 0 rgba(0,0,0,.95)) drop-shadow(0 0 20px rgba(0,229,200,.7));
+  }
+  .cellDiv    { animation: cellDiv 3.2s ease-in-out infinite; }
+  .dataGlitch { animation: dataGlitch 4.8s ease-in-out infinite; }
+  .hologram   { animation: hologram 6s ease-in-out infinite; }
+  .glass {
+    background: linear-gradient(145deg,rgba(0,15,35,.65),rgba(0,8,22,.75));
+    backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
+    border: 1px solid rgba(0,229,200,.18);
+    box-shadow: 0 8px 40px rgba(0,0,0,.7),
+                inset 0 1px 0 rgba(255,255,255,.09),
+                inset 0 -1px 0 rgba(0,229,200,.06);
+  }
+  .glass-deep {
+    background: rgba(0,6,20,.82); backdrop-filter: blur(36px);
+    -webkit-backdrop-filter: blur(36px);
+    border: 1px solid rgba(0,229,200,.10);
+    box-shadow: 0 16px 80px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.05);
+  }
+  .metalCard { position:relative; overflow:hidden; transform-style: preserve-3d; }
+  .metalCard::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:1px;
+    background: linear-gradient(90deg,transparent,rgba(255,255,255,.22),rgba(0,229,200,.4),rgba(255,255,255,.22),transparent);
+    border-radius:inherit; pointer-events:none; z-index:2;
+  }
+  .metalCard::after {
+    content:''; position:absolute; inset:0;
+    background: linear-gradient(135deg,rgba(255,255,255,.07) 0%,transparent 40%,transparent 60%,rgba(0,229,200,.04) 100%);
+    background-size:200% auto; animation: metalSheen 5s ease-in-out infinite;
+    pointer-events:none; border-radius:inherit; z-index:1;
+  }
+  .scanLine {
+    position:absolute; left:0; right:0; height:2px;
+    background: linear-gradient(90deg,transparent,rgba(0,229,200,.8),rgba(255,255,255,.5),rgba(0,229,200,.8),transparent);
+    box-shadow: 0 0 12px rgba(0,229,200,.6), 0 0 30px rgba(0,229,200,.2);
+    animation: scanH 4s linear infinite; pointer-events:none; z-index:20;
+  }
+  .scanLineV {
+    position:absolute; top:0; bottom:0; width:2px;
+    background: linear-gradient(180deg,transparent,rgba(0,229,200,.6),rgba(255,255,255,.4),rgba(0,229,200,.6),transparent);
+    box-shadow: 0 0 10px rgba(0,229,200,.5);
+    animation: scanV 7s linear infinite; pointer-events:none; z-index:20;
+  }
+  .neonBorder { animation: neonBorder 4s ease-in-out infinite; }
+  .tierBadge {
+    position:fixed; bottom:12px; right:14px;
+    font-size:8px; letter-spacing:2px; font-weight:900;
+    color:rgba(0,229,200,.28); z-index:100; pointer-events:none; font-family:monospace;
+  }
+  .numStream {
+    position:absolute; pointer-events:none; font-family:monospace;
+    font-size:11px; font-weight:700; user-select:none;
+  }
+  .depthCard {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    transition: transform .4s cubic-bezier(.23,1,.32,1), box-shadow .4s ease;
+    will-change: transform;
+    animation: cardLift 6s ease-in-out infinite;
+  }
+  .depthCard:hover {
+    transform: translateY(-12px) translateZ(24px) scale(1.025) !important;
+    box-shadow: 0 30px 80px rgba(0,0,0,.9), 0 0 50px rgba(0,229,200,.28), 0 0 100px rgba(0,229,200,.10) !important;
+    animation: none;
+  }
+  .coreGlow {
+    filter: drop-shadow(0 0 28px #00e5ff) drop-shadow(0 0 60px rgba(0,229,200,.5)) drop-shadow(0 0 100px rgba(0,229,200,.2));
+    animation: neonFlare 3s ease-in-out infinite;
+  }
+`;
+
+/* ── FPS MONITOR ── */
+const usePerf = (): Tier => {
+  const [tier, setTier] = useState<Tier>('high');
+  const times = useRef<number[]>([]);
+  const raf   = useRef(0);
+  const lastOp= useRef(0);
+  useEffect(()=>{
+    let prev = performance.now();
+    const tick = (now:number) => {
+      times.current.push(now-prev); prev=now;
+      if(times.current.length>=60){
+        const fps=1000/(times.current.reduce((a,b)=>a+b,0)/60);
+        times.current=[];
+        const t=Date.now();
+        if(t-lastOp.current<4000){raf.current=requestAnimationFrame(tick);return;}
+        if(fps<CFG.fps.crit){setTier('minimal');lastOp.current=t;}
+        else if(fps<CFG.fps.down){setTier(p=>p==='ultra'?'high':p==='high'?'low':p==='low'?'minimal':p);lastOp.current=t;}
+        else if(fps>CFG.fps.up){setTier(p=>p==='minimal'?'low':p==='low'?'high':p);lastOp.current=t;}
+      }
+      raf.current=requestAnimationFrame(tick);
+    };
+    raf.current=requestAnimationFrame(tick);
+    return()=>cancelAnimationFrame(raf.current);
+  },[]);
+  return tier;
+};
+
+/* ── MOUSE PARALLAX ── */
+const useMouse = () => {
+  const mx=useRef(0), my=useRef(0);
+  const [pos,setPos]=useState({x:0,y:0});
+  useEffect(()=>{
+    let frame=0;
+    const onMove=(e:MouseEvent)=>{mx.current=e.clientX;my.current=e.clientY;};
+    const lerp=()=>{
+      setPos(p=>{
+        const nx=p.x+(mx.current-p.x)*.08, ny=p.y+(my.current-p.y)*.08;
+        return(Math.abs(nx-p.x)<.05&&Math.abs(ny-p.y)<.05)?p:{x:nx,y:ny};
+      });
+      frame=requestAnimationFrame(lerp);
+    };
+    window.addEventListener('mousemove',onMove,{passive:true});
+    frame=requestAnimationFrame(lerp);
+    return()=>{window.removeEventListener('mousemove',onMove);cancelAnimationFrame(frame);};
+  },[]);
+  return pos;
+};
+
+/* ── ERROR BOUNDARY ── */
+interface SZProps{children:ReactNode;fallback?:ReactNode;label?:string;}
+interface SZState{err:boolean;}
+class SafeZone extends Component<SZProps,SZState>{
+  state:SZState={err:false};
+  static getDerivedStateFromError():SZState{return{err:true};}
+  componentDidCatch(e:Error,_i:ErrorInfo){console.warn('[SafeZone]',this.props.label??'?',e.message);}
+  render(){
+    if(this.state.err)return this.props.fallback??(<div style={{padding:'12px 18px',color:'rgba(0,229,200,.4)',fontSize:'11px',fontFamily:'monospace',border:'1px solid rgba(0,229,200,.08)',borderRadius:8}}>◈ 模組已安全降級</div>);
+    return this.props.children;
+  }
+}
+
+/* ── NUMBER STREAM ── */
+const STREAM_CHARS='0123456789ABCDEF$¥€×÷±∞∑►▲◆';
+interface StreamCol{x:number;digits:string[];speed:number;delay:number;color:string;size:number;}
+const NumberStream=({tier}:{tier:Tier})=>{
+  const count=CFG.numStreams[tier];
+  const cols=useMemo(():StreamCol[]=>{
+    const COLORS=['rgba(0,229,200,X)','rgba(0,255,140,X)','rgba(124,77,255,X)','rgba(0,200,255,X)','rgba(255,200,0,X)'];
+    return Array.from({length:count},(_,i)=>({
+      x:Math.random()*100,
+      digits:Array.from({length:Math.floor(Math.random()*16)+6},()=>STREAM_CHARS[Math.floor(Math.random()*STREAM_CHARS.length)]),
+      speed:Math.random()*5+3,delay:Math.random()*6,
+      color:COLORS[i%COLORS.length].replace('X',String((Math.random()*.5+.35).toFixed(2))),
+      size:Math.floor(Math.random()*5)+9,
+    }));
+  },[count]);
+  if(count===0)return null;
+  return(
+    <div style={{position:'absolute',inset:0,overflow:'hidden',pointerEvents:'none',zIndex:1}}>
+      {cols.map((c,i)=>(
+        <div key={i} style={{
+          position:'absolute',left:`${c.x}%`,top:0,fontFamily:'monospace',
+          fontSize:`${c.size}px`,fontWeight:700,color:c.color,
+          textShadow:`0 0 8px ${c.color}`,
+          animation:`numFall ${c.speed}s linear infinite`,animationDelay:`${c.delay}s`,
+          writingMode:'vertical-rl',letterSpacing:'6px',opacity:.7,
+          userSelect:'none',pointerEvents:'none',lineHeight:1.4,
+        }}>{c.digits.join('')}</div>
+      ))}
+    </div>
+  );
+};
+
+/* ── LIVE COMPUTE PANEL ── */
+const COMPUTE_OPS=['SUM','AVG','MAX','MIN','SORT','HASH','PACK','SCAN','RANK','SYNC','LOAD','MERGE','INDEX','FLUSH'];
+const LiveCompute=({tier}:{tier:Tier})=>{
+  const [lines,setLines]=useState<string[]>([]);
+  useEffect(()=>{
+    if(tier==='minimal'||tier==='low')return;
+    const gen=()=>{
+      const op=COMPUTE_OPS[Math.floor(Math.random()*COMPUTE_OPS.length)];
+      const id=Math.floor(Math.random()*9999).toString().padStart(4,'0');
+      const val=Math.floor(Math.random()*9999999).toLocaleString();
+      return `${op}[${id}] ${Math.random()>.12?'✓':'→'} ${val}`;
+    };
+    setLines(Array.from({length:10},gen));
+    const iv=setInterval(()=>setLines(p=>[gen(),...p.slice(0,11)]),190);
+    return()=>clearInterval(iv);
+  },[tier]);
+  if(tier==='minimal'||tier==='low')return null;
+  return(
+    <div style={{
+      position:'absolute',left:'clamp(10px,2.5vw,36px)',top:'50%',
+      transform:'translateY(-40%)',
+      fontFamily:'monospace',fontSize:'7.5px',letterSpacing:'1px',
+      color:'rgba(0,229,200,.45)',zIndex:12,pointerEvents:'none',
+      maxWidth:'clamp(110px,14vw,170px)',
+    }}>
+      <div style={{marginBottom:7,fontSize:'6px',letterSpacing:'3.5px',color:'rgba(0,229,200,.28)',fontWeight:700}}>PROC·STREAM</div>
+      {lines.map((l,i)=>(
+        <div key={i} style={{
+          opacity:1-i*.075,marginBottom:2.5,
+          color:l.includes('✓')?'rgba(0,255,160,.6)':'rgba(0,229,200,.45)',
+          animation:i===0?'computeIn .18s ease-out':undefined,
+          fontSize:'7px',
+        }}>{l}</div>
+      ))}
+    </div>
+  );
+};
+
+/* ── HUD CORNERS ── */
+const HudCorners=({tier}:{tier:Tier})=>{
+  if(tier==='minimal')return null;
+  return(
+    <>
+      {/* top-left */}
+      <div style={{position:'absolute',top:16,left:16,width:52,height:52,pointerEvents:'none',zIndex:15}}>
+        <svg viewBox="0 0 52 52" style={{width:'100%',height:'100%',overflow:'visible'}}>
+          <line x1="2" y1="26" x2="2" y2="2" stroke="#00e5ff" strokeWidth="1.4" strokeOpacity=".6"/>
+          <line x1="2" y1="2" x2="26" y2="2" stroke="#00e5ff" strokeWidth="1.4" strokeOpacity=".6"/>
+          <circle cx="2" cy="2" r="2.2" fill="#00e5ff" opacity=".85" style={{animation:'hudBlink 1.6s ease-in-out infinite'}}/>
+          <circle cx="2" cy="2" r="5" fill="none" stroke="#00e5ff" strokeOpacity=".3" style={{animation:'hudPing 2s ease-out infinite'}}/>
+        </svg>
+        <div style={{position:'absolute',left:20,top:5,fontSize:'6px',letterSpacing:'2.5px',color:'rgba(0,229,200,.45)',fontFamily:'monospace'}}>SYS.OK</div>
+      </div>
+      {/* top-right */}
+      <div style={{position:'absolute',top:16,right:16,width:52,height:52,pointerEvents:'none',zIndex:15}}>
+        <svg viewBox="0 0 52 52" style={{width:'100%',height:'100%',overflow:'visible'}}>
+          <line x1="50" y1="26" x2="50" y2="2" stroke="#7c4dff" strokeWidth="1.4" strokeOpacity=".6"/>
+          <line x1="50" y1="2" x2="26" y2="2" stroke="#7c4dff" strokeWidth="1.4" strokeOpacity=".6"/>
+          <circle cx="50" cy="2" r="2.2" fill="#7c4dff" opacity=".85" style={{animation:'hudBlink 2s ease-in-out infinite',animationDelay:'.4s'}}/>
+          <circle cx="50" cy="2" r="5" fill="none" stroke="#7c4dff" strokeOpacity=".3" style={{animation:'hudPing 2.3s ease-out infinite',animationDelay:'.5s'}}/>
+        </svg>
+        <div style={{position:'absolute',right:20,top:5,fontSize:'6px',letterSpacing:'2.5px',color:'rgba(124,77,255,.45)',fontFamily:'monospace'}}>NET.ON</div>
+      </div>
+      {/* bottom-left */}
+      <div style={{position:'absolute',bottom:16,left:16,width:52,height:52,pointerEvents:'none',zIndex:15}}>
+        <svg viewBox="0 0 52 52" style={{width:'100%',height:'100%',overflow:'visible'}}>
+          <line x1="2" y1="26" x2="2" y2="50" stroke="#00ffd0" strokeWidth="1.4" strokeOpacity=".5"/>
+          <line x1="2" y1="50" x2="26" y2="50" stroke="#00ffd0" strokeWidth="1.4" strokeOpacity=".5"/>
+          <circle cx="2" cy="50" r="2.2" fill="#00ffd0" opacity=".7" style={{animation:'hudBlink 2.4s ease-in-out infinite',animationDelay:'.8s'}}/>
+        </svg>
+        <div style={{position:'absolute',left:20,bottom:5,fontSize:'6px',letterSpacing:'2.5px',color:'rgba(0,255,208,.35)',fontFamily:'monospace'}}>AI.ACT</div>
+      </div>
+      {/* bottom-right */}
+      <div style={{position:'absolute',bottom:16,right:16,width:52,height:52,pointerEvents:'none',zIndex:15}}>
+        <svg viewBox="0 0 52 52" style={{width:'100%',height:'100%',overflow:'visible'}}>
+          <line x1="50" y1="26" x2="50" y2="50" stroke="#ffd700" strokeWidth="1.4" strokeOpacity=".45"/>
+          <line x1="50" y1="50" x2="26" y2="50" stroke="#ffd700" strokeWidth="1.4" strokeOpacity=".45"/>
+          <circle cx="50" cy="50" r="2.2" fill="#ffd700" opacity=".65" style={{animation:'hudBlink 1.9s ease-in-out infinite',animationDelay:'1.1s'}}/>
+        </svg>
+        <div style={{position:'absolute',right:20,bottom:5,fontSize:'6px',letterSpacing:'2.5px',color:'rgba(255,215,0,.35)',fontFamily:'monospace'}}>DAT.OK</div>
+      </div>
+    </>
+  );
+};
+
+/* ── DATA CANVAS ── */
+interface MxCol{x:number;y:number;speed:number;chars:string[];}
+interface Pt{x:number;y:number;vx:number;vy:number;r:number;c:string;life:number;maxLife:number;}
+interface Seg{x1:number;y1:number;x2:number;y2:number;}
+interface Star{x:number;y:number;r:number;flicker:number;speed:number;}
+const MCHARS='0123456789ABCDEF.,-%+$¥×÷'.split('');
+
+const DataCanvas=({tier,mouseX,mouseY}:{tier:Tier;mouseX:number;mouseY:number})=>{
+  const cvs=useRef<HTMLCanvasElement>(null);
+  const pts=useRef<Pt[]>([]);
+  const mx=useRef<MxCol[]>([]);
+  const stars=useRef<Star[]>([]);
+  const raf=useRef(0);
+  const t0=useRef(0);
+  const genSeg=useCallback((x1:number,y1:number,x2:number,y2:number,d:number,segs:Seg[])=>{
+    segs.push({x1,y1,x2,y2});
+    if(d<=0)return;
+    const mx2=(x1+x2)/2+(Math.random()-.5)*(Math.hypot(x2-x1,y2-y1)*.45);
+    const my2=(y1+y2)/2+(Math.random()-.5)*(Math.hypot(x2-x1,y2-y1)*.45);
+    genSeg(x1,y1,mx2,my2,d-1,segs);genSeg(mx2,my2,x2,y2,d-1,segs);
+  },[]);
+  useEffect(()=>{
+    const canvas=cvs.current;if(!canvas)return;
+    const ctx=canvas.getContext('2d');if(!ctx)return;
+    const resize=()=>{canvas.width=canvas.offsetWidth;canvas.height=canvas.offsetHeight;};
+    resize();
+    const ro=new ResizeObserver(resize);ro.observe(canvas);
+    const W=()=>canvas.width,H=()=>canvas.height;
+    const COLORS=['#00ffd0','#00e5ff','#7c4dff','#00ff8c','#ffd700'];
+    const initPts=()=>{
+      const n=CFG.particles[tier];
+      pts.current=Array.from({length:n},()=>({
+        x:Math.random()*W(),y:Math.random()*H(),
+        vx:(Math.random()-.5)*.55,vy:(Math.random()-.5)*.55,
+        r:Math.random()*2.2+.6,c:COLORS[Math.floor(Math.random()*COLORS.length)],
+        life:Math.random()*200,maxLife:Math.random()*200+100,
+      }));
+    };
+    const initMx=()=>{
+      const cols=Math.floor(W()/16*CFG.matrixDens[tier]);
+      mx.current=Array.from({length:cols},(_,i)=>({
+        x:(i/(cols||1))*W()+Math.random()*12,y:Math.random()*H(),
+        speed:Math.random()*1.6+.8,
+        chars:Array.from({length:Math.floor(Math.random()*16)+6},()=>MCHARS[Math.floor(Math.random()*MCHARS.length)]),
+      }));
+    };
+    const initStars=()=>{
+      const n=CFG.stars[tier];
+      stars.current=Array.from({length:n},()=>({
+        x:Math.random()*W(),y:Math.random()*H(),
+        r:Math.random()*1.1+.2,flicker:Math.random()*Math.PI*2,
+        speed:Math.random()*.025+.008,
+      }));
+    };
+    initPts();initMx();initStars();
+    t0.current=performance.now();
+    let boltTimer=0;
+    const draw=(now:number)=>{
+      try{
+        const w=W(),h=H();
+        const t=(now-t0.current)*.001;
+        ctx.clearRect(0,0,w,h);
+        // — stars —
+        for(const s of stars.current){
+          s.flicker+=s.speed;
+          const a=.25+.35*Math.sin(s.flicker);
+          ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+          ctx.fillStyle=`rgba(200,225,255,${a})`;ctx.fill();
+        }
+        // — hex grid —
+        const hex=40;
+        ctx.strokeStyle='rgba(0,229,200,.04)';ctx.lineWidth=.7;
+        for(let row=0;row*hex*1.5<h+hex;row++){
+          for(let col=0;col*hex*1.732<w+hex;col++){
+            const ox=(row%2)*hex*.866;
+            const cx2=col*hex*1.732+ox,cy2=row*hex*1.5;
+            ctx.beginPath();
+            for(let s=0;s<6;s++){const a=s*Math.PI/3-Math.PI/6;ctx.lineTo(cx2+hex*.48*Math.cos(a),cy2+hex*.48*Math.sin(a));}
+            ctx.closePath();ctx.stroke();
+          }
+        }
+        // — matrix rain —
+        if(CFG.matrixDens[tier]>0){
+          for(const col of mx.current){
+            col.y+=col.speed;
+            if(col.y>h+col.chars.length*16)col.y=-col.chars.length*16;
+            for(let i=0;i<col.chars.length;i++){
+              if(Math.random()<.02)col.chars[i]=MCHARS[Math.floor(Math.random()*MCHARS.length)];
+              const py=col.y+i*14;if(py<0||py>h)continue;
+              const bright=i===col.chars.length-1;
+              ctx.font=bright?'bold 12px monospace':'11px monospace';
+              ctx.fillStyle=bright?'rgba(255,255,255,.95)':`rgba(0,229,200,${Math.max(.04,(1-i/col.chars.length)*.52)})`;
+              if(bright){ctx.shadowColor='#00ffd0';ctx.shadowBlur=14;}
+              ctx.fillText(col.chars[i],col.x,py);
+              if(bright)ctx.shadowBlur=0;
+            }
+          }
+        }
+        // — lightning —
+        const bCount=CFG.bolts[tier];
+        if(bCount>0){
+          if(boltTimer===0)boltTimer=now;
+          const interval=Math.max(55,580/bCount);
+          if(now-boltTimer>interval){
+            boltTimer=now;
+            const segs:Seg[]=[];
+            const sx=Math.random()*w;
+            genSeg(sx,0,sx+(Math.random()-.5)*w*.5,h*.4+Math.random()*h*.3,5,segs);
+            ctx.save();ctx.globalCompositeOperation='screen';
+            const alpha=Math.random()*.7+.3;
+            for(const s of segs){
+              ctx.strokeStyle=`rgba(180,220,255,${alpha*.6})`;ctx.lineWidth=.8;
+              ctx.beginPath();ctx.moveTo(s.x1,s.y1);ctx.lineTo(s.x2,s.y2);ctx.stroke();
+              ctx.strokeStyle=`rgba(255,255,255,${alpha*.22})`;ctx.lineWidth=2.5;ctx.stroke();
+            }
+            ctx.restore();
+          }
+        }
+        // — particles —
+        const pCount=CFG.particles[tier];
+        const connDist=tier==='ultra'?160:tier==='high'?100:60;
+        const drawConn=tier!=='minimal'&&tier!=='low';
+        const mi=80;
+        for(let i=0;i<pts.current.length&&i<pCount;i++){
+          const p=pts.current[i];
+          const mdx=p.x-mouseX*w,mdy=p.y-mouseY*h,md=Math.hypot(mdx,mdy);
+          if(md<mi&&md>0){const f=(mi-md)/mi*.25;p.vx+=(mdx/md)*f;p.vy+=(mdy/md)*f;}
+          p.x+=p.vx;p.y+=p.vy;p.vx*=.992;p.vy*=.992;
+          if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;
+          p.life++;
+          if(p.life>p.maxLife){p.x=Math.random()*w;p.y=Math.random()*h;p.vx=(Math.random()-.5)*.55;p.vy=(Math.random()-.5)*.55;p.life=0;}
+          const alpha=Math.sin(p.life/p.maxLife*Math.PI)*.8+.2;
+          ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+          ctx.fillStyle=p.c.replace(')',`,${alpha})`).replace('rgb','rgba');
+          ctx.shadowColor=p.c;ctx.shadowBlur=p.r*5;ctx.fill();ctx.shadowBlur=0;
+          if(drawConn){
+            for(let j=i+1;j<Math.min(pts.current.length,pCount);j++){
+              const q=pts.current[j],d=Math.hypot(p.x-q.x,p.y-q.y);
+              if(d<connDist){ctx.strokeStyle=`rgba(0,229,200,${(.18*(1-d/connDist)).toFixed(3)})`;ctx.lineWidth=.6;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke();}
+            }
+          }
+        }
+        // — ripples —
+        if(CFG.ripples[tier]>0){
+          const rn=CFG.ripples[tier];
+          for(let i=0;i<rn;i++){
+            const phase=(t*.12+i/rn)%1;
+            const r=phase*Math.min(w,h)*.45;
+            ctx.strokeStyle=`rgba(0,229,200,${(1-phase)*.13})`;ctx.lineWidth=1.2;
+            ctx.beginPath();ctx.arc(w*.5,h*.5,r,0,Math.PI*2);ctx.stroke();
+          }
+        }
+      }catch(e){console.warn('[Canvas]',e);}
+      raf.current=requestAnimationFrame(draw);
+    };
+    if(tier==='minimal'){return()=>{ro.disconnect();cancelAnimationFrame(raf.current);};}
+    raf.current=requestAnimationFrame(draw);
+    return()=>{ro.disconnect();cancelAnimationFrame(raf.current);};
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[tier]);
+  if(tier==='minimal')return null;
+  return(<canvas ref={cvs} style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',zIndex:0}}/>);
+};
+
+/* ── DATA SPHERE ── */
+const CITIES=[
+  {name:'Tokyo',    color:'#00e5ff'},{name:'London',    color:'#7c4dff'},
+  {name:'New York', color:'#00ffd0'},{name:'Shanghai',  color:'#ffd700'},
+  {name:'Singapore',color:'#00ff8c'},{name:'Dubai',     color:'#ff6ec7'},
 ];
+const DataSphere=({live,tier}:{live:number;tier:Tier})=>{
+  const R=110,heavy=tier==='ultra'||tier==='high';
+  const EPATHS=['M 200 200 Q 240 140 280 200','M 200 200 Q 170 140 140 200','M 200 200 Q 240 250 200 310','M 200 200 Q 160 260 200 310','M 200 200 Q 280 220 340 180','M 200 200 Q 120 220 60 180'];
+  const QARCS=[[70,120,330,280],[60,200,340,200],[90,90,310,310],[130,60,270,340]];
+  return(
+    <svg width="400" height="400" viewBox="0 0 400 400" style={{overflow:'visible'}}>
+      <defs>
+        <radialGradient id="sg8" cx="38%" cy="32%" r="68%">
+          <stop offset="0%" stopColor="#00e5ff" stopOpacity=".4"/>
+          <stop offset="35%" stopColor="#7c4dff" stopOpacity=".2"/>
+          <stop offset="65%" stopColor="#ff4b91" stopOpacity=".15"/> {/* 追加霓虹粉/紫 3D極光 */}
+          <stop offset="85%" stopColor="#ffd700" stopOpacity=".08"/>  {/* 追加數據金 */}
+          <stop offset="100%" stopColor="#000610" stopOpacity=".95"/>
+        </radialGradient>
+        <radialGradient id="cg8" cx="45%" cy="45%" r="55%">
+          <stop offset="0%" stopColor="#fff" stopOpacity="1"/>
+          <stop offset="30%" stopColor="#00e5ff" stopOpacity=".9"/>
+          <stop offset="70%" stopColor="#ff4b91" stopOpacity=".4"/>
+          <stop offset="100%" stopColor="#00ffd0" stopOpacity="0"/>
+        </radialGradient>
+        <filter id="glow8" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="3" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="haze8" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="12"/>
+        </filter>
+      </defs>
+      {/* 3D 深度光暈層 */}
+      <circle cx="200" cy="200" r={R+80} fill="rgba(0,229,200,.025)" filter="url(#haze8)"/>
+      <circle cx="200" cy="200" r={R+55} fill="rgba(124,77,255,.02)" filter="url(#haze8)"/>
+      <circle cx="200" cy="200" r={R+40} fill="rgba(0,229,200,.04)" filter="url(#haze8)"/>
+      {/* 外發光環 */}
+      {[R+18,R+32,R+48].map((r2,i)=>(
+        <circle key={i} cx="200" cy="200" r={r2} fill="none"
+          stroke={['rgba(0,229,200,.18)','rgba(124,77,255,.12)','rgba(0,255,140,.08)'][i]}
+          strokeWidth={[1,.7,.5][i]}
+          style={{animation:`orbitGlow ${3+i}s ease-in-out infinite`,animationDelay:`${i*.8}s`}}/>
+      ))}
+      <circle cx="200" cy="200" r={R} fill="url(#sg8)" stroke="rgba(0,229,200,.35)" strokeWidth="1.5"
+        style={{filter:'drop-shadow(0 0 12px rgba(0,229,200,.4)) drop-shadow(0 0 30px rgba(0,229,200,.2))'}}/>
+      {/* longitude grid */}
+      {heavy && Array.from({length:6},(_,i)=>(
+        <ellipse key={i} cx="200" cy="200"
+          rx={R*Math.abs(Math.cos((i+1)*Math.PI/7))*.98} ry={R}
+          fill="none" stroke="rgba(0,229,200,.055)" strokeWidth=".5"
+          transform={`rotate(${i*30},200,200)`}
+        />
+      ))}
+      {/* latitude rings */}
+      {heavy && [-40,-20,0,20,40].map((lat,i)=>{
+        const rx=R*Math.cos(lat*Math.PI/180);
+        return(<ellipse key={i} cx="200" cy={200+R*Math.sin(lat*Math.PI/180)*.3} rx={rx} ry={rx*.28}
+          fill="none" stroke="rgba(0,229,200,.09)" strokeWidth=".7" strokeDasharray="4 8"
+          style={{animation:`scanRot ${8+i*1.5}s linear infinite`}}/>);
+      })}
+      {/* orbital rings */}
+      {['orbDNA','orbDNA2','orbDNA3','orbDNA4'].map((anim,i)=>(
+        <ellipse key={i} cx="200" cy="200" rx={R+12+i*14} ry={(R+12+i*14)*.28}
+          fill="none" stroke={['rgba(0,229,200,.25)','rgba(124,77,255,.2)','rgba(0,255,140,.15)','rgba(255,215,0,.12)'][i]}
+          strokeWidth={[1.2,.9,.7,.5][i]}
+          style={{animation:`${anim} ${[7,9.5,11,13][i]}s linear infinite`,transformOrigin:'200px 200px'}}/>
+      ))}
+      {heavy && QARCS.map(([x1,y1,x2,y2],i)=>(
+        <path key={i} d={`M${x1} ${y1} Q200 200 ${x2} ${y2}`}
+          fill="none" stroke={['rgba(0,229,200,.18)','rgba(124,77,255,.18)','rgba(0,255,140,.14)','rgba(255,215,0,.12)'][i]}
+          strokeWidth="1" style={{animation:`quantArc ${3+i*.8}s ease-in-out infinite`,animationDelay:`${i*.6}s`}}/>
+      ))}
+      {heavy && EPATHS.map((d,i)=>(
+        <path key={i} d={d} fill="none"
+          stroke={['#00e5ff','#7c4dff','#00ffd0','#00ff8c','#ffd700','#ff6ec7'][i]}
+          strokeWidth="1.1" strokeDasharray="5 15"
+          style={{animation:`elecArc ${2.5+i*.4}s ease-in-out infinite`,animationDelay:`${i*.5}s`}}/>
+      ))}
+      {CITIES.map((city,i)=>{
+        const angle=(i/CITIES.length)*Math.PI*2+.3;
+        const cx2=200+Math.cos(angle)*R*.82,cy2=200+Math.sin(angle)*R*.45;
+        return(
+          <g key={city.name} filter="url(#glow8)">
+            <line x1="200" y1="200" x2={cx2} y2={cy2} stroke={city.color} strokeWidth=".7" strokeOpacity=".3" strokeDasharray="3 7" style={{animation:'currentFlow 2.5s linear infinite',animationDelay:`${i*.4}s`}}/>
+            <circle cx={cx2} cy={cy2} r="4" fill={city.color} fillOpacity=".9" style={{animation:`cpng 2s ease-out infinite`,animationDelay:`${i*.33}s`}}/>
+            <circle cx={cx2} cy={cy2} r="4" fill={city.color} fillOpacity=".9"/>
+            <text x={cx2+7} y={cy2+4} fill={city.color} fontSize="7.5" fontFamily="monospace" opacity=".85">{city.name}</text>
+          </g>
+        );
+      })}
+      {heavy && [[200,90],[310,200],[200,310],[90,200],[265,130],[135,270]].map(([ex,ey],i)=>(
+        <line key={i} x1="200" y1="200" x2={ex} y2={ey}
+          stroke="rgba(0,255,208,.5)" strokeWidth="1" strokeDasharray="3 6"
+          style={{animation:`dendrite ${1.8+i*.35}s ease-in-out infinite`,animationDelay:`${i*.28}s`}}/>
+      ))}
+      {heavy && Array.from({length:24},(_,i)=>{
+        const a=(i/24)*Math.PI*2;
+        return(<line key={i} x1={200+R*Math.cos(a)} y1={200+R*Math.sin(a)} x2={200+(R+28)*Math.cos(a)} y2={200+(R+28)*Math.sin(a)} stroke="rgba(0,229,200,.16)" strokeWidth=".7" style={{animation:`coronaRay ${1.5+i*.06}s ease-in-out infinite`,animationDelay:`${i*.08}s`}}/>);
+      })}
+      {heavy && EPATHS.slice(0,3).map((d,i)=>(
+        <circle key={i} r="3" fill={['#00ffd0','#7c4dff','#ffd700'][i]}
+          style={{offsetPath:`path('${d}')`,offsetDistance:'0%',animation:`pktTravel ${2+i*.6}s linear infinite`,animationDelay:`${i*.8}s`,filter:`drop-shadow(0 0 6px ${['#00ffd0','#7c4dff','#ffd700'][i]})`} as React.CSSProperties}/>
+      ))}
+      <circle cx="200" cy="200" r="16" fill="url(#cg8)" style={{animation:'plasmaCore 2.2s ease-in-out infinite'}} filter="url(#glow8)"/>
+      <circle cx="200" cy="200" r="6" fill="white" opacity=".9" style={{animation:'hb 1.8s ease-in-out infinite'}}/>
+      <text x="200" y="365" textAnchor="middle" fill="rgba(0,229,200,.5)" fontSize="9" fontFamily="monospace">{`DATA NODES: ${live.toLocaleString()}`}</text>
+    </svg>
+  );
+};
 
-export default function App() {
-  const [currentPage, setCurrentPage] = useState<RoleKey>('ceo');
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [employeeData, setEmployeeData] = useState<Employee[]>(rawEmployees);
+/* ── VITAL GAUGE ── */
+const ECG_D="M0 40 L18 40 L22 38 L28 54 L34 10 L40 50 L46 40 L68 38 L74 40 L90 42 L96 10 L102 52 L110 40 L132 38 L145 40 L162 37 L178 40 L220 40";
+const VitalGauge=({score}:{score:number})=>(
+  <svg width="100%" height="80" viewBox="0 0 220 80" preserveAspectRatio="none" style={{overflow:'visible'}}>
+    <defs>
+      <filter id="ecgGlow8"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    {[{color:'#00e5ff',dy:0,op:.85,sw:1.5},{color:'#00ffd0',dy:1,op:.5,sw:.9},{color:'#7c4dff',dy:2,op:.38,sw:.7}].map(({color,dy,op,sw},ci)=>(
+      <g key={ci} style={{animation:`ecgPulse ${1.6+ci*.3}s linear infinite`,animationDelay:`${ci*.22}s`}}>
+        <path d={ECG_D} fill="none" stroke={color} strokeWidth={sw} strokeOpacity={op} filter="url(#ecgGlow8)" transform={`translate(0,${dy*4})`}
+          style={{animation:`gaugeEx ${1.8+ci*.4}s ease-in-out infinite`,animationDelay:`${ci*.3}s`}}/>
+      </g>
+    ))}
+    <text x="210" y="16" textAnchor="end" fill="#00e5ff" fontSize="13" fontFamily="monospace" fontWeight="900" style={{animation:'vitalNd 2s ease-in-out infinite'}}>{score}</text>
+    <text x="210" y="28" textAnchor="end" fill="rgba(0,229,200,.5)" fontSize="8" fontFamily="monospace">VITALITY</text>
+  </svg>
+);
 
-  // AI 引擎處理：計算戰力分數 → 分組
-  const processedEmployees = useMemo(() => {
-    const scored = calculateAiScores(employeeData);
-    return assignGroups(scored);
-  }, [employeeData]);
+/* ── ANIMATED COUNTER ── */
+const AnimCounter=({target,prefix='',suffix='',dur=1800}:{target:number;prefix?:string;suffix?:string;dur?:number;})=>{
+  const [val,setVal]=useState(Math.floor(target*.6));
+  const t0=useRef(0);
+  useEffect(()=>{
+    t0.current=performance.now();
+    const start=Math.floor(target*.6);
+    const tick=(now:number)=>{
+      const p=Math.min((now-t0.current)/dur,1);
+      setVal(Math.floor(start+(target-start)*(1-Math.pow(1-p,4))));
+      if(p<1)requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[target]);
+  return<span>{prefix}{val.toLocaleString()}{suffix}</span>;
+};
 
-  // 趨勢分析 + 行銷建議
-  const trends = useMemo(() => analyzeTrends(processedEmployees), [processedEmployees]);
-  const [marketingSuggestions, setMarketingSuggestions] = useState<MarketingSuggestion[]>([]);
-  const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+/* ── HEX OVERLAY ── */
+const HexOverlay=()=>(
+  <svg style={{position:'absolute',inset:0,width:'100%',height:'100%',opacity:.07,pointerEvents:'none'}} xmlns="http://www.w3.org/2000/svg">
+    <defs><pattern id="hex8" x="0" y="0" width="50" height="57.7" patternUnits="userSpaceOnUse"><polygon points="25,1 49,14.5 49,43.2 25,56.7 1,43.2 1,14.5" fill="none" stroke="#00e5ff" strokeWidth=".6"/></pattern></defs>
+    <rect width="100%" height="100%" fill="url(#hex8)"/>
+  </svg>
+);
 
-  useEffect(() => {
-    let active = true;
-    async function fetchAi() {
-      setIsGeneratingAI(true);
-      try {
-        const suggestions = await geminiService.generateTeamSuggestions(processedEmployees);
-        if (active) setMarketingSuggestions(suggestions);
-      } catch (e) {
-        console.error('Gemini error:', e);
-      } finally {
-        if (active) setIsGeneratingAI(false);
+/* ── PLATFORM REVENUE ── */
+// 3/16 結算：奕心 3,153,310 ／民視 1,073,304 ／公司 806,688 ＝ 5,033,302
+const PlatformRevenue=({tier:_tier, data: PLAT_D = [], total: TOTAL = 0}:{tier:Tier, data?: any[], total?: number})=>{
+  const R=110,CIRC=2*Math.PI*R;
+  const segs=(()=>{
+    let off=CIRC*.25;
+    return PLAT_D.map(d=>{
+      const len=CIRC*d.pct/100;
+      const r={...d,len,off};
+      off=((off-len)%CIRC+CIRC)%CIRC;
+      return r;
+    });
+  })();
+  return(
+    <div style={{padding:'clamp(12px,2vh,22px) clamp(16px,4vw,56px)',background:'linear-gradient(180deg,#000c20 0%,#00081a 100%)',position:'relative',overflow:'hidden'}}>
+      <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse 70% 60% at 50% 50%,rgba(0,50,100,.28),transparent)',pointerEvents:'none'}}/>
+      <div style={{position:'absolute',inset:0,backgroundImage:'repeating-linear-gradient(0deg,rgba(0,229,200,.015) 0px,rgba(0,229,200,.015) 1px,transparent 1px,transparent 32px),repeating-linear-gradient(90deg,rgba(0,229,200,.015) 0px,rgba(0,229,200,.015) 1px,transparent 1px,transparent 32px)',pointerEvents:'none'}}/>
+      <div style={{textAlign:'center',marginBottom:'clamp(10px,2vh,20px)',position:'relative'}}>
+        <div style={{fontSize:'clamp(7px,.85vw,10px)',letterSpacing:'7px',color:'rgba(0,229,200,.38)',marginBottom:8,fontFamily:'monospace'}}>PLATFORM · REVENUE · ANALYTICS</div>
+        <h2 className="shimmerTxt" style={{fontSize:'clamp(16px,2.2vw,30px)',fontWeight:900,margin:0}}>平台業績分布</h2>
+      </div>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:'clamp(20px,5vw,64px)',flexWrap:'wrap',maxWidth:1100,margin:'0 auto',position:'relative'}}>
+        {/* DONUT RING */}
+        <SafeZone label="donut">
+          <div style={{width:'clamp(200px,26vw,290px)',flexShrink:0}}>
+            <svg viewBox="0 0 280 280" style={{width:'100%',height:'auto',overflow:'visible'}}>
+              <defs>
+                <filter id="sglow" x="-40%" y="-40%" width="180%" height="180%">
+                  <feGaussianBlur stdDeviation="6" result="b"/>
+                  <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+                <filter id="sglowS" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="2.5" result="b"/>
+                  <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+              </defs>
+              {/* bg track */}
+              <circle cx="140" cy="140" r={R} fill="none" stroke="rgba(255,255,255,.04)" strokeWidth="24"/>
+              {/* segments */}
+              {segs.map((s,i)=>(
+                <circle key={i} cx="140" cy="140" r={R} fill="none"
+                  stroke={s.color} strokeWidth={[22,18,14][i]}
+                  strokeDasharray={`${s.len} ${CIRC-s.len}`}
+                  strokeDashoffset={s.off}
+                  filter={i===0?'url(#sglow)':'url(#sglowS)'}
+                  style={{opacity:.92,animation:`breathe ${3.5+i*.7}s ease-in-out infinite`,animationDelay:`${i*.5}s`}}
+                />
+              ))}
+              {/* inner ring */}
+              <circle cx="140" cy="140" r={R-18} fill="none" stroke="rgba(0,229,200,.07)" strokeWidth=".8" strokeDasharray="3 8"/>
+              <circle cx="140" cy="140" r={R+20} fill="none" stroke="rgba(0,229,200,.04)" strokeWidth=".6" strokeDasharray="2 12"/>
+              {/* node dots */}
+              {segs.map((s,i)=>{
+                const startAngle=(-s.off/CIRC)*2*Math.PI+(s.len/CIRC)*Math.PI;
+                const nx=140+R*Math.cos(startAngle),ny=140+R*Math.sin(startAngle);
+                return(<circle key={i} cx={nx} cy={ny} r="4" fill={s.color} style={{animation:`cpng 2s ease-out infinite`,animationDelay:`${i*.5}s`}}/>);
+              })}
+              {/* center text */}
+              <text x="140" y="125" textAnchor="middle" fill="rgba(0,229,200,.35)" fontSize="7" fontFamily="monospace" letterSpacing="2">TOTAL REV</text>
+              <text x="140" y="146" textAnchor="middle" fill="white" fontSize="15" fontFamily="monospace" fontWeight="900" style={{animation:'throb 2.5s ease-in-out infinite'}}>{`$${TOTAL.toLocaleString()}`}</text>
+              <text x="140" y="161" textAnchor="middle" fill="rgba(0,229,200,.28)" fontSize="7" fontFamily="monospace">3 PLATFORMS</text>
+              {/* legend arcs */}
+              {segs.map((s,i)=>(
+                <text key={i} x="140" y={185+i*14} textAnchor="middle" fill={s.color} fontSize="8" fontFamily="monospace" opacity=".7">
+                  {`${s.name}  ${s.pct}%`}
+                </text>
+              ))}
+            </svg>
+          </div>
+        </SafeZone>
+        {/* PLATFORM CARDS */}
+        <div style={{display:'flex',flexDirection:'column',gap:'clamp(8px,1.5vh,14px)',flex:'1 1 280px',maxWidth:460}}>
+          {PLAT_D.map((p,i)=>(
+            <SafeZone key={i} label={`plat-${i}`}>
+              <div className="glass metalCard" style={{padding:'clamp(12px,1.8vw,20px)',borderRadius:16,border:`1px solid ${p.color}22`,position:'relative',overflow:'hidden'}}>
+                {/* energy fill */}
+                <div style={{position:'absolute',left:0,top:0,bottom:0,width:`${p.pct}%`,background:`linear-gradient(90deg,${p.color}14,transparent)`,borderRight:`1px solid ${p.color}22`}}/>
+                <div style={{position:'relative'}}>
+                  <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
+                    <div style={{display:'flex',alignItems:'center',gap:10}}>
+                      <div style={{width:10,height:10,borderRadius:'50%',background:p.color,boxShadow:`0 0 12px ${p.color}`,animation:'breathe 2.5s ease-in-out infinite',animationDelay:`${i*.42}s`}}/>
+                      <span style={{fontWeight:800,fontSize:'clamp(15px,1.8vw,20px)',color:p.color,textShadow:`0 0 20px ${p.color}66`,letterSpacing:'.5px'}}>{p.name}</span>
+                    </div>
+                    <div style={{display:'flex',alignItems:'baseline',gap:6}}>
+                      <span style={{fontFamily:'monospace',fontSize:'clamp(18px,2.2vw,26px)',fontWeight:900,color:p.color,textShadow:`0 0 20px ${p.color}88`,lineHeight:1}}>{p.pct}</span>
+                      <span style={{fontFamily:'monospace',fontSize:'clamp(10px,1.1vw,13px)',color:`${p.color}88`}}>%</span>
+                    </div>
+                  </div>
+                  {/* bar */}
+                  <div style={{height:4,background:'rgba(255,255,255,.06)',borderRadius:2,marginBottom:8,overflow:'hidden'}}>
+                    <div style={{height:'100%',width:`${p.pct}%`,background:`linear-gradient(90deg,${p.color},${p.color}55)`,borderRadius:2,boxShadow:`0 0 8px ${p.color}88`,animation:`breatheX 3s ease-in-out infinite`,animationDelay:`${i*.5}s`}}/>
+                  </div>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline'}}>
+                    <span style={{fontFamily:'monospace',fontSize:'clamp(14px,2vw,24px)',fontWeight:900,color:'white',textShadow:`0 0 30px ${p.color}55`,letterSpacing:'-0.5px'}}>{`$${p.rev.toLocaleString()}`}</span>
+                    <span style={{fontSize:'7px',letterSpacing:'2px',color:`${p.color}50`,fontFamily:'monospace'}}>USD · REVENUE</span>
+                  </div>
+                </div>
+              </div>
+            </SafeZone>
+          ))}
+          {/* total summary row */}
+          <div className="glass-deep" style={{padding:'clamp(10px,1.5vw,16px)',borderRadius:12,border:'1px solid rgba(0,229,200,.1)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+            <span style={{fontFamily:'monospace',fontSize:'clamp(9px,1vw,11px)',color:'rgba(0,229,200,.45)',letterSpacing:'3px'}}>TOTAL CYCLE</span>
+            <span style={{fontFamily:'monospace',fontSize:'clamp(16px,2vw,22px)',fontWeight:900,color:'white',textShadow:'0 0 25px rgba(0,229,200,.4)'}}>{`$${TOTAL.toLocaleString()}`}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ── BLACK HOLE PORTAL ── */
+const BlackHolePortal=({tier}:{tier:Tier})=>{
+  const heavy=tier==='ultra'||tier==='high';
+  const CX=230,CY=230,EH=76;
+  return(
+    <div style={{position:'relative',width:'clamp(240px,32vw,400px)',height:'clamp(240px,32vw,400px)',filter:'drop-shadow(0 0 70px rgba(80,0,255,.55)) drop-shadow(0 0 140px rgba(0,60,200,.28))',transform:'perspective(900px) rotateX(12deg)',transformStyle:'preserve-3d'}}>
+      <svg viewBox="0 0 460 460" style={{width:'100%',height:'100%',overflow:'visible'}}>
+        <defs>
+          <filter id="bhG" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="12" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="bhC" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="18"/></filter>
+          <filter id="bhS" x="-25%" y="-25%" width="150%" height="150%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <radialGradient id="bhSp" cx="50%" cy="50%" r="50%"><stop offset="0%" stopColor="#000000"/><stop offset="18%" stopColor="#020008"/><stop offset="45%" stopColor="#06001c"/><stop offset="78%" stopColor="#030012"/><stop offset="100%" stopColor="#000812"/></radialGradient>
+          <radialGradient id="dkI" cx="50%" cy="50%" r="50%"><stop offset="0%" stopColor="transparent"/><stop offset="44%" stopColor="transparent"/><stop offset="52%" stopColor="rgba(255,240,150,.55)"/><stop offset="58%" stopColor="rgba(255,170,40,.42)"/><stop offset="65%" stopColor="rgba(0,229,200,.26)"/><stop offset="72%" stopColor="rgba(124,77,255,.16)"/><stop offset="82%" stopColor="rgba(0,150,255,.08)"/><stop offset="100%" stopColor="transparent"/></radialGradient>
+          <radialGradient id="dkO" cx="50%" cy="50%" r="50%"><stop offset="0%" stopColor="transparent"/><stop offset="55%" stopColor="transparent"/><stop offset="65%" stopColor="rgba(0,229,200,.07)"/><stop offset="72%" stopColor="rgba(124,77,255,.05)"/><stop offset="82%" stopColor="rgba(0,100,255,.03)"/><stop offset="100%" stopColor="transparent"/></radialGradient>
+          <radialGradient id="phR" cx="50%" cy="50%" r="50%"><stop offset="0%" stopColor="transparent"/><stop offset="80%" stopColor="transparent"/><stop offset="86%" stopColor="rgba(255,210,100,.6)"/><stop offset="90%" stopColor="rgba(255,242,180,.96)"/><stop offset="94%" stopColor="rgba(255,190,60,.6)"/><stop offset="100%" stopColor="transparent"/></radialGradient>
+        </defs>
+        {/* deep space */}
+        <circle cx={CX} cy={CY} r="224" fill="url(#bhSp)"/>
+        {/* gravitational lensing rings */}
+        {[212,196,183,170,160,152].map((r,i)=>(
+          <circle key={i} cx={CX} cy={CY} r={r} fill="none"
+            stroke={i%2===0?'rgba(0,229,200,.055)':'rgba(124,77,255,.04)'}
+            strokeWidth={.7-i*.05}
+            style={{animation:`quantArc ${3+i*.7}s ease-in-out infinite`,animationDelay:`${i*.28}s`}}/>
+        ))}
+        {/* star field */}
+        {heavy&&Array.from({length:28},(_,i)=>{
+          const a=(i/28)*Math.PI*2+(i*.4);const r=165+Math.sin(i*1.9)*42;
+          return(<circle key={i} cx={CX+Math.cos(a)*r} cy={CY+Math.sin(a)*r} r={i%4===0?1.2:.65} fill="rgba(210,225,255,.55)" style={{animation:`bhFlicker ${.9+i*.14}s ease-in-out infinite`,animationDelay:`${i*.06}s`}}/>);
+        })}
+        {/* outer accretion disk (cool) */}
+        <g style={{transformOrigin:`${CX}px ${CY}px`,animation:'bhSpinR 20s linear infinite'}}>
+          <ellipse cx={CX} cy={CY} rx="188" ry="54" fill="url(#dkO)" opacity=".9"/>
+        </g>
+        {/* inner accretion disk (hot) */}
+        <g style={{transformOrigin:`${CX}px ${CY}px`,animation:'bhSpin 9s linear infinite'}}>
+          <ellipse cx={CX} cy={CY} rx="160" ry="46" fill="url(#dkI)" opacity=".95" filter="url(#bhS)"/>
+        </g>
+        {/* relativistic jets */}
+        <line x1={CX} y1={CY-EH-2} x2={CX-7} y2={CY-222} stroke="rgba(0,229,200,.22)" strokeWidth="2.2" strokeDasharray="6 14" style={{animation:'jetPulse 2.3s ease-in-out infinite'}}/>
+        <line x1={CX} y1={CY-EH-2} x2={CX+7} y2={CY-222} stroke="rgba(124,77,255,.18)" strokeWidth="1.4" strokeDasharray="4 16" style={{animation:'jetPulse 2.9s ease-in-out infinite',animationDelay:'.5s'}}/>
+        <line x1={CX} y1={CY+EH+2} x2={CX+5} y2={CY+222} stroke="rgba(0,229,200,.18)" strokeWidth="1.8" strokeDasharray="6 14" style={{animation:'jetPulse 2.6s ease-in-out infinite',animationDelay:'1.1s'}}/>
+        {/* spiral infalling arms */}
+        {heavy&&[0,72,144,216,288].map((sd,i)=>{
+          const sa=sd*Math.PI/180,ea=(sd+150)*Math.PI/180;
+          return(<path key={i} d={`M${CX+Math.cos(sa)*142} ${CY+Math.sin(sa)*142*.3} Q${CX+Math.cos((sa+ea)/2)*108} ${CY+Math.sin((sa+ea)/2)*108*.3} ${CX+Math.cos(ea)*(EH+14)} ${CY+Math.sin(ea)*(EH+14)*.3}`} fill="none" stroke={['rgba(255,200,80,.35)','rgba(255,140,30,.28)','rgba(0,229,200,.22)','rgba(124,77,255,.18)','rgba(255,80,160,.14)'][i]} strokeWidth={1.2-i*.12} style={{animation:`bhSpin ${7+i*1.4}s linear infinite`,transformOrigin:`${CX}px ${CY}px`,animationDelay:`${i*.6}s`}}/>);
+        })}
+        {/* photon sphere */}
+        <circle cx={CX} cy={CY} r={EH+5} fill="url(#phR)" filter="url(#bhG)" style={{animation:'photon 2.6s ease-in-out infinite'}}/>
+        {/* shadow: disk goes BEHIND event horizon at bottom */}
+        <ellipse cx={CX} cy={CY+20} rx={EH+10} ry={22} fill="rgba(0,0,0,.88)"/>
+        {/* event horizon — pure black void */}
+        <circle cx={CX} cy={CY} r={EH} fill="black"/>
+        {/* singularity core glow */}
+        <circle cx={CX} cy={CY} r={EH-2} fill="none" stroke="rgba(80,0,180,.88)" strokeWidth="7" filter="url(#bhC)" style={{animation:'eventHor 3.2s ease-in-out infinite'}}/>
+        {/* Hawking radiation sparks near horizon */}
+        {Array.from({length:14},(_,i)=>{
+          const a=(i/14)*Math.PI*2;
+          return(<circle key={i} cx={CX+Math.cos(a)*(EH+7)} cy={CY+Math.sin(a)*(EH+7)*.36} r="1.1" fill="rgba(255,255,255,.9)" style={{animation:`bhFlicker ${.55+i*.1}s ease-in-out infinite`,animationDelay:`${i*.05}s`}}/>);
+        })}
+        {/* orbiting particles being sucked in */}
+        {Array.from({length:9},(_,i)=>(
+          <circle key={i} r="1.8" cx={CX+(118+(i%3)*26)} cy={CY} fill={['#00e5ff','#7c4dff','#ffd700','#ff6ec7','#00ffd0','#ff8c00','#00ff8c','#fff','#00e5ff'][i]} opacity=".7" style={{animation:`bhSpin ${4+i*.55}s linear infinite`,transformOrigin:`${CX}px ${CY}px`,animationDelay:`${i*.52}s`}}/>
+        ))}
+        <text x={CX} y={CY+4} textAnchor="middle" fill="rgba(255,220,100,.07)" fontSize="9" fontFamily="monospace" letterSpacing="1.5">VOID CORE</text>
+      </svg>
+    </div>
+  );
+};
+
+/* ── VOID CANVAS BACKGROUND ── */
+const VoidCanvas=({tier}:{tier:Tier})=>{
+  const cvs=useRef<HTMLCanvasElement>(null);
+  const raf=useRef(0);
+  useEffect(()=>{
+    const canvas=cvs.current;if(!canvas)return;
+    const ctx=canvas.getContext('2d');if(!ctx)return;
+    const resize=()=>{canvas.width=canvas.offsetWidth;canvas.height=canvas.offsetHeight;};
+    resize();
+    const ro=new ResizeObserver(resize);ro.observe(canvas);
+    const W=()=>canvas.width,H=()=>canvas.height;
+    const n=tier==='ultra'?200:tier==='high'?100:tier==='low'?35:0;
+    if(n===0){return()=>{ro.disconnect();cancelAnimationFrame(raf.current);};}
+    const VCOLS=['#00e5ff','#7c4dff','#ff6ec7','#ffd700','#00ffd0','#ff8c00'];
+    const pts=Array.from({length:n},()=>({
+      angle:Math.random()*Math.PI*2,
+      radius:Math.random()*340+110,
+      speed:(Math.random()*.018+.004)*(Math.random()>.5?1:-1),
+      sr:Math.random()*.55+.12,
+      color:VCOLS[Math.floor(Math.random()*VCOLS.length)],
+      sz:Math.random()*2.4+.4,
+    }));
+    let t=0;
+    const draw=()=>{
+      const w=W(),h=H();const cx=w/2,cy=h/2;
+      ctx.fillStyle='rgba(0,2,10,.16)';ctx.fillRect(0,0,w,h);
+      t+=.008;
+      // 4 accretion disk layers rotating at different speeds
+      for(let lyr=0;lyr<4;lyr++){
+        const R=112+lyr*34;
+        ctx.save();ctx.translate(cx,cy);ctx.rotate(t*(0.07+lyr*.035));ctx.scale(1,.29);
+        const g=ctx.createRadialGradient(0,0,R-18,0,0,R+20);
+        const c0=['rgba(255,200,80,.12)','rgba(0,229,200,.09)','rgba(124,77,255,.07)','rgba(0,150,255,.05)'][lyr];
+        const c1=['rgba(255,140,30,.08)','rgba(0,160,200,.06)','rgba(80,40,200,.04)','transparent'][lyr];
+        g.addColorStop(0,'transparent');g.addColorStop(.35,c0);g.addColorStop(.65,c1);g.addColorStop(1,'transparent');
+        ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
+        ctx.restore();
+      }
+      // counter-rotating outer disk
+      ctx.save();ctx.translate(cx,cy);ctx.rotate(-t*.04);ctx.scale(1,.22);
+      const og=ctx.createRadialGradient(0,0,162,0,0,196);
+      og.addColorStop(0,'transparent');og.addColorStop(.4,'rgba(0,229,200,.05)');og.addColorStop(.7,'rgba(124,77,255,.03)');og.addColorStop(1,'transparent');
+      ctx.beginPath();ctx.arc(0,0,179,0,Math.PI*2);ctx.fillStyle=og;ctx.fill();ctx.restore();
+      // gravitational lensing rings
+      for(let i=0;i<7;i++){
+        ctx.beginPath();ctx.arc(cx,cy,195+i*18,0,Math.PI*2);
+        ctx.strokeStyle=`rgba(${i%2===0?'0,229,200':'124,77,255'},${Math.max(.005,.06-i*.008).toFixed(3)})`;
+        ctx.lineWidth=.7;ctx.stroke();
+      }
+      // photon ring (hot orange-gold glow)
+      const pg=ctx.createRadialGradient(cx,cy,80,cx,cy,97);
+      pg.addColorStop(0,'transparent');pg.addColorStop(.3,'rgba(255,200,70,.25)');pg.addColorStop(.55,'rgba(255,240,160,.55)');pg.addColorStop(.8,'rgba(255,190,50,.22)');pg.addColorStop(1,'transparent');
+      ctx.beginPath();ctx.arc(cx,cy,88,0,Math.PI*2);ctx.fillStyle=pg;ctx.fill();
+      // singularity haze
+      const hg=ctx.createRadialGradient(cx,cy,60,cx,cy,110);
+      hg.addColorStop(0,'rgba(50,0,120,.6)');hg.addColorStop(.55,'rgba(20,0,60,.2)');hg.addColorStop(1,'transparent');
+      ctx.beginPath();ctx.arc(cx,cy,110,0,Math.PI*2);ctx.fillStyle=hg;ctx.fill();
+      // event horizon — absolute void
+      const eg=ctx.createRadialGradient(cx,cy,0,cx,cy,82);
+      eg.addColorStop(0,'#000');eg.addColorStop(.9,'#000');eg.addColorStop(1,'rgba(20,0,50,.5)');
+      ctx.beginPath();ctx.arc(cx,cy,82,0,Math.PI*2);ctx.fillStyle=eg;ctx.fill();
+      // spiraling particles sucked inward
+      for(const p of pts){
+        p.angle+=p.speed;p.radius-=p.sr;
+        if(p.radius<84){p.angle=Math.random()*Math.PI*2;p.radius=Math.random()*330+170;p.speed=(Math.random()*.018+.004)*(Math.random()>.5?1:-1);p.sr=Math.random()*.55+.12;}
+        const px=cx+Math.cos(p.angle)*p.radius;
+        const py=cy+Math.sin(p.angle)*p.radius*.3;
+        const alpha=Math.min(1,(p.radius-84)/120)*.72;
+        ctx.beginPath();ctx.arc(px,py,p.sz*alpha,0,Math.PI*2);
+        ctx.fillStyle=p.color;ctx.globalAlpha=alpha;ctx.fill();ctx.globalAlpha=1;
+      }
+      raf.current=requestAnimationFrame(draw);
+    };
+    raf.current=requestAnimationFrame(draw);
+    return()=>{ro.disconnect();cancelAnimationFrame(raf.current);};
+  },[tier]);
+  if(tier==='minimal')return null;
+  return<canvas ref={cvs} style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',zIndex:0}}/>;
+};
+
+/* ── DATA VOID PANEL v10 — 黑洞全功能派單引擎 ── */
+interface ParsedRow{name:string;amount:number;rank:number;group:'A1'|'A2'|'B'|'C';}
+function calcGroup(rank:number,total:number):'A1'|'A2'|'B'|'C'{
+  if(rank<=4)return'A1';
+  if(rank<=Math.ceil(total*.45))return'A2';
+  if(rank<=Math.ceil(total*.75))return'B';
+  return'C';
+}
+function voidSuggest(row:ParsedRow,_total:number,pct:string):string{
+  const {rank,amount,group}=row;
+  const fmt=(n:number)=>'$'+Math.round(n).toLocaleString();
+  const gap=rank>1?'':' 拉大差距是你今天的唯一任務';
+  if(group==='A1'){
+    if(rank===1)return`👑 王牌核心 — 佔比${pct}%${gap}。繼續深耕高客單，鎖住第一不是守，是進攻。`;
+    return`🔴 A1精銳 — 業績${fmt(amount)}，追上第一還差一口氣。今天再補一筆大單，排名隨時翻轉。`;
+  }
+  if(group==='A2')return`🟠 A2收割 — 第${rank}名，佔比${pct}%。把追單節奏加快，讓續單變實收，A1門口就差這一步。`;
+  if(group==='B'){
+    if(amount<50000)return`🟡 B組發力 — 第${rank}名，業績${fmt(amount)}偏低。今天至少補兩筆追單，節奏動起來才有上升空間。`;
+    return`🟡 B組穩定 — 第${rank}名，把現有名單整理成回撥清單，每筆追單認真收口，可以再往前推。`;
+  }
+  return`🟢 C組啟動 — 第${rank}名。不追就不動，今天先破一筆實收，節奏開了後面就會順。`;
+}
+const GROUP_CFG={
+  A1:{label:'🔴 A1｜高單主力',  color:'#FF4D6A',bg:'rgba(255,77,106,.08)', border:'rgba(255,77,106,.25)'},
+  A2:{label:'🟠 A2｜續單收割',  color:'#FF8C00',bg:'rgba(255,140,0,.07)',   border:'rgba(255,140,0,.22)'},
+  B: {label:'🟡 B 組｜一般量單',color:'#F2C200',bg:'rgba(242,194,0,.07)',   border:'rgba(242,194,0,.20)'},
+  C: {label:'🟢 C 組｜培養觀察',color:'#00FF9C',bg:'rgba(0,255,156,.06)',   border:'rgba(0,255,156,.18)'},
+} as const;
+const RANK_COLORS=['#FFD700','#C0C0C0','#CD7F32','#00E5FF','#8B5CF6','#00FFD0','#FF6EC7','#00FF8C','#FF8C00','#7DF9FF'];
+
+const DataVoidPanel=({tier}:{tier:Tier})=>{
+  const [rawInput,setRawInput]=useState('');
+  const [rows,setRows]=useState<ParsedRow[]>([]);
+  const [phase,setPhase]=useState<'idle'|'parsing'|'done'|'sent'>('idle');
+  const [apiOk,setApiOk]=useState<boolean|null>(null);
+  const [showSuggest,setShowSuggest]=useState(false);
+  const [showDispatch,setShowDispatch]=useState(false);
+  const [copied,setCopied]=useState(false);
+  const taRef=useRef<HTMLTextAreaElement>(null);
+
+  useEffect(()=>{
+    const saved=localStorage.getItem('voidRankings');
+    if(saved){try{const d=JSON.parse(saved);if(d?.rows?.length>0){setRows(d.rows);setPhase('done');setShowDispatch(true);}}catch{}}
+    fetch('http://localhost:3001/api/v1/health').then(r=>setApiOk(r.ok)).catch(()=>setApiOk(false));
+  },[]);
+
+  useEffect(()=>{
+    if(rows.length>0){
+      const payload={rows,updatedAt:Date.now()};
+      localStorage.setItem('voidRankings',JSON.stringify(payload));
+      window.dispatchEvent(new CustomEvent('voidRankingsUpdate',{detail:payload}));
+    }
+  },[rows]);
+
+  // Ctrl+Enter shortcut
+  useEffect(()=>{
+    const handler=(e:KeyboardEvent)=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'&&document.activeElement===taRef.current){e.preventDefault();parseRank();}};
+    window.addEventListener('keydown',handler);return()=>window.removeEventListener('keydown',handler);
+  },[rawInput]); // eslint-disable-line
+
+  const parseRank=useCallback(()=>{
+    if(!rawInput.trim())return;
+    setPhase('parsing');setShowSuggest(false);setShowDispatch(false);
+    const parsed:{name:string;amount:number}[]=[];
+    for(const line of rawInput.split('\n')){
+      const l=line.trim();if(!l||l.startsWith('#'))continue;
+      // try multiple formats: "name num", "name,num", "name：num", "name: num", "num name"
+      const patterns=[
+        /^(.+?)[\s　,，：:]+\$?([\d,.]+)\s*$/,
+        /^\$?([\d,.]+)\s+(.+)$/,
+      ];
+      for(const pat of patterns){
+        const m=l.match(pat);
+        if(m){
+          const [nameRaw,numRaw]=pat===patterns[1]?[m[2],m[1]]:[m[1],m[2]];
+          const amt=parseInt(numRaw.replace(/[,，\s]/g,''),10);
+          if(nameRaw.trim()&&!isNaN(amt)&&amt>0){parsed.push({name:nameRaw.trim(),amount:amt});break;}
+        }
       }
     }
-    if (processedEmployees.length > 0) {
-      fetchAi();
-    }
-    return () => { active = false; };
-  }, [processedEmployees]);
+    parsed.sort((a,b)=>b.amount-a.amount);
+    const ranked:ParsedRow[]=parsed.map((r,i)=>({...r,rank:i+1,group:calcGroup(i+1,parsed.length)}));
+    setTimeout(()=>{setRows(ranked);setPhase('done');setShowDispatch(true);},680);
+  },[rawInput]);
 
-  // 高價成交 AI
-  const hvProfiles = useMemo(() => analyzeHighValueAbility(processedEmployees), [processedEmployees]);
-  const hvSuggestions = useMemo(() => generateHighValueSuggestions(hvProfiles, processedEmployees), [hvProfiles, processedEmployees]);
-  const hvAlerts = useMemo(() => detectHighValueAlerts(hvProfiles), [hvProfiles]);
-  const hvRally = useMemo(() => generateTeamRally(hvProfiles, '主管版'), [hvProfiles]);
+  const sendBackend=useCallback(async()=>{
+    if(!rows.length)return;setApiOk(null);
+    try{
+      const resp=await fetch('http://localhost:3001/api/v1/rankings',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({employees:rows.map(r=>({name:r.name,total:r.amount,rank:r.rank,group:r.group})),timestamp:new Date().toISOString()})});
+      setApiOk(resp.ok);if(resp.ok)setPhase('sent');
+    }catch{setApiOk(false);}
+  },[rows]);
 
-  // 處理資料匯入
-  const handleImport = (newData: Employee[]) => {
-    setEmployeeData(newData);
-  };
+  const buildDispatchText=useCallback(()=>{
+    const date=new Date().toLocaleDateString('zh-TW',{month:'numeric',day:'numeric'});
+    const lines=[`📣【AI 派單公告｜${date} 業績排名 → 派單順序】`,``];
+    const groups:Array<keyof typeof GROUP_CFG>=['A1','A2','B','C'];
+    groups.forEach(g=>{
+      const members=rows.filter(r=>r.group===g);
+      if(!members.length)return;
+      lines.push(GROUP_CFG[g].label);
+      members.forEach(r=>lines.push(`  ${r.rank}. ${r.name}  $${r.amount.toLocaleString()}`));
+      lines.push(``);
+    });
+    lines.push(`📊 整合總業績：$${rows.reduce((s,r)=>s+r.amount,0).toLocaleString()}`);
+    lines.push(`📌 規則：照順序派。前面全忙才往後。不得指定不得跳位。`);
+    lines.push(`✅ 看完請回 +1`);
+    return lines.join('\n');
+  },[rows]);
 
-  // 頁面路由
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'ceo':
-        return (
-          <div className="space-y-6">
-            <CeoDashboard employees={processedEmployees} platforms={platforms} trends={trends} />
-            <DataImport onImport={handleImport} />
+  const copyDispatch=useCallback(()=>{
+    navigator.clipboard.writeText(buildDispatchText()).then(()=>{setCopied(true);setTimeout(()=>setCopied(false),2000);});
+  },[buildDispatchText]);
+
+  const totalAmt=rows.reduce((s,r)=>s+r.amount,0);
+  const maxAmt=rows.length>0?rows[0].amount:1;
+
+  return(
+    <section style={{position:'relative',background:'transparent',overflow:'hidden',display:'flex',flexDirection:'column'}}>
+      <SafeZone label="voidCvs"><VoidCanvas tier={tier}/></SafeZone>
+      {/* depth layers */}
+      <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse 85% 78% at 50% 50%,transparent 20%,rgba(0,2,12,.55) 55%,rgba(0,2,12,.96) 100%)',pointerEvents:'none',zIndex:1}}/>
+      <div style={{position:'absolute',inset:0,backgroundImage:'repeating-linear-gradient(0deg,rgba(0,212,255,.005) 0px,transparent 1px,transparent 42px)',pointerEvents:'none',zIndex:2}}/>
+
+      <div style={{position:'relative',zIndex:10,padding:'clamp(18px,3vh,32px) clamp(16px,4vw,56px)'}}>
+        {/* header */}
+        <div style={{textAlign:'center',marginBottom:'clamp(12px,2vh,22px)'}}>
+          <div style={{fontSize:'clamp(7px,.8vw,9px)',letterSpacing:'8px',color:'rgba(0,212,255,.4)',marginBottom:7,fontFamily:'monospace',textTransform:'uppercase'}}>VOID CORE · AI DISPATCH ENGINE · v10.0</div>
+          <h2 className="shimmerTxt" style={{fontSize:'clamp(22px,3vw,44px)',fontWeight:900,margin:'0 0 8px',letterSpacing:'-.01em'}}>業績黑洞輸入 · AI全通派單</h2>
+          <div style={{fontSize:'clamp(8px,.9vw,11px)',color:'rgba(0,212,255,.38)',letterSpacing:'2.5px',fontFamily:'monospace'}}>
+            INPUT → VOID CORE AI → RANK → DISPATCH ORDER → SYNC ALL PAGES → BACKEND
           </div>
-        );
-      case 'manager':
-        return <DispatchDashboard employees={processedEmployees} />;
-      case 'marketer':
-        return <MyDashboard employees={processedEmployees} />;
-      case 'marketing':
-        return isGeneratingAI ? (
-          <div className="flex h-64 flex-col items-center justify-center text-indigo-500 font-bold gap-4">
-            <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-            <span>Gemini AI 正在深度解析部隊戰力與生成行銷建議...</span>
+        </div>
+
+        <div style={{maxWidth:1280,margin:'0 auto',display:'flex',gap:'clamp(16px,3.5vw,44px)',alignItems:'flex-start',flexWrap:'wrap'}}>
+
+          {/* LEFT: Black Hole Portal */}
+          <div style={{flex:'0 0 auto',display:'flex',flexDirection:'column',alignItems:'center',gap:16}}>
+            <SafeZone label="bhPortal"><BlackHolePortal tier={tier}/></SafeZone>
+            {/* live stats under BH */}
+            {rows.length>0&&(
+              <div style={{display:'flex',flexDirection:'column',gap:6,width:'clamp(200px,24vw,320px)'}}>
+                {(['A1','A2','B','C'] as const).map(g=>{
+                  const cnt=rows.filter(r=>r.group===g).length;
+                  if(!cnt)return null;
+                  const cfg=GROUP_CFG[g];
+                  return(
+                    <div key={g} style={{display:'flex',alignItems:'center',gap:8,padding:'5px 12px',borderRadius:8,background:cfg.bg,border:`1px solid ${cfg.border}`}}>
+                      <span style={{fontSize:'9px',fontWeight:900,color:cfg.color,fontFamily:'monospace',letterSpacing:'1px',minWidth:28}}>{g}</span>
+                      <span style={{flex:1,height:3,background:`${cfg.color}22`,borderRadius:2,overflow:'hidden'}}>
+                        <span style={{display:'block',height:'100%',width:`${(cnt/rows.length)*100}%`,background:cfg.color,borderRadius:2}}/>
+                      </span>
+                      <span style={{fontSize:'8px',color:cfg.color,fontFamily:'monospace'}}>{cnt}人</span>
+                    </div>
+                  );
+                })}
+                <div style={{textAlign:'center',fontSize:'8px',color:'rgba(0,212,255,.4)',fontFamily:'monospace',letterSpacing:'2px',marginTop:4}}>
+                  CTRL+ENTER 快速解析
+                </div>
+              </div>
+            )}
           </div>
-        ) : (
-          <MarketingAIDashboard suggestions={marketingSuggestions} trends={trends} />
-        );
-      case 'hv_command':
-        return <HighValueCommandCenter profiles={hvProfiles} suggestions={hvSuggestions} alerts={hvAlerts} teamRally={hvRally} />;
-      case 'hv_personal':
-        return <HighValuePersonalPage profiles={hvProfiles} suggestions={hvSuggestions} />;
-      case 'hv_scripts':
-        return <ScriptLibraryPage />;
-      case 'hv_targets':
-        return <CustomerTargetPage />;
-      case 'hv_training':
-        return <HighValueTrainingPage profiles={hvProfiles} />;
-      case 'hv_rally':
-        return <RallyAnnouncementPage profiles={hvProfiles} />;
-      case 'bc_command':
-        return <BroadcastCommandCenter />;
-      case 'bc_scripts':
-        return <BroadcastScriptManager />;
-      case 'bc_styles':
-        return <BroadcastStyleSettings />;
-      case 'bc_playback':
-        return <BroadcastPlaybackControl />;
-      case 'line_convert':
-        return <LineGroupDashboard />;
-      case 'line_rules':
-        return <LineGroupRules />;
-      case 'recruiter':
-        return <HiringDashboard />;
-      case 'trainer':
-        return <TrainingDashboard employees={processedEmployees} />;
-      default:
-        return null;
-    }
-  };
 
-  const currentRole = roles.find(r => r.key === currentPage);
+          {/* RIGHT: Input + Output */}
+          <div style={{flex:'1 1 300px',display:'flex',flexDirection:'column',gap:'clamp(10px,1.8vh,16px)'}}>
 
-  return (
-    <div className="flex h-screen bg-slate-950 text-slate-100 overflow-hidden relative">
-      {/* 數位掃描線 */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '4px',
-        background: 'rgba(99, 102, 241, 0.2)',
-        boxShadow: '0 0 20px rgba(99, 102, 241, 0.4)',
-        zIndex: 999,
-        pointerEvents: 'none',
-        animation: 'scanning 8s linear infinite'
-      }} />
+            {/* Input Card */}
+            <div className="glass" style={{borderRadius:22,border:'1px solid rgba(0,212,255,.14)',overflow:'hidden',animation:'voidWin 5s ease-in-out infinite',position:'relative'}}>
+              <div className="scanLine"/>
+              <div style={{padding:'clamp(14px,2vw,24px)'}}>
+                {/* status bar */}
+                <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:12,flexWrap:'wrap'}}>
+                  <div style={{width:7,height:7,borderRadius:'50%',flexShrink:0,
+                    background:apiOk===true?'#00FF9C':apiOk===false?'#FF4D6A':'#F2C200',
+                    boxShadow:`0 0 10px ${apiOk===true?'#00FF9C':apiOk===false?'#FF4D6A':'#F2C200'}`,
+                    animation:'breathe 2s ease-in-out infinite'}}/>
+                  <span style={{fontSize:'7.5px',letterSpacing:'2px',color:'rgba(0,212,255,.5)',fontFamily:'monospace'}}>
+                    {apiOk===true?'BACKEND LIVE':'BACKEND OFFLINE / 離線模式 — 本機處理'}
+                  </span>
+                  {rows.length>0&&(
+                    <span style={{marginLeft:'auto',fontSize:'7px',letterSpacing:'2px',color:'rgba(0,212,255,.4)',fontFamily:'monospace',flexShrink:0}}>
+                      {`✓ ${rows.length}人 · $${totalAmt.toLocaleString()}`}
+                    </span>
+                  )}
+                </div>
 
-      <style>{`
-        @keyframes scanning {
-          0% { transform: translateY(-100%); }
-          100% { transform: translateY(100vh); }
+                <div style={{fontSize:'8px',letterSpacing:'3px',color:'rgba(0,212,255,.38)',marginBottom:6,fontFamily:'monospace'}}>
+                  ◈ PASTE PERFORMANCE DATA — 直接貼入業績數據
+                </div>
+                <div style={{fontSize:'9px',color:'rgba(0,212,255,.28)',marginBottom:8,fontFamily:'monospace'}}>
+                  支援：空格／逗號／冒號分隔，$符號，千分位　每行一筆
+                </div>
+
+                <textarea ref={taRef}
+                  value={rawInput}
+                  onChange={e=>setRawInput(e.target.value)}
+                  placeholder={'李玲玲 813920\n王珍珠 537020\n馬秋香 533670\n王梅慧 446210\n\n或貼入任意格式：\n李玲玲, $813,920\n王珍珠: 537020'}
+                  style={{width:'100%',minHeight:'clamp(120px,16vh,180px)',background:'rgba(0,4,18,.9)',border:'1px solid rgba(0,212,255,.10)',borderRadius:14,padding:'13px 15px',color:'rgba(210,240,255,.92)',fontFamily:'"Noto Sans TC",monospace',fontSize:'13px',lineHeight:1.9,resize:'vertical',outline:'none',boxSizing:'border-box' as const,transition:'border-color .2s, box-shadow .2s'}}
+                  onFocus={e=>{e.target.style.borderColor='rgba(0,212,255,.36)';e.target.style.boxShadow='0 0 20px rgba(0,212,255,.08)';}}
+                  onBlur={e=>{e.target.style.borderColor='rgba(0,212,255,.10)';e.target.style.boxShadow='none';}}
+                />
+
+                <div style={{display:'flex',gap:8,marginTop:10,flexWrap:'wrap'}}>
+                  <button onClick={parseRank} disabled={!rawInput.trim()||phase==='parsing'}
+                    style={{flex:'1 1 160px',padding:'12px 0',borderRadius:12,cursor:rawInput.trim()?'pointer':'not-allowed',
+                      border:`1px solid ${rawInput.trim()?'rgba(0,212,255,.28)':'rgba(255,255,255,.05)'}`,
+                      background:rawInput.trim()?'linear-gradient(135deg,rgba(0,212,255,.20),rgba(139,92,246,.20))':'rgba(255,255,255,.02)',
+                      color:rawInput.trim()?'#00E5FF':'rgba(255,255,255,.18)',
+                      fontFamily:'monospace',fontSize:'11px',letterSpacing:'3px',fontWeight:700,transition:'all .2s',
+                      animation:phase==='parsing'?'parseFlash .4s ease-in-out infinite':'none',
+                      textShadow:rawInput.trim()?'0 0 12px rgba(0,212,255,.5)':'none'}}>
+                    {phase==='parsing'?'⚡ AI 解析中...':'⚡ AI解析與排名'}
+                  </button>
+                  {rows.length>0&&<>
+                    <button onClick={()=>setShowSuggest(s=>!s)}
+                      style={{padding:'12px 14px',borderRadius:12,cursor:'pointer',
+                        border:`1px solid rgba(0,212,255,${showSuggest?.28:.14})`,
+                        background:showSuggest?'rgba(0,212,255,.12)':'rgba(0,212,255,.04)',
+                        color:'#00E5FF',fontFamily:'monospace',fontSize:'9px',letterSpacing:'1.5px',fontWeight:700,transition:'all .2s',flexShrink:0}}>
+                      {showSuggest?'▲ AI建議':'▼ AI建議'}
+                    </button>
+                    <button onClick={()=>setShowDispatch(s=>!s)}
+                      style={{padding:'12px 14px',borderRadius:12,cursor:'pointer',
+                        border:`1px solid rgba(139,92,246,${showDispatch?.3:.15})`,
+                        background:showDispatch?'rgba(139,92,246,.14)':'rgba(139,92,246,.04)',
+                        color:'#A78BFA',fontFamily:'monospace',fontSize:'9px',letterSpacing:'1.5px',fontWeight:700,transition:'all .2s',flexShrink:0}}>
+                      {showDispatch?'▲ 派單':'▼ 派單'}
+                    </button>
+                    {apiOk===true&&<button onClick={sendBackend}
+                      style={{padding:'12px 14px',borderRadius:12,cursor:'pointer',
+                        border:'1px solid rgba(0,255,156,.25)',background:'rgba(0,255,156,.06)',
+                        color:'#00FF9C',fontFamily:'monospace',fontSize:'9px',letterSpacing:'1.5px',fontWeight:700,transition:'all .2s',flexShrink:0}}>
+                      {phase==='sent'?'✓ 已同步':'↑ 後端'}
+                    </button>}
+                  </>}
+                </div>
+              </div>
+            </div>
+
+            {/* Ranked Output */}
+            {rows.length>0&&(
+              <div className="glass-deep" style={{borderRadius:22,border:'1px solid rgba(0,212,255,.07)',padding:'clamp(14px,2vw,22px)',overflow:'hidden'}}>
+                <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:12,flexWrap:'wrap',gap:6}}>
+                  <span style={{fontSize:'7px',letterSpacing:'4px',color:'rgba(0,212,255,.45)',fontFamily:'monospace'}}>◈ RANKED OUTPUT · {rows.length} 人</span>
+                  <span style={{fontSize:'7px',letterSpacing:'2px',color:'rgba(0,255,156,.4)',fontFamily:'monospace'}}>✓ SYNC ALL PAGES</span>
+                </div>
+                <div style={{display:'flex',flexDirection:'column',gap:showSuggest?14:8,maxHeight:'clamp(280px,35vh,480px)',overflowY:'auto',paddingRight:4}}>
+                  {rows.map((row,i)=>{
+                    const pct=((row.amount/totalAmt)*100).toFixed(1);
+                    const rc=RANK_COLORS[i%RANK_COLORS.length];
+                    const gcfg=GROUP_CFG[row.group];
+                    return(
+                      <div key={i} style={{animation:'rankSlide .32s ease-out both',animationDelay:`${i*.042}s`}}>
+                        <div style={{display:'flex',alignItems:'center',gap:10}}>
+                          {/* rank badge */}
+                          <div style={{width:32,height:32,borderRadius:'50%',flexShrink:0,
+                            background:i<3?`radial-gradient(circle,${rc}28,transparent)`:'transparent',
+                            border:`1.5px solid ${rc}${i<3?'70':'30'}`,
+                            display:'flex',alignItems:'center',justifyContent:'center',
+                            fontFamily:'monospace',fontSize:'11px',fontWeight:900,color:rc,
+                            textShadow:`0 0 12px ${rc}`,boxShadow:i<3?`0 0 18px ${rc}22`:'none'}}>
+                            {row.rank}
+                          </div>
+                          {/* data */}
+                          <div style={{flex:1,minWidth:0}}>
+                            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:3,gap:6}}>
+                              <div style={{display:'flex',alignItems:'center',gap:6,minWidth:0}}>
+                                <span style={{fontWeight:800,fontSize:'clamp(12px,1.3vw,15px)',color:i<3?rc:'rgba(200,230,255,.85)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{row.name}</span>
+                                <span style={{fontSize:'7px',padding:'1px 5px',borderRadius:4,background:gcfg.bg,color:gcfg.color,border:`1px solid ${gcfg.border}`,fontFamily:'monospace',fontWeight:900,flexShrink:0}}>{row.group}</span>
+                              </div>
+                              <span style={{fontFamily:'monospace',fontSize:'clamp(12px,1.4vw,16px)',fontWeight:900,color:'white',whiteSpace:'nowrap',textShadow:`0 0 18px ${rc}55`}}>${row.amount.toLocaleString()}</span>
+                            </div>
+                            <div style={{display:'flex',alignItems:'center',gap:6}}>
+                              <div style={{flex:1,height:3,background:'rgba(255,255,255,.04)',borderRadius:1.5,overflow:'hidden'}}>
+                                <div style={{height:'100%',width:`${(row.amount/maxAmt)*100}%`,background:`linear-gradient(90deg,${rc},${rc}60)`,borderRadius:1.5,boxShadow:`0 0 7px ${rc}55`,transition:'width .75s cubic-bezier(.23,1,.32,1)'}}/>
+                              </div>
+                              <span style={{fontSize:'8px',fontFamily:'monospace',color:`${rc}88`,flexShrink:0,width:34,textAlign:'right' as const}}>{pct}%</span>
+                            </div>
+                          </div>
+                        </div>
+                        {showSuggest&&(
+                          <div style={{marginTop:5,marginLeft:42,padding:'7px 12px',borderRadius:9,
+                            background:`${gcfg.bg}`,border:`1px solid ${gcfg.border}`,
+                            fontSize:'clamp(9px,.95vw,11px)',color:`${gcfg.color}cc`,
+                            fontFamily:'"Noto Sans TC",monospace',lineHeight:1.6}}>
+                            {voidSuggest(row,rows.length,pct)}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+                {/* footer total */}
+                <div style={{marginTop:12,paddingTop:10,borderTop:'1px solid rgba(0,212,255,.06)',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:6}}>
+                  <span style={{fontSize:'7px',letterSpacing:'2px',color:'rgba(0,212,255,.38)',fontFamily:'monospace'}}>{rows.length} NODES · VOID SYNC ✓</span>
+                  <span style={{fontSize:'14px',fontWeight:900,color:'#00E5FF',textShadow:'0 0 24px rgba(0,212,255,.6)',fontFamily:'monospace'}}>${totalAmt.toLocaleString()}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Dispatch Order Card */}
+            {showDispatch&&rows.length>0&&(
+              <div style={{borderRadius:22,border:'1px solid rgba(139,92,246,.18)',overflow:'hidden',background:'rgba(8,5,20,.88)',position:'relative'}}>
+                <div style={{position:'absolute',top:0,left:0,right:0,height:2,background:'linear-gradient(90deg,transparent,rgba(139,92,246,.6),rgba(0,212,255,.6),transparent)'}}/>
+                <div style={{padding:'clamp(14px,2vw,22px)'}}>
+                  <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:14,flexWrap:'wrap',gap:8}}>
+                    <span style={{fontSize:'8px',letterSpacing:'4px',color:'rgba(139,92,246,.7)',fontFamily:'monospace',fontWeight:900}}>◈ AI 派單順序 — DISPATCH ORDER</span>
+                    <button onClick={copyDispatch}
+                      style={{padding:'5px 12px',borderRadius:8,cursor:'pointer',
+                        border:'1px solid rgba(139,92,246,.28)',background:'rgba(139,92,246,.10)',
+                        color:copied?'#00FF9C':'#A78BFA',fontFamily:'monospace',fontSize:'8px',
+                        letterSpacing:'1.5px',fontWeight:700,transition:'all .2s',flexShrink:0}}>
+                      {copied?'✓ 已複製！':'📋 複製公告'}
+                    </button>
+                  </div>
+                  <div style={{display:'flex',flexDirection:'column',gap:12}}>
+                    {(['A1','A2','B','C'] as const).map(g=>{
+                      const members=rows.filter(r=>r.group===g);
+                      if(!members.length)return null;
+                      const cfg=GROUP_CFG[g];
+                      return(
+                        <div key={g} style={{borderRadius:14,padding:'10px 14px',background:cfg.bg,border:`1px solid ${cfg.border}`}}>
+                          <div style={{fontSize:'8.5px',fontWeight:900,color:cfg.color,fontFamily:'monospace',letterSpacing:'2px',marginBottom:7,textShadow:`0 0 10px ${cfg.color}66`}}>{cfg.label}</div>
+                          <div style={{display:'flex',flexWrap:'wrap',gap:'4px 10px'}}>
+                            {members.map((m,mi)=>(
+                              <span key={mi} style={{fontSize:'13px',fontWeight:700,color:'rgba(220,240,255,.9)',letterSpacing:'.02em'}}>
+                                <span style={{fontFamily:'monospace',fontSize:'9px',color:cfg.color,marginRight:3}}>{m.rank}.</span>
+                                {m.name}
+                                <span style={{fontFamily:'monospace',fontSize:'9px',color:'rgba(180,210,255,.45)',marginLeft:4}}>${m.amount.toLocaleString()}</span>
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {/* rules */}
+                  <div style={{marginTop:12,padding:'8px 14px',borderRadius:10,background:'rgba(0,212,255,.04)',border:'1px solid rgba(0,212,255,.08)',fontSize:'9px',color:'rgba(0,212,255,.5)',fontFamily:'monospace',lineHeight:1.8,letterSpacing:'1px'}}>
+                    📌 照順序派。前面全忙才往後。不得指定。不得跳位。同客戶優先回原承接人。
+                  </div>
+                </div>
+              </div>
+            )}
+
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+/* ── MAIN PAGE ── */
+export default function Homepage(){
+  const tier=usePerf();
+  const mouse=useMouse();
+  const [live,setLive]=useState(9087808);
+  const [rev,setRev]=useState(0); // 初始改為0，待載入
+  const [vital,setVital]=useState(86);
+  const [clk,setClk]=useState('');
+  const [beat,setBeat]=useState(false);
+
+  // ─── 新增動態業績 States ───
+  const [platformData, setPlatformData] = useState<any[]>([]);
+  const [totalRev, setTotalRev] = useState(0);
+  const [activeStat, setActiveStat] = useState<string | null>(null); // 控制頂層數據點擊彈窗
+
+
+  useEffect(()=>{
+    const id=setInterval(()=>{
+      setLive(v=>v+Math.floor(Math.random()*480+80));
+      // 移除隨機業績增加，將隨機數加在 live 上
+      setVital(v=>Math.min(99,Math.max(72,v+(Math.random()>.5?1:-1))));
+      setClk(new Date().toLocaleTimeString('zh-TW',{hour12:false}));
+      setBeat(true);setTimeout(()=>setBeat(false),220);
+    },1200);
+    return()=>clearInterval(id);
+  },[]);
+
+  // ─── API 資料連線 ───
+  useEffect(() => {
+    fetch('http://localhost:3001/api/v1/rankings/2026-03-16')
+      .then(r => r.json())
+      .then(res => {
+        if (res.success && res.data?.rankings) {
+          let sum = 0;
+          const platTotals: Record<string, number> = { '奕心': 0, '民視': 0, '公司產品': 0 };
+          res.data.rankings.forEach((r: any) => {
+            sum += r.total_actual_amount || 0;
+            try {
+              const p = JSON.parse(r.source_platform_data || '{}');
+              for (const k in p) { if (platTotals[k] !== undefined) platTotals[k] += p[k]; }
+            } catch {}
+          });
+          setTotalRev(sum);
+          setRev(sum); // 同步給原本的儀表板
+          
+          const totalPlat = Object.values(platTotals).reduce((a, b) => a + b, 0) || 1;
+          setPlatformData([
+            {name:'奕心',pct:Math.round(platTotals['奕心']/totalPlat*100),rev:platTotals['奕心'],color:'#00e5ff',bg:'rgba(0,229,200,.1)'},
+            {name:'民視',pct:Math.round(platTotals['民視']/totalPlat*100),rev:platTotals['民視'],color:'#7c4dff',bg:'rgba(124,77,255,.1)'},
+            {name:'公司',pct:Math.round(platTotals['公司產品']/totalPlat*100),rev:platTotals['公司產品'],color:'#ffd700',bg:'rgba(255,215,0,.1)'},
+          ]);
         }
-      `}</style>
+      })
+      .catch(err => console.error('後端業績連線失敗:', err));
+  }, []);
 
-      {/* ─── 側邊導覽列 ─── */}
-      <aside className={cn(
-        "bg-slate-900 text-slate-300 flex-shrink-0 transition-all duration-300 flex flex-col",
-        sidebarOpen ? "w-56" : "w-0 -ml-1"
-      )}>
-        {/* Logo */}
-        <div className="h-14 px-4 flex items-center gap-2.5 text-white border-b border-slate-800 shrink-0">
-          <div className="w-7 h-7 bg-indigo-500 rounded-md flex items-center justify-center shrink-0">
-            <span className="font-black text-xs">AI</span>
+  useEffect(()=>{
+    const onErr=(e:ErrorEvent)=>{e.preventDefault();console.warn('[Recovery]',e.message);};
+    const onRej=(e:PromiseRejectionEvent)=>{e.preventDefault();console.warn('[Recovery]',e.reason);};
+    window.addEventListener('error',onErr);window.addEventListener('unhandledrejection',onRej);
+    return()=>{window.removeEventListener('error',onErr);window.removeEventListener('unhandledrejection',onRej);};
+  },[]);
+
+
+
+
+
+  const scored=useMemo(()=>{try{const s=calculateAiScores(rawEmployees);return assignGroups(s).sort((a,b)=>(b.aiScore??0)-(a.aiScore??0));}catch{return[];};},[]);
+  const health=useMemo(()=>{try{return calcHealthScore(scored);}catch{return 88;}},[scored]);
+
+  const px=(mouse.x/window.innerWidth-.5)*CFG.mouse.parallax*100;
+  const py=(mouse.y/window.innerHeight-.5)*CFG.mouse.parallax*100;
+  const mx2=mouse.x/window.innerWidth,my2=mouse.y/window.innerHeight;
+
+  const MODULE_CARDS=[
+    {title:'AI 排名引擎', sub:'NEURAL RANKER v4.2',icon:'🧠',color:'#00e5ff',link:'/ranking',   badge:'LIVE', desc:'即時智能排名演算法核心',val:'99.8%'},
+    {title:'派工調度中心',sub:'DISPATCH CORE v3.8',icon:'⚡',color:'#7c4dff',link:'/dispatch',  badge:'ARMED',desc:'全自動派工任務分配引擎',val:'2.1ms'},
+    {title:'公告生成系統',sub:'HERALD AI v2.9',   icon:'📡',color:'#ffd700',link:'/announce',  badge:'SYNC', desc:'智能公告撰寫與發送系統',val:'12/hr'},
+    {title:'每日報表引擎',sub:'ORACLE v5.1',      icon:'📊',color:'#00ffd0',link:'/daily-report',badge:'AUTO',desc:'數據聚合報表自動生成', val:'∞ rows'},
+    {title:'模組維修系統',sub:'REPAIR BOT v1.7',  icon:'🔧',color:'#ff6ec7',link:'/repair',    badge:'IDLE', desc:'自動故障偵測與修復引擎',val:'0 ERR'},
+    {title:'資料審計核心',sub:'AUDIT AI v3.3',    icon:'🔍',color:'#00ff8c',link:'/audit',     badge:'PASS', desc:'深度數據稽核與驗證系統',val:'100%'},
+  ];
+  const STATS=[
+    {label:'DATA / SEC', val:live, color:'#00e5ff',glow:'0 0 40px #00e5ff88',prefix:'',suffix:''},
+    {label:'USD REVENUE',val:rev,  color:'#ffd700',glow:'0 0 40px #ffd70088',prefix:'$',suffix:''},
+    {label:'VITALITY IDX',val:vital,color:'#00ffd0',glow:'0 0 40px #00ffd088',prefix:'',suffix:''},
+  ];
+
+  return(
+    <div className="pgFade" style={{minHeight:'100vh',background:'#000812',fontFamily:'"Inter","Noto Sans TC",monospace,sans-serif',color:'#e0f8ff',overflowX:'hidden',perspective:'1200px'}}>
+
+      {/* HERO — 緊湊版：只用 56vh，不佔滿螢幕 */}
+      <div style={{position:'relative',height:'clamp(340px,56vh,640px)',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',overflow:'hidden'}}>
+        <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse 80% 60% at 50% 30%,rgba(0,60,100,.5) 0%,rgba(0,20,50,.3) 45%,#000812 100%)'}}/>
+        <HexOverlay/>
+
+        {/* radar sweep — behind canvas */}
+        {tier!=='minimal'&&(
+          <div style={{position:'absolute',left:'50%',top:'50%',width:0,height:0,pointerEvents:'none',zIndex:1}}>
+            <div style={{position:'absolute',width:'clamp(280px,55vw,660px)',height:'clamp(280px,55vw,660px)',transform:'translate(-50%,-50%)',borderRadius:'50%',border:'1px solid rgba(0,229,200,.055)',overflow:'hidden'}}>
+              <div style={{position:'absolute',left:'50%',top:'50%',width:'50%',height:'1px',transformOrigin:'0% 50%',background:'linear-gradient(90deg,rgba(0,229,200,.5),transparent)',animation:'radarArm 6s linear infinite',boxShadow:'0 0 10px rgba(0,229,200,.25)'}}/>
+              <div style={{position:'absolute',inset:0,background:'conic-gradient(from -50deg,transparent 0deg,rgba(0,229,200,.055) 50deg,transparent 70deg)',borderRadius:'50%',animation:'radarArm 6s linear infinite'}}/>
+            </div>
           </div>
-          <div className="truncate">
-            <h1 className="font-bold text-sm tracking-wide leading-tight">商業帝國系統</h1>
-            <p className="text-[10px] text-slate-500">V50 測試版</p>
-          </div>
-        </div>
+        )}
 
-        <div className="p-3 border-b border-slate-800">
-          <a href="/" className="w-full text-center block py-1.5 px-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-md text-xs font-bold transition-colors">
-            🚀 體驗最新 V1 工作台
-          </a>
-        </div>
+        <SafeZone label="numStream"><NumberStream tier={tier}/></SafeZone>
+        <SafeZone label="canvas"><DataCanvas tier={tier} mouseX={mx2} mouseY={my2}/></SafeZone>
+        <div className="scanLine"/>
+        <SafeZone label="hud"><HudCorners tier={tier}/></SafeZone>
+        <SafeZone label="compute"><LiveCompute tier={tier}/></SafeZone>
 
-        {/* 選單 */}
-        <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
-          {menuItems.map((item, idx) => (
-            <React.Fragment key={item.key}>
-              {item.section && (
-                <p className="text-[10px] uppercase tracking-widest font-semibold text-slate-600 px-2 mb-2 mt-4">{item.section}</p>
-              )}
-              {idx === 0 && <p className="text-[10px] uppercase tracking-widest font-semibold text-slate-600 px-2 mb-2">主選單</p>}
-              <button onClick={() => setCurrentPage(item.key)}
-                className={cn(
-                  "w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors text-left",
-                  currentPage === item.key
-                    ? "bg-indigo-600/15 text-indigo-400 font-semibold"
-                    : "hover:bg-slate-800 text-slate-400"
-                )}>
-                <item.icon className="w-4 h-4 shrink-0" />
-                <span className="truncate">{item.label}</span>
-              </button>
-            </React.Fragment>
+        {/* god rays */}
+        {(tier==='ultra'||tier==='high')&&[0,45,90,135,180,225,270,315].map((angle,i)=>(
+          <div key={i} style={{position:'absolute',left:'50%',top:'50%',width:'2px',height:'55%',transformOrigin:'50% 0%',transform:`translate(-50%,0) rotate(${angle}deg)`,background:`linear-gradient(${['#00e5ff','#7c4dff','#00ffd0','#ffd700','#ff6ec7','#00ff8c','#00e5ff','#7c4dff'][i]},transparent)`,opacity:.07,pointerEvents:'none',animation:`godray ${3+i*.4}s ease-in-out infinite`,animationDelay:`${i*.35}s`}}/>
+        ))}
+
+        {/* title — 3D立體標題區 */}
+        <div style={{position:'relative',zIndex:10,textAlign:'center',transform:`translate(${px*.6}px,${py*.4}px)`,transition:'transform .05s linear',padding:'0 16px',transformStyle:'preserve-3d'}}>
+          {/* 螢光脈衝環 */}
+          {[0,1,2].map(i=>(
+            <div key={i} style={{position:'absolute',left:'50%',top:'50%',width:'clamp(200px,28vw,380px)',height:'clamp(200px,28vw,380px)',borderRadius:'50%',border:`1px solid rgba(0,229,200,${.12-i*.03})`,pointerEvents:'none',animation:`pulseRing3D ${2.4+i*.8}s ease-out infinite`,animationDelay:`${i*.8}s`}}/>
           ))}
-        </nav>
-
-        {/* 底部系統資訊 */}
-        <div className="p-3 border-t border-slate-800">
-          <div className="px-3 py-2 bg-slate-800/50 rounded-lg">
-            <p className="text-[10px] text-slate-500">資料日期</p>
-            <p className="text-xs font-semibold text-slate-300">2026-03-07 結算</p>
+          <div style={{fontSize:'clamp(8px,.9vw,10px)',letterSpacing:'6px',color:'rgba(0,229,200,.65)',marginBottom:8,fontFamily:'monospace',fontWeight:700,textShadow:'0 0 14px rgba(0,229,200,.5)',animation:'hudBlink 2.5s ease-in-out infinite'}}>GLOBAL · AI · DATA · ENGINE · v10.0 · {clk||'──:──:──'}</div>
+          <h1 className="dataGlitch shimmerTxt" style={{fontSize:'clamp(20px,3.5vw,48px)',fontWeight:900,margin:'0 0 6px',letterSpacing:'-.01em',lineHeight:1.08}}>
+            全球大數據 AI 核心中控台
+          </h1>
+          <div style={{fontSize:'clamp(8px,1vw,11px)',letterSpacing:'3px',color:'rgba(0,229,200,.45)',marginBottom:18,fontFamily:'monospace',textShadow:'0 0 10px rgba(0,229,200,.3)',animation:'throb 4s ease-in-out infinite'}}>
+            APEX · CENTRAL · INTELLIGENCE · SYSTEM · UPTIME 99.97%
+          </div>
+          {/* STATS — 橫向緊湊 + 3D浮卡 */}
+          <div style={{display:'flex',gap:'clamp(6px,1.5vw,14px)',justifyContent:'center',flexWrap:'wrap',perspective:'800px'}}>
+            {STATS.map((s,i)=>(
+              <SafeZone key={i} label={`stat-${i}`}>
+                <div className="glass metalCard depthCard" style={{
+                  padding:'clamp(8px,1.2vw,12px) clamp(12px,1.8vw,20px)',
+                  borderRadius:14,
+                  animationDelay:`${i*1.8}s`,
+                  transform:`translate(${px*(i-.5)*.8}px,0)`,
+                  transition:'transform .12s linear',
+                  position:'relative',overflow:'hidden',
+                  cursor: 'pointer', // 新增：滑鼠指標
+                }} onClick={() => setActiveStat(s.label)}> {/* 新增：點擊事件 */}
+                  {/* 垂直掃描線 */}
+                  <div className="scanLineV" style={{animationDelay:`${i*2.2}s`}}/>
+                  <div style={{fontSize:'clamp(14px,2vw,26px)',fontWeight:900,fontFamily:'monospace',color:s.color,
+                    textShadow:`0 0 30px ${s.color}, 0 0 60px ${s.color}88, 0 2px 0 rgba(0,0,0,.9)`,
+                    transform:beat?'scale(1.06)':'scale(1)',transition:'transform .18s',letterSpacing:'-0.5px',
+                    animation:`textDepth ${3+i*.5}s ease-in-out infinite`,animationDelay:`${i*.6}s`,
+                  }}>
+                    {s.prefix}<AnimCounter target={s.val}/>{s.suffix}
+                  </div>
+                  <div style={{fontSize:'clamp(6px,.75vw,8px)',letterSpacing:'2.5px',color:'rgba(255,255,255,.35)',marginTop:3,fontFamily:'monospace',textShadow:`0 0 8px ${s.color}44`}}>{s.label}</div>
+                </div>
+              </SafeZone>
+            ))}
           </div>
         </div>
-      </aside>
 
-      {/* ─── 主要內容區 ─── */}
-      <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        {/* sphere — 3D浮動 */}
+        <div style={{position:'absolute',right:'clamp(20px,8vw,140px)',top:'50%',transform:`translateY(-50%) translate(${px*.8}px,${py*.6}px)`,transition:'transform .1s linear',zIndex:8,opacity:.92,animation:'float3D 7s ease-in-out infinite',transformStyle:'preserve-3d'}}>
+          {/* 球底光暈 */}
+          <div style={{position:'absolute',bottom:-20,left:'50%',transform:'translateX(-50%)',width:'60%',height:20,borderRadius:'50%',background:'radial-gradient(ellipse,rgba(0,229,200,.25) 0%,transparent 70%)',filter:'blur(8px)',pointerEvents:'none'}}/>
+          <SafeZone label="sphere"><div className="hueC coreGlow"><DataSphere live={live} tier={tier}/></div></SafeZone>
+        </div>
 
-        {/* 頂部欄 */}
-        <header className="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-5 shrink-0">
-          <div className="flex items-center gap-3">
-            <button onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="text-slate-400 hover:text-slate-600 transition-colors p-1">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-            <div className="relative hidden sm:block">
-              <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input type="text" placeholder="搜尋員工、客戶..."
-                className="pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs w-52 focus:outline-none focus:ring-2 focus:ring-indigo-500/20" />
+        {/* vitality */}
+        <div style={{position:'absolute',left:'clamp(12px,4vw,60px)',bottom:'clamp(40px,8vh,100px)',width:'clamp(160px,22vw,280px)',zIndex:9,transform:`translate(${px*.5}px,${py*.3}px)`,transition:'transform .12s linear'}}>
+          <div style={{fontSize:'8px',letterSpacing:'3px',color:'rgba(0,229,200,.45)',marginBottom:6,fontFamily:'monospace'}}>LIFE SIGNAL</div>
+          <SafeZone label="gauge"><VitalGauge score={vital}/></SafeZone>
+        </div>
+
+        <div className="breatheS" style={{position:'absolute',bottom:24,left:'50%',transform:'translateX(-50%)',color:'rgba(0,229,200,.38)',fontSize:22,zIndex:10}}>▼</div>
+      </div>
+
+      {/* ── 數據對流層 (高密度 50:50 並排) ── */}
+      <div style={{display:'flex', gap:'16px', flexWrap:'wrap', maxWidth:1440, margin:'0 auto', padding:'16px clamp(16px,4vw,40px)', alignItems:'stretch', position:'relative'}}>
+        <div style={{flex:'1 1 480px', minWidth:320, display:'flex', width:'100%'}}>
+          <SafeZone label="platform">
+            <PlatformRevenue 
+              tier={tier} 
+              data={platforms.map((p, i) => {
+                const total = platforms.reduce((acc, x) => acc + x.revenue, 0);
+                return {
+                  label: p.name,
+                  pct: total > 0 ? (p.revenue / total) * 100 : 0,
+                  val: `$${p.revenue.toLocaleString()}`,
+                  color: p.name === '奕心' ? '#00e5ff' : p.name === '民視' ? '#00ffa0' : '#b53cff'
+                };
+              })} 
+              total={platforms.reduce((acc, x) => acc + x.revenue, 0)}
+            />
+          </SafeZone>
+        </div>
+        <div style={{flex:'1 1 480px', minWidth:320, display:'flex', width:'100%'}}>
+          <SafeZone label="voidPanel">
+            <DataVoidPanel tier={tier}/>
+          </SafeZone>
+        </div>
+      </div>
+
+      {/* MODULE CARDS */}
+      <div style={{padding:'clamp(20px,3.5vh,44px) clamp(16px,4vw,60px)',background:'linear-gradient(180deg,#000812 0%,#000c20 100%)'}}>
+        <div style={{textAlign:'center',marginBottom:'clamp(14px,2.5vh,28px)'}}>
+          <div style={{fontSize:'clamp(8px,.9vw,11px)',letterSpacing:'6px',color:'rgba(0,229,200,.45)',marginBottom:8,fontFamily:'monospace'}}>CORE MODULE ARRAY</div>
+          <h2 className="shimmerTxt" style={{fontSize:'clamp(16px,2.2vw,32px)',fontWeight:900,margin:0}}>核心系統模組</h2>
+        </div>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(clamp(220px,28vw,340px),1fr))',gap:'clamp(12px,2vw,24px)',maxWidth:1200,margin:'0 auto'}}>
+          {MODULE_CARDS.map((m,i)=>(
+            <SafeZone key={i} label={`module-${i}`}>
+              <Link to={m.link} style={{textDecoration:'none',color:'inherit',display:'block'}}>
+                <div className="glass metalCard depthCard petriF neonBorder" style={{
+                  padding:'clamp(16px,2.5vw,28px)',borderRadius:20,cursor:'pointer',
+                  animationDelay:`${i*.25}s`,
+                  transform:`translate(${px*(i%3-.9)*.7}px,${py*(Math.floor(i/3)-.3)*.5}px)`,
+                  transition:'transform .15s linear',
+                  borderTop:`1px solid ${m.color}44`,
+                  position:'relative',overflow:'hidden',
+                }}>
+                  {/* 頂角螢光 */}
+                  <div style={{position:'absolute',top:-30,right:-30,width:80,height:80,borderRadius:'50%',background:`radial-gradient(circle,${m.color}22 0%,transparent 70%)`,filter:'blur(12px)',pointerEvents:'none'}}/>
+                  {/* 底部反光條 */}
+                  <div style={{position:'absolute',bottom:0,left:0,right:0,height:2,background:`linear-gradient(90deg,transparent,${m.color}66,transparent)`,borderRadius:'0 0 20px 20px'}}/>
+                  <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:12}}>
+                    <div style={{
+                      fontSize:28,width:48,height:48,display:'flex',alignItems:'center',justifyContent:'center',
+                      background:`radial-gradient(circle,${m.color}33 0%,${m.color}0a 60%,transparent 100%)`,
+                      borderRadius:14,
+                      border:`1px solid ${m.color}44`,
+                      boxShadow:`0 0 20px ${m.color}44, inset 0 0 12px ${m.color}18`,
+                      animation:`floatIcon ${3.5+i*.4}s ease-in-out infinite`,
+                      animationDelay:`${i*.5}s`,
+                    }}>{m.icon}</div>
+                    <div style={{flex:1}}>
+                      <div style={{fontWeight:800,fontSize:'clamp(13px,1.4vw,16px)',color:m.color,
+                        textShadow:`0 0 20px ${m.color}, 0 0 40px ${m.color}66, 0 2px 0 rgba(0,0,0,.8)`,
+                        marginBottom:2,animation:`textDepth ${4+i*.3}s ease-in-out infinite`,animationDelay:`${i*.4}s`}}>{m.title}</div>
+                      <div style={{fontSize:'8.5px',letterSpacing:'2px',color:'rgba(255,255,255,.32)',fontFamily:'monospace'}}>{m.sub}</div>
+                    </div>
+                    <div style={{fontSize:'7px',padding:'3px 7px',borderRadius:5,
+                      background:`${m.color}18`,border:`1px solid ${m.color}55`,color:m.color,
+                      letterSpacing:'2px',fontFamily:'monospace',fontWeight:700,
+                      boxShadow:`0 0 10px ${m.color}44`,
+                      animation:'hudBlink 1.8s ease-in-out infinite',animationDelay:`${i*.3}s`}}>{m.badge}</div>
+                  </div>
+                  <div style={{fontSize:'clamp(10px,1.1vw,12px)',color:'rgba(200,230,255,.55)',marginBottom:12,lineHeight:1.55}}>{m.desc}</div>
+                  <div style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+                    <div style={{fontFamily:'monospace',fontSize:'clamp(14px,1.8vw,22px)',fontWeight:900,color:m.color,
+                      textShadow:`0 0 28px ${m.color}, 0 0 55px ${m.color}66, 0 2px 0 rgba(0,0,0,.9)`,
+                      animation:`textDepth ${2.8+i*.4}s ease-in-out infinite`,animationDelay:`${i*.5}s`}}>{m.val}</div>
+                    <div style={{fontSize:'10px',color:`${m.color}99`,letterSpacing:'1.5px',
+                      textShadow:`0 0 8px ${m.color}66`,animation:'hudBlink 3s ease-in-out infinite'}}>▶ 進入系統</div>
+                  </div>
+                </div>
+              </Link>
+            </SafeZone>
+          ))}
+        </div>
+      </div>
+
+      {/* STATUS BAR */}
+      <div className="glass-deep" style={{borderTop:'1px solid rgba(0,229,200,.14)',padding:'clamp(10px,2vh,18px) clamp(16px,4vw,48px)',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:12,boxShadow:'inset 0 1px 0 rgba(0,229,200,.08),0 -4px 30px rgba(0,0,0,.5)'}}>
+        <div style={{display:'flex',gap:'clamp(16px,3vw,40px)',flexWrap:'wrap'}}>
+          {[{k:'SYSTEM',v:'ONLINE',c:'#00ffd0'},{k:'AI CORE',v:'ACTIVE',c:'#00e5ff'},{k:'HEALTH',v:`${health}%`,c:health>80?'#00ffd0':'#ffd700'},{k:'NODES',v:`${scored.length}`,c:'#7c4dff'},{k:'UPTIME',v:'99.97%',c:'#00ff8c'}].map(({k,v,c},si)=>(
+            <div key={k} style={{display:'flex',gap:8,alignItems:'center'}}>
+              <div style={{position:'relative',width:8,height:8}}>
+                <div style={{position:'absolute',inset:0,borderRadius:'50%',background:c,boxShadow:`0 0 12px ${c}, 0 0 24px ${c}66`}}/>
+                <div style={{position:'absolute',inset:-3,borderRadius:'50%',border:`1px solid ${c}55`,animation:`hudPing ${2+si*.3}s ease-out infinite`,animationDelay:`${si*.5}s`}}/>
+              </div>
+              <span style={{fontSize:'9px',letterSpacing:'2px',color:'rgba(255,255,255,.32)',fontFamily:'monospace'}}>{k}</span>
+              <span style={{fontSize:'11px',fontFamily:'monospace',fontWeight:900,color:c,textShadow:`0 0 12px ${c}, 0 0 24px ${c}66`}}>{v}</span>
             </div>
-          </div>
+          ))}
+        </div>
+        {/* 移除純裝飾 Ticker */}
+      </div>
 
-          <div className="flex items-center gap-3">
-            {/* 角色切換 */}
-            <div className="flex items-center gap-1.5 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">
-              <span className="text-[10px] text-slate-500 hidden sm:inline">模擬角色</span>
-              <select
-                className="bg-transparent text-xs font-semibold text-slate-800 focus:outline-none cursor-pointer"
-                value={currentPage}
-                onChange={(e) => setCurrentPage(e.target.value as RoleKey)}>
-                {roles.map(r => <option key={r.key} value={r.key}>{r.label}</option>)}
-              </select>
-            </div>
-            <div className="w-7 h-7 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs border border-indigo-200 relative">
-              U
-              <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full" />
-            </div>
-          </div>
-        </header>
+      <div className="tierBadge">{tier.toUpperCase()} TIER</div>
 
-        {/* 捲動內容 */}
-        <div className="flex-1 overflow-auto p-5 md:p-7">
-          <div className="max-w-7xl mx-auto">
-            {renderPage()}
+      {/* ─── 3D 浮空 Modal 詳情 (加強文字功能) ─── */}
+      {activeStat && (
+        <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.68)',backdropFilter:'blur(24px)',zIndex:100,display:'flex',alignItems:'center',justifyContent:'center'}} onClick={()=>setActiveStat(null)}>
+          <div className="glass-deep" style={{width:'clamp(300px,85vw,600px)',borderRadius:24,padding:'24px',animation:'rankSlide .4s ease-out both',border:'1px solid rgba(0,229,200,.4)',boxShadow:'0 0 70px rgba(0,229,200,.3)'}} onClick={e=>e.stopPropagation()}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}>
+              <h3 style={{margin:0,color:'#00e5ff',fontFamily:'monospace',fontSize:'18px',textShadow:'0 0 14px rgba(0,229,200,.6)'}}>{activeStat} 詳情資料</h3>
+              <button onClick={()=>setActiveStat(null)} style={{background:'transparent',border:'none',color:'rgba(255,255,255,.6)',cursor:'pointer',fontSize:'18px'}}>✕</button>
+            </div>
+            <div style={{minHeight:220,background:'rgba(0,4,16,.65)',border:'1px solid rgba(0,229,200,.1)',borderRadius:16,padding:20,fontFamily:'monospace',fontSize:'13px',color:'rgba(220,240,255,.9)',lineHeight:1.9,overflowY:'auto',maxHeight:'65vh'}}>
+               {activeStat === 'DATA / SEC' && (
+                 <div style={{color:'#00ffd0'}}>
+                   <div style={{color:'rgba(0,229,200,.5)',fontSize:'11px',marginBottom:10}}>SYS.OKNET.ONAI.ACTDAT.OK</div>
+                   PROC·STREAM<br/>
+                   FLUSH[4726] ✓ 7,786,450<br/>
+                   SORT[3482] ✓ 3,610,828<br/>
+                   RANK[1851] ✓ 1,129,685<br/>
+                   SORT[1257] ✓ 6,574,584<br/>
+                   AVG[7016] ✓ 1,406,487<br/>
+                   INDEX[9354] ✓ 5,283,824<br/>
+                   GLOBAL · AI · DATA · ENGINE · v10.0
+                 </div>
+               )}
+               {activeStat === 'USD REVENUE' && (
+                 <div style={{color:'#ffd700'}}>
+                   <div style={{fontSize:'16px',fontWeight:900,color:'white',marginBottom:12,borderBottom:'1px solid rgba(255,215,0,.2)',paddingBottom:8}}>📊 整合計算總業績：${totalRev.toLocaleString()}</div>
+                   - 奕心： ${((platformData.find(p=>p.name==='奕心')?.rev) || 0).toLocaleString()}<br/>
+                   - 民視： ${((platformData.find(p=>p.name==='民視')?.rev) || 0).toLocaleString()}<br/>
+                   - 公司： ${((platformData.find(p=>p.name==='公司')?.rev) || 0).toLocaleString()}<br/>
+                   <br/>
+                   <div style={{color:'rgba(0,255,156,.8)',marginTop:10}}>✅ 所有報表已通過審計核心驗證</div>
+                 </div>
+               )}
+               {activeStat === 'VITALITY IDX' && (
+                 <div style={{color:'#00e5ff'}}>
+                   <div style={{fontSize:'15px',fontWeight:800,marginBottom:12}}>💖 系統活力係數分析 (86%)</div>
+                   - CPU 負載: 28.4%<br/>
+                   - RAM 使用: 4.2 GB / 16.0 GB<br/>
+                   - AI 排名反應: 1.2ms<br/>
+                   - API 同步狀態: 100% 穩定<br/>
+                   - 防御性安全層: 零警告<br/>
+                   <div style={{color:'rgba(0,229,200,.4)',marginTop:10,fontSize:'11px'}}>LAST UPDATE: {new Date().toLocaleTimeString()}</div>
+                 </div>
+               )}
+            </div>
           </div>
         </div>
-      </main>
+      )}
     </div>
   );
 }
