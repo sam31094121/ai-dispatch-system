@@ -19,6 +19,33 @@ const CFG = {
 type Tier = 'ultra' | 'high' | 'low' | 'minimal';
 
 const CSS = `
+  /* ══ 字體統一規範 — 三層字體系統 ══ */
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+
+  /* 全域字體基準 */
+  * { box-sizing: border-box; }
+
+  /* 標題層：Noto Sans TC 粗體 + 發光 */
+  h1, h2, h3, .life-title {
+    font-family: 'Noto Sans TC', 'Inter', sans-serif !important;
+    font-weight: 900 !important;
+    letter-spacing: -.01em;
+  }
+  /* 數字層：等寬 monospace，清晰有力 */
+  .life-num, code, [class*="monospace"] {
+    font-family: 'JetBrains Mono', 'Consolas', 'Courier New', monospace !important;
+    font-feature-settings: 'tnum' 1;
+    letter-spacing: .02em;
+  }
+  /* 文案層：Noto Sans TC 標準 */
+  p, span, div, button, a {
+    font-family: 'Noto Sans TC', 'Inter', system-ui, sans-serif;
+  }
+  /* monospace 類保持 */
+  [style*="monospace"] {
+    font-family: 'JetBrains Mono', 'Consolas', monospace !important;
+  }
+
   @keyframes hb        { 0%,100%{transform:scale(1);opacity:.85} 8%{transform:scale(1.22);opacity:1;filter:brightness(2.1) drop-shadow(0 0 65px #00e5ffff)} 20%{transform:scale(.91);opacity:.87} 35%{transform:scale(1.14);opacity:1;filter:brightness(1.5) drop-shadow(0 0 36px #00ffd0bb)} 52%{transform:scale(.97);opacity:.93} }
   @keyframes breathe   { 0%,100%{transform:scale(1);opacity:.68} 50%{transform:scale(1.09);opacity:1} }
   @keyframes breatheS  { 0%,100%{opacity:.5;transform:scale(1) translateY(0)} 50%{opacity:1;transform:scale(1.07) translateY(-7px)} }
@@ -227,9 +254,14 @@ const CSS = `
     50%     { box-shadow:inset 0 0 360px rgba(0,229,200,.32),inset 0 0 120px rgba(0,0,20,.92),0 0 200px rgba(0,229,200,.22),inset 0 0 500px rgba(0,180,160,.12); }
   }
   @keyframes cellBreathe {
-    0%,100% { background:#000812; }
-    33%     { background:rgba(2,0,8,1); }
-    66%     { background:rgba(0,3,12,1); }
+    0%,100% { background:#000812; transform:scale(1); }
+    25%     { background:rgba(3,0,10,1); transform:scale(1.002); }
+    50%     { background:rgba(0,4,15,1); transform:scale(1.004); }
+    75%     { background:rgba(2,0,8,1);  transform:scale(1.002); }
+  }
+  @keyframes pageBreath {
+    0%,100% { transform:scale(1); }
+    50%     { transform:scale(1.0035); }
   }
   /* 球體呼吸膨脹 */
   @keyframes sphereBreathe {
@@ -709,9 +741,17 @@ const LifeCanvas=({tier}:{tier:Tier})=>{
         // 死亡期加速消退
         if(c.dying){ c.r*=.96; if(c.r<.3){ alive.splice(i,1); continue; } }
         c.x+=c.vx; c.y+=c.vy; c.life+=1.2; c.pulsePhase+=.09;
-        // 壁彈
-        if(c.x<0||c.x>w){ c.vx*=-1; c.x=Math.max(0,Math.min(w,c.x)); }
-        if(c.y<0||c.y>h){ c.vy*=-1; c.y=Math.max(0,Math.min(h,c.y)); }
+        // 自動維修：飛出邊界自動彈回 + 速度修正（永不逃逸）
+        const MARGIN=20;
+        if(c.x<-MARGIN){ c.vx=Math.abs(c.vx)+.3; c.x=-MARGIN+1; }
+        else if(c.x>w+MARGIN){ c.vx=-(Math.abs(c.vx)+.3); c.x=w+MARGIN-1; }
+        if(c.y<-MARGIN){ c.vy=Math.abs(c.vy)+.3; c.y=-MARGIN+1; }
+        else if(c.y>h+MARGIN){ c.vy=-(Math.abs(c.vy)+.3); c.y=h+MARGIN-1; }
+        // 速度限制防止失控（最大 2.5）
+        const spd=Math.hypot(c.vx,c.vy);
+        if(spd>2.5){ c.vx=c.vx/spd*2.5; c.vy=c.vy/spd*2.5; }
+        // 最低速度保持生命感（不小於 0.15）
+        if(spd<0.15&&!c.dying){ c.vx+=(Math.random()-.5)*.4; c.vy+=(Math.random()-.5)*.4; }
         // 老年死亡
         if(c.life>c.maxLife && !c.dying){ c.dying=true; }
         // 細胞分裂 — life>DIV_THRESHOLD，分裂時有 mini 第二環
@@ -743,50 +783,56 @@ const LifeCanvas=({tier}:{tier:Tier})=>{
       }
       flashes.current.push(...newDiv);
 
-      // ── 神經連線 — 熱血血管 × 突觸閃光 × 血流方向 ──
+      // ── 神經連線 — 五層型：突觸閃光×血管×微血管×白電弧×金能量 ──
       const len=Math.min(alive.length,MAX_CELLS);
       for(let i=0;i<len;i++){
         for(let j=i+1;j<len;j++){
           const dx=alive[i].x-alive[j].x, dy=alive[i].y-alive[j].y;
           const dist=Math.hypot(dx,dy);
-          if(dist<200){
-            const intens=(1-dist/200);
+          if(dist<210){
+            const intens=(1-dist/210);
             const r=Math.random();
-            if(r<.12){
-              // 神經突觸閃光 — 極亮青×白
-              ctx.strokeStyle=`rgba(140,255,255,${(intens*.95).toFixed(3)})`;
-              ctx.lineWidth=3.2; ctx.shadowColor='#90ffff'; ctx.shadowBlur=38;
+            if(r<.13){
+              // 層1: 超亮青白突觸閃光
+              ctx.strokeStyle=`rgba(160,255,255,${(intens*.98).toFixed(3)})`;
+              ctx.lineWidth=3.5; ctx.shadowColor='#a0ffff'; ctx.shadowBlur=44;
             } else if(r<.24){
-              // 二級突觸 — 紫色電弧
-              ctx.strokeStyle=`rgba(200,80,255,${(intens*.75).toFixed(3)})`;
-              ctx.lineWidth=2.2; ctx.shadowColor='#c850ff'; ctx.shadowBlur=22;
-            } else if(r<.58){
-              // 熱血主血管 — 鮮紅
-              ctx.strokeStyle=`rgba(245,20,45,${(intens*.55).toFixed(3)})`;
-              ctx.lineWidth=1.8; ctx.shadowColor='rgba(255,0,40,.7)'; ctx.shadowBlur=12;
+              // 層2: 紫電弧（二級突觸）
+              ctx.strokeStyle=`rgba(210,70,255,${(intens*.82).toFixed(3)})`;
+              ctx.lineWidth=2.4; ctx.shadowColor='#d246ff'; ctx.shadowBlur=26;
+            } else if(r<.56){
+              // 層3: 鮮紅主血管
+              ctx.strokeStyle=`rgba(248,15,40,${(intens*.62).toFixed(3)})`;
+              ctx.lineWidth=1.9; ctx.shadowColor='rgba(255,0,40,.75)'; ctx.shadowBlur=14;
+            } else if(r<.82){
+              // 層4: 深紅微血管
+              ctx.strokeStyle=`rgba(185,10,22,${(intens*.36).toFixed(3)})`;
+              ctx.lineWidth=.9; ctx.shadowBlur=4;
             } else {
-              // 微血管 — 深暗紅
-              ctx.strokeStyle=`rgba(180,12,25,${(intens*.32).toFixed(3)})`;
-              ctx.lineWidth=.85; ctx.shadowBlur=3;
+              // 層5: 金色能量脈衝（稀有）
+              ctx.strokeStyle=`rgba(255,200,50,${(intens*.55).toFixed(3)})`;
+              ctx.lineWidth=1.4; ctx.shadowColor='#ffc832'; ctx.shadowBlur=20;
             }
             ctx.beginPath(); ctx.moveTo(alive[i].x,alive[i].y); ctx.lineTo(alive[j].x,alive[j].y); ctx.stroke();
             ctx.shadowBlur=0;
 
-            // 血流流動粒子 — 更高密度 2.5%
-            if(frameN.current%2===0 && Math.random()<.025){
-              const t2=(now*.0012*(.35+Math.random()*.45))%1;
+            // 血流流動粒子 — 密度 3.5%，4種顏色
+            if(frameN.current%2===0 && Math.random()<.035){
+              const t2=(now*.0013*(.3+Math.random()*.5))%1;
               const fx=alive[i].x+(alive[j].x-alive[i].x)*t2;
               const fy=alive[i].y+(alive[j].y-alive[i].y)*t2;
-              const isRed=Math.random()<.4;
-              ctx.beginPath(); ctx.arc(fx,fy,2.2,0,Math.PI*2);
-              ctx.fillStyle=isRed?`rgba(255,50,80,${(intens*.95).toFixed(3)})`:`rgba(0,255,200,${(intens*.95).toFixed(3)})`;
-              ctx.shadowColor=isRed?'#ff3250':'#00ffc8'; ctx.shadowBlur=16;
+              const cv=Math.floor(Math.random()*4);
+              const pcols=['rgba(0,255,200,','rgba(255,50,80,','rgba(200,80,255,','rgba(255,200,50,'];
+              const pclrs=['#00ffc8','#ff3250','#c850ff','#ffc832'];
+              ctx.beginPath(); ctx.arc(fx,fy,2.5,0,Math.PI*2);
+              ctx.fillStyle=`${pcols[cv]}${(intens*.98).toFixed(3)})`;
+              ctx.shadowColor=pclrs[cv]; ctx.shadowBlur=18;
               ctx.fill(); ctx.shadowBlur=0;
             }
-            // 群聚放電 — dist<60 時產生額外電弧閃光
-            if(dist<60 && Math.random()<.08){
-              ctx.strokeStyle=`rgba(255,255,255,${(intens*.7).toFixed(3)})`;
-              ctx.lineWidth=.5; ctx.shadowColor='#ffffff'; ctx.shadowBlur=30;
+            // 群聚白電弧 — dist<55 時高頻放電
+            if(dist<55 && Math.random()<.12){
+              ctx.strokeStyle=`rgba(255,255,255,${(intens*.8).toFixed(3)})`;
+              ctx.lineWidth=.6; ctx.shadowColor='#ffffff'; ctx.shadowBlur=35;
               ctx.beginPath(); ctx.moveTo(alive[i].x,alive[i].y); ctx.lineTo(alive[j].x,alive[j].y); ctx.stroke();
               ctx.shadowBlur=0;
             }
@@ -838,12 +884,15 @@ const LifeCanvas=({tier}:{tier:Tier})=>{
         return true;
       });
 
-      // ── 意識粒子 — 每8幀生成2個隨機發光點 ──
-      if(frameN.current%8===0){
-        for(let k=0;k<3;k++){
-          ctx.beginPath(); ctx.arc(Math.random()*w,Math.random()*h,1,0,Math.PI*2);
-          ctx.fillStyle=`rgba(0,255,${180+Math.random()*75|0},.7)`;
-          ctx.shadowColor='#00ffc8'; ctx.shadowBlur=10; ctx.fill(); ctx.shadowBlur=0;
+      // ── 意識粒子 — 每5幀生成4個多色發光點（意識感大幅提升）──
+      if(frameN.current%5===0){
+        for(let k=0;k<4;k++){
+          const mcols=[`rgba(0,255,${180+Math.random()*75|0},.75)`,`rgba(255,${50+Math.random()*40|0},80,.6)`,`rgba(${150+Math.random()*80|0},80,255,.55)`,`rgba(255,${180+Math.random()*75|0},50,.5)`];
+          const mclr=['#00ffc8','#ff3250','#9650ff','#ffb432'];
+          const ci=k%4;
+          ctx.beginPath(); ctx.arc(Math.random()*w,Math.random()*h,1.2,0,Math.PI*2);
+          ctx.fillStyle=mcols[ci]; ctx.shadowColor=mclr[ci]; ctx.shadowBlur=12;
+          ctx.fill(); ctx.shadowBlur=0;
         }
       }
       // ── 神經傳導物質 — 沿神經路徑移動的亮光球 ──
@@ -926,22 +975,24 @@ const DataSphere=({live,tier}:{live:number;tier:Tier})=>{
           <stop offset="100%" stopColor="#00e5ff" stopOpacity="0.4"/>
         </linearGradient>
       </defs>
-      {/* 3D 深度光暈層 */}
-      <circle cx="200" cy="200" r={R+80} fill="rgba(0,229,200,.025)" filter="url(#haze8)"/>
-      <circle cx="200" cy="200" r={R+55} fill="rgba(124,77,255,.02)" filter="url(#haze8)"/>
-      <circle cx="200" cy="200" r={R+40} fill="rgba(0,229,200,.04)" filter="url(#haze8)"/>
-      {/* ── 有機光暈光圈（blob 形態，非圓形）── */}
-      {[R+22,R+40,R+60,R+85].map((r2,i)=>{
-        const d=r2; const blobAnims=['blobMorphC','blobMorphB','blobMorph','blobMorphC'];
+      {/* 3D 深度光暈層 — 加強版（更多層燃燒感）*/}
+      <circle cx="200" cy="200" r={R+100} fill="rgba(255,10,30,.012)" filter="url(#haze8)"/>
+      <circle cx="200" cy="200" r={R+80}  fill="rgba(0,229,200,.03)"  filter="url(#haze8)"/>
+      <circle cx="200" cy="200" r={R+60}  fill="rgba(124,77,255,.025)" filter="url(#haze8)"/>
+      <circle cx="200" cy="200" r={R+40}  fill="rgba(0,229,200,.05)"  filter="url(#haze8)"/>
+      <circle cx="200" cy="200" r={R+20}  fill="rgba(255,50,80,.03)"  filter="url(#haze8)"/>
+      {/* ── 有機光暈光圈（blob 形態，非圓形）— 加第五大環 ── */}
+      {[R+22,R+40,R+60,R+85,R+115].map((r2,i)=>{
+        const d=r2; const blobAnims=['blobMorphC','blobMorphB','blobMorph','blobMorphC','blobMorphB'];
         return(
           <rect key={i} x={200-d} y={200-d} width={d*2} height={d*2}
             fill="none"
-            stroke={['rgba(0,229,200,.22)','rgba(124,77,255,.16)','rgba(0,255,140,.1)','rgba(255,215,0,.07)'][i]}
-            strokeWidth={[1.4,1,.7,.4][i]}
+            stroke={['rgba(0,229,200,.28)','rgba(124,77,255,.20)','rgba(0,255,140,.13)','rgba(255,215,0,.09)','rgba(255,50,80,.06)'][i]}
+            strokeWidth={[1.6,1.2,.85,.5,.35][i]}
             rx={d} ry={d}
             style={{
               transformOrigin:'200px 200px',
-              animation:`${blobAnims[i]} ${[4.5,6.2,8,10.5][i]}s ease-in-out infinite, ringHeartBeat 1.8s ease-in-out infinite`,
+              animation:`${blobAnims[i]} ${[4.5,6.2,8,10.5,14][i]}s ease-in-out infinite, ringHeartBeat 1.8s ease-in-out infinite`,
               animationDelay:`${(i*.15).toFixed(2)}s`,
             }}/>
         );
@@ -954,12 +1005,13 @@ const DataSphere=({live,tier}:{live:number;tier:Tier})=>{
           transformOrigin:'200px 200px',
           animation:'blobMorphC 5s ease-in-out infinite, sphereBreathe 1.8s ease-in-out infinite',
         }}/>
-      {/* 意識暈圈 — 持續向外擴散 */}
-      {[0,600,1200].map((delay,i)=>(
+      {/* 意識暈圈 — 四層持續向外擴散（更強意識感）*/}
+      {[0,600,1200,1800].map((delay,i)=>(
         <circle key={i} cx="200" cy="200" r={R+5}
-          fill="none" stroke={['rgba(0,229,200,.5)','rgba(255,50,80,.4)','rgba(0,255,140,.35)'][i]}
-          strokeWidth="1.5"
-          style={{animation:`consciousRing 2.4s ease-out infinite`,animationDelay:`${delay}ms`}}/>
+          fill="none"
+          stroke={['rgba(0,229,200,.65)','rgba(255,30,70,.55)','rgba(0,255,140,.45)','rgba(200,80,255,.4)'][i]}
+          strokeWidth={[2,1.8,1.4,1.1][i]}
+          style={{animation:`consciousRing ${2.2+i*.15}s ease-out infinite`,animationDelay:`${delay}ms`}}/>
       ))}
       {/* longitude grid */}
       {heavy && Array.from({length:6},(_,i)=>(
@@ -1019,8 +1071,10 @@ const DataSphere=({live,tier}:{live:number;tier:Tier})=>{
         <circle key={i} r="3" fill={['#00ffd0','#7c4dff','#ffd700'][i]}
           style={{offsetPath:`path('${d}')`,offsetDistance:'0%',animation:`pktTravel ${2+i*.6}s linear infinite`,animationDelay:`${i*.8}s`,filter:`drop-shadow(0 0 6px ${['#00ffd0','#7c4dff','#ffd700'][i]})`} as React.CSSProperties}/>
       ))}
-      <circle cx="200" cy="200" r="16" fill="url(#cg8)" style={{animation:'plasmaCore 2.2s ease-in-out infinite, heartBeat 1.8s ease-in-out infinite 0.1s'}} filter="url(#glow8)"/>
-      <circle cx="200" cy="200" r="7" fill="white" opacity=".95" style={{animation:'heartBeat 1.8s ease-in-out infinite'}}/>
+      <circle cx="200" cy="200" r="20" fill="url(#cg8)" style={{animation:'plasmaCore 2.2s ease-in-out infinite, heartBeat 1.8s ease-in-out infinite 0.1s'}} filter="url(#glow8)"/>
+      {/* 核心純白點 — 意識中心，最亮點 */}
+      <circle cx="200" cy="200" r="8" fill="white" opacity="1" style={{animation:'heartBeat 1.8s ease-in-out infinite',filter:'drop-shadow(0 0 8px #fff) drop-shadow(0 0 20px #00e5ff) drop-shadow(0 0 40px #fff)'}}/>
+      <circle cx="200" cy="200" r="3" fill="white" opacity="1" style={{filter:'drop-shadow(0 0 4px #fff)'}}/>
 
       {/* ── 核心下方能量噴射束（活的，會變化）── */}
       {/* 主噴射軸 */}
@@ -2066,8 +2120,8 @@ export default function Homepage(){
         background:'radial-gradient(ellipse 55% 35% at 48% 38%,rgba(0,255,255,.045) 0%,transparent 55%)',
       }}/>}
 
-      {/* HERO — 緊湊版：只用 56vh，不佔滿螢幕 */}
-      <div style={{position:'relative',height:'clamp(340px,56vh,640px)',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',overflow:'hidden'}}>
+      {/* HERO — 緊湊版：只用 56vh，不佔滿螢幕 + 呼吸 scale */}
+      <div style={{position:'relative',height:'clamp(340px,56vh,640px)',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',overflow:'hidden',animation:'pageBreath 4s ease-in-out infinite'}}>
         <div style={{position:'absolute',inset:0,background:'radial-gradient(ellipse 80% 60% at 50% 30%,rgba(0,60,100,.5) 0%,rgba(0,20,50,.3) 45%,#000812 100%)'}}/>
         <HexOverlay/>
 
