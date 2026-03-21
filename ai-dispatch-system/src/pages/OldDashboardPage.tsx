@@ -1548,7 +1548,7 @@ const DataVoidPanel=({tier}:{tier:Tier})=>{
       <div style={{position:'relative',zIndex:10,padding:'clamp(18px,3vh,32px) clamp(16px,4vw,56px)'}}>
         {/* header */}
         <div style={{textAlign:'center',marginBottom:'clamp(12px,2vh,22px)'}}>
-          <div style={{fontSize:'clamp(7px,.8vw,9px)',letterSpacing:'8px',color:'rgba(0,212,255,.4)',marginBottom:7,fontFamily:'monospace',textTransform:'uppercase'}}>VOID CORE · AI DISPATCH ENGINE · v10.0</div>
+          <div style={{fontSize:'clamp(7px,.8vw,9px)',letterSpacing:'8px',color:'rgba(0,212,255,.4)',marginBottom:7,fontFamily:'monospace',textTransform:'uppercase'}}>LIFE ENGINE · AI DISPATCH · 2026-03-21 · v11.0</div>
           <h2 className="shimmerTxt" style={{fontSize:'clamp(22px,3vw,44px)',fontWeight:900,margin:'0 0 8px',letterSpacing:'-.01em'}}>業績黑洞輸入 · AI全通派單</h2>
           <div style={{fontSize:'clamp(8px,.9vw,11px)',color:'rgba(0,212,255,.38)',letterSpacing:'2.5px',fontFamily:'monospace'}}>
             INPUT → VOID CORE AI → RANK → DISPATCH ORDER → SYNC ALL PAGES → BACKEND
@@ -1912,7 +1912,7 @@ export default function Homepage(){
 
   // ─── API 資料連線 ───
   useEffect(() => {
-    fetch('http://localhost:3001/api/v1/rankings/2026-03-16')
+    fetch('http://localhost:3001/api/v1/rankings/2026-03-21')
       .then(r => r.json())
       .then(res => {
         if (res.success && res.data?.rankings) {
@@ -2098,7 +2098,7 @@ export default function Homepage(){
           {[0,1,2].map(i=>(
             <div key={i} style={{position:'absolute',left:'50%',top:'50%',width:'clamp(200px,28vw,380px)',height:'clamp(200px,28vw,380px)',borderRadius:'50%',border:`1px solid rgba(0,229,200,${.12-i*.03})`,pointerEvents:'none',animation:`pulseRing3D ${2.4+i*.8}s ease-out infinite`,animationDelay:`${i*.8}s`}}/>
           ))}
-          <div style={{fontSize:'clamp(8px,.9vw,10px)',letterSpacing:'6px',color:'rgba(0,229,200,.65)',marginBottom:8,fontFamily:'monospace',fontWeight:700,textShadow:'0 0 14px rgba(0,229,200,.5)',animation:'hudBlink 2.5s ease-in-out infinite'}}>GLOBAL · AI · DATA · ENGINE · v10.0 · {clk||'──:──:──'}</div>
+          <div style={{fontSize:'clamp(8px,.9vw,10px)',letterSpacing:'6px',color:'rgba(0,229,200,.65)',marginBottom:8,fontFamily:'monospace',fontWeight:700,textShadow:'0 0 14px rgba(0,229,200,.5)',animation:'hudBlink 2.5s ease-in-out infinite'}}>2026-03-21 · LIFE ENGINE · v11.0 · {clk||'──:──:──'}</div>
           <h1 className="dataGlitch shimmerTxt" style={{fontSize:'clamp(20px,3.5vw,48px)',fontWeight:900,margin:'0 0 6px',letterSpacing:'-.01em',lineHeight:1.08}}>
             全球生命引擎中控台
           </h1>
@@ -2317,7 +2317,7 @@ export default function Homepage(){
                    SORT[1257] ✓ 6,574,584<br/>
                    AVG[7016] ✓ 1,406,487<br/>
                    INDEX[9354] ✓ 5,283,824<br/>
-                   GLOBAL · AI · DATA · ENGINE · v10.0
+                   LIFE ENGINE v11.0 · 2026-03-21 · APEX
                  </div>
                )}
                {activeStat === 'USD REVENUE' && (

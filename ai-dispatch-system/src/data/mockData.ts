@@ -1,8 +1,8 @@
 // ==========================================
-// 3/18 結算真實業績數據 → 3/19 AI 派單
-// 更新：3/18 三平台報表校正完畢，天地盤/邏輯盤/累積盤全 PASS
+// 3/21 結算真實業績數據 → 3/22 AI 派單
+// 更新：3/21 16:30 三平台報表校正完畢，天地盤/邏輯盤/累積盤全 PASS
 // 排序：總業績 → 續單金額 → 追續成交總數
-// 新增：陳旭宜（新人）正式進榜（第 21 名）
+// 版本：2026-03-21 17:00 LIFE ENGINE v11.0
 // ==========================================
 
 export interface Employee {
@@ -37,7 +37,7 @@ export interface Platform {
   revenue: number;
 }
 
-// 三平台資料（奕心＋民視＋公司）3/18 結算
+// 三平台資料（奕心＋民視＋公司）3/21 16:30 結算
 // 奕心 4,152,282 / 民視 1,449,788 / 公司 378,360 合計 5,980,430
 export const platforms: Platform[] = [
   { name: '奕心', revenue: 4152282 },  // 69% 💡 主力
@@ -45,12 +45,12 @@ export const platforms: Platform[] = [
   { name: '公司', revenue: 378360  },  //  7% 🌀 潛力
 ];
 
-// 3/18 結算（三平台整合）→ 3/19 派單
+// 3/21 16:30 結算（三平台整合）→ 3/22 派單
 // 名次異動：高如郁 11→7、林宜靜 7→5、林沛昕 5→6
 // 王梅慧 6→4、廖姿惠 8→8（不變）、江麗勉 4→9（掉位）
 // 新增：陳旭宜（新人）正式進榜第 21 名
 
-// 3/18 結算 → 3/19 派單的真實員工資料（依總業績降序）
+// 3/21 結算 → 3/22 派單的真實員工資料（依總業績降序）
 export const rawEmployees: Employee[] = [
   { rank: 1,  name: '李玲玲', followUps: 22, renewals: 592270, total: 817900, actual: 817900, stats: { total: 94, open: 100, brave: 100, close: 79, value: 85, stress: 100 }, group: 'A1' },
   { rank: 2,  name: '王珍珠', followUps: 40, renewals: 497250, total: 700580, actual: 700580, stats: { total: 82, open: 75,  brave: 72,  close: 77, value: 80, stress: 79 }, group: 'A1' },
@@ -76,7 +76,7 @@ export const rawEmployees: Employee[] = [
   { rank: 22, name: '林佩君', followUps: 1,  renewals: 2490,   total: 2490,   actual: 2490,   stats: { total: 28, open: 11,  brave: 4,   close: 100,value: 1,  stress: 1  }, group: 'C' },
 ];
 
-// AI 個人建議（3/19 版本，依 3/18 結算排名更新｜AI 大數據判讀強化版）
+// AI 個人建議（3/22 派單版，依 3/21 16:30 結算排名更新｜LIFE ENGINE v11.0）
 export const aiSuggestions: Record<string, string> = {
   '李玲玲': '📊 AI 算力核定：穩居榜首。💡 建議：將 59.227 萬【續單】精準收口，優先鎖定高淨值客戶。⚠️ 壓力：你已踩在天花板，後方追趕者磁吸擴大，不容半秒怠惰。🚀 激勵：今日再補一發高單價，直接拉出不可跨越之絕對斷層！',
   '王珍珠': '📊 AI 算力核定：最強追趕者。💡 建議：將 40 次【追續】高頻落袋，把 49.725 萬【續單】打成連續實收。⚠️ 壓力：前方榜首未縮小，後方第 3 名機率逼近，夾縫中最忌猶豫。🚀 激勵：開張即爆發，穩坐前二甚至直接逼近榜首！',

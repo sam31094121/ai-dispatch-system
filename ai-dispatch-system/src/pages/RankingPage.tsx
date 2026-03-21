@@ -497,7 +497,7 @@ export default function RankingPage() {
         {/* 📋 一鍵複製功能按鈕 */}
         <button 
           onClick={() => {
-            const text = `📣【AI 派單公告｜3/17 結算 → 3/18 派單順序】\n審計結果：數據通過\n整合總盤：實收 $5,476,572\n點選人員：${selectedEmp.name} (No.${selectedEmp.rank})\nAI戰略建議：\n${aiSuggestions[selectedEmp.name] || '無'}`;
+            const text = `📣【AI 派單公告｜3/21 結算 → 3/22 派單順序】\n審計結果：數據通過\n整合總盤：實收 $5,980,430\n點選人員：${selectedEmp.name} (No.${selectedEmp.rank})\nAI戰略建議：\n${aiSuggestions[selectedEmp.name] || '無'}`;
             navigator.clipboard.writeText(text);
             alert('📋 戰力數據已複製！');
           }}
