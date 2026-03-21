@@ -9,7 +9,7 @@ import { calculateAiScores, assignGroups, calcHealthScore } from '../engine/aiEn
 const CFG = {
   particles:  { ultra:320, high:160, low:55,  minimal:10 },
   matrixDens: { ultra:1.0, high:.65, low:.28, minimal:0  },
-  bolts:      { ultra:10,  high:5,   low:2,   minimal:0  },
+  bolts:      { ultra:14,  high:7,   low:2,   minimal:0  },
   ripples:    { ultra:16,  high:8,   low:3,   minimal:0  },
   numStreams:  { ultra:80,  high:40,  low:16,  minimal:0  },
   stars:      { ultra:220, high:110, low:0,   minimal:0  },
@@ -41,6 +41,18 @@ const CSS = `
   @keyframes pulseWave { 0%{r:40;opacity:.85;stroke-width:4} 100%{r:218;opacity:0;stroke-width:.3} }
   @keyframes ecgPulse  { 0%{transform:translateX(0)} 100%{transform:translateX(-200px)} }
   @keyframes blobMorph { 0%,100%{border-radius:62% 38% 54% 46% / 48% 62% 38% 52%} 25%{border-radius:42% 58% 36% 64% / 58% 36% 64% 42%} 50%{border-radius:56% 44% 62% 38% / 36% 64% 42% 58%} 75%{border-radius:38% 62% 46% 54% / 64% 38% 58% 42%} }
+  @keyframes blobMorphB{ 0%,100%{border-radius:38% 62% 46% 54%/64% 38% 58% 42%} 20%{border-radius:71% 29% 63% 37%/42% 68% 32% 58%} 40%{border-radius:44% 56% 38% 62%/56% 40% 60% 44%} 60%{border-radius:58% 42% 72% 28%/36% 74% 26% 64%} 80%{border-radius:29% 71% 34% 66%/68% 28% 72% 32%} }
+  @keyframes blobMorphC{ 0%,100%{border-radius:50% 50% 50% 50%/50% 50% 50% 50%} 16%{border-radius:76% 24% 64% 36%/44% 72% 28% 56%} 33%{border-radius:33% 67% 42% 58%/68% 34% 66% 32%} 50%{border-radius:60% 40% 30% 70%/52% 40% 60% 48%} 66%{border-radius:24% 76% 58% 42%/38% 62% 38% 62%} 83%{border-radius:52% 48% 76% 24%/26% 78% 22% 74%} }
+  @keyframes orbMorph  { 0%,100%{rx:128;ry:36} 25%{rx:118;ry:44} 50%{rx:134;ry:30} 75%{rx:122;ry:42} }
+  @keyframes orbMorphB { 0%,100%{rx:142;ry:40} 33%{rx:128;ry:52} 66%{rx:155;ry:33} }
+  @keyframes coreBlob  { 0%,100%{d:path('M 200 110 C 250 110 290 150 290 200 C 290 250 250 290 200 290 C 150 290 110 250 110 200 C 110 150 150 110 200 110 Z')} 25%{d:path('M 200 105 C 258 108 295 148 292 205 C 289 262 248 295 200 293 C 145 291 108 255 112 200 C 116 148 145 102 200 105 Z')} 50%{d:path('M 200 108 C 255 105 298 152 295 208 C 292 258 245 292 195 290 C 148 288 106 250 110 198 C 114 146 148 111 200 108 Z')} 75%{d:path('M 200 112 C 248 110 288 155 286 202 C 284 255 245 294 200 292 C 152 290 112 248 114 200 C 116 150 155 114 200 112 Z')} }
+  @keyframes aura1     { 0%,100%{transform:translate(-50%,-50%) scale(1) rotate(0deg);opacity:.55} 33%{transform:translate(-50%,-50%) scale(1.08) rotate(120deg);opacity:.85} 66%{transform:translate(-50%,-50%) scale(.96) rotate(240deg);opacity:.65} }
+  @keyframes aura2     { 0%,100%{transform:translate(-50%,-50%) scale(1) rotate(360deg);opacity:.4} 50%{transform:translate(-50%,-50%) scale(1.12) rotate(180deg);opacity:.75} }
+  @keyframes fluxBeam  { 0%,100%{opacity:.04;stroke-width:.4;filter:none} 50%{opacity:.55;stroke-width:2;filter:drop-shadow(0 0 8px currentColor)} }
+  @keyframes bootNum   { 0%{transform:translateY(-10px) scale(.85);opacity:0;filter:blur(4px)} 15%{opacity:1;filter:blur(0);transform:translateY(0) scale(1.08)} 85%{opacity:1;transform:translateY(0) scale(1)} 100%{transform:translateY(10px) scale(.88);opacity:0;filter:blur(3px)} }
+  @keyframes numFlash  { 0%,100%{filter:brightness(1)} 20%{filter:brightness(2.2) drop-shadow(0 0 18px currentColor)} }
+  @keyframes underJet  { 0%,100%{transform:translate(-50%,0) scaleX(1);opacity:.18} 50%{transform:translate(-50%,0) scaleX(1.35);opacity:.55} }
+  @keyframes jetSpark  { 0%{transform:translate(-50%,-50%) translateY(0);opacity:1;border-radius:50%} 100%{transform:translate(-50%,-50%) translateY(60px) scale(.1);opacity:0;border-radius:50%} }
   @keyframes shimmer   { 0%{background-position:200% center} 100%{background-position:-200% center} }
   @keyframes elecArc   { 0%,80%,100%{opacity:0;stroke-width:.3} 81%{opacity:1;stroke-width:2.8;filter:drop-shadow(0 0 12px #00e5ff)} 86%{opacity:.3;stroke-width:.6} 90%{opacity:.9;stroke-width:2.2} 94%{opacity:.15;stroke-width:.4} 97%{opacity:.7;stroke-width:1.6} }
   @keyframes currentFlow { from{stroke-dashoffset:80;opacity:.75} to{stroke-dashoffset:0;opacity:.18} }
@@ -172,6 +184,111 @@ const CSS = `
     filter: drop-shadow(0 0 28px #00e5ff) drop-shadow(0 0 60px rgba(0,229,200,.5)) drop-shadow(0 0 100px rgba(0,229,200,.2));
     animation: neonFlare 3s ease-in-out infinite;
   }
+
+  /* ══ 生命引擎覺醒 — 生物心跳 × 細胞意識 ══ */
+  @keyframes heartBeat {
+    0%   { transform:scale(1);    filter:brightness(1); }
+    10%  { transform:scale(1.32); filter:brightness(4.0) drop-shadow(0 0 120px #00ffffff) drop-shadow(0 0 60px #00e5ffff) drop-shadow(0 0 200px #00ffd0cc); }
+    20%  { transform:scale(0.88); filter:brightness(1.05); }
+    30%  { transform:scale(1.55); filter:brightness(3.8) drop-shadow(0 0 100px #ff1040ff) drop-shadow(0 0 180px #ff003088) drop-shadow(0 0 250px #cc002055); }
+    40%  { transform:scale(0.93); filter:brightness(1.4) drop-shadow(0 0 30px #00ffd0cc); }
+    50%  { transform:scale(1);    filter:brightness(1); }
+    100% { transform:scale(1);    filter:brightness(1); }
+  }
+  @keyframes gaugeHeartBeat {
+    0%,100% { filter:brightness(1)   drop-shadow(0 0  8px #00ffa033); }
+    15%     { filter:brightness(2.6) drop-shadow(0 0 40px #00ffa0ff); }
+    25%     { filter:brightness(1.1) drop-shadow(0 0 10px #00ffa044); }
+    35%     { filter:brightness(2.0) drop-shadow(0 0 28px #00ffd0cc); }
+    50%     { filter:brightness(1)   drop-shadow(0 0  8px #00ffa033); }
+  }
+  @keyframes ringHeartBeat {
+    0%   { transform:scale(1);    opacity:1; }
+    10%  { transform:scale(1.22); opacity:1; }
+    20%  { transform:scale(0.88); opacity:.7; }
+    30%  { transform:scale(1.38); opacity:1; }
+    40%  { transform:scale(0.95); opacity:.85; }
+    50%  { transform:scale(1);    opacity:1; }
+    100% { transform:scale(1);    opacity:1; }
+  }
+  @keyframes cellMitosis {
+    0%   { transform:scale(1);    filter:brightness(1); }
+    18%  { transform:scale(1.22); filter:brightness(2.8) drop-shadow(0 0 22px currentColor); }
+    32%  { transform:scale(0.95); filter:brightness(1.4); }
+    50%  { transform:scale(1.06); filter:brightness(1.2); }
+    100% { transform:scale(1);    filter:brightness(1); }
+  }
+  @keyframes divRing {
+    0%   { transform:translate(-50%,-50%) scale(0.2); opacity:0.9; }
+    100% { transform:translate(-50%,-50%) scale(3.5); opacity:0; }
+  }
+  @keyframes breatheVoid {
+    0%,100% { box-shadow:inset 0 0 220px rgba(200,0,40,.42),inset 0 0 100px rgba(0,0,20,.97),0 0 120px rgba(0,229,200,.08),inset 0 0 400px rgba(160,0,20,.22); }
+    50%     { box-shadow:inset 0 0 360px rgba(0,229,200,.32),inset 0 0 120px rgba(0,0,20,.92),0 0 200px rgba(0,229,200,.22),inset 0 0 500px rgba(0,180,160,.12); }
+  }
+  @keyframes cellBreathe {
+    0%,100% { background:#000812; }
+    33%     { background:rgba(2,0,8,1); }
+    66%     { background:rgba(0,3,12,1); }
+  }
+  /* 球體呼吸膨脹 */
+  @keyframes sphereBreathe {
+    0%,100% { transform:scale(1);     filter:drop-shadow(0 0 20px rgba(0,229,200,.55)) drop-shadow(0 0 50px rgba(0,229,200,.28)); }
+    10%     { transform:scale(1.09);  filter:drop-shadow(0 0 80px rgba(0,229,200,1.0)) drop-shadow(0 0 160px rgba(0,229,200,.7)) drop-shadow(0 0 240px rgba(0,255,208,.45)); }
+    20%     { transform:scale(0.96);  filter:drop-shadow(0 0 25px rgba(0,229,200,.7)); }
+    30%     { transform:scale(1.12);  filter:drop-shadow(0 0 100px rgba(255,20,60,1.0)) drop-shadow(0 0 180px rgba(255,60,40,.6)) drop-shadow(0 0 260px rgba(0,229,200,.45)); }
+    42%     { transform:scale(0.975); filter:drop-shadow(0 0 30px rgba(0,229,200,.6)); }
+    50%,100%{ transform:scale(1);     filter:drop-shadow(0 0 20px rgba(0,229,200,.55)) drop-shadow(0 0 50px rgba(0,229,200,.28)); }
+  }
+  /* 血管流動（城市連線） */
+  @keyframes bloodFlow {
+    0%   { stroke-dashoffset:120; opacity:.55; stroke-width:1.2; }
+    40%  { opacity:.95; stroke-width:1.8; }
+    100% { stroke-dashoffset:0;   opacity:.35; stroke-width:1; }
+  }
+  /* 突觸放電 — 加速版，火花更密集 */
+  @keyframes synapseFire {
+    0%,100% { opacity:0;   stroke-width:.3; filter:none; }
+    6%      { opacity:1;   stroke-width:3.5; filter:drop-shadow(0 0 22px #00ffff) drop-shadow(0 0 8px #fff); }
+    14%     { opacity:.2;  stroke-width:.6; }
+    22%     { opacity:.95; stroke-width:2.8; filter:drop-shadow(0 0 14px #00ffd0); }
+    30%     { opacity:.1;  stroke-width:.4; }
+    38%     { opacity:.75; stroke-width:2;   filter:drop-shadow(0 0 10px #b464ff); }
+    48%     { opacity:0;   stroke-width:.3; }
+  }
+  /* 意識暈圈 */
+  @keyframes consciousRing {
+    0%   { r:115; opacity:.7; stroke-width:2; }
+    50%  { r:130; opacity:.2; stroke-width:.5; }
+    100% { r:145; opacity:0;  stroke-width:.2; }
+  }
+  /* 模塊卡片生命脈動 */
+  @keyframes cardLifePulse {
+    0%,100% { box-shadow:0 4px 20px rgba(0,0,0,.6), 0 0 0 rgba(0,229,200,0); border-color:rgba(0,229,200,.18); }
+    15%     { box-shadow:0 8px 40px rgba(0,0,0,.7), 0 0 28px rgba(0,229,200,.22); border-color:rgba(0,229,200,.4); }
+    35%     { box-shadow:0 12px 50px rgba(0,0,0,.75),0 0 40px rgba(220,30,60,.18); border-color:rgba(220,30,60,.25); }
+    50%,100%{ box-shadow:0 4px 20px rgba(0,0,0,.6), 0 0 0 rgba(0,229,200,0); border-color:rgba(0,229,200,.18); }
+  }
+  /* 腦波掃描 */
+  @keyframes brainWave {
+    0%   { transform:translateX(-100%); opacity:0; }
+    5%   { opacity:.7; }
+    90%  { opacity:.4; }
+    100% { transform:translateX(100vw); opacity:0; }
+  }
+  @keyframes brainWaveB {
+    0%   { transform:translateX(-100%); opacity:0; }
+    8%   { opacity:.5; }
+    92%  { opacity:.25; }
+    100% { transform:translateX(100vw); opacity:0; }
+  }
+  .heartBeat     { animation:heartBeat     1.8s ease-in-out infinite; }
+  .gaugeHB       { animation:gaugeHeartBeat 1.8s ease-in-out infinite; }
+  .ringHB        { animation:ringHeartBeat  1.8s ease-in-out infinite; }
+  .breatheVoid   { animation:breatheVoid    4s   ease-in-out infinite; }
+  .cellBreathe   { animation:cellBreathe    8s   ease-in-out infinite; }
+  .sphereBreathe { animation:sphereBreathe  1.8s ease-in-out infinite; }
+  .cardLifePulse { animation:cardLifePulse  1.8s ease-in-out infinite; }
 `;
 
 /* ── FPS MONITOR ── */
@@ -276,7 +393,7 @@ const LiveCompute=({tier}:{tier:Tier})=>{
     const gen=()=>{
       const op=COMPUTE_OPS[Math.floor(Math.random()*COMPUTE_OPS.length)];
       const id=Math.floor(Math.random()*9999).toString().padStart(4,'0');
-      const val=Math.floor(Math.random()*9999999).toLocaleString();
+      const val=Math.floor(Math.random()*9999999)?.toLocaleString();
       return `${op}[${id}] ${Math.random()>.12?'✓':'→'} ${val}`;
     };
     setLines(Array.from({length:10},gen));
@@ -359,7 +476,7 @@ interface Seg{x1:number;y1:number;x2:number;y2:number;}
 interface Star{x:number;y:number;r:number;flicker:number;speed:number;}
 const MCHARS='0123456789ABCDEF.,-%+$¥×÷'.split('');
 
-const DataCanvas=({tier,mouseX,mouseY}:{tier:Tier;mouseX:number;mouseY:number})=>{
+const DataCanvas=({tier,mouseX,mouseY,heartFlashRef}:{tier:Tier;mouseX:number;mouseY:number;heartFlashRef?:React.MutableRefObject<number>})=>{
   const cvs=useRef<HTMLCanvasElement>(null);
   const pts=useRef<Pt[]>([]);
   const mx=useRef<MxCol[]>([]);
@@ -418,7 +535,7 @@ const DataCanvas=({tier,mouseX,mouseY}:{tier:Tier;mouseX:number;mouseY:number})=
         for(const s of stars.current){
           s.flicker+=s.speed;
           const a=.25+.35*Math.sin(s.flicker);
-          ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+          ctx.beginPath();ctx.arc(s.x, s.y, Math.max(0.1, s.r),0,Math.PI*2);
           ctx.fillStyle=`rgba(200,225,255,${a})`;ctx.fill();
         }
         // — hex grid —
@@ -433,8 +550,11 @@ const DataCanvas=({tier,mouseX,mouseY}:{tier:Tier;mouseX:number;mouseY:number})=
             ctx.closePath();ctx.stroke();
           }
         }
-        // — matrix rain —
+        // — matrix rain — 心跳時轉血紅色
         if(CFG.matrixDens[tier]>0){
+          const hf=heartFlashRef?.current??0;
+          const mxR=hf===2?'255,20,50':hf===1?'180,10,30':'0,229,200';
+          const mxBright=hf===2?'#ff1432':hf===1?'#cc0820':'#00ffd0';
           for(const col of mx.current){
             col.y+=col.speed;
             if(col.y>h+col.chars.length*16)col.y=-col.chars.length*16;
@@ -443,8 +563,8 @@ const DataCanvas=({tier,mouseX,mouseY}:{tier:Tier;mouseX:number;mouseY:number})=
               const py=col.y+i*14;if(py<0||py>h)continue;
               const bright=i===col.chars.length-1;
               ctx.font=bright?'bold 12px monospace':'11px monospace';
-              ctx.fillStyle=bright?'rgba(255,255,255,.95)':`rgba(0,229,200,${Math.max(.04,(1-i/col.chars.length)*.52)})`;
-              if(bright){ctx.shadowColor='#00ffd0';ctx.shadowBlur=14;}
+              ctx.fillStyle=bright?'rgba(255,255,255,.95)':`rgba(${mxR},${Math.max(.04,(1-i/col.chars.length)*.58)})`;
+              if(bright){ctx.shadowColor=mxBright;ctx.shadowBlur=hf?18:14;}
               ctx.fillText(col.chars[i],col.x,py);
               if(bright)ctx.shadowBlur=0;
             }
@@ -472,7 +592,6 @@ const DataCanvas=({tier,mouseX,mouseY}:{tier:Tier;mouseX:number;mouseY:number})=
         }
         // — particles —
         const pCount=CFG.particles[tier];
-        const connDist=tier==='ultra'?160:tier==='high'?100:60;
         const drawConn=tier!=='minimal'&&tier!=='low';
         const mi=80;
         for(let i=0;i<pts.current.length&&i<pCount;i++){
@@ -484,24 +603,48 @@ const DataCanvas=({tier,mouseX,mouseY}:{tier:Tier;mouseX:number;mouseY:number})=
           p.life++;
           if(p.life>p.maxLife){p.x=Math.random()*w;p.y=Math.random()*h;p.vx=(Math.random()-.5)*.55;p.vy=(Math.random()-.5)*.55;p.life=0;}
           const alpha=Math.sin(p.life/p.maxLife*Math.PI)*.8+.2;
-          ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+          ctx.beginPath();ctx.arc(p.x, p.y, Math.max(0.1, Math.max(0.1), p.r),0,Math.PI*2);
           ctx.fillStyle=p.c.replace(')',`,${alpha})`).replace('rgb','rgba');
           ctx.shadowColor=p.c;ctx.shadowBlur=p.r*5;ctx.fill();ctx.shadowBlur=0;
           if(drawConn){
             for(let j=i+1;j<Math.min(pts.current.length,pCount);j++){
               const q=pts.current[j],d=Math.hypot(p.x-q.x,p.y-q.y);
-              if(d<connDist){ctx.strokeStyle=`rgba(0,229,200,${(.18*(1-d/connDist)).toFixed(3)})`;ctx.lineWidth=.6;ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke();}
+              if(d<80){
+                const intens=(1-d/80);
+                const r3=Math.random();
+                if(r3<.18){
+                  // 神經突觸閃光 — 亮青白
+                  ctx.strokeStyle=`rgba(80,255,255,${(intens*.7).toFixed(3)})`;
+                  ctx.lineWidth=2.5; ctx.shadowColor='#50ffff'; ctx.shadowBlur=22;
+                } else if(r3<.32){
+                  // 紫色突觸 — 二級神經
+                  ctx.strokeStyle=`rgba(180,90,255,${(intens*.55).toFixed(3)})`;
+                  ctx.lineWidth=1.6; ctx.shadowColor='#b45aff'; ctx.shadowBlur=14;
+                } else if(r3<.62){
+                  // 熱血主血管 — 深紅
+                  ctx.strokeStyle=`rgba(210,20,45,${(intens*.38).toFixed(3)})`;
+                  ctx.lineWidth=1.2; ctx.shadowColor='rgba(255,10,40,.55)'; ctx.shadowBlur=7;
+                } else {
+                  // 微血管 — 暗紅極細
+                  ctx.strokeStyle=`rgba(140,10,25,${(intens*.2).toFixed(3)})`;
+                  ctx.lineWidth=.6; ctx.shadowBlur=1;
+                }
+                ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.stroke();
+                ctx.shadowBlur=0;
+              }
             }
           }
         }
-        // — ripples —
+        // — ripples — 交替血色/青色，心跳節律感
         if(CFG.ripples[tier]>0){
           const rn=CFG.ripples[tier];
           for(let i=0;i<rn;i++){
             const phase=(t*.12+i/rn)%1;
             const r=phase*Math.min(w,h)*.45;
-            ctx.strokeStyle=`rgba(0,229,200,${(1-phase)*.13})`;ctx.lineWidth=1.2;
-            ctx.beginPath();ctx.arc(w*.5,h*.5,r,0,Math.PI*2);ctx.stroke();
+            // 奇數圈=血紅，偶數圈=青
+            const col=i%2===0?`rgba(0,229,200,${(1-phase)*.13})`:`rgba(200,20,50,${(1-phase)*.09})`;
+            ctx.strokeStyle=col; ctx.lineWidth=i%2===0?1.2:.8;
+            ctx.beginPath();ctx.arc(w*.5, h*.5, Math.max(0.1, r),0,Math.PI*2);ctx.stroke();
           }
         }
       }catch(e){console.warn('[Canvas]',e);}
@@ -514,6 +657,234 @@ const DataCanvas=({tier,mouseX,mouseY}:{tier:Tier;mouseX:number;mouseY:number})=
   },[tier]);
   if(tier==='minimal')return null;
   return(<canvas ref={cvs} style={{position:'absolute',inset:0,width:'100%',height:'100%',pointerEvents:'none',zIndex:0}}/>);
+};
+
+/* ── LIFE CANVAS — 全球生命引擎：終極生物發光意識生態系 ── */
+interface CellObj {
+  x:number; y:number; vx:number; vy:number;
+  r:number; life:number; maxLife:number; hue:number;
+  dying:boolean; pulsePhase:number;
+}
+interface DivFlash { x:number; y:number; t:number; ring2:boolean; }
+interface BloodFlow { ax:number; ay:number; bx:number; by:number; phase:number; speed:number; color:string; }
+const MAX_CELLS=300, INIT_CELLS=150, DIV_THRESHOLD=120, DEATH_LIFE=280;
+
+const LifeCanvas=({tier}:{tier:Tier})=>{
+  const cvs=useRef<HTMLCanvasElement>(null);
+  const cells=useRef<CellObj[]>([]);
+  const flashes=useRef<DivFlash[]>([]);
+  const flows=useRef<BloodFlow[]>([]);
+  const rafLC=useRef(0);
+  const frameN=useRef(0);
+
+  useEffect(()=>{
+    if(tier==='minimal')return;
+    const canvas=cvs.current; if(!canvas)return;
+    const ctx=canvas.getContext('2d'); if(!ctx)return;
+    const resize=()=>{ canvas.width=window.innerWidth; canvas.height=window.innerHeight; };
+    resize();
+    window.addEventListener('resize',resize,{passive:true});
+
+    const mkCell=(x?:number,y?:number):CellObj=>({
+      x: x??Math.random()*canvas.width, y: y??Math.random()*canvas.height,
+      vx:(Math.random()-.5)*1.4, vy:(Math.random()-.5)*1.4,
+      r:Math.random()*3.2+1.4, life:Math.random()*100, maxLife:DEATH_LIFE+Math.random()*60,
+      hue:150+Math.random()*70, dying:false, pulsePhase:Math.random()*Math.PI*2,
+    });
+    cells.current=Array.from({length:INIT_CELLS},()=>mkCell());
+
+    const draw=(now:number)=>{
+      frameN.current++;
+      const w=canvas.width, h=canvas.height;
+      // 有機殘影 — 比之前更深，讓血管痕跡更持久
+      ctx.fillStyle='rgba(3,0,4,0.14)';
+      ctx.fillRect(0,0,w,h);
+
+      const alive=cells.current;
+      const newDiv:DivFlash[]=[];
+
+      // ── 更新 + 繪製細胞 ──
+      for(let i=alive.length-1;i>=0;i--){
+        const c=alive[i];
+        // 死亡期加速消退
+        if(c.dying){ c.r*=.96; if(c.r<.3){ alive.splice(i,1); continue; } }
+        c.x+=c.vx; c.y+=c.vy; c.life+=1.2; c.pulsePhase+=.09;
+        // 壁彈
+        if(c.x<0||c.x>w){ c.vx*=-1; c.x=Math.max(0,Math.min(w,c.x)); }
+        if(c.y<0||c.y>h){ c.vy*=-1; c.y=Math.max(0,Math.min(h,c.y)); }
+        // 老年死亡
+        if(c.life>c.maxLife && !c.dying){ c.dying=true; }
+        // 細胞分裂 — life>DIV_THRESHOLD，分裂時有 mini 第二環
+        if(!c.dying && c.life>DIV_THRESHOLD && alive.length<MAX_CELLS){
+          newDiv.push({x:c.x,y:c.y,t:now,ring2:Math.random()<.4});
+          alive.push({
+            x:c.x+(Math.random()-.5)*14, y:c.y+(Math.random()-.5)*14,
+            vx:-c.vx*.8+(Math.random()-.5)*.7, vy:-c.vy*.8+(Math.random()-.5)*.7,
+            r:c.r*.85+Math.random()*.6, life:0, maxLife:c.maxLife*(0.8+Math.random()*.35),
+            hue:c.hue+(Math.random()-.5)*40, dying:false, pulsePhase:0,
+          });
+          c.life=0;
+        }
+        // 脈動半徑 — 三層脈衝疊加（心跳感）
+        const beat=1+Math.sin(c.pulsePhase)*0.45+Math.sin(c.pulsePhase*2.1)*0.15;
+        const pr=c.r*beat;
+        const alpha=c.dying? .15 : (0.5+0.4*Math.sin(c.pulsePhase));
+        const glow=c.dying? 4 : (12+8*Math.sin(c.pulsePhase));
+
+        // 細胞核 glow 外圈
+        ctx.beginPath(); ctx.arc(c.x,c.y,Math.max(.3,pr*1.8),0,Math.PI*2);
+        ctx.fillStyle=`hsla(${c.hue},100%,60%,${(alpha*.18).toFixed(3)})`;
+        ctx.fill();
+        // 細胞本體
+        ctx.beginPath(); ctx.arc(c.x,c.y,Math.max(.3,pr),0,Math.PI*2);
+        ctx.fillStyle=`hsla(${c.hue},100%,68%,${alpha.toFixed(3)})`;
+        ctx.shadowColor=`hsl(${c.hue},100%,72%)`; ctx.shadowBlur=glow;
+        ctx.fill(); ctx.shadowBlur=0;
+      }
+      flashes.current.push(...newDiv);
+
+      // ── 神經連線 — 熱血血管 × 突觸閃光 × 血流方向 ──
+      const len=Math.min(alive.length,MAX_CELLS);
+      for(let i=0;i<len;i++){
+        for(let j=i+1;j<len;j++){
+          const dx=alive[i].x-alive[j].x, dy=alive[i].y-alive[j].y;
+          const dist=Math.hypot(dx,dy);
+          if(dist<200){
+            const intens=(1-dist/200);
+            const r=Math.random();
+            if(r<.12){
+              // 神經突觸閃光 — 極亮青×白
+              ctx.strokeStyle=`rgba(140,255,255,${(intens*.95).toFixed(3)})`;
+              ctx.lineWidth=3.2; ctx.shadowColor='#90ffff'; ctx.shadowBlur=38;
+            } else if(r<.24){
+              // 二級突觸 — 紫色電弧
+              ctx.strokeStyle=`rgba(200,80,255,${(intens*.75).toFixed(3)})`;
+              ctx.lineWidth=2.2; ctx.shadowColor='#c850ff'; ctx.shadowBlur=22;
+            } else if(r<.58){
+              // 熱血主血管 — 鮮紅
+              ctx.strokeStyle=`rgba(245,20,45,${(intens*.55).toFixed(3)})`;
+              ctx.lineWidth=1.8; ctx.shadowColor='rgba(255,0,40,.7)'; ctx.shadowBlur=12;
+            } else {
+              // 微血管 — 深暗紅
+              ctx.strokeStyle=`rgba(180,12,25,${(intens*.32).toFixed(3)})`;
+              ctx.lineWidth=.85; ctx.shadowBlur=3;
+            }
+            ctx.beginPath(); ctx.moveTo(alive[i].x,alive[i].y); ctx.lineTo(alive[j].x,alive[j].y); ctx.stroke();
+            ctx.shadowBlur=0;
+
+            // 血流流動粒子 — 更高密度 2.5%
+            if(frameN.current%2===0 && Math.random()<.025){
+              const t2=(now*.0012*(.35+Math.random()*.45))%1;
+              const fx=alive[i].x+(alive[j].x-alive[i].x)*t2;
+              const fy=alive[i].y+(alive[j].y-alive[i].y)*t2;
+              const isRed=Math.random()<.4;
+              ctx.beginPath(); ctx.arc(fx,fy,2.2,0,Math.PI*2);
+              ctx.fillStyle=isRed?`rgba(255,50,80,${(intens*.95).toFixed(3)})`:`rgba(0,255,200,${(intens*.95).toFixed(3)})`;
+              ctx.shadowColor=isRed?'#ff3250':'#00ffc8'; ctx.shadowBlur=16;
+              ctx.fill(); ctx.shadowBlur=0;
+            }
+            // 群聚放電 — dist<60 時產生額外電弧閃光
+            if(dist<60 && Math.random()<.08){
+              ctx.strokeStyle=`rgba(255,255,255,${(intens*.7).toFixed(3)})`;
+              ctx.lineWidth=.5; ctx.shadowColor='#ffffff'; ctx.shadowBlur=30;
+              ctx.beginPath(); ctx.moveTo(alive[i].x,alive[i].y); ctx.lineTo(alive[j].x,alive[j].y); ctx.stroke();
+              ctx.shadowBlur=0;
+            }
+          }
+        }
+      }
+
+      // ── 分裂閃光環（三環）+ 16方向炸裂粒子噴射 ──
+      flashes.current=flashes.current.filter(f=>{
+        const age=(now-f.t)/800;
+        if(age>=1)return false;
+        const fade=(1-age).toFixed(3);
+        // 主環 — 大
+        ctx.beginPath(); ctx.arc(f.x,f.y,Math.max(.1,age*88),0,Math.PI*2);
+        ctx.strokeStyle=`rgba(0,255,215,${fade})`; ctx.lineWidth=3;
+        ctx.shadowColor='#00ffd7'; ctx.shadowBlur=28; ctx.stroke(); ctx.shadowBlur=0;
+        // 第二環（延遲）— 中
+        if(f.ring2){
+          const age2=Math.max(0,age-.12);
+          ctx.beginPath(); ctx.arc(f.x,f.y,Math.max(.1,age2*52),0,Math.PI*2);
+          ctx.strokeStyle=`rgba(255,80,120,${(+(1-age2)).toFixed(3)})`; ctx.lineWidth=2;
+          ctx.shadowColor='#ff5078'; ctx.shadowBlur=18; ctx.stroke(); ctx.shadowBlur=0;
+        }
+        // 第三環（更延遲）— 小
+        {
+          const age3=Math.max(0,age-.28);
+          if(age3>0){
+            ctx.beginPath(); ctx.arc(f.x,f.y,Math.max(.1,age3*30),0,Math.PI*2);
+            ctx.strokeStyle=`rgba(180,255,255,${(+(1-age3)*.7).toFixed(3)})`; ctx.lineWidth=1.2;
+            ctx.shadowColor='#b4ffff'; ctx.shadowBlur=10; ctx.stroke(); ctx.shadowBlur=0;
+          }
+        }
+        // 炸裂粒子 — 16個方向噴射（前40%爆發）
+        const spark=Math.min(age*2.5,1);
+        if(spark<1){
+          for(let k=0;k<16;k++){
+            const a=(k/16)*Math.PI*2;
+            const isMain=k%2===0;
+            const dist=age*(isMain?90:60);
+            const px2=f.x+Math.cos(a)*dist, py2=f.y+Math.sin(a)*dist;
+            const sz=Math.max(.2,(1-spark)*(isMain?4.5:2.5));
+            const colors=['0,255,215','120,255,255','255,80,120','255,200,50','0,200,255'];
+            ctx.beginPath(); ctx.arc(px2,py2,sz,0,Math.PI*2);
+            ctx.fillStyle=`rgba(${colors[k%colors.length]},${((1-spark)*.95).toFixed(3)})`;
+            ctx.shadowColor=isMain?'#00ffd7':'#78ffff'; ctx.shadowBlur=isMain?16:8;
+            ctx.fill(); ctx.shadowBlur=0;
+          }
+        }
+        return true;
+      });
+
+      // ── 意識粒子 — 每8幀生成2個隨機發光點 ──
+      if(frameN.current%8===0){
+        for(let k=0;k<3;k++){
+          ctx.beginPath(); ctx.arc(Math.random()*w,Math.random()*h,1,0,Math.PI*2);
+          ctx.fillStyle=`rgba(0,255,${180+Math.random()*75|0},.7)`;
+          ctx.shadowColor='#00ffc8'; ctx.shadowBlur=10; ctx.fill(); ctx.shadowBlur=0;
+        }
+      }
+      // ── 神經傳導物質 — 沿神經路徑移動的亮光球 ──
+      if(frameN.current%4===0){
+        const nLen=Math.min(alive.length,MAX_CELLS);
+        // 從細胞對中隨機選3條活躍通道發射傳導物質
+        for(let attempt=0;attempt<6;attempt++){
+          const i=Math.floor(Math.random()*nLen);
+          const j=Math.floor(Math.random()*nLen);
+          if(i===j)continue;
+          const dx=alive[i].x-alive[j].x, dy=alive[i].y-alive[j].y;
+          const dist=Math.hypot(dx,dy);
+          if(dist<170&&Math.random()<.45){
+            // 傳導物質在路徑上的位置（時間驅動，0-1往返）
+            const phase=((now*0.0015+(i*0.07+j*0.03))%1);
+            const tx=alive[i].x+(alive[j].x-alive[i].x)*phase;
+            const ty=alive[i].y+(alive[j].y-alive[i].y)*phase;
+            const isExcitatory=Math.random()<.6; // 興奮性傳導物質=青，抑制性=紅
+            // 發光核
+            ctx.beginPath(); ctx.arc(tx,ty,2.5,0,Math.PI*2);
+            ctx.fillStyle=isExcitatory?'rgba(0,255,220,.95)':'rgba(255,60,80,.9)';
+            ctx.shadowColor=isExcitatory?'#00ffdc':'#ff3c50';
+            ctx.shadowBlur=16; ctx.fill();
+            // 外暈圈
+            ctx.beginPath(); ctx.arc(tx,ty,5,0,Math.PI*2);
+            ctx.fillStyle=isExcitatory?'rgba(0,255,220,.22)':'rgba(255,60,80,.18)';
+            ctx.fill(); ctx.shadowBlur=0;
+            break; // 每4幀只發射一個確保性能
+          }
+        }
+      }
+
+      rafLC.current=requestAnimationFrame(draw);
+    };
+    rafLC.current=requestAnimationFrame(draw);
+    return()=>{ window.removeEventListener('resize',resize); cancelAnimationFrame(rafLC.current); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[tier]);
+
+  if(tier==='minimal')return null;
+  return(<canvas ref={cvs} style={{position:'fixed',inset:0,width:'100%',height:'100%',pointerEvents:'none',zIndex:0}}/>);
 };
 
 /* ── DATA SPHERE ── */
@@ -549,20 +920,47 @@ const DataSphere=({live,tier}:{live:number;tier:Tier})=>{
         <filter id="haze8" x="-50%" y="-50%" width="200%" height="200%">
           <feGaussianBlur stdDeviation="12"/>
         </filter>
+        <linearGradient id="jetBlood" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stopColor="#ff1a3a" stopOpacity="0.9"/>
+          <stop offset="40%"  stopColor="#ff6030" stopOpacity="0.6"/>
+          <stop offset="100%" stopColor="#00e5ff" stopOpacity="0.4"/>
+        </linearGradient>
       </defs>
       {/* 3D 深度光暈層 */}
       <circle cx="200" cy="200" r={R+80} fill="rgba(0,229,200,.025)" filter="url(#haze8)"/>
       <circle cx="200" cy="200" r={R+55} fill="rgba(124,77,255,.02)" filter="url(#haze8)"/>
       <circle cx="200" cy="200" r={R+40} fill="rgba(0,229,200,.04)" filter="url(#haze8)"/>
-      {/* 外發光環 */}
-      {[R+18,R+32,R+48].map((r2,i)=>(
-        <circle key={i} cx="200" cy="200" r={r2} fill="none"
-          stroke={['rgba(0,229,200,.18)','rgba(124,77,255,.12)','rgba(0,255,140,.08)'][i]}
-          strokeWidth={[1,.7,.5][i]}
-          style={{animation:`orbitGlow ${3+i}s ease-in-out infinite`,animationDelay:`${i*.8}s`}}/>
+      {/* ── 有機光暈光圈（blob 形態，非圓形）── */}
+      {[R+22,R+40,R+60,R+85].map((r2,i)=>{
+        const d=r2; const blobAnims=['blobMorphC','blobMorphB','blobMorph','blobMorphC'];
+        return(
+          <rect key={i} x={200-d} y={200-d} width={d*2} height={d*2}
+            fill="none"
+            stroke={['rgba(0,229,200,.22)','rgba(124,77,255,.16)','rgba(0,255,140,.1)','rgba(255,215,0,.07)'][i]}
+            strokeWidth={[1.4,1,.7,.4][i]}
+            rx={d} ry={d}
+            style={{
+              transformOrigin:'200px 200px',
+              animation:`${blobAnims[i]} ${[4.5,6.2,8,10.5][i]}s ease-in-out infinite, ringHeartBeat 1.8s ease-in-out infinite`,
+              animationDelay:`${(i*.15).toFixed(2)}s`,
+            }}/>
+        );
+      })}
+      {/* 核心主球體（blob 形態 + sphereBreathe 呼吸）*/}
+      <rect x={200-R} y={200-R} width={R*2} height={R*2}
+        fill="url(#sg8)" stroke="rgba(0,229,200,.45)" strokeWidth="2"
+        rx={R} ry={R}
+        style={{
+          transformOrigin:'200px 200px',
+          animation:'blobMorphC 5s ease-in-out infinite, sphereBreathe 1.8s ease-in-out infinite',
+        }}/>
+      {/* 意識暈圈 — 持續向外擴散 */}
+      {[0,600,1200].map((delay,i)=>(
+        <circle key={i} cx="200" cy="200" r={R+5}
+          fill="none" stroke={['rgba(0,229,200,.5)','rgba(255,50,80,.4)','rgba(0,255,140,.35)'][i]}
+          strokeWidth="1.5"
+          style={{animation:`consciousRing 2.4s ease-out infinite`,animationDelay:`${delay}ms`}}/>
       ))}
-      <circle cx="200" cy="200" r={R} fill="url(#sg8)" stroke="rgba(0,229,200,.35)" strokeWidth="1.5"
-        style={{filter:'drop-shadow(0 0 12px rgba(0,229,200,.4)) drop-shadow(0 0 30px rgba(0,229,200,.2))'}}/>
       {/* longitude grid */}
       {heavy && Array.from({length:6},(_,i)=>(
         <ellipse key={i} cx="200" cy="200"
@@ -601,7 +999,7 @@ const DataSphere=({live,tier}:{live:number;tier:Tier})=>{
         const cx2=200+Math.cos(angle)*R*.82,cy2=200+Math.sin(angle)*R*.45;
         return(
           <g key={city.name} filter="url(#glow8)">
-            <line x1="200" y1="200" x2={cx2} y2={cy2} stroke={city.color} strokeWidth=".7" strokeOpacity=".3" strokeDasharray="3 7" style={{animation:'currentFlow 2.5s linear infinite',animationDelay:`${i*.4}s`}}/>
+            <line x1="200" y1="200" x2={cx2} y2={cy2} stroke={city.color} strokeWidth="1.2" strokeDasharray="6 10" style={{animation:`bloodFlow ${1.4+i*.2}s linear infinite`,animationDelay:`${i*.28}s`}}/>
             <circle cx={cx2} cy={cy2} r="4" fill={city.color} fillOpacity=".9" style={{animation:`cpng 2s ease-out infinite`,animationDelay:`${i*.33}s`}}/>
             <circle cx={cx2} cy={cy2} r="4" fill={city.color} fillOpacity=".9"/>
             <text x={cx2+7} y={cy2+4} fill={city.color} fontSize="7.5" fontFamily="monospace" opacity=".85">{city.name}</text>
@@ -621,9 +1019,59 @@ const DataSphere=({live,tier}:{live:number;tier:Tier})=>{
         <circle key={i} r="3" fill={['#00ffd0','#7c4dff','#ffd700'][i]}
           style={{offsetPath:`path('${d}')`,offsetDistance:'0%',animation:`pktTravel ${2+i*.6}s linear infinite`,animationDelay:`${i*.8}s`,filter:`drop-shadow(0 0 6px ${['#00ffd0','#7c4dff','#ffd700'][i]})`} as React.CSSProperties}/>
       ))}
-      <circle cx="200" cy="200" r="16" fill="url(#cg8)" style={{animation:'plasmaCore 2.2s ease-in-out infinite'}} filter="url(#glow8)"/>
-      <circle cx="200" cy="200" r="6" fill="white" opacity=".9" style={{animation:'hb 1.8s ease-in-out infinite'}}/>
-      <text x="200" y="365" textAnchor="middle" fill="rgba(0,229,200,.5)" fontSize="9" fontFamily="monospace">{`DATA NODES: ${live.toLocaleString()}`}</text>
+      <circle cx="200" cy="200" r="16" fill="url(#cg8)" style={{animation:'plasmaCore 2.2s ease-in-out infinite, heartBeat 1.8s ease-in-out infinite 0.1s'}} filter="url(#glow8)"/>
+      <circle cx="200" cy="200" r="7" fill="white" opacity=".95" style={{animation:'heartBeat 1.8s ease-in-out infinite'}}/>
+
+      {/* ── 核心下方能量噴射束（活的，會變化）── */}
+      {/* 主噴射軸 */}
+      <line x1="200" y1={200+R} x2="200" y2="395"
+        stroke="url(#jetBlood)" strokeWidth="2"
+        strokeLinecap="round"
+        style={{animation:'jetPulse 1.4s ease-in-out infinite'}}
+        filter="url(#glow8)"/>
+      {/* 噴射光暈 */}
+      <ellipse cx="200" cy="340" rx="30" ry="6"
+        fill="none" stroke="rgba(0,229,200,.3)" strokeWidth="1"
+        style={{animation:'underJet 2s ease-in-out infinite',transformOrigin:'200px 340px'}}/>
+      <ellipse cx="200" cy="360" rx="20" ry="4"
+        fill="none" stroke="rgba(124,77,255,.25)" strokeWidth=".8"
+        style={{animation:'underJet 2.6s ease-in-out infinite .4s',transformOrigin:'200px 360px'}}/>
+      <ellipse cx="200" cy="385" rx="12" ry="2.5"
+        fill="none" stroke="rgba(0,229,200,.15)" strokeWidth=".5"
+        style={{animation:'underJet 3.2s ease-in-out infinite .8s',transformOrigin:'200px 385px'}}/>
+      {/* 側翼偏折束 */}
+      {[[-1,1],[1,-1],[-.6,.8],[.8,-.6]].map(([dx,dy],i)=>(
+        <line key={i} x1={200} y1={200+R+10}
+          x2={200+dx*28} y2={200+R+40+dy*10}
+          stroke={['rgba(0,229,200,.35)','rgba(124,77,255,.3)','rgba(0,255,140,.22)','rgba(255,215,0,.2)'][i]}
+          strokeWidth={[1.2,.9,.7,.5][i]} strokeLinecap="round"
+          style={{animation:`fluxBeam ${2.2+i*.5}s ease-in-out infinite`,animationDelay:`${i*.4}s`}}/>
+      ))}
+      {/* 噴射粒子 */}
+      {heavy && Array.from({length:8},(_,i)=>{
+        const angle=(i/8)*Math.PI*2;
+        const r2=R+30;
+        return(<circle key={i}
+          cx={200+Math.cos(angle)*r2*.25}
+          cy={200+R+Math.sin(Math.abs(angle))*20}
+          r={1.2+Math.random()}
+          fill={['#00e5ff','#7c4dff','#00ffd0','#ffd700'][i%4]}
+          opacity=".8"
+          style={{animation:`jetSpark ${1.5+i*.3}s ease-out infinite`,animationDelay:`${i*.2}s`}}/>);
+      })}
+
+      {/* ── 額外突觸神經線 — 30條隨機放電 ── */}
+      {heavy && Array.from({length:30},(_,i)=>{
+        const a1=(i/30)*Math.PI*2, a2=a1+((i%3)*.8+.4);
+        const r1=R*(.5+.5*(i%3)/3), r2=R*(1.1+(i%4)*.08);
+        return(<line key={`syn-${i}`}
+          x1={200+Math.cos(a1)*r1} y1={200+Math.sin(a1)*r1}
+          x2={200+Math.cos(a2)*r2} y2={200+Math.sin(a2)*r2}
+          stroke={['#00ffff','#ff1a3a','#00ffd0','#b464ff','#ffb400'][i%5]}
+          strokeWidth=".8" strokeDasharray="3 9"
+          style={{animation:`synapseFire ${0.5+i*.06}s ease-in-out infinite`,animationDelay:`${(i*.07)%1}s`}}/>);
+      })}
+      <text x="200" y="398" textAnchor="middle" fill="rgba(0,229,200,.45)" fontSize="8.5" fontFamily="monospace" style={{animation:'hudBlink 2s ease-in-out infinite'}}>{`DATA NODES: ${live?.toLocaleString()}`}</text>
     </svg>
   );
 };
@@ -638,7 +1086,7 @@ const VitalGauge=({score}:{score:number})=>(
     {[{color:'#00e5ff',dy:0,op:.85,sw:1.5},{color:'#00ffd0',dy:1,op:.5,sw:.9},{color:'#7c4dff',dy:2,op:.38,sw:.7}].map(({color,dy,op,sw},ci)=>(
       <g key={ci} style={{animation:`ecgPulse ${1.6+ci*.3}s linear infinite`,animationDelay:`${ci*.22}s`}}>
         <path d={ECG_D} fill="none" stroke={color} strokeWidth={sw} strokeOpacity={op} filter="url(#ecgGlow8)" transform={`translate(0,${dy*4})`}
-          style={{animation:`gaugeEx ${1.8+ci*.4}s ease-in-out infinite`,animationDelay:`${ci*.3}s`}}/>
+          style={{animation:`gaugeHeartBeat 1.8s ease-in-out infinite`,animationDelay:`${ci*.2}s`}}/>
       </g>
     ))}
     <text x="210" y="16" textAnchor="end" fill="#00e5ff" fontSize="13" fontFamily="monospace" fontWeight="900" style={{animation:'vitalNd 2s ease-in-out infinite'}}>{score}</text>
@@ -647,21 +1095,47 @@ const VitalGauge=({score}:{score:number})=>(
 );
 
 /* ── ANIMATED COUNTER ── */
-const AnimCounter=({target,prefix='',suffix='',dur=1800}:{target:number;prefix?:string;suffix?:string;dur?:number;})=>{
-  const [val,setVal]=useState(Math.floor(target*.6));
+const AnimCounter=({target,prefix='',suffix='',dur=280}:{target:number;prefix?:string;suffix?:string;dur?:number;})=>{
+  const [val,setVal]=useState(target);
+  const [flash,setFlash]=useState(false);
+  const [divRing,setDivRing]=useState(false);
+  const prev=useRef(target);
   const t0=useRef(0);
   useEffect(()=>{
+    const start=prev.current;
+    prev.current=target;
+    setFlash(true); setTimeout(()=>setFlash(false),200);
+    setDivRing(true); setTimeout(()=>setDivRing(false),600);
     t0.current=performance.now();
-    const start=Math.floor(target*.6);
     const tick=(now:number)=>{
       const p=Math.min((now-t0.current)/dur,1);
-      setVal(Math.floor(start+(target-start)*(1-Math.pow(1-p,4))));
+      setVal(Math.floor(start+(target-start)*(1-Math.pow(1-p,3))));
       if(p<1)requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[target]);
-  return<span>{prefix}{val.toLocaleString()}{suffix}</span>;
+  return(
+    <span style={{display:'inline-block',position:'relative'}}>
+      <span style={{
+        display:'inline-block',
+        transition:'transform .12s',
+        transform: flash ? 'scale(1.22)' : 'scale(1)',
+        filter: flash ? 'brightness(2.8) drop-shadow(0 0 22px currentColor)' : 'brightness(1)',
+        animation: flash ? 'cellMitosis 0.5s ease-out' : undefined,
+      }}>{prefix}{val?.toLocaleString()}{suffix}</span>
+      {divRing&&(
+        <span style={{
+          position:'absolute', left:'50%', top:'50%',
+          width:40, height:40, borderRadius:'50%',
+          border:'2px solid rgba(0,255,220,0.9)',
+          pointerEvents:'none',
+          animation:'divRing 0.6s ease-out forwards',
+          boxShadow:'0 0 12px rgba(0,255,220,0.6)',
+        }}/>
+      )}
+    </span>
+  );
 };
 
 /* ── HEX OVERLAY ── */
@@ -731,12 +1205,12 @@ const PlatformRevenue=({tier:_tier, data: PLAT_D = [], total: TOTAL = 0}:{tier:T
               })}
               {/* center text */}
               <text x="140" y="125" textAnchor="middle" fill="rgba(0,229,200,.35)" fontSize="7" fontFamily="monospace" letterSpacing="2">TOTAL REV</text>
-              <text x="140" y="146" textAnchor="middle" fill="white" fontSize="15" fontFamily="monospace" fontWeight="900" style={{animation:'throb 2.5s ease-in-out infinite'}}>{`$${TOTAL.toLocaleString()}`}</text>
+              <text x="140" y="146" textAnchor="middle" fill="white" fontSize="15" fontFamily="monospace" fontWeight="900" style={{animation:'throb 2.5s ease-in-out infinite'}}>{`$${TOTAL?.toLocaleString()}`}</text>
               <text x="140" y="161" textAnchor="middle" fill="rgba(0,229,200,.28)" fontSize="7" fontFamily="monospace">3 PLATFORMS</text>
               {/* legend arcs */}
               {segs.map((s,i)=>(
                 <text key={i} x="140" y={185+i*14} textAnchor="middle" fill={s.color} fontSize="8" fontFamily="monospace" opacity=".7">
-                  {`${s.name}  ${s.pct}%`}
+                  {`${s.name}  ${Number(s.pct).toFixed(1)}%`}
                 </text>
               ))}
             </svg>
@@ -756,7 +1230,7 @@ const PlatformRevenue=({tier:_tier, data: PLAT_D = [], total: TOTAL = 0}:{tier:T
                       <span style={{fontWeight:800,fontSize:'clamp(15px,1.8vw,20px)',color:p.color,textShadow:`0 0 20px ${p.color}66`,letterSpacing:'.5px'}}>{p.name}</span>
                     </div>
                     <div style={{display:'flex',alignItems:'baseline',gap:6}}>
-                      <span style={{fontFamily:'monospace',fontSize:'clamp(18px,2.2vw,26px)',fontWeight:900,color:p.color,textShadow:`0 0 20px ${p.color}88`,lineHeight:1}}>{p.pct}</span>
+                      <span style={{fontFamily:'monospace',fontSize:'clamp(18px,2.2vw,26px)',fontWeight:900,color:p.color,textShadow:`0 0 20px ${p.color}88`,lineHeight:1}}>{Number(p.pct).toFixed(1)}</span>
                       <span style={{fontFamily:'monospace',fontSize:'clamp(10px,1.1vw,13px)',color:`${p.color}88`}}>%</span>
                     </div>
                   </div>
@@ -765,7 +1239,7 @@ const PlatformRevenue=({tier:_tier, data: PLAT_D = [], total: TOTAL = 0}:{tier:T
                     <div style={{height:'100%',width:`${p.pct}%`,background:`linear-gradient(90deg,${p.color},${p.color}55)`,borderRadius:2,boxShadow:`0 0 8px ${p.color}88`,animation:`breatheX 3s ease-in-out infinite`,animationDelay:`${i*.5}s`}}/>
                   </div>
                   <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline'}}>
-                    <span style={{fontFamily:'monospace',fontSize:'clamp(14px,2vw,24px)',fontWeight:900,color:'white',textShadow:`0 0 30px ${p.color}55`,letterSpacing:'-0.5px'}}>{`$${p.rev.toLocaleString()}`}</span>
+                    <span style={{fontFamily:'monospace',fontSize:'clamp(14px,2vw,24px)',fontWeight:900,color:'white',textShadow:`0 0 30px ${p.color}55`,letterSpacing:'-0.5px'}}>{`$${p.rev?.toLocaleString()}`}</span>
                     <span style={{fontSize:'7px',letterSpacing:'2px',color:`${p.color}50`,fontFamily:'monospace'}}>USD · REVENUE</span>
                   </div>
                 </div>
@@ -775,7 +1249,7 @@ const PlatformRevenue=({tier:_tier, data: PLAT_D = [], total: TOTAL = 0}:{tier:T
           {/* total summary row */}
           <div className="glass-deep" style={{padding:'clamp(10px,1.5vw,16px)',borderRadius:12,border:'1px solid rgba(0,229,200,.1)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
             <span style={{fontFamily:'monospace',fontSize:'clamp(9px,1vw,11px)',color:'rgba(0,229,200,.45)',letterSpacing:'3px'}}>TOTAL CYCLE</span>
-            <span style={{fontFamily:'monospace',fontSize:'clamp(16px,2vw,22px)',fontWeight:900,color:'white',textShadow:'0 0 25px rgba(0,229,200,.4)'}}>{`$${TOTAL.toLocaleString()}`}</span>
+            <span style={{fontFamily:'monospace',fontSize:'clamp(16px,2vw,22px)',fontWeight:900,color:'white',textShadow:'0 0 25px rgba(0,229,200,.4)'}}>{`$${TOTAL?.toLocaleString()}`}</span>
           </div>
         </div>
       </div>
@@ -888,32 +1362,32 @@ const VoidCanvas=({tier}:{tier:Tier})=>{
         const c0=['rgba(255,200,80,.12)','rgba(0,229,200,.09)','rgba(124,77,255,.07)','rgba(0,150,255,.05)'][lyr];
         const c1=['rgba(255,140,30,.08)','rgba(0,160,200,.06)','rgba(80,40,200,.04)','transparent'][lyr];
         g.addColorStop(0,'transparent');g.addColorStop(.35,c0);g.addColorStop(.65,c1);g.addColorStop(1,'transparent');
-        ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
+        ctx.beginPath();ctx.arc(0, 0, Math.max(0.1, R),0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
         ctx.restore();
       }
       // counter-rotating outer disk
       ctx.save();ctx.translate(cx,cy);ctx.rotate(-t*.04);ctx.scale(1,.22);
       const og=ctx.createRadialGradient(0,0,162,0,0,196);
       og.addColorStop(0,'transparent');og.addColorStop(.4,'rgba(0,229,200,.05)');og.addColorStop(.7,'rgba(124,77,255,.03)');og.addColorStop(1,'transparent');
-      ctx.beginPath();ctx.arc(0,0,179,0,Math.PI*2);ctx.fillStyle=og;ctx.fill();ctx.restore();
+      ctx.beginPath();ctx.arc(0, 0, Math.max(0.1, 179),0,Math.PI*2);ctx.fillStyle=og;ctx.fill();ctx.restore();
       // gravitational lensing rings
       for(let i=0;i<7;i++){
-        ctx.beginPath();ctx.arc(cx,cy,195+i*18,0,Math.PI*2);
+        ctx.beginPath();ctx.arc(cx, cy, Math.max(0.1, 195+i*18),0,Math.PI*2);
         ctx.strokeStyle=`rgba(${i%2===0?'0,229,200':'124,77,255'},${Math.max(.005,.06-i*.008).toFixed(3)})`;
         ctx.lineWidth=.7;ctx.stroke();
       }
       // photon ring (hot orange-gold glow)
       const pg=ctx.createRadialGradient(cx,cy,80,cx,cy,97);
       pg.addColorStop(0,'transparent');pg.addColorStop(.3,'rgba(255,200,70,.25)');pg.addColorStop(.55,'rgba(255,240,160,.55)');pg.addColorStop(.8,'rgba(255,190,50,.22)');pg.addColorStop(1,'transparent');
-      ctx.beginPath();ctx.arc(cx,cy,88,0,Math.PI*2);ctx.fillStyle=pg;ctx.fill();
+      ctx.beginPath();ctx.arc(cx, cy, Math.max(0.1, 88),0,Math.PI*2);ctx.fillStyle=pg;ctx.fill();
       // singularity haze
       const hg=ctx.createRadialGradient(cx,cy,60,cx,cy,110);
       hg.addColorStop(0,'rgba(50,0,120,.6)');hg.addColorStop(.55,'rgba(20,0,60,.2)');hg.addColorStop(1,'transparent');
-      ctx.beginPath();ctx.arc(cx,cy,110,0,Math.PI*2);ctx.fillStyle=hg;ctx.fill();
+      ctx.beginPath();ctx.arc(cx, cy, Math.max(0.1, 110),0,Math.PI*2);ctx.fillStyle=hg;ctx.fill();
       // event horizon — absolute void
       const eg=ctx.createRadialGradient(cx,cy,0,cx,cy,82);
       eg.addColorStop(0,'#000');eg.addColorStop(.9,'#000');eg.addColorStop(1,'rgba(20,0,50,.5)');
-      ctx.beginPath();ctx.arc(cx,cy,82,0,Math.PI*2);ctx.fillStyle=eg;ctx.fill();
+      ctx.beginPath();ctx.arc(cx, cy, Math.max(0.1, 82),0,Math.PI*2);ctx.fillStyle=eg;ctx.fill();
       // spiraling particles sucked inward
       for(const p of pts){
         p.angle+=p.speed;p.radius-=p.sr;
@@ -921,7 +1395,7 @@ const VoidCanvas=({tier}:{tier:Tier})=>{
         const px=cx+Math.cos(p.angle)*p.radius;
         const py=cy+Math.sin(p.angle)*p.radius*.3;
         const alpha=Math.min(1,(p.radius-84)/120)*.72;
-        ctx.beginPath();ctx.arc(px,py,p.sz*alpha,0,Math.PI*2);
+        ctx.beginPath();ctx.arc(px, py, Math.max(0.1, p.sz*alpha),0,Math.PI*2);
         ctx.fillStyle=p.color;ctx.globalAlpha=alpha;ctx.fill();ctx.globalAlpha=1;
       }
       raf.current=requestAnimationFrame(draw);
@@ -943,7 +1417,7 @@ function calcGroup(rank:number,total:number):'A1'|'A2'|'B'|'C'{
 }
 function voidSuggest(row:ParsedRow,_total:number,pct:string):string{
   const {rank,amount,group}=row;
-  const fmt=(n:number)=>'$'+Math.round(n).toLocaleString();
+  const fmt=(n:number)=>'$'+Math.round(n)?.toLocaleString();
   const gap=rank>1?'':' 拉大差距是你今天的唯一任務';
   if(group==='A1'){
     if(rank===1)return`👑 王牌核心 — 佔比${pct}%${gap}。繼續深耕高客單，鎖住第一不是守，是進攻。`;
@@ -1020,13 +1494,25 @@ const DataVoidPanel=({tier}:{tier:Tier})=>{
   },[rawInput]);
 
   const sendBackend=useCallback(async()=>{
-    if(!rows.length)return;setApiOk(null);
+    if(!rows.length)return;
+    setApiOk(null);
     try{
-      const resp=await fetch('http://localhost:3001/api/v1/rankings',{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({employees:rows.map(r=>({name:r.name,total:r.amount,rank:r.rank,group:r.group})),timestamp:new Date().toISOString()})});
-      setApiOk(resp.ok);if(resp.ok)setPhase('sent');
+      // 1. 儲存原始文字 + 排名結果到 storage（存檔、備份、日誌）
+      const today=new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Taipei'}).format(new Date());
+      const rawSummary=rows.map(r=>`${r.rank}、${r.name}｜【總業績】${r.amount.toLocaleString()}`).join('\n');
+      const saveRes=await fetch('/api/v1/system/save-report',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({rawText:rawInput||rawSummary,optimizedText:rawSummary,reportDate:today,platformName:'快速輸入',reportMode:'累積報表'})});
+      const saveJson=await saveRes.json();
+
+      // 2. 同步更新 localStorage + 廣播全頁更新事件
+      const payload={rows,updatedAt:Date.now(),savedToBackend:saveJson.success};
+      localStorage.setItem('voidRankings',JSON.stringify(payload));
+      window.dispatchEvent(new CustomEvent('voidRankingsUpdate',{detail:payload}));
+
+      setApiOk(saveRes.ok);
+      if(saveRes.ok)setPhase('sent');
     }catch{setApiOk(false);}
-  },[rows]);
+  },[rows,rawInput]);
 
   const buildDispatchText=useCallback(()=>{
     const date=new Date().toLocaleDateString('zh-TW',{month:'numeric',day:'numeric'});
@@ -1036,10 +1522,10 @@ const DataVoidPanel=({tier}:{tier:Tier})=>{
       const members=rows.filter(r=>r.group===g);
       if(!members.length)return;
       lines.push(GROUP_CFG[g].label);
-      members.forEach(r=>lines.push(`  ${r.rank}. ${r.name}  $${r.amount.toLocaleString()}`));
+      members.forEach(r=>lines.push(`  ${r.rank}. ${r.name}  $${r.amount?.toLocaleString()}`));
       lines.push(``);
     });
-    lines.push(`📊 整合總業績：$${rows.reduce((s,r)=>s+r.amount,0).toLocaleString()}`);
+    lines.push(`📊 整合總業績：$${rows.reduce((s,r)=>s+r.amount,0)?.toLocaleString()}`);
     lines.push(`📌 規則：照順序派。前面全忙才往後。不得指定不得跳位。`);
     lines.push(`✅ 看完請回 +1`);
     return lines.join('\n');
@@ -1116,7 +1602,7 @@ const DataVoidPanel=({tier}:{tier:Tier})=>{
                   </span>
                   {rows.length>0&&(
                     <span style={{marginLeft:'auto',fontSize:'7px',letterSpacing:'2px',color:'rgba(0,212,255,.4)',fontFamily:'monospace',flexShrink:0}}>
-                      {`✓ ${rows.length}人 · $${totalAmt.toLocaleString()}`}
+                      {`✓ ${rows.length}人 · $${totalAmt?.toLocaleString()}`}
                     </span>
                   )}
                 </div>
@@ -1185,7 +1671,7 @@ const DataVoidPanel=({tier}:{tier:Tier})=>{
                   {rows.map((row,i)=>{
                     const pct=((row.amount/totalAmt)*100).toFixed(1);
                     const rc=RANK_COLORS[i%RANK_COLORS.length];
-                    const gcfg=GROUP_CFG[row.group];
+                    const gcfg=GROUP_CFG[row.group] || GROUP_CFG.C;
                     return(
                       <div key={i} style={{animation:'rankSlide .32s ease-out both',animationDelay:`${i*.042}s`}}>
                         <div style={{display:'flex',alignItems:'center',gap:10}}>
@@ -1205,7 +1691,7 @@ const DataVoidPanel=({tier}:{tier:Tier})=>{
                                 <span style={{fontWeight:800,fontSize:'clamp(12px,1.3vw,15px)',color:i<3?rc:'rgba(200,230,255,.85)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{row.name}</span>
                                 <span style={{fontSize:'7px',padding:'1px 5px',borderRadius:4,background:gcfg.bg,color:gcfg.color,border:`1px solid ${gcfg.border}`,fontFamily:'monospace',fontWeight:900,flexShrink:0}}>{row.group}</span>
                               </div>
-                              <span style={{fontFamily:'monospace',fontSize:'clamp(12px,1.4vw,16px)',fontWeight:900,color:'white',whiteSpace:'nowrap',textShadow:`0 0 18px ${rc}55`}}>${row.amount.toLocaleString()}</span>
+                              <span style={{fontFamily:'monospace',fontSize:'clamp(12px,1.4vw,16px)',fontWeight:900,color:'white',whiteSpace:'nowrap',textShadow:`0 0 18px ${rc}55`}}>${row.amount?.toLocaleString()}</span>
                             </div>
                             <div style={{display:'flex',alignItems:'center',gap:6}}>
                               <div style={{flex:1,height:3,background:'rgba(255,255,255,.04)',borderRadius:1.5,overflow:'hidden'}}>
@@ -1230,7 +1716,7 @@ const DataVoidPanel=({tier}:{tier:Tier})=>{
                 {/* footer total */}
                 <div style={{marginTop:12,paddingTop:10,borderTop:'1px solid rgba(0,212,255,.06)',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:6}}>
                   <span style={{fontSize:'7px',letterSpacing:'2px',color:'rgba(0,212,255,.38)',fontFamily:'monospace'}}>{rows.length} NODES · VOID SYNC ✓</span>
-                  <span style={{fontSize:'14px',fontWeight:900,color:'#00E5FF',textShadow:'0 0 24px rgba(0,212,255,.6)',fontFamily:'monospace'}}>${totalAmt.toLocaleString()}</span>
+                  <span style={{fontSize:'14px',fontWeight:900,color:'#00E5FF',textShadow:'0 0 24px rgba(0,212,255,.6)',fontFamily:'monospace'}}>${(totalAmt || 0)?.toLocaleString()}</span>
                 </div>
               </div>
             )}
@@ -1263,7 +1749,7 @@ const DataVoidPanel=({tier}:{tier:Tier})=>{
                               <span key={mi} style={{fontSize:'13px',fontWeight:700,color:'rgba(220,240,255,.9)',letterSpacing:'.02em'}}>
                                 <span style={{fontFamily:'monospace',fontSize:'9px',color:cfg.color,marginRight:3}}>{m.rank}.</span>
                                 {m.name}
-                                <span style={{fontFamily:'monospace',fontSize:'9px',color:'rgba(180,210,255,.45)',marginLeft:4}}>${m.amount.toLocaleString()}</span>
+                                <span style={{fontFamily:'monospace',fontSize:'9px',color:'rgba(180,210,255,.45)',marginLeft:4}}>${m.amount?.toLocaleString()}</span>
                               </span>
                             ))}
                           </div>
@@ -1286,6 +1772,95 @@ const DataVoidPanel=({tier}:{tier:Tier})=>{
   );
 };
 
+/* ── ALL ROUTES PANEL — 全功能統一浮動側欄 ── */
+type RouteGroup = { g: string; items: { title: string; icon: string; link: string; color: string }[] };
+const AllRoutesPanel = ({ routes }: { routes: RouteGroup[] }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      {/* 觸發按鈕 — 右側中央懸浮 */}
+      <button
+        onClick={() => setOpen(o => !o)}
+        style={{
+          position: 'fixed', right: open ? 'clamp(210px,22vw,280px)' : 0, top: '50%',
+          transform: 'translateY(-50%)',
+          zIndex: 200, cursor: 'pointer',
+          background: open ? 'rgba(0,229,200,.18)' : 'rgba(0,20,40,.88)',
+          border: '1px solid rgba(0,229,200,.35)',
+          borderRight: open ? '1px solid rgba(0,229,200,.35)' : 'none',
+          borderRadius: open ? '12px 0 0 12px' : '12px 0 0 12px',
+          padding: '14px 10px',
+          color: '#00e5ff', fontSize: 18,
+          boxShadow: '0 0 24px rgba(0,229,200,.22), inset 0 0 12px rgba(0,229,200,.06)',
+          transition: 'all .25s cubic-bezier(.23,1,.32,1)',
+          writingMode: 'vertical-rl',
+          letterSpacing: '2px',
+          fontFamily: 'monospace',
+          fontWeight: 900,
+          fontSize: 10,
+        }}
+        aria-label="全功能選單"
+      >
+        {open ? '◀ 收合' : '▶ 功能'}
+      </button>
+
+      {/* 側欄面板 */}
+      <div style={{
+        position: 'fixed', right: 0, top: 0, bottom: 0,
+        width: open ? 'clamp(210px,22vw,280px)' : 0,
+        overflow: 'hidden',
+        background: 'rgba(0,6,20,.96)',
+        borderLeft: '1px solid rgba(0,229,200,.18)',
+        backdropFilter: 'blur(28px)',
+        zIndex: 199,
+        transition: 'width .28s cubic-bezier(.23,1,.32,1)',
+        display: 'flex', flexDirection: 'column',
+        boxShadow: open ? '-8px 0 60px rgba(0,0,0,.7), -2px 0 20px rgba(0,229,200,.06)' : 'none',
+      }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: open ? '20px 14px 20px 16px' : 0, opacity: open ? 1 : 0, transition: 'opacity .2s' }}>
+          {/* 標題 */}
+          <div style={{ marginBottom: 18, paddingBottom: 10, borderBottom: '1px solid rgba(0,229,200,.12)' }}>
+            <div style={{ fontSize: 9, letterSpacing: '4px', color: 'rgba(0,229,200,.45)', fontFamily: 'monospace', marginBottom: 4 }}>ALL FUNCTIONS</div>
+            <div style={{ fontSize: 13, fontWeight: 900, color: '#00e5ff', fontFamily: 'monospace', textShadow: '0 0 12px rgba(0,229,200,.6)' }}>全功能統一入口</div>
+          </div>
+          {/* 各分組 */}
+          {routes.map((grp) => (
+            <div key={grp.g} style={{ marginBottom: 16 }}>
+              <div style={{ fontSize: 8, letterSpacing: '3px', color: 'rgba(0,229,200,.3)', fontFamily: 'monospace', marginBottom: 7, paddingLeft: 2 }}>◈ {grp.g}</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                {grp.items.map((item) => (
+                  <Link key={item.link} to={item.link}
+                    onClick={() => setOpen(false)}
+                    style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10,
+                      padding: '8px 12px', borderRadius: 10,
+                      background: 'rgba(255,255,255,.025)',
+                      border: `1px solid ${item.color}22`,
+                      transition: 'all .18s',
+                      color: 'rgba(220,240,255,.88)',
+                    }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = `${item.color}18`; (e.currentTarget as HTMLElement).style.borderColor = `${item.color}55`; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,.025)'; (e.currentTarget as HTMLElement).style.borderColor = `${item.color}22`; }}
+                  >
+                    <span style={{ fontSize: 16, lineHeight: 1, flexShrink: 0 }}>{item.icon}</span>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: item.color, fontFamily: '"Noto Sans TC",monospace', flex: 1 }}>{item.title}</span>
+                    <span style={{ fontSize: 9, color: `${item.color}66`, fontFamily: 'monospace' }}>▶</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ))}
+          {/* 底部版本資訊 */}
+          <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px solid rgba(0,229,200,.08)', fontSize: 8, color: 'rgba(0,229,200,.25)', fontFamily: 'monospace', letterSpacing: '1.5px', lineHeight: 2 }}>
+            LIFE ENGINE v11.0<br/>
+            APEX · SYMBIOTIC CORE<br/>
+            UPTIME 99.97%
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
 /* ── MAIN PAGE ── */
 export default function Homepage(){
   const tier=usePerf();
@@ -1295,6 +1870,9 @@ export default function Homepage(){
   const [vital,setVital]=useState(86);
   const [clk,setClk]=useState('');
   const [beat,setBeat]=useState(false);
+  const [heartFlash,setHeartFlash]=useState(0); // 0=靜止,1=第一跳,2=第二跳
+  const [synapseFlash,setSynapseFlash]=useState(false);
+  const heartFlashRef=useRef(0); // ref 供 canvas 讀取，不觸發 re-render
 
   // ─── 新增動態業績 States ───
   const [platformData, setPlatformData] = useState<any[]>([]);
@@ -1303,14 +1881,33 @@ export default function Homepage(){
 
 
   useEffect(()=>{
-    const id=setInterval(()=>{
-      setLive(v=>v+Math.floor(Math.random()*480+80));
-      // 移除隨機業績增加，將隨機數加在 live 上
-      setVital(v=>Math.min(99,Math.max(72,v+(Math.random()>.5?1:-1))));
+    // ── 全頁心跳節律 (1.8s 雙跳) ──
+    const hbInterval=setInterval(()=>{
+      heartFlashRef.current=1; setHeartFlash(1);
+      setTimeout(()=>{ heartFlashRef.current=0; setHeartFlash(0); },200);
+      setTimeout(()=>{ heartFlashRef.current=2; setHeartFlash(2); setTimeout(()=>{ heartFlashRef.current=0; setHeartFlash(0); },250); },350);
+    },1800);
+    // ── 神經突觸隨機閃光 ──
+    const synapseInterval=setInterval(()=>{
+      if(Math.random()<.7){ setSynapseFlash(true); setTimeout(()=>setSynapseFlash(false),120); }
+    },320);
+    // ── 快速跳動計時器 (每 380ms)：DATA/SEC + VITALITY 持續飛漲
+    const idFast=setInterval(()=>{
+      setLive(v=>v+Math.floor(Math.random()*1800+220)); // 更大幅度跳動
+      setVital(v=>Math.min(99,Math.max(72,v+(Math.random()>.4?1:-1))));
+      setBeat(true); setTimeout(()=>setBeat(false),180);
+    },380);
+    // ── 時鐘每秒更新
+    const idClk=setInterval(()=>{
       setClk(new Date().toLocaleTimeString('zh-TW',{hour12:false}));
-      setBeat(true);setTimeout(()=>setBeat(false),220);
-    },1200);
-    return()=>clearInterval(id);
+    },1000);
+    // ── 偶發大爆發（每 2.2s 隨機噴出大數字）
+    const idBurst=setInterval(()=>{
+      if(Math.random()>.55){
+        setLive(v=>v+Math.floor(Math.random()*8500+1500)); // 爆發增量
+      }
+    },2200);
+    return()=>{clearInterval(hbInterval);clearInterval(synapseInterval);clearInterval(idFast);clearInterval(idClk);clearInterval(idBurst);};
   },[]);
 
   // ─── API 資料連線 ───
@@ -1364,9 +1961,35 @@ export default function Homepage(){
     {title:'AI 排名引擎', sub:'NEURAL RANKER v4.2',icon:'🧠',color:'#00e5ff',link:'/ranking',   badge:'LIVE', desc:'即時智能排名演算法核心',val:'99.8%'},
     {title:'派工調度中心',sub:'DISPATCH CORE v3.8',icon:'⚡',color:'#7c4dff',link:'/dispatch',  badge:'ARMED',desc:'全自動派工任務分配引擎',val:'2.1ms'},
     {title:'公告生成系統',sub:'HERALD AI v2.9',   icon:'📡',color:'#ffd700',link:'/announce',  badge:'SYNC', desc:'智能公告撰寫與發送系統',val:'12/hr'},
-    {title:'每日報表引擎',sub:'ORACLE v5.1',      icon:'📊',color:'#00ffd0',link:'/daily-report',badge:'AUTO',desc:'數據聚合報表自動生成', val:'∞ rows'},
-    {title:'模組維修系統',sub:'REPAIR BOT v1.7',  icon:'🔧',color:'#ff6ec7',link:'/repair',    badge:'IDLE', desc:'自動故障偵測與修復引擎',val:'0 ERR'},
-    {title:'資料審計核心',sub:'AUDIT AI v3.3',    icon:'🔍',color:'#00ff8c',link:'/audit',     badge:'PASS', desc:'深度數據稽核與驗證系統',val:'100%'},
+    {title:'每日報表引擎',sub:'ORACLE v5.1',      icon:'📊',color:'#00ffd0',link:'/',          badge:'AUTO',desc:'數據聚合報表自動生成', val:'∞ rows'},
+    {title:'一鍵流水線', sub:'PIPELINE v2.0',     icon:'🚀',color:'#ff6ec7',link:'/pipeline',  badge:'BOOST',desc:'一鍵自動化完整流水作業',val:'AUTO'},
+    {title:'資料審計核心',sub:'AUDIT AI v3.3',    icon:'🔍',color:'#00ff8c',link:'/ranking',   badge:'PASS', desc:'深度數據稽核與驗證系統',val:'100%'},
+  ];
+  // 全功能統一選單（所有路由）
+  const ALL_ROUTES=[
+    {g:'核心',items:[
+      {title:'主儀表板',  icon:'🌐',link:'/dashboard',color:'#00e5ff'},
+      {title:'報表工作台',icon:'📋',link:'/',         color:'#00ffd0'},
+      {title:'一鍵流水線',icon:'🚀',link:'/pipeline', color:'#ff6ec7'},
+    ]},
+    {g:'業務',items:[
+      {title:'AI排名引擎',icon:'🧠',link:'/ranking',  color:'#00e5ff'},
+      {title:'派單調度', icon:'⚡',link:'/dispatch',  color:'#7c4dff'},
+      {title:'公告生成', icon:'📡',link:'/announce',  color:'#ffd700'},
+    ]},
+    {g:'中心',items:[
+      {title:'奕心指揮', icon:'🎯',link:'/hv-command',color:'#ff6ec7'},
+      {title:'奕心話術', icon:'💬',link:'/hv-scripts',color:'#00ffd0'},
+      {title:'奕心目標', icon:'🎪',link:'/hv-targets',color:'#00ff8c'},
+      {title:'民視指揮', icon:'📺',link:'/bc-command',color:'#ffd700'},
+      {title:'民視話術', icon:'📝',link:'/bc-scripts',color:'#7c4dff'},
+    ]},
+    {g:'管理',items:[
+      {title:'LINE轉換', icon:'💚',link:'/line-convert',color:'#00ff8c'},
+      {title:'LINE規則', icon:'📌',link:'/line-rules',  color:'#7c4dff'},
+      {title:'招募系統', icon:'👥',link:'/hiring',      color:'#ffd700'},
+      {title:'培訓系統', icon:'🏆',link:'/training',    color:'#ff6ec7'},
+    ]},
   ];
   const STATS=[
     {label:'DATA / SEC', val:live, color:'#00e5ff',glow:'0 0 40px #00e5ff88',prefix:'',suffix:''},
@@ -1375,7 +1998,73 @@ export default function Homepage(){
   ];
 
   return(
-    <div className="pgFade" style={{minHeight:'100vh',background:'#000812',fontFamily:'"Inter","Noto Sans TC",monospace,sans-serif',color:'#e0f8ff',overflowX:'hidden',perspective:'1200px'}}>
+    <div className="pgFade breatheVoid cellBreathe" style={{minHeight:'100vh',background:'#000812',fontFamily:'"Inter","Noto Sans TC",monospace,sans-serif',color:'#e0f8ff',overflowX:'hidden',perspective:'1200px',
+      transform: heartFlash===2 ? 'scale(1.0055)' : heartFlash===1 ? 'scale(1.003)' : 'scale(1)',
+      transition:'transform 0.12s ease-out',
+    }}>
+      <SafeZone label="lifeCanvas"><LifeCanvas tier={tier}/></SafeZone>
+      {/* 全頁心跳閃光層 — 第一跳=青，第二跳=深紅，強度大幅提升 */}
+      <div style={{
+        position:'fixed',inset:0,pointerEvents:'none',zIndex:1,
+        background: heartFlash===1
+          ? 'radial-gradient(ellipse 160% 110% at 50% 30%,rgba(0,255,220,.22) 0%,rgba(0,229,200,.10) 40%,rgba(0,200,180,.04) 65%,transparent 80%)'
+          : heartFlash===2
+          ? 'radial-gradient(ellipse 150% 100% at 50% 40%,rgba(255,0,50,.28) 0%,rgba(220,10,50,.14) 35%,rgba(180,0,30,.06) 60%,transparent 78%)'
+          : 'none',
+        transition:'background .06s',
+        mixBlendMode:'screen',
+      }}/>
+      {/* 主幹血管層 — 5條固定粗血管從畫面中心向四角延伸 */}
+      <svg style={{position:'fixed',inset:0,width:'100%',height:'100%',pointerEvents:'none',zIndex:1,overflow:'visible'}} preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="vein1" x1="50%" y1="50%" x2="0%" y2="0%"><stop offset="0%" stopColor="#cc1830" stopOpacity=".7"/><stop offset="100%" stopColor="#cc1830" stopOpacity="0"/></linearGradient>
+          <linearGradient id="vein2" x1="50%" y1="50%" x2="100%" y2="0%"><stop offset="0%" stopColor="#cc1830" stopOpacity=".6"/><stop offset="100%" stopColor="#cc1830" stopOpacity="0"/></linearGradient>
+          <linearGradient id="vein3" x1="50%" y1="50%" x2="100%" y2="100%"><stop offset="0%" stopColor="#8b1aff" stopOpacity=".55"/><stop offset="100%" stopColor="#8b1aff" stopOpacity="0"/></linearGradient>
+          <linearGradient id="vein4" x1="50%" y1="50%" x2="0%" y2="100%"><stop offset="0%" stopColor="#cc1830" stopOpacity=".6"/><stop offset="100%" stopColor="#cc1830" stopOpacity="0"/></linearGradient>
+          <linearGradient id="vein5" x1="50%" y1="50%" x2="50%" y2="0%"><stop offset="0%" stopColor="#00e5ff" stopOpacity=".45"/><stop offset="100%" stopColor="#00e5ff" stopOpacity="0"/></linearGradient>
+          <filter id="veinBlur"><feGaussianBlur stdDeviation="3.5"/></filter>
+          <filter id="veinBlurHB"><feGaussianBlur stdDeviation="6"/></filter>
+        </defs>
+        {[['vein1','50% 50%','0% 0%'],['vein2','50% 50%','100% 0%'],['vein3','50% 50%','100% 100%'],['vein4','50% 50%','0% 100%'],['vein5','50% 50%','50% 0%']].map(([gid,p1,p2],i)=>(
+          <g key={i}>
+            {/* 心跳光暈層 — 心跳時顯示 */}
+            {heartFlash>0&&<line
+              x1={p1.split(' ')[0]} y1={p1.split(' ')[1]}
+              x2={p2.split(' ')[0]} y2={p2.split(' ')[1]}
+              stroke={`url(#${gid})`} strokeWidth={[9,8,7,8,6][i]}
+              strokeDasharray="12 18"
+              filter="url(#veinBlurHB)" opacity={heartFlash===2?.9:.6}/>}
+            <line
+              x1={p1.split(' ')[0]} y1={p1.split(' ')[1]}
+              x2={p2.split(' ')[0]} y2={p2.split(' ')[1]}
+              stroke={`url(#${gid})`} strokeWidth={heartFlash>0?[5.5,5,4.5,5,3.8][i]:[3.5,3,2.8,3,2.2][i]}
+              strokeDasharray="12 18"
+              filter="url(#veinBlur)"
+              style={{animation:`bloodFlow ${[1.8,2.1,2.4,1.6,2.8][i]}s linear infinite`,animationDelay:`${i*.35}s`,transition:'stroke-width .1s'}}/>
+          </g>
+        ))}
+      </svg>
+      {/* 腦波掃描線 — 全頁水平意識波形（4條不同高度）*/}
+      {[
+        {top:'22vh', color:'rgba(0,229,200,.38)',  dur:'3.2s', delay:'0s',   w:900, h:40},
+        {top:'45vh', color:'rgba(200,20,50,.32)',   dur:'4.1s', delay:'1.1s', w:950, h:48},
+        {top:'68vh', color:'rgba(0,229,200,.22)',   dur:'2.8s', delay:'0.6s', w:860, h:32},
+        {top:'84vh', color:'rgba(140,80,255,.28)',  dur:'5.0s', delay:'2.0s', w:1000,h:44},
+      ].map((w,i)=>(
+        <svg key={i} style={{position:'fixed',left:0,top:w.top,width:'100%',height:`${w.h}px`,
+          pointerEvents:'none',zIndex:1,overflow:'visible',
+          animation:`brainWave${i%2?'B':''} ${w.dur} linear infinite`,animationDelay:w.delay}}>
+          <path
+            d={`M 0 ${w.h/2} Q ${w.w*.15} ${w.h/2-w.h*.4} ${w.w*.3} ${w.h/2} Q ${w.w*.45} ${w.h/2+w.h*.4} ${w.w*.6} ${w.h/2} Q ${w.w*.75} ${w.h/2-w.h*.35} ${w.w} ${w.h/2}`}
+            fill="none" stroke={w.color} strokeWidth={i%2?1.2:.8}
+            filter="url(#veinBlur)"/>
+        </svg>
+      ))}
+      {/* 神經突觸全屏閃光層 */}
+      {synapseFlash&&<div style={{
+        position:'fixed',inset:0,pointerEvents:'none',zIndex:1,
+        background:'radial-gradient(ellipse 55% 35% at 48% 38%,rgba(0,255,255,.045) 0%,transparent 55%)',
+      }}/>}
 
       {/* HERO — 緊湊版：只用 56vh，不佔滿螢幕 */}
       <div style={{position:'relative',height:'clamp(340px,56vh,640px)',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',overflow:'hidden'}}>
@@ -1393,7 +2082,7 @@ export default function Homepage(){
         )}
 
         <SafeZone label="numStream"><NumberStream tier={tier}/></SafeZone>
-        <SafeZone label="canvas"><DataCanvas tier={tier} mouseX={mx2} mouseY={my2}/></SafeZone>
+        <SafeZone label="canvas"><DataCanvas tier={tier} mouseX={mx2} mouseY={my2} heartFlashRef={heartFlashRef}/></SafeZone>
         <div className="scanLine"/>
         <SafeZone label="hud"><HudCorners tier={tier}/></SafeZone>
         <SafeZone label="compute"><LiveCompute tier={tier}/></SafeZone>
@@ -1411,10 +2100,10 @@ export default function Homepage(){
           ))}
           <div style={{fontSize:'clamp(8px,.9vw,10px)',letterSpacing:'6px',color:'rgba(0,229,200,.65)',marginBottom:8,fontFamily:'monospace',fontWeight:700,textShadow:'0 0 14px rgba(0,229,200,.5)',animation:'hudBlink 2.5s ease-in-out infinite'}}>GLOBAL · AI · DATA · ENGINE · v10.0 · {clk||'──:──:──'}</div>
           <h1 className="dataGlitch shimmerTxt" style={{fontSize:'clamp(20px,3.5vw,48px)',fontWeight:900,margin:'0 0 6px',letterSpacing:'-.01em',lineHeight:1.08}}>
-            全球大數據 AI 核心中控台
+            全球生命引擎中控台
           </h1>
           <div style={{fontSize:'clamp(8px,1vw,11px)',letterSpacing:'3px',color:'rgba(0,229,200,.45)',marginBottom:18,fontFamily:'monospace',textShadow:'0 0 10px rgba(0,229,200,.3)',animation:'throb 4s ease-in-out infinite'}}>
-            APEX · CENTRAL · INTELLIGENCE · SYSTEM · UPTIME 99.97%
+            APEX · LIFE ENGINE · SYMBIOTIC CORE · v11.0 · UPTIME 99.97%
           </div>
           {/* STATS — 橫向緊湊 + 3D浮卡 */}
           <div style={{display:'flex',gap:'clamp(6px,1.5vw,14px)',justifyContent:'center',flexWrap:'wrap',perspective:'800px'}}>
@@ -1424,10 +2113,11 @@ export default function Homepage(){
                   padding:'clamp(8px,1.2vw,12px) clamp(12px,1.8vw,20px)',
                   borderRadius:14,
                   animationDelay:`${i*1.8}s`,
-                  transform:`translate(${px*(i-.5)*.8}px,0)`,
-                  transition:'transform .12s linear',
+                  transform:`translate(${px*(i-.5)*.8 + (heartFlash===1?(i-1)*2.5:heartFlash===2?(i-1)*-3.5:0)}px, ${heartFlash===2?-3:heartFlash===1?1.5:0}px) scale(${heartFlash===2?1.05:heartFlash===1?1.025:1})`,
+                  transition:'transform .09s ease-out',
                   position:'relative',overflow:'hidden',
-                  cursor: 'pointer', // 新增：滑鼠指標
+                  cursor: 'pointer',
+                  boxShadow: heartFlash===2 ? `0 0 40px rgba(255,0,50,.35), 0 0 80px rgba(255,0,50,.18), inset 0 0 20px rgba(255,0,50,.08)` : heartFlash===1 ? `0 0 35px rgba(0,229,200,.3), 0 0 70px rgba(0,229,200,.12)` : undefined,
                 }} onClick={() => setActiveStat(s.label)}> {/* 新增：點擊事件 */}
                   {/* 垂直掃描線 */}
                   <div className="scanLineV" style={{animationDelay:`${i*2.2}s`}}/>
@@ -1445,15 +2135,23 @@ export default function Homepage(){
           </div>
         </div>
 
-        {/* sphere — 3D浮動 */}
-        <div style={{position:'absolute',right:'clamp(20px,8vw,140px)',top:'50%',transform:`translateY(-50%) translate(${px*.8}px,${py*.6}px)`,transition:'transform .1s linear',zIndex:8,opacity:.92,animation:'float3D 7s ease-in-out infinite',transformStyle:'preserve-3d'}}>
-          {/* 球底光暈 */}
-          <div style={{position:'absolute',bottom:-20,left:'50%',transform:'translateX(-50%)',width:'60%',height:20,borderRadius:'50%',background:'radial-gradient(ellipse,rgba(0,229,200,.25) 0%,transparent 70%)',filter:'blur(8px)',pointerEvents:'none'}}/>
+        {/* sphere — 3D浮動 + 球體心跳同步縮放 */}
+        <div style={{position:'absolute',right:'clamp(20px,8vw,140px)',top:'50%',
+          transform:`translateY(-50%) translate(${px*.8}px,${py*.6}px) scale(${heartFlash===2?1.04:heartFlash===1?1.02:1})`,
+          transition:'transform .08s',zIndex:8,opacity:.95}}>
+          {/* 球底光暈 — 心跳時擴大 */}
+          <div style={{position:'absolute',bottom:-20,left:'50%',transform:'translateX(-50%)',
+            width: heartFlash?'80%':'60%', height:heartFlash?28:20, borderRadius:'50%',
+            background:'radial-gradient(ellipse,rgba(0,229,200,.35) 0%,transparent 70%)',
+            filter:'blur(8px)',pointerEvents:'none',transition:'all .1s'}}/>
           <SafeZone label="sphere"><div className="hueC coreGlow"><DataSphere live={live} tier={tier}/></div></SafeZone>
         </div>
 
-        {/* vitality */}
-        <div style={{position:'absolute',left:'clamp(12px,4vw,60px)',bottom:'clamp(40px,8vh,100px)',width:'clamp(160px,22vw,280px)',zIndex:9,transform:`translate(${px*.5}px,${py*.3}px)`,transition:'transform .12s linear'}}>
+        {/* vitality — 心跳時有寬度震動 */}
+        <div style={{position:'absolute',left:'clamp(12px,4vw,60px)',bottom:'clamp(40px,8vh,100px)',
+          width:'clamp(160px,22vw,280px)',zIndex:9,
+          transform:`translate(${px*.5}px,${py*.3}px) scaleX(${heartFlash===1?1.05:heartFlash===2?0.96:1})`,
+          transition:'transform .09s'}}>
           <div style={{fontSize:'8px',letterSpacing:'3px',color:'rgba(0,229,200,.45)',marginBottom:6,fontFamily:'monospace'}}>LIFE SIGNAL</div>
           <SafeZone label="gauge"><VitalGauge score={vital}/></SafeZone>
         </div>
@@ -1465,17 +2163,17 @@ export default function Homepage(){
       <div style={{display:'flex', gap:'16px', flexWrap:'wrap', maxWidth:1440, margin:'0 auto', padding:'16px clamp(16px,4vw,40px)', alignItems:'stretch', position:'relative'}}>
         <div style={{flex:'1 1 480px', minWidth:320, display:'flex', width:'100%'}}>
           <SafeZone label="platform">
-            <PlatformRevenue 
-              tier={tier} 
-              data={platforms.map((p, i) => {
+            <PlatformRevenue
+              tier={tier}
+              data={platforms.map((p) => {
                 const total = platforms.reduce((acc, x) => acc + x.revenue, 0);
                 return {
-                  label: p.name,
+                  name: p.name,
+                  rev: p.revenue,
                   pct: total > 0 ? (p.revenue / total) * 100 : 0,
-                  val: `$${p.revenue.toLocaleString()}`,
-                  color: p.name === '奕心' ? '#00e5ff' : p.name === '民視' ? '#00ffa0' : '#b53cff'
+                  color: p.name === '奕心' ? '#00e5ff' : p.name === '民視' ? '#00ffa0' : '#b53cff',
                 };
-              })} 
+              })}
               total={platforms.reduce((acc, x) => acc + x.revenue, 0)}
             />
           </SafeZone>
@@ -1497,12 +2195,12 @@ export default function Homepage(){
           {MODULE_CARDS.map((m,i)=>(
             <SafeZone key={i} label={`module-${i}`}>
               <Link to={m.link} style={{textDecoration:'none',color:'inherit',display:'block'}}>
-                <div className="glass metalCard depthCard petriF neonBorder" style={{
+                <div className="glass metalCard depthCard petriF neonBorder cardLifePulse" style={{
                   padding:'clamp(16px,2.5vw,28px)',borderRadius:20,cursor:'pointer',
                   animationDelay:`${i*.25}s`,
                   transform:`translate(${px*(i%3-.9)*.7}px,${py*(Math.floor(i/3)-.3)*.5}px)`,
                   transition:'transform .15s linear',
-                  borderTop:`1px solid ${m.color}44`,
+                  borderTop:`1px solid ${m.color}55`,
                   position:'relative',overflow:'hidden',
                 }}>
                   {/* 頂角螢光 */}
@@ -1546,24 +2244,59 @@ export default function Homepage(){
         </div>
       </div>
 
-      {/* STATUS BAR */}
-      <div className="glass-deep" style={{borderTop:'1px solid rgba(0,229,200,.14)',padding:'clamp(10px,2vh,18px) clamp(16px,4vw,48px)',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:12,boxShadow:'inset 0 1px 0 rgba(0,229,200,.08),0 -4px 30px rgba(0,0,0,.5)'}}>
-        <div style={{display:'flex',gap:'clamp(16px,3vw,40px)',flexWrap:'wrap'}}>
+      {/* STATUS BAR + 功能快捷鍵 */}
+      <div className="glass-deep" style={{borderTop:'1px solid rgba(0,229,200,.14)',padding:'clamp(8px,1.5vh,14px) clamp(16px,4vw,48px)',display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:10,boxShadow:'inset 0 1px 0 rgba(0,229,200,.08),0 -4px 30px rgba(0,0,0,.5)'}}>
+        {/* 左：系統狀態指示燈 */}
+        <div style={{display:'flex',gap:'clamp(12px,2.5vw,32px)',flexWrap:'wrap',alignItems:'center'}}>
           {[{k:'SYSTEM',v:'ONLINE',c:'#00ffd0'},{k:'AI CORE',v:'ACTIVE',c:'#00e5ff'},{k:'HEALTH',v:`${health}%`,c:health>80?'#00ffd0':'#ffd700'},{k:'NODES',v:`${scored.length}`,c:'#7c4dff'},{k:'UPTIME',v:'99.97%',c:'#00ff8c'}].map(({k,v,c},si)=>(
-            <div key={k} style={{display:'flex',gap:8,alignItems:'center'}}>
-              <div style={{position:'relative',width:8,height:8}}>
-                <div style={{position:'absolute',inset:0,borderRadius:'50%',background:c,boxShadow:`0 0 12px ${c}, 0 0 24px ${c}66`}}/>
+            <div key={k} style={{display:'flex',gap:7,alignItems:'center'}}>
+              <div style={{position:'relative',width:7,height:7}}>
+                <div style={{position:'absolute',inset:0,borderRadius:'50%',background:c,boxShadow:`0 0 10px ${c}, 0 0 20px ${c}66`}}/>
                 <div style={{position:'absolute',inset:-3,borderRadius:'50%',border:`1px solid ${c}55`,animation:`hudPing ${2+si*.3}s ease-out infinite`,animationDelay:`${si*.5}s`}}/>
               </div>
-              <span style={{fontSize:'9px',letterSpacing:'2px',color:'rgba(255,255,255,.32)',fontFamily:'monospace'}}>{k}</span>
-              <span style={{fontSize:'11px',fontFamily:'monospace',fontWeight:900,color:c,textShadow:`0 0 12px ${c}, 0 0 24px ${c}66`}}>{v}</span>
+              <span style={{fontSize:'8px',letterSpacing:'2px',color:'rgba(255,255,255,.28)',fontFamily:'monospace'}}>{k}</span>
+              <span style={{fontSize:'10px',fontFamily:'monospace',fontWeight:900,color:c,textShadow:`0 0 10px ${c}`}}>{v}</span>
             </div>
           ))}
         </div>
-        {/* 移除純裝飾 Ticker */}
+        {/* 右：功能快捷鍵列 */}
+        <div style={{display:'flex',gap:6,flexWrap:'wrap',alignItems:'center'}}>
+          {[
+            {title:'報表',icon:'📋',link:'/',        color:'#00ffd0'},
+            {title:'排名',icon:'🧠',link:'/ranking', color:'#00e5ff'},
+            {title:'派單',icon:'⚡',link:'/dispatch', color:'#7c4dff'},
+            {title:'公告',icon:'📡',link:'/announce', color:'#ffd700'},
+            {title:'流水線',icon:'🚀',link:'/pipeline',color:'#ff6ec7'},
+            {title:'奕心',icon:'🎯',link:'/hv-command',color:'#00ff8c'},
+            {title:'民視',icon:'📺',link:'/bc-command',color:'#ffd700'},
+            {title:'LINE',icon:'💚',link:'/line-convert',color:'#00ff8c'},
+          ].map(btn=>(
+            <Link key={btn.link} to={btn.link} style={{textDecoration:'none'}}>
+              <div style={{
+                display:'flex',alignItems:'center',gap:5,
+                padding:'5px 10px',borderRadius:8,cursor:'pointer',
+                background:`${btn.color}10`,
+                border:`1px solid ${btn.color}30`,
+                color:btn.color,
+                fontSize:11,fontWeight:700,fontFamily:'monospace',
+                transition:'all .18s',
+                boxShadow:`0 0 8px ${btn.color}18`,
+                whiteSpace:'nowrap' as const,
+              }}
+              onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background=`${btn.color}22`;(e.currentTarget as HTMLElement).style.boxShadow=`0 0 18px ${btn.color}44`;}}
+              onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background=`${btn.color}10`;(e.currentTarget as HTMLElement).style.boxShadow=`0 0 8px ${btn.color}18`;}}
+              >
+                <span style={{fontSize:13}}>{btn.icon}</span>{btn.title}
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
 
       <div className="tierBadge">{tier.toUpperCase()} TIER</div>
+
+      {/* ─── 全功能統一浮動側欄 ─── */}
+      <AllRoutesPanel routes={ALL_ROUTES}/>
 
       {/* ─── 3D 浮空 Modal 詳情 (加強文字功能) ─── */}
       {activeStat && (
@@ -1589,10 +2322,10 @@ export default function Homepage(){
                )}
                {activeStat === 'USD REVENUE' && (
                  <div style={{color:'#ffd700'}}>
-                   <div style={{fontSize:'16px',fontWeight:900,color:'white',marginBottom:12,borderBottom:'1px solid rgba(255,215,0,.2)',paddingBottom:8}}>📊 整合計算總業績：${totalRev.toLocaleString()}</div>
-                   - 奕心： ${((platformData.find(p=>p.name==='奕心')?.rev) || 0).toLocaleString()}<br/>
-                   - 民視： ${((platformData.find(p=>p.name==='民視')?.rev) || 0).toLocaleString()}<br/>
-                   - 公司： ${((platformData.find(p=>p.name==='公司')?.rev) || 0).toLocaleString()}<br/>
+                   <div style={{fontSize:'16px',fontWeight:900,color:'white',marginBottom:12,borderBottom:'1px solid rgba(255,215,0,.2)',paddingBottom:8}}>📊 整合計算總業績：${totalRev?.toLocaleString()}</div>
+                   - 奕心： ${((platformData.find(p=>p.name==='奕心')?.rev) || 0)?.toLocaleString()}<br/>
+                   - 民視： ${((platformData.find(p=>p.name==='民視')?.rev) || 0)?.toLocaleString()}<br/>
+                   - 公司： ${((platformData.find(p=>p.name==='公司')?.rev) || 0)?.toLocaleString()}<br/>
                    <br/>
                    <div style={{color:'rgba(0,255,156,.8)',marginTop:10}}>✅ 所有報表已通過審計核心驗證</div>
                  </div>

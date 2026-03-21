@@ -198,6 +198,29 @@ export function initSchema(db: Database.Database): void {
       created_at          TEXT    NOT NULL DEFAULT (datetime('now','localtime'))
     );
 
+    -- ══════ 13. dispatch_snapshots 派單結果快照表 ══════
+    CREATE TABLE IF NOT EXISTS dispatch_snapshots (
+      version             TEXT    PRIMARY KEY,
+      report_date         TEXT    NOT NULL,
+      computed_at         TEXT    NOT NULL DEFAULT (datetime('now','localtime')),
+      data_hash           TEXT    NOT NULL,
+      audit_result        TEXT    NOT NULL CHECK(audit_result IN ('PASS','FAIL')),
+      audit_panels        TEXT    NOT NULL DEFAULT '{}',
+      total_summary       TEXT    NOT NULL DEFAULT '{}',
+      ranking_list        TEXT    NOT NULL DEFAULT '[]',
+      dispatch_groups     TEXT    NOT NULL DEFAULT '{}',
+      announcement        TEXT    NOT NULL DEFAULT ''
+    );
+
+    -- ══════ 14. name_alias_rules 名稱標準化規則表 ══════
+    CREATE TABLE IF NOT EXISTS name_alias_rules (
+      id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+      wrong_name          TEXT    NOT NULL UNIQUE,
+      correct_name        TEXT    NOT NULL,
+      note_text           TEXT,
+      created_at          TEXT    NOT NULL DEFAULT (datetime('now','localtime'))
+    );
+
     -- ══════ 索引 ══════
     CREATE INDEX IF NOT EXISTS idx_daily_reports_date ON daily_reports(report_date);
     CREATE INDEX IF NOT EXISTS idx_details_report ON daily_report_details(report_id);
@@ -208,9 +231,14 @@ export function initSchema(db: Database.Database): void {
     CREATE INDEX IF NOT EXISTS idx_rankings_date ON integrated_rankings(report_date);
     CREATE INDEX IF NOT EXISTS idx_dispatch_date ON dispatch_group_results(report_date);
     CREATE INDEX IF NOT EXISTS idx_versions_report ON version_change_logs(report_id);
+    CREATE INDEX IF NOT EXISTS idx_snapshots_date ON dispatch_snapshots(report_date);
 
     -- ══════ 預設管理員 ══════
     INSERT OR IGNORE INTO app_users (account, password_hash, display_name, role_name)
     VALUES ('admin', 'admin', '系統管理員', '管理員');
+
+    -- ══════ 預設名稱校正規則 ══════
+    INSERT OR IGNORE INTO name_alias_rules (wrong_name, correct_name, note_text)
+    VALUES ('徐華好', '徐華妤', '規格書指定錯名防呆');
   `);
 }

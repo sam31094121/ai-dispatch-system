@@ -12,6 +12,9 @@ import dispatchRoutes from './routes/dispatch.js';
 import announcementRoutes from './routes/announcement.js';
 import historyRoutes from './routes/history.js';
 import repairRoutes from './routes/repair.js';
+import latestRoutes from './routes/latest.js';
+import systemRoutes, { ensureStorage, systemLog } from './routes/system.js';
+import settingsRoutes from './routes/settings.js';
 
 const app = express();
 const PORT = 3001;
@@ -92,14 +95,17 @@ app.use('/api/v1/dispatch', dispatchRoutes);
 app.use('/api/v1/announcements', announcementRoutes);
 app.use('/api/v1/history', historyRoutes);
 app.use('/api/v1/repair', repairRoutes);
+app.use('/api/v1/latest', latestRoutes);
+app.use('/api/v1/system', systemRoutes);
+app.use('/api/v1/settings', settingsRoutes);
 
 // ── 修正規則查詢 ──
 app.get('/api/v1/fix-rules', (_req, res) => {
   res.json({ success: true, message: '查詢成功', data: AUTO_FIX_RULES, error_code: null });
 });
 
-// ── 健康檢查 ──
-app.get('/api/v1/health', (_req, res) => {
+// ── 健康檢查（v1 + 規格別名）──
+function healthHandler(_req: any, res: any) {
   const db = getDb();
   const tables = db.prepare("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name").all() as any[];
   res.json({
@@ -107,7 +113,24 @@ app.get('/api/v1/health', (_req, res) => {
     data: { version: 'V2 — 生產規格版', tables: tables.map((t: any) => t.name), table_count: tables.length, timestamp: new Date().toISOString() },
     error_code: null,
   });
-});
+}
+app.get('/api/v1/health', healthHandler);
+app.get('/api/health', healthHandler);  // 規格 VI.1
+
+// ── 規格路徑別名（VI 節規定的短路徑）──
+// VI.2 POST /api/system/boot   → /api/v1/system/boot
+// VI.3 POST /api/system/stop   → /api/v1/system/stop
+// VI.4 POST /api/system/repair → /api/v1/system/repair
+// VI.5 GET  /api/system/status → /api/v1/system/status
+// VI.6 POST /api/modules/:key/toggle → /api/v1/system/modules/:key/toggle
+// VI.7 POST /api/reports/save  → /api/v1/system/save-report
+// VI.8 GET  /api/reports/latest → /api/v1/system/latest-report
+// VI.9 GET  /api/logs/today    → /api/v1/system/logs/today
+app.use('/api/system',  systemRoutes);
+app.post('/api/reports/save',  (_req, res) => res.redirect(307, '/api/v1/system/save-report'));
+app.get('/api/reports/latest', (_req, res) => res.redirect('/api/v1/system/latest-report'));
+app.post('/api/modules/:moduleKey/toggle', (req, res) => res.redirect(307, `/api/v1/system/modules/${req.params.moduleKey}/toggle`));
+app.get('/api/logs/today', (_req, res) => res.redirect('/api/v1/system/logs/today'));
 
 // ── 明細更新 (獨立路由) ──
 app.put('/api/v1/report-details/:detailId', (req, res) => {
@@ -135,6 +158,10 @@ app.put('/api/v1/report-details/:detailId', (req, res) => {
 
 // ── 啟動 ──
 app.listen(PORT, () => {
+  // 確保 storage 資料夾存在
+  ensureStorage();
+  systemLog('INFO', `後端啟動 — http://localhost:${PORT}/api/v1/`);
+
   console.log('');
   console.log('═══════════════════════════════════════════');
   console.log('   人工智慧商業帝國系統 — 後端 V2');

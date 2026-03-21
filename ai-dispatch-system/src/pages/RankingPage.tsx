@@ -3,10 +3,34 @@ import { rawEmployees, aiSuggestions, platforms } from '../data/mockData';
 import type { Employee } from '../data/mockData';
 import { getGroupColor } from '../engine/aiEngine';
 
+// ── 平台月目標預設值 ──
+const DEFAULT_TARGETS: Record<string, number> = { '奕心': 6000000, '民視': 2500000, '公司': 800000 };
+
+function getPlatformInsight(name: string, revenue: number, _target: number, progress: number): string {
+  const gap = (_target - revenue).toLocaleString();
+  const revFmt = revenue.toLocaleString();
+  if (name === '奕心') {
+    if (progress >= 80) return `營收 ${revFmt} 已突破穩定期，爆發點落在 B 組續單收尾。已達目標 ${progress}%，建議維持流速、防範大單退單，確保本月達成。`;
+    if (progress >= 50) return `目前實收 ${revFmt}，距目標差 ${gap}（進度 ${progress}%）。強化 A1 高單收口 + A2 續單轉現，今日補 1 筆高價大單可顯著提升進度。`;
+    return `目前實收 ${revFmt}，進度僅 ${progress}%（差 ${gap}）。緊急導入雙線並行：A1 主攻爆發、A2 補量，全員加壓，每日須提升 3% 以上。`;
+  }
+  if (name === '民視') {
+    if (progress >= 70) return `追續單動能極強（${revFmt}），距目標僅差 ${gap}（進度 ${progress}%）。今日強化「大單攻頂」，優先配高價值名單給 A 組洗單，確保衝刺不斷力。`;
+    if (progress >= 40) return `目前實收 ${revFmt}（進度 ${progress}%），距目標差 ${gap}。A2 梯隊每日至少推出 5 次有效追續，現在不加速後面很難補。`;
+    return `民視進度嚴重落後（${progress}%），差距達 ${gap}。立即啟動緊急補量方案，A 組每人每日至少確認 2 筆訂單。`;
+  }
+  if (progress >= 60) return `潛力水位啟動中（${revFmt}，進度 ${progress}%），建議優先配高價值名單給 A 組洗單，本月目標可期。`;
+  if (progress >= 30) return `目前實收 ${revFmt}（${progress}%），距目標差 ${gap}。動能需提升，建議主力加速收網，優化 B 組名單分配。`;
+  return `公司盤僅完成 ${progress}% 月目標，差距 ${gap}。緊急評估名單質量，重新導入高機率名單，縮短成交週期。`;
+}
+
 export default function RankingPage() {
   const [selectedEmp, setSelectedEmp] = useState<Employee>(rawEmployees[0]);
   const [viewMode, setViewMode] = useState<'emp' | 'plat'>('emp');
   const [selectedPlatName, setSelectedPlatName] = useState<string>('');
+  const [platTargets, setPlatTargets] = useState<Record<string, number>>({ ...DEFAULT_TARGETS });
+  const [editingTarget, setEditingTarget] = useState(false);
+  const [targetInput, setTargetInput] = useState('');
   const totalRev = useMemo(() => platforms.reduce((sum, p) => sum + p.revenue, 0), []);
 
   // 雷達圖配置
@@ -254,35 +278,125 @@ export default function RankingPage() {
               })}
             </svg>
           ) : (
-            <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', padding: '8px' }}>
-              <div style={{ fontSize: 11, fontWeight: 900, color: '#00d4ff', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div>📊 {selectedPlatName} AI 深度診斷板</div>
-                <div onClick={() => setViewMode('emp')} style={{ cursor: 'pointer', fontSize: 8, color: '#94a3b8', background: 'rgba(255,255,255,0.05)', padding: '2px 6px', borderRadius: 4 }}>返回雷達圖 ↩</div>
-              </div>
-              <div style={{ flex: 1, marginTop: 12, display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {/* 離目標差距 */}
-                <div style={{ background: 'rgba(255,255,255,0.02)', padding: '8px', borderRadius: 6, border: '1px solid rgba(0,212,255,0.05)' }}>
-                  <div style={{ fontSize: 8, color: '#64748b' }}>🎯 離月目標預警</div>
-                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginTop: 2 }}>
-                    <div style={{ fontSize: 14, fontWeight: 900, color: '#fff', fontFamily: 'Orbitron' }}>$2,000,000</div>
-                    <div style={{ fontSize: 8, color: '#94a3b8' }}>/ 目標</div>
-                  </div>
-                  <div style={{ height: 4, background: 'rgba(255,255,255,0.05)', borderRadius: 2, marginTop: 4, overflow: 'hidden' }}>
-                    <div style={{ height: '100%', background: '#00e5ff', width: '65%', transition: 'width 0.5s' }} />
-                  </div>
+            <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', padding: '8px', position: 'relative' }}>
+              <div style={{ fontSize: 12, fontWeight: 900, color: '#00d4ff', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                  <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#00D4FF', boxShadow: '0 0 8px #00d4ff', animation: 'ml-dot 2s infinite' }} />
+                  📊 {selectedPlatName} AI 深度診斷核芯
                 </div>
-                {/* AI 診斷書 */}
-                <div style={{ background: 'rgba(0, 212, 255, 0.03)', padding: '8px', borderRadius: 6, border: '1px solid rgba(0,212,255,0.1)' }}>
-                  <div style={{ fontSize: 8, color: '#00d4ff', fontWeight: 900 }}>💡 AI 洞察建議</div>
-                  <p style={{ fontSize: 9, color: '#e2e8f0', margin: '4px 0 0', lineHeight: 1.5 }}>
-                    {selectedPlatName === '民視' 
-                      ? '目前【追續單】動能極強，離預定門檻僅差 35%。今日應強制加壓「大單攻頂」策略，提撥 10% 預算投射於馬秋香、王珍珠之核心名單。'
-                      : selectedPlatName === '奕心'
-                      ? '營收已突破穩定期，爆發點落在 B 組續單收尾。目前健康度評分 92，建議維持當前流速，防範大單退單風險。'
-                      : '潛力水位正在啟動，名次中段班適配性高。建議導入 AI 輔助媒合，優先將高價值開口名單配給 A 組人員進行洗單。'}
-                  </p>
+                <div onClick={() => setViewMode('emp')} style={{ cursor: 'pointer', fontSize: 9, color: '#94a3b8', background: 'rgba(255,255,255,0.07)', padding: '3px 8px', borderRadius: 5, border: '1px solid rgba(255,255,255,0.1)', transition: 'all 0.2s' }}>
+                  返回雷達圖 ↩
                 </div>
               </div>
+
+              {(() => {
+                const plat = platforms.find(p => p.name === selectedPlatName);
+                const rev = plat?.revenue ?? 0;
+                const target = platTargets[selectedPlatName] ?? DEFAULT_TARGETS[selectedPlatName] ?? 2000000;
+                const progress = Math.min(100, Math.round((rev / target) * 100));
+                const gap = Math.max(0, target - rev);
+                const isReached = rev >= target;
+                const statusColor = isReached ? '#00ff9c' : progress >= 60 ? '#00e5ff' : '#f59e0b';
+                const insight = getPlatformInsight(selectedPlatName, rev, target, progress);
+                // 各平台該平台員工的追續筆數總和
+                const platFollowTotal = rawEmployees.reduce((s, e) => s + e.followUps, 0);
+                const velocityPct = Math.min(100, Math.round((platFollowTotal / 300) * 100));
+
+                return (
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 12, overflowY: 'auto', paddingRight: 4 }}>
+
+                    {/* 📋 主目標預警：半圓形儀表板 (SVG) */}
+                    <div style={{ background: 'rgba(3, 7, 18, 0.5)', padding: '12px', borderRadius: 10, border: '1px solid rgba(0,212,255,0.15)', position: 'relative', overflow: 'hidden' }}>
+                      <div style={{ fontSize: 9, color: '#94a3b8', letterSpacing: '1px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span>🎯 離月目標預警 (MONTHLY CEILING)</span>
+                        {/* 可編輯目標 */}
+                        {editingTarget ? (
+                          <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+                            <input
+                              type="number"
+                              value={targetInput}
+                              onChange={e => setTargetInput(e.target.value)}
+                              onKeyDown={e => {
+                                if (e.key === 'Enter') {
+                                  const v = parseInt(targetInput.replace(/,/g, ''));
+                                  if (!isNaN(v) && v > 0) setPlatTargets(t => ({ ...t, [selectedPlatName]: v }));
+                                  setEditingTarget(false);
+                                }
+                                if (e.key === 'Escape') setEditingTarget(false);
+                              }}
+                              autoFocus
+                              style={{ width: 90, background: 'rgba(0,0,0,0.6)', border: '1px solid #00d4ff55', color: '#00d4ff', borderRadius: 4, padding: '2px 5px', fontSize: 10, outline: 'none' }}
+                            />
+                            <button onClick={() => { const v = parseInt(targetInput.replace(/,/g, '')); if (!isNaN(v) && v > 0) setPlatTargets(t => ({ ...t, [selectedPlatName]: v })); setEditingTarget(false); }} style={{ fontSize: 9, background: '#00d4ff22', border: '1px solid #00d4ff44', color: '#00d4ff', borderRadius: 3, padding: '2px 6px', cursor: 'pointer' }}>確定</button>
+                            <button onClick={() => setEditingTarget(false)} style={{ fontSize: 9, background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: '#94a3b8', borderRadius: 3, padding: '2px 6px', cursor: 'pointer' }}>取消</button>
+                          </div>
+                        ) : (
+                          <span onClick={() => { setTargetInput(String(target)); setEditingTarget(true); }} title="點擊修改本月目標" style={{ cursor: 'pointer', color: '#00d4ff55', fontSize: 8, background: 'rgba(0,212,255,0.05)', padding: '1px 5px', borderRadius: 3, border: '1px solid rgba(0,212,255,0.1)' }}>✏️ 修改目標</span>
+                        )}
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginTop: 8 }}>
+                        <div style={{ width: 66, height: 66, position: 'relative', flexShrink: 0 }}>
+                          <svg width="66" height="66" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="10" />
+                            <circle cx="50" cy="50" r="40" fill="none" stroke={statusColor} strokeWidth="10"
+                              strokeDasharray="251.2" strokeDashoffset={251.2 * (1 - progress / 100)}
+                              strokeLinecap="round" style={{ transition: 'stroke-dashoffset 1s ease-out' }}
+                              filter={`drop-shadow(0 0 4px ${statusColor}99)`} />
+                          </svg>
+                          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                            <div style={{ fontSize: 13, fontWeight: 900, color: statusColor, fontFamily: 'Orbitron' }}>{progress}%</div>
+                            <div style={{ fontSize: 6, color: '#94a3b8' }}>達成率</div>
+                          </div>
+                        </div>
+
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontSize: 18, fontWeight: 900, color: '#fff', fontFamily: 'Orbitron', textShadow: `0 0 12px ${statusColor}55` }}>${target.toLocaleString()}</div>
+                          <div style={{ fontSize: 9, color: '#94a3b8', marginTop: 1 }}>本月目標</div>
+                          <div style={{ fontSize: 9, color: statusColor, marginTop: 4, display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <span>{isReached ? '✓ 已達標' : `尚差 $${gap.toLocaleString()}`}</span>
+                            <span style={{ fontSize: 8, padding: '1px 4px', background: isReached ? 'rgba(0,255,156,0.12)' : 'rgba(245,158,11,0.12)', color: isReached ? '#00FF9C' : '#F59E0B', borderRadius: 3 }}>
+                              {isReached ? '穩健' : progress >= 60 ? '追進' : '加壓'}
+                            </span>
+                          </div>
+                          <div style={{ fontSize: 10, color: '#00e5ff', fontFamily: 'Orbitron', marginTop: 4 }}>${rev.toLocaleString()}</div>
+                          <div style={{ fontSize: 7, color: '#475569' }}>本期實收</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 📊 二維 Matrix 矩陣數據 */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                      <div style={{ background: 'rgba(255,255,255,0.02)', padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(0,255,156,0.1)' }}>
+                        <div style={{ fontSize: 7, color: '#94a3b8' }}>追續動力 (Velocity)</div>
+                        <div style={{ fontSize: 14, fontWeight: 900, color: '#00ff9c', fontFamily: 'Orbitron', marginTop: 2 }}>{velocityPct}%</div>
+                        <div style={{ height: 2, background: 'rgba(0,255,156,0.1)', borderRadius: 1, marginTop: 4 }}>
+                          <div style={{ width: `${velocityPct}%`, height: '100%', background: '#00ff9c', transition: 'width 0.8s' }} />
+                        </div>
+                      </div>
+                      <div style={{ background: 'rgba(255,255,255,0.02)', padding: '8px 10px', borderRadius: 8, border: '1px solid rgba(139,92,246,0.1)' }}>
+                        <div style={{ fontSize: 7, color: '#94a3b8' }}>整體人數 (Active)</div>
+                        <div style={{ fontSize: 14, fontWeight: 900, color: '#c084fc', fontFamily: 'Orbitron', marginTop: 2 }}>{rawEmployees.length}</div>
+                        <div style={{ fontSize: 7, color: '#64748b', marginTop: 3 }}>參與成員</div>
+                      </div>
+                    </div>
+
+                    {/* 💡 AI 診斷書 — 動態內容 */}
+                    <div style={{ flex: 1, padding: '12px', borderRadius: 10, border: '1px solid rgba(0,212,255,0.25)', background: 'rgba(0, 212, 255, 0.05)', position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                      <div style={{ position: 'absolute', top: 0, right: 0, width: 22, height: 22, borderTop: '2px solid #00d4ff', borderRight: '2px solid #00d4ff', opacity: 0.6 }} />
+                      <div style={{ position: 'absolute', bottom: 0, left: 0, width: 22, height: 22, borderBottom: '2px solid #00d4ff', borderLeft: '2px solid #00d4ff', opacity: 0.6 }} />
+                      <div style={{ fontSize: 10, color: '#00d4ff', fontWeight: 900, display: 'flex', alignItems: 'center', gap: 5, marginBottom: 6 }}>
+                        <span style={{ fontSize: 12 }}>💡</span> AI 洞察建議
+                        <span style={{ fontSize: 7, color: 'rgba(0,212,255,0.5)', fontFamily: 'monospace', marginLeft: 'auto' }}>AUTO_GEN_✓</span>
+                      </div>
+                      <p style={{ flex: 1, fontSize: 10, color: '#e2e8f0', margin: 0, lineHeight: 1.6, fontFamily: '"Microsoft JhengHei", sans-serif', letterSpacing: '0.2px', overflowY: 'auto' }}>
+                        {insight}
+                      </p>
+                    </div>
+
+                  </div>
+                );
+              })()}
             </div>
           )}
         </div>

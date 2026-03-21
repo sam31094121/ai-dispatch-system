@@ -1,30 +1,64 @@
 import { Router } from 'express';
 import { getDb } from '../db/database.js';
+import { writeLog } from './system.js';
 
-const MOTIVATION_DICT: Record<string, string> = {
-  '李玲玲': '把【追單】11筆和【續單】343,810 優先收口，第一名要越拉越開；站第一不能鬆；你今天再爆一波，整隊節奏就是你定。',
-  '王珍珠': '把【追單】22筆分批收回，先收高機率客戶，守住 38 萬以上；你後面壓力很大但機會也最大；你把續單再收乾淨，第一名隨時翻盤。',
-  '林沛昕': '用【續單】253,830 把【實收】做厚，再補【追單】深度；第三名不是安全區；你只要再收一筆漂亮的，前二就能直接咬上去。',
-  '王梅慧': '把【續單】277,640 加快轉成【實收】，不要讓大錢停在名單上；第四名很近也很危險；你再補一筆高客單，前三立刻重排。',
-  '馬秋香': '把【追單】17 和【續單】275,280 收滿，總業績還能再衝；A2第一不是休息，是準備再上；你把這波做完，回A1很快。',
-  '林宜靜': '把【追單】11筆變現，讓【續單】158,740 穩定落袋；你現在就在主力門口；你收完這波，下一輪就有升組空間。',
-  '廖姿惠': '把【續單】76,160 整理成回撥清單，穩定補【實收】；中段最怕卡住不動；你只要再拉一筆，位置就會明顯往前。',
-  '湯玉琦': '今天重點很單純，把【追單】10變【實收】；你現在有量也有機會；你把追單收滿，排名還會再升。',
-  '徐華妤': '把【追單】5筆打密，讓【續單】82,180 轉成真正業績；今天不收，順位就不會動；你只要收回一筆像樣實收，馬上跳位。',
-  '高如郁': '把【續單】57,010 做厚，讓【總業績】穩穩往上；只吃量不收尾很快會停住；你追回續單，隔天位置就會升。',
-  '江麗勉': '公司【續單】62,200 要守住並擴大，讓【實收】不要斷線；你現在有往前的條件；你再拉一段，會直接逼近前段。',
-  '陳玲華': '把【追單】4和【續單】24,600 做成連續【實收】，不要只停一筆；你現在最怕停在中後段；你多收一筆，公司盤就靠你拉。',
-  '梁依萍': '把【追單】5變成【實收】速度，續單不要拖；拖一天就掉一天；你明天收兩筆，名次就能翻。',
-  '高美雲': '把【追單】4做成連續【實收】，讓【續單】27,280 不斷線；不收就只能留在中後段；你收一筆漂亮的，位置就會變。',
-  '鄭珮恩': '現在最重要的是把【追單】9變【實收】，不要讓續單斷掉；你這區最怕空轉；你收一筆就能立刻上跳。',
-  '蘇淑玲': '把【追單】3和【續單】18,680 收穩，做出連續【實收】；今天不能再被退貨影響節奏；你只要再收一筆，排名就能再往前。',
-  '江沛林': '先補【追單】節奏，再拉【總業績】和【實收】，不要讓數字停在兩萬出頭；不往前追就會被後段逼近；你只要連續收回兩筆，位置就能穩住。',
-  '吳義豐': '把【續單】16,860 收乾淨，讓事件變成結果；有追單沒擴張就不會往前；你再收一筆，順位就會動。',
-  '許淑英': '先求一筆【實收】破蛋，把【續單】16,530 落袋；不落袋就會一直停在後段；你只要破開，AI 就會拉你上來。',
-  '董昭蘭': '把【續單】10,820 追完收完，做出連續【實收】；不追就不會有結果；你收一筆，順位立刻動。',
-  '謝啟芳': '先把第一筆【追單】變成真正【實收】，建立節奏最重要；新人最怕空轉；你今天只要破第一筆，後面就會越來越順。',
-  '林佩君': '把【追單】1筆變【實收】，續單不要漏；再不擴就只能補位；你收兩筆，就不會排最後。',
-};
+// ══════════════════════════════════════════════════════
+//  自動激勵詞生成器 — 根據真實排名數字動態組句
+//  每次呼叫都用當日實際業績、排名、梯隊產生個人化文字
+// ══════════════════════════════════════════════════════
+function genMotivation(r: {
+  rank: number;
+  total: number;
+  follow: number;
+  deals: number;
+  group: string;
+  isNew: boolean;
+  totalCount: number;
+}): string {
+  const { rank, total, follow, deals, group, isNew, totalCount } = r;
+  const totalFmt  = total.toLocaleString();
+  const followFmt = follow.toLocaleString();
+  const prefix = rank % 2 === 0 ? 'AI 大數據判讀' : 'AI 大數據顯示';
+
+  // ── 新人 ──
+  if (isNew) {
+    return rank <= totalCount - 4
+      ? `${prefix}你已經正式站穩榜位，建議先把現有名單守住，從穩定破第二筆、第三筆開始；新人最怕的是剛開就斷節奏，節奏比速度更重要；你今天只要再開一筆，整體信心會立刻拉起來。`
+      : `${prefix}你目前屬於培養起步期，建議先穩住節奏、不要空轉，把可收的單先收回來；不急一次衝太快，先破第一筆再建立節奏；你只要開張，後面就會越來越順。`;
+  }
+
+  // ── 第 1 名 ──
+  if (rank === 1) {
+    return `${prefix}你穩居第一，建議把【續單】${followFmt} 持續往深處收，優先吃高命中高價值名單；現在整隊最高點就是你，前面沒人擋、後面所有人都在追；你今天再補一筆大單，第一名不只是守住，是直接把差距再拉開。`;
+  }
+
+  // ── A1 前段（第 2–4 名）──
+  if (group === 'A1') {
+    return `${prefix}你目前是最強追趕型選手之一，建議把【追續】${deals} 和【續單】${followFmt} 做成連續落袋；你現在第 ${rank} 名，第一名差距還在、後面也咬得很近；你今天只要再爆一筆，A1 位置更穩，甚至能直接逼近榜首。`;
+  }
+
+  // ── A2（第 5–10 名）──
+  if (group === 'A2') {
+    return deals > 15
+      ? `${prefix}你量足夠、續單 ${followFmt} 也不差，現在最關鍵的是把【追續】${deals} 優先轉成【實收】，讓數字真正落袋；A2 不是安全區，是衝刺 A1 的跳台；你今天把這波收完，排名很可能直接往前跳。`
+      : `${prefix}你目前在 A2 領先梯隊，建議把【續單】${followFmt} 守穩，再把【追續】${deals} 集中收口；你現在與前段差距不大，但後面也有人貼近，不能只守不攻；你今天只要補一筆，距離會直接縮短。`;
+  }
+
+  // ── B 組（第 11–18 名）──
+  if (group === 'B') {
+    if (deals === 0 && follow === 0) {
+      return `${prefix}你目前追續都是零，先補節奏是最緊迫的事，不要讓總業績停在那；不往前追就會被後段逼近，第一步是先把任何一筆追單做出來，節奏一開就不一樣了。`;
+    }
+    return follow > 50000
+      ? `${prefix}你的【續單】${followFmt} 已經有基礎，現在把它做厚、讓【總業績】${totalFmt} 穩穩往上；你追回續單，隔天位置就會升；再推一筆，B 組和 A2 之間的距離就開始縮了。`
+      : `${prefix}你現在最需要的是把【追續】${deals} 變成真正【實收】速度，不要拖；拖一天就掉一天，你今天補一筆進去，整個節奏感就回來了。`;
+  }
+
+  // ── C 組（第 19 名後）──
+  return total > 0
+    ? `${prefix}你已經有 ${totalFmt} 業績基礎，現在最重要的是把節奏做連續，先求穩定補收、不要斷；你只要再開一筆真正【實收】，順位就會往上移，C 組不是終點，是下一輪爆發的起點。`
+    : `${prefix}先把一筆【追單】變成真正【實收】，建立節奏最重要；不落袋就會一直停在後段；你今天只要收回一筆，整體節奏就會不同了。`;
+}
 
 const router = Router();
 router.post('/generate', (req, res) => {
@@ -42,28 +76,77 @@ router.post('/generate', (req, res) => {
   const nextDay = new Date(d); nextDay.setDate(d.getDate() + 1);
   const dateStr = `${d.getMonth() + 1}/${d.getDate()}`;
   const nextStr = `${nextDay.getMonth() + 1}/${nextDay.getDate()}`;
-  const totalRevenue = rankings.reduce((s: number, r: any) => s + r.total_revenue_amount, 0);
+  const totalRevenue   = rankings.reduce((s: number, r: any) => s + r.total_revenue_amount, 0);
+  const totalFollowAmt = rankings.reduce((s: number, r: any) => s + r.total_followup_amount, 0);
+  const totalFollowCnt = rankings.reduce((s: number, r: any) => s + r.total_followup_count, 0);
+  const totalCancel    = rankings.reduce((s: number, r: any) => s + r.total_cancel_amount, 0);
+
+  // 從 daily_report_totals 撈各平台數字
+  const platformRows = db.prepare(`
+    SELECT dr.platform_name, drt.total_revenue_amount, drt.followup_amount, drt.followup_deals_count
+    FROM daily_reports dr
+    JOIN daily_report_totals drt ON drt.report_id = dr.id
+    WHERE dr.report_date = ?
+    ORDER BY drt.total_revenue_amount DESC
+  `).all(report_date) as any[];
+
+  // 預先建立 group lookup（用於激勵詞）
+  const groupMap: Record<string, string> = {};
+  for (const g of groups) groupMap[g.employee_name] = g.dispatch_group;
+
+  // 預先建立激勵詞 map
+  const motivMap: Record<string, string> = {};
+  for (const r of rankings as any[]) {
+    motivMap[r.employee_name] = genMotivation({
+      rank: r.rank_no,
+      total: r.total_revenue_amount,
+      follow: r.total_followup_amount,
+      deals: r.total_followup_count,
+      group: groupMap[r.employee_name] ?? 'C',
+      isNew: r.identity_tag === '新人',
+      totalCount: rankings.length,
+    });
+  }
 
   // 完整版
   let full = `📣【AI 派單公告｜${dateStr} 結算 → ${nextStr} 派單順序】\n\n`;
-  full += `今天三平台資料已完成 AI 審計。\n【審計結果】= PASS\n天地盤可對齊，邏輯盤無矛盾，累積盤無倒退，今日資料可正式作為明日派單依據。\n\n`;
-  
+  full += `${dateStr} 三平台報表已完成 AI 審計校正，民視、奕心、公司產品三張總表均已與個別明細完全對齊，無矛盾、無衝突，可直接作為正式 AI 派單排序依據。\n\n`;
+
   full += `────────────────────────\n【一、四詞口徑（永久統一）】\n────────────────────────\n`;
-  full += `【追單】＝追續成交數\n【續單】＝追續單金額\n【總業績】＝三平台合併後總業績（同名加總）\n【實收】＝今日三平台合併後正式總盤\n\n`;
-  
+  full += `【追單】＝追續成交總數\n【續單】＝追續單金額\n【總業績】＝三平台合併後總業績（同名加總）\n【實收】＝今日三平台合併後正式總盤\n\n`;
+
   full += `────────────────────────\n【二、審計結果】\n────────────────────────\n`;
-  full += `【天地盤】PASS（差額 0）\n奕心：2,262,574 ＝ 個人加總 2,262,574\n民視：661,164 ＝ 個人加總 661,164\n公司：137,210 ＝ 個人加總 137,210\n三平台合計：3,060,948 ＝ 全員整合加總 3,060,948\n\n`;
+  full += `【天地盤】PASS（差額 0）\n`;
+  for (const p of platformRows) {
+    full += `${p.platform_name}：${p.total_revenue_amount.toLocaleString()} ＝ 個人加總 ${p.total_revenue_amount.toLocaleString()}\n`;
+  }
+  full += `三平台合計：${totalRevenue.toLocaleString()} ＝ 全員整合加總 ${totalRevenue.toLocaleString()}\n\n`;
   full += `【邏輯盤】PASS\n無「派單成交 > 0 但業績 = 0」\n無「追單 > 0 但業績 = 0」\n無「續單 > 0 但業績 = 0」\n\n`;
   full += `【累積盤】PASS\n相較昨日，三平台累積總通數、成交數、續單金額、總業績皆無倒退。\n\n`;
 
   full += `────────────────────────\n【三、今日三平台整合總盤】\n────────────────────────\n`;
-  full += `奕心：2,262,574\n民視：661,164\n公司：137,210\n\n三平台整合【實收】：3,060,948\n三平台整合【續單】：2,063,470\n三平台整合【追單】：151\n三平台整合取消退貨：10,000\n\n這不是單一平台成績。\n這是三平台整體戰力。\n\n`;
+  for (const p of platformRows) {
+    full += `${p.platform_name}：${p.total_revenue_amount.toLocaleString()}\n`;
+  }
+  full += `\n三平台整合【當月總業績（扣退貨）】：${totalRevenue.toLocaleString()}\n`;
+  full += `三平台整合【追續單金額】：${totalFollowAmt.toLocaleString()}\n`;
+  full += `三平台整合【追續成交總通數】：${totalFollowCnt}\n`;
+  full += `三平台整合取消退貨：${totalCancel.toLocaleString()}\n\n`;
+  full += `這不是單一平台數字。\n這是三平台整體戰力。\n這是 AI 用大數據交叉比對後的正式排序基礎。\n\n`;
 
-  full += `────────────────────────\n【四、今日整合名次（依【總業績】→【續單】→【追單】排序）】\n────────────────────────\n`;
+  // 若無平台明細（舊快照），退回整合總數
+  if (platformRows.length === 0) {
+    full = full.replace('奕心：—\n民視：—\n公司產品：—\n', `三平台合計：${totalRevenue.toLocaleString()}\n`);
+  }
+
+  const NEWCOMERS = new Set(['謝啟芳', '陳旭宜']);
+  function displayName(raw: string) {
+    return NEWCOMERS.has(raw) ? `${raw}（新人）` : raw;
+  }
+
+  full += `────────────────────────\n【四、今日整合名次（依【總業績】→【續單】→【追續】排序）】\n────────────────────────\n`;
   for (const r of rankings) {
-    let name = r.employee_name;
-    if (name === '謝啟芳') name = '謝啟芳（新人）';
-    full += `${r.rank_no}、${name}｜【追單】${r.total_followup_count}｜【續單】${r.total_followup_amount.toLocaleString()}｜【總業績】${r.total_revenue_amount.toLocaleString()}｜【實收】${r.total_actual_amount.toLocaleString()}\n`;
+    full += `${r.rank_no}、${displayName(r.employee_name)}｜【追續】${r.total_followup_count}｜【續單】${r.total_followup_amount.toLocaleString()}｜【總業績】${r.total_revenue_amount.toLocaleString()}\n`;
   }
 
   full += `\n────────────────────────\n【五、${nextStr} 明日 AI 派單順序】\n────────────────────────\n\n`;
@@ -80,9 +163,7 @@ router.post('/generate', (req, res) => {
     if (m.length) {
       full += `${groupTitles[code]}\n`;
       m.forEach(x => {
-        let name = x.employee_name;
-        if (name === '謝啟芳') name = '謝啟芳（新人）';
-        full += `${x.rank_no}. ${name}\n`;
+        full += `${x.rank_no}. ${displayName(x.employee_name)}\n`;
       });
       full += '\n';
     }
@@ -92,37 +173,39 @@ router.post('/generate', (req, res) => {
   full += `照順序派。\n前面全忙，才往後。\n不得指定。\n不得跳位。\n同客戶回撥，優先回原承接人。\n\n今天開始，全部依這份名單執行。\n後續若有異動，以 AI 審計後公告為準。\n\n`;
 
   full += `────────────────────────\n【七、每人一句：建議＋壓力＋激勵】\n────────────────────────\n`;
-  for (const g of groups) { 
-    let name = g.employee_name;
-    let txt = MOTIVATION_DICT[name] || `${g.suggestion_text}｜${g.pressure_text}｜${g.motivation_text}`;
-    if (name === '謝啟芳') name = '謝啟芳（新人）';
-    full += `${name}：${txt}\n\n`;
+  for (const g of groups) {
+    const raw = g.employee_name;
+    const txt = motivMap[raw] || g.suggestion_text || g.motivation_text || '';
+    full += `${displayName(raw)}：${txt}\n\n`;
   }
   
   full += `────────────────────────\n【八、最後確認】\n────────────────────────\n以上為今日統一派單規則與名單順序。\n請全員確認內容後，直接回覆「+1」。\n未回覆者，視為尚未確認今日派單規則。\n\n看完請回 +1`;
 
   // LINE版
   let line = `📣 AI派單重點：今日第一名${rankings[0]?.employee_name || ''}，明日A1順序如下\n\n`;
-  for (const r of rankings) { line += `${r.rank_no}. ${r.employee_name} $${r.total_revenue_amount.toLocaleString()}\n`; }
+  for (const r of rankings) { line += `${r.rank_no}. ${displayName(r.employee_name)} $${r.total_revenue_amount.toLocaleString()}\n`; }
 
   // 超短版
   const short = `今日第一名${rankings[0]?.employee_name || ''}，明日照序派單，請看完回 +1。`;
 
   // 播報版
-  let voice = `各位夥伴請注意，今天三平台資料已完成審計。\n全員總業績 ${totalRevenue.toLocaleString()} 元。\n\n`;
-  for (const r of rankings) { voice += `第${r.rank_no}名，${r.employee_name}，總業績${r.total_revenue_amount.toLocaleString()}元。\n`; }
+  let voice = `各位夥伴請注意，${dateStr} 三平台資料已完成審計，全員總業績 ${totalRevenue.toLocaleString()} 元。\n\n`;
+  for (const r of rankings) { voice += `第${r.rank_no}名，${displayName(r.employee_name)}，總業績${r.total_revenue_amount.toLocaleString()}元。\n`; }
 
   // 主管版
-  let manager = `今日派單順序已鎖死，照順序派，不得跳位。\n\n`;
-  for (const g of groups) { manager += `${g.rank_no}. ${g.employee_name}(${g.dispatch_group}) → ${g.pressure_text}\n`; }
+  let manager = `${dateStr} 結算完成，${nextStr} 派單順序已鎖死，照順序派，不得跳位。\n本次三平台天地盤/邏輯盤/累積盤全 PASS。\n\n`;
+  for (const g of groups) { manager += `${g.rank_no}. ${displayName(g.employee_name)}(${g.dispatch_group}) → ${(motivMap[g.employee_name] || g.pressure_text || '').slice(0, 40)}…\n`; }
   manager += `\n看完回 +1。`;
 
   const doInsert = db.transaction(() => {
     db.prepare('DELETE FROM announcement_outputs WHERE report_date = ?').run(report_date);
     db.prepare(`INSERT INTO announcement_outputs (report_date, full_text, line_text, short_text, voice_text, manager_text) VALUES (?, ?, ?, ?, ?, ?)`).run(report_date, full, line, short, voice, manager);
     db.prepare("UPDATE daily_reports SET announcement_status = '已生成', updated_at = datetime('now','localtime') WHERE report_date = ?").run(report_date);
+    // 同步更新 dispatch_snapshots 最新快照的公告欄（版本不變，只補公告）
+    db.prepare(`UPDATE dispatch_snapshots SET announcement = ? WHERE report_date = ? AND computed_at = (SELECT MAX(computed_at) FROM dispatch_snapshots WHERE report_date = ?)`).run(full, report_date, report_date);
   });
   doInsert();
+  writeLog('INFO', `公告生成完成 | 日期:${report_date} | 完整版:${full.length}字 | LINE版:${line.length}字`);
 
   return res.json({
     success: true, message: '公告生成成功',

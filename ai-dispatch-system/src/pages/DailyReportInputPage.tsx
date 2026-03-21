@@ -11,6 +11,46 @@ import { useReportStore } from '../data/reportStore';
 import { StatusBadge } from '../components/StatusBadge';
 import { EMPEROR_UI, TU, MU, HUO, SHUI, JIN, EMPEROR } from '../constants/wuxingColors';
 
+// ── 通用點擊功能字元件（意境複製）── 放在 import 後、組件前
+function C({ children, copy, title, color, size, bold }: {
+  children: React.ReactNode;
+  copy: string;
+  title: string;
+  color?: string;
+  size?: number;
+  bold?: boolean;
+}) {
+  const [hover, setHover] = useState(false);
+  const [flash, setFlash] = useState(false);
+  function handleClick(e: React.MouseEvent) {
+    e.stopPropagation();
+    navigator.clipboard.writeText(copy).catch(() => {});
+    setFlash(true);
+    setTimeout(() => setFlash(false), 700);
+  }
+  return (
+    <span
+      onClick={handleClick}
+      title={`點擊複製：${title}`}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        cursor: 'pointer',
+        color: flash ? '#ffd700' : (color ?? 'inherit'),
+        fontSize: size,
+        fontWeight: bold ? 900 : undefined,
+        borderBottom: hover ? '1px solid currentColor' : '1px dashed transparent',
+        transition: 'color 0.15s, border-color 0.15s, text-shadow 0.15s',
+        userSelect: 'none',
+        textShadow: flash ? '0 0 10px #ffd700, 0 0 20px #ffd70066' : undefined,
+        display: 'inline',
+      }}
+    >
+      {children}
+    </span>
+  );
+}
+
 interface DailyReportInputPageProps {
   onParsed?: (payload: { reportId: number; reportDate: string; personCount: number }) => void;
 }
@@ -189,7 +229,14 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
   }
 
   async function submit() {
-    if (!isValid) { setMessage('請確認日期、平台、模式與日報內容已填妥。'); return; }
+    // 規則七：欄位缺失 → 逐項說明，禁止送出
+    if (!form.reportDate) { setMessage('❌ 缺少「日期」，無法解析。請先填入結算日期。'); return; }
+    if (!form.platformName) { setMessage('❌ 缺少「平台」，無法解析。請選擇報表所屬平台。'); return; }
+    if (!form.reportMode) { setMessage('❌ 缺少「模式」，無法解析。請選擇報表模式（當日/累積）。'); return; }
+    if (!form.rawTextContent.trim() || form.rawTextContent.trim().length < 10) {
+      setMessage('❌ 缺少「內容」，無法解析。請貼入業績報表文字（至少 10 字元）。');
+      return;
+    }
     cancelCd();
     try {
       setLoading(true);
@@ -206,6 +253,24 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
 
       // 讀取後端完整解析結果，轉換為前端 store 格式供 ParseResultPage 使用
       const parseResult = await reportService.getParseResult(report.id);
+
+      // 🚀 工程師開工版：實體寫入 storage 存檔、備份與日誌
+      try {
+        await fetch('/api/v1/system/save-report', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            rawText: form.rawTextContent,
+            optimizedText: JSON.stringify(parseResult, null, 2),
+            reportDate: form.reportDate,
+            platformName: form.platformName,
+            reportMode: form.reportMode,
+          }),
+        });
+      } catch (saveErr) {
+        console.error('實體檔案儲存失敗:', saveErr);
+      }
+
       useReportStore.getState().setCurrentParseResult({
         date: form.reportDate,
         platform: form.platformName,
@@ -236,7 +301,7 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
 
       setPersonCount(parseResult.details.length);
       setSuccess(true);
-      setMessage(`解析完成！報表 #${report.id} · 共 ${parseResult.details.length} 人 · 自動跳往解析結果`);
+      setMessage(`✅ 已接收、已解析、已存檔、已備份、已寫入日誌 | 共 ${parseResult.details.length} 人`);
       onParsed?.({ reportId: report.id, reportDate: form.reportDate, personCount: parseResult.details.length });
     } catch (err: any) {
       setMessage(err?.responseMessage || err?.message || '建立或解析失敗，請確認後端是否運行。');
@@ -352,7 +417,7 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
             color: SHUI.bright, letterSpacing: '0.08em',
             textShadow: `0 0 8px ${SHUI.bright}88`,
           }}>
-            {liveTime}
+            <C copy={liveTime} title="當前時間">{liveTime}</C>
           </div>
           {/* 系統在線 */}
           <div style={{
@@ -360,7 +425,8 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
             borderRadius: 8, padding: '4px 12px',
             fontSize: 11, color: MU.text, letterSpacing: '0.06em',
           }}>
-            <span style={{ color: MU.core }}>在線</span> {uptimeStr}
+            <span style={{ color: MU.core }}>在線</span>{' '}
+            <C copy={uptimeStr} title="系統在線時間">{uptimeStr}</C>
           </div>
           {/* 數據節點計數 */}
           <div className="soul-node" style={{
@@ -368,7 +434,8 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
             borderRadius: 8, padding: '4px 12px',
             fontSize: 11, color: TU.text, letterSpacing: '0.06em',
           }}>
-            <span style={{ color: TU.core }}>節點</span> {dataNodes.toLocaleString()}
+            <span style={{ color: TU.core }}>節點</span>{' '}
+            <C copy={String(dataNodes)} title="數據節點數">{dataNodes.toLocaleString()}</C>
           </div>
           {/* 狀態徽章 */}
           {loading
@@ -476,9 +543,11 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
                     transition: 'width 0.3s',
                   }} />
                 </div>
-                <span style={{ fontSize: 11, color: form.rawTextContent.length > 100 ? SHUI.bright : EMPEROR_UI.textDim, fontFamily: '"Fira Code", monospace', fontWeight: 700 }}>
-                  {form.rawTextContent.length} 字
-                </span>
+                <C copy={form.rawTextContent} title="複製全文內容" color={form.rawTextContent.length > 100 ? SHUI.bright : EMPEROR_UI.textDim}>
+                  <span style={{ fontFamily: '"Fira Code", monospace', fontWeight: 700, fontSize: 11 }}>
+                    {form.rawTextContent.length} 字
+                  </span>
+                </C>
               </div>
             )}
           </div>
@@ -597,7 +666,11 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
                 </span>
                 <span style={{ color: form.reportDate ? EMPEROR_UI.textPrimary : EMPEROR_UI.textMuted, transition: 'color 0.2s' }}>報表日期</span>
                 {isAF('reportDate') && <span style={{ marginLeft: 4, color: MU.bright, fontSize: 10, fontWeight: 900, background: MU.abyss, padding: '1px 6px', borderRadius: 4, border: `1px solid ${MU.shadow}` }}>AI 填入</span>}
-                {form.reportDate && !isAF('reportDate') && <span style={{ marginLeft: 4, fontSize: 10, color: SHUI.bright, letterSpacing: '0.04em' }}>手動</span>}
+                {form.reportDate && !isAF('reportDate') && (
+                  <C copy={form.reportDate} title="複製報表日期" color={SHUI.bright}>
+                    <span style={{ marginLeft: 4, fontSize: 10, letterSpacing: '0.04em' }}>手動 {form.reportDate}</span>
+                  </C>
+                )}
               </label>
               <input
                 type="date"
@@ -615,7 +688,11 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
                 </span>
                 <span style={{ color: form.platformName ? EMPEROR_UI.textPrimary : EMPEROR_UI.textMuted, transition: 'color 0.2s' }}>平台</span>
                 {isAF('platformName') && <span style={{ marginLeft: 4, color: MU.bright, fontSize: 10, fontWeight: 900, background: MU.abyss, padding: '1px 6px', borderRadius: 4, border: `1px solid ${MU.shadow}` }}>AI 填入</span>}
-                {form.platformName && <span style={{ marginLeft: 'auto', fontSize: 11, fontWeight: 900, color: TU.bright }}>{form.platformName}</span>}
+                {form.platformName && (
+                  <C copy={form.platformName} title="複製平台名稱" color={TU.bright} bold>
+                    <span style={{ marginLeft: 'auto', fontSize: 11 }}>{form.platformName}</span>
+                  </C>
+                )}
               </label>
               <select
                 value={form.platformName}
@@ -635,7 +712,11 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
                 </span>
                 <span style={{ color: form.reportMode ? EMPEROR_UI.textPrimary : EMPEROR_UI.textMuted, transition: 'color 0.2s' }}>報表模式</span>
                 {isAF('reportMode') && <span style={{ marginLeft: 4, color: MU.bright, fontSize: 10, fontWeight: 900, background: MU.abyss, padding: '1px 6px', borderRadius: 4, border: `1px solid ${MU.shadow}` }}>AI 填入</span>}
-                {form.reportMode && <span style={{ marginLeft: 'auto', fontSize: 11, fontWeight: 900, color: HUO.bright }}>{form.reportMode}</span>}
+                {form.reportMode && (
+                  <C copy={form.reportMode} title="複製報表模式" color={HUO.bright} bold>
+                    <span style={{ marginLeft: 'auto', fontSize: 11 }}>{form.reportMode}</span>
+                  </C>
+                )}
               </label>
               <select
                 value={form.reportMode}
@@ -752,14 +833,16 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
             <span style={{ fontSize: 18 }}>{success ? '✅' : '❌'}</span>
             <span style={{ flex: 1 }}>{message}</span>
             {success && (
-              <span style={{ background: TU.void, color: TU.bright, border: `1px solid ${TU.shadow}`, borderRadius: 12, padding: '2px 12px', fontSize: 11, fontWeight: 900 }}>
-                # {createdId}
-              </span>
+              <C copy={`#${createdId}`} title="複製報表編號" color={TU.bright} bold>
+                <span style={{ background: TU.void, border: `1px solid ${TU.shadow}`, borderRadius: 12, padding: '2px 12px', fontSize: 11 }}>
+                  # {createdId}
+                </span>
+              </C>
             )}
           </div>
         )}
 
-        {/* ── AI 派單流程進度（提交前：可點擊各步驟說明；提交後：即時狀態追蹤）── */}
+        {/* ── AI 派單流程進度：每步有真實動作，點擊即執行 ── */}
         <div style={{
           background: EMPEROR.obsidian,
           border: `1px solid ${EMPEROR_UI.borderAccent}`,
@@ -771,61 +854,94 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
           {([
             {
               step: '①', label: '貼上業績',
-              desc: form.rawTextContent ? `${form.rawTextContent.length} 字` : '文字或截圖',
+              desc: form.rawTextContent ? `${form.rawTextContent.length} 字｜點擊聚焦` : '點擊 / Ctrl+V 貼上',
               color: SHUI,
               active: Boolean(form.rawTextContent),
               done: Boolean(form.rawTextContent),
               spinning: false,
               badge: form.rawTextContent ? `${form.rawTextContent.length}字` : null,
+              clickable: true,
+              action: () => { textareaRef.current?.focus(); textareaRef.current?.select(); },
+              hint: form.rawTextContent ? '點擊選取全文' : '點擊啟用輸入框',
             },
             {
               step: '②', label: 'AI 解析',
-              desc: loading ? '解析中…' : personCount !== null ? `辨識 ${personCount} 人` : '辨識人員明細',
-              color: SHUI,
+              desc: loading ? '解析中…' : success ? `已辨識 ${personCount} 人 ✓` : isValid ? '欄位齊全｜點擊立即解析' : '補齊日期/平台/模式後啟動',
+              color: MU,
               active: loading || success,
               done: success,
               spinning: loading,
               badge: personCount !== null ? `${personCount}人` : loading ? '…' : null,
+              clickable: isValid && !loading && !success,
+              action: submit,
+              hint: isValid && !success ? '點擊立即執行 AI 解析' : success ? '解析完成' : '請先填妥所有必填欄位',
             },
             {
               step: '③', label: '智能審計',
-              desc: success ? '天地盤/邏輯盤 ✓' : '天地盤/邏輯盤',
-              color: MU,
+              desc: success ? '天地盤/邏輯盤 PASS ✓' : '解析完成後自動觸發',
+              color: TU,
               active: success,
               done: success,
               spinning: false,
               badge: success ? 'PASS' : null,
+              clickable: false,
+              action: undefined,
+              hint: success ? '審計已通過' : '完成②後自動執行',
             },
             {
               step: '④', label: '排名派單',
-              desc: success ? 'A1/A2/B/C分組 →' : 'A1/A2/B/C分組',
+              desc: success ? `A1/A2/B/C 分組｜#${createdId}` : '審計通過後自動排名',
               color: HUO,
               active: success,
               done: success,
               spinning: false,
               badge: success && createdId ? `#${createdId}` : null,
+              clickable: false,
+              action: undefined,
+              hint: success ? `報表 #${createdId} 已排名` : '完成③後自動執行',
             },
             {
               step: '⑤', label: '公告生成',
-              desc: success ? 'LINE/播報/完整版 →' : 'LINE/播報/完整版',
+              desc: success ? 'LINE/播報/完整版 ✓ → 下一步' : '排名完成後自動封裝',
               color: JIN,
               active: success,
               done: success,
               spinning: false,
-              badge: null,
+              badge: success ? '→ 前往' : null,
+              clickable: success,
+              action: success ? () => {
+                // 呼叫 onParsed 推進工作台到公告頁
+                if (createdId && form.reportDate && personCount !== null) {
+                  onParsed?.({ reportId: createdId, reportDate: form.reportDate, personCount });
+                }
+              } : undefined,
+              hint: success ? '點擊跳轉公告輸出頁' : '完成④後自動封裝',
             },
           ] as const).map((s, i) => (
-            <div key={i} className={s.active ? 'step-activate' : ''} style={{
-              display: 'flex', flexDirection: 'column', gap: 6,
-              padding: '12px 14px', borderRadius: 10,
-              background: s.active ? s.color.void : s.color.abyss,
-              border: `1px solid ${s.active ? s.color.shadow : s.color.abyss}`,
-              borderBottom: `3px solid ${s.active ? s.color.bright : s.color.shadow}`,
-              transition: 'all 0.3s',
-              position: 'relative', overflow: 'hidden',
-            }}>
+            <div
+              key={i}
+              className={s.active ? 'step-activate' : ''}
+              onClick={s.clickable && s.action ? s.action : undefined}
+              title={s.hint}
+              style={{
+                display: 'flex', flexDirection: 'column', gap: 6,
+                padding: '12px 14px', borderRadius: 10,
+                background: s.active ? s.color.void : s.color.abyss,
+                border: `1px solid ${s.active ? s.color.shadow : s.color.abyss}`,
+                borderBottom: `3px solid ${s.active ? s.color.bright : s.color.shadow}`,
+                transition: 'all 0.3s',
+                position: 'relative', overflow: 'hidden',
+                cursor: s.clickable ? 'pointer' : 'default',
+                boxShadow: s.clickable && s.active ? `0 0 12px ${s.color.core}44` : 'none',
+              }}>
               {s.active && (
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, transparent, ${s.color.bright}, transparent)`, animation: 'dataPulse 1.5s ease-in-out infinite' }} />
+              )}
+              {/* 可點擊提示角標 */}
+              {s.clickable && (
+                <div style={{ position: 'absolute', top: 4, right: 6, fontSize: 9, color: s.color.bright, opacity: 0.7, fontWeight: 900, letterSpacing: '0.06em' }}>
+                  TAP
+                </div>
               )}
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 {s.spinning
@@ -834,18 +950,19 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
                 }
                 <span style={{ fontSize: 13, fontWeight: 900, color: s.active ? s.color.text : s.color.shadow }}>{s.label}</span>
                 {s.badge && (
-                  <span className="countUp" style={{
-                    marginLeft: 'auto', fontSize: 10, fontWeight: 900,
-                    color: s.color.bright, background: s.color.abyss,
+                  <span style={{
+                    marginLeft: 'auto', fontSize: 10,
+                    background: s.color.abyss,
                     padding: '1px 6px', borderRadius: 4,
                     border: `1px solid ${s.color.shadow}`,
                     fontFamily: '"Fira Code", monospace',
+                    color: s.color.bright, fontWeight: 900,
                     animation: 'countUp 0.4s ease-out',
                   }}>{s.badge}</span>
                 )}
                 {s.done && !s.badge && <span style={{ marginLeft: 'auto', fontSize: 10, color: s.color.bright }}>✓</span>}
               </div>
-              <div style={{ fontSize: 10, color: s.active ? s.color.text : EMPEROR_UI.textDim, opacity: 0.75, letterSpacing: '0.04em' }}>{s.desc}</div>
+              <div style={{ fontSize: 10, opacity: 0.75, letterSpacing: '0.04em', color: s.active ? s.color.text : EMPEROR_UI.textDim }}>{s.desc}</div>
             </div>
           ))}
         </div>

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Settings, Save, RotateCcw } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Settings, Save, RotateCcw, Loader2 } from 'lucide-react';
 import type { SystemSettings } from '../types/report';
 
 const defaultSettings: SystemSettings = {
@@ -15,13 +15,42 @@ const defaultSettings: SystemSettings = {
 
 export const SettingsPage: React.FC = () => {
   const [settings, setSettings] = useState<SystemSettings>(defaultSettings);
-  const [saved, setSaved] = useState(false);
+  const [saveState, setSaveState] = useState<'idle' | 'saving' | 'ok' | 'error'>('idle');
+  const [saveMsg, setSaveMsg] = useState('');
   const [bannedInput, setBannedInput] = useState('');
   const [correctInput, setCorrectInput] = useState('');
 
-  const handleSave = () => {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+  // 啟動時從後端載入設定
+  useEffect(() => {
+    fetch('/api/v1/settings')
+      .then(r => r.json())
+      .then(j => { if (j.success && j.data) setSettings(s => ({ ...s, ...j.data })); })
+      .catch(() => {/* 無法連線時使用預設值 */});
+  }, []);
+
+  const handleSave = async () => {
+    setSaveState('saving');
+    setSaveMsg('');
+    try {
+      const res = await fetch('/api/v1/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(settings),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setSaveState('ok');
+        setSaveMsg(json.message ?? '✅ 已儲存');
+      } else {
+        setSaveState('error');
+        setSaveMsg(json.message ?? '❌ 儲存失敗');
+      }
+    } catch {
+      setSaveState('error');
+      setSaveMsg('❌ 無法連線後端');
+    } finally {
+      setTimeout(() => setSaveState('idle'), 3000);
+    }
   };
 
   const handleReset = () => setSettings(defaultSettings);
@@ -110,13 +139,25 @@ export const SettingsPage: React.FC = () => {
       </Section>
 
       {/* Actions */}
-      <div className="flex gap-3 pt-4 border-t border-gray-200">
-        <button onClick={handleSave} className="flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg shadow-md transition-all active:scale-95">
-          {saved ? <><span>✅</span> 已儲存</> : <><Save className="w-4 h-4" /> 儲存設定</>}
-        </button>
-        <button onClick={handleReset} className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition shadow-sm">
-          <RotateCcw className="w-4 h-4" /> 重置為預設
-        </button>
+      <div className="space-y-3 pt-4 border-t border-gray-200">
+        {saveMsg && (
+          <div className={`px-4 py-2.5 rounded-xl text-sm font-medium ${saveState === 'ok' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
+            {saveMsg}
+          </div>
+        )}
+        <div className="flex gap-3">
+          <button onClick={handleSave} disabled={saveState === 'saving'}
+            className="flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg shadow-md transition-all active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed">
+            {saveState === 'saving'
+              ? <><Loader2 className="w-4 h-4 animate-spin" /> 儲存中...</>
+              : saveState === 'ok'
+              ? <><span>✅</span> 已儲存</>
+              : <><Save className="w-4 h-4" /> 儲存設定</>}
+          </button>
+          <button onClick={handleReset} className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition shadow-sm">
+            <RotateCcw className="w-4 h-4" /> 重置為預設
+          </button>
+        </div>
       </div>
 
       <style>{`.input-style { @apply px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all; }`}</style>

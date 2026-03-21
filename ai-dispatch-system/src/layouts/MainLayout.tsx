@@ -22,6 +22,51 @@ const STATUS_TAGS = [
   { label: 'LIVE', desc: '直播狀態', color: '#FF4D85', bg: 'rgba(255,77,133,.12)', path: '/dashboard', pulse: true },
 ];
 
+// ── 全球城市節點
+const CITY_NODES = [
+  { name: 'Tokyo',     color: '#00D4FF', x: 82, y: 38 },
+  { name: 'Shanghai',  color: '#00FF9C', x: 78, y: 44 },
+  { name: 'Singapore', color: '#8B5CF6', x: 76, y: 58 },
+  { name: 'Dubai',     color: '#F2C200', x: 62, y: 46 },
+  { name: 'London',    color: '#FF6EC7', x: 48, y: 32 },
+  { name: 'New York',  color: '#00E5FF', x: 20, y: 38 },
+];
+
+// ── 英雄計數器（裝飾性全球數據流）
+function HeroCounters() {
+  const [vals, setVals] = useState({ data: 9162485, rev: 2477403, vit: 97 });
+  useEffect(() => {
+    const t = setInterval(() => {
+      setVals(v => ({
+        data: v.data + Math.floor(Math.random() * 3200 - 400),
+        rev:  v.rev  + Math.floor(Math.random() * 1200 - 200),
+        vit:  Math.max(90, Math.min(99, v.vit + (Math.random() > 0.5 ? 1 : -1))),
+      }));
+    }, 1800);
+    return () => clearInterval(t);
+  }, []);
+  const cards = [
+    { label: 'DATA / SEC',   val: vals.data.toLocaleString(), color: '#00D4FF' },
+    { label: 'USD REVENUE',  val: '$' + vals.rev.toLocaleString(), color: '#F2C200' },
+    { label: 'VITALITY IDX', val: vals.vit + '%', color: '#00FF9C' },
+  ];
+  return (
+    <div style={{ display:'flex', gap:6 }}>
+      {cards.map(c => (
+        <div key={c.label} style={{
+          background: 'rgba(0,0,0,.55)', border: `1px solid ${c.color}28`,
+          borderRadius: 8, padding: '4px 10px', minWidth: 80, textAlign: 'center',
+          boxShadow: `0 0 14px ${c.color}18`,
+          animation: 'bh-num-roll .4s ease-out',
+        }}>
+          <div style={{ fontFamily:'monospace', fontSize:13, fontWeight:900, color:c.color, letterSpacing:'.04em', lineHeight:1.2 }}>{c.val}</div>
+          <div style={{ fontSize:8, color:'rgba(255,255,255,.35)', letterSpacing:'.08em', marginTop:1 }}>{c.label}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // CSS 注入 singleton
 let _mlInjected = false;
 function injectMainStyles() {
@@ -35,10 +80,15 @@ function injectMainStyles() {
     @keyframes ml-brand   { 0%,100%{text-shadow:0 0 14px rgba(0,229,200,.5),0 0 28px rgba(0,212,255,.3)} 50%{text-shadow:0 0 22px rgba(0,229,200,.85),0 0 44px rgba(0,212,255,.5)} }
     @keyframes ml-live    { 0%,100%{opacity:.85} 50%{opacity:1} }
     @keyframes ml-modcount{ 0%{transform:scale(.7);opacity:0} 100%{transform:scale(1);opacity:1} }
+    @keyframes ml-city-ping{ 0%,100%{transform:scale(1);opacity:.7} 50%{transform:scale(1.5);opacity:1} }
+    @keyframes ml-ticker  { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
     .ml-tag:hover   { filter:brightness(1.3)!important; transform:translateY(-1px) scale(1.04)!important; }
     .ml-group:hover { background:rgba(0,212,255,.04)!important; }
     .ml-link:hover  { transform:translateX(2px)!important; }
     .ml-gfooter { animation: ml-live 3s ease-in-out infinite; }
+    .ml-city-dot { animation: ml-city-ping 2.4s ease-in-out infinite; }
+    .ml-ticker-wrap { overflow:hidden; white-space:nowrap; }
+    .ml-ticker-inner { display:inline-block; animation: ml-ticker 28s linear infinite; }
   `;
   document.head.appendChild(s);
 }
@@ -113,11 +163,39 @@ export function MainLayout() {
             </div>
           </div>
 
-          {/* 副標 */}
-          <div style={{ fontSize:9, color:'#7DF9FF', letterSpacing:'0.12em', display:'flex', alignItems:'center', gap:5, marginBottom:7 }}>
-            <span style={{ display:'inline-block', width:6, height:6, borderRadius:'50%', background:'#00D4FF', animation:'ml-dot 2s ease-in-out infinite', flexShrink:0 }} />
-            全球大數據 AI 派單中樞
+          {/* 副標 + UPTIME */}
+          <div style={{ fontSize:9, color:'#7DF9FF', letterSpacing:'0.12em', display:'flex', alignItems:'center', justifyContent:'space-between', gap:5, marginBottom:5 }}>
+            <span style={{ display:'flex', alignItems:'center', gap:5 }}>
+              <span style={{ display:'inline-block', width:6, height:6, borderRadius:'50%', background:'#00D4FF', animation:'ml-dot 2s ease-in-out infinite', flexShrink:0 }} />
+              全球大數據 AI 派單中樞
+            </span>
+            <span style={{ fontSize:8, color:'rgba(0,255,156,.6)', fontFamily:'monospace', letterSpacing:'.06em' }}>UPTIME 99.97%</span>
           </div>
+
+          {/* 全球跑馬燈 */}
+          <div className="ml-ticker-wrap" style={{ marginBottom:5, borderTop:'1px solid rgba(0,212,255,.08)', borderBottom:'1px solid rgba(0,212,255,.08)', padding:'3px 0' }}>
+            <div className="ml-ticker-inner" style={{ fontSize:7.5, color:'rgba(0,212,255,.5)', letterSpacing:'.1em', fontFamily:'monospace' }}>
+              {'GLOBAL · AI · DATA · ENGINE · v8.0 　 全球大數據 AI 核心中控台 　 APEX · CENTRAL · INTELLIGENCE · SYSTEM 　 GLOBAL · AI · DATA · ENGINE · v8.0 　 全球大數據 AI 核心中控台 　 APEX · CENTRAL · INTELLIGENCE · SYSTEM 　'}
+            </div>
+          </div>
+
+          {/* 城市節點 */}
+          <div style={{ display:'flex', gap:4, flexWrap:'wrap', marginBottom:5 }}>
+            {CITY_NODES.map(c => (
+              <div key={c.name} style={{ display:'flex', alignItems:'center', gap:3 }}>
+                <span className="ml-city-dot" style={{
+                  display:'inline-block', width:5, height:5, borderRadius:'50%',
+                  background: c.color, boxShadow: `0 0 6px ${c.color}`,
+                  flexShrink:0,
+                }} />
+                <span style={{ fontSize:8, color:'rgba(255,255,255,.4)', letterSpacing:'.05em' }}>{c.name}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* 英雄計數器 */}
+          <HeroCounters />
+          <div style={{ marginBottom:5 }} />
 
           {/* 功能狀態標籤 — 每個都可點擊跳轉 */}
           <div style={{ display:'flex', gap:3, flexWrap:'wrap' }}>
@@ -147,6 +225,31 @@ export function MainLayout() {
 
         {/* ── 導覽群組 ── */}
         <nav style={{ padding: '8px 8px', flex: 1 }}>
+          {/* 🔱 核心系統特快管道 */}
+          <div style={{ marginBottom: 14, padding: '0 4px', display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <Link to="/" style={{
+              display: 'flex', alignItems: 'center', gap: 8, padding: '9px 12px', borderRadius: 9,
+              background: location.pathname === '/' ? 'linear-gradient(90deg, rgba(0,229,200,.15), transparent)' : 'rgba(0,229,200,.03)',
+              border: location.pathname === '/' ? '1px solid rgba(0,229,200,.4)' : '1px solid rgba(0,229,200,.08)',
+              color: '#00D4FF', textDecoration: 'none', fontWeight: 900, fontSize: 13, transition: 'all 0.2s',
+              boxShadow: location.pathname === '/' ? '0 0 20px rgba(0,229,200,.25)' : 'none',
+            }}>
+              <span style={{ fontSize: 15 }}>🔮</span> 
+              <span style={{ textShadow: '0 0 8px rgba(0,229,200,.4)' }}>AI 派單工作台</span>
+              {location.pathname === '/' && <span style={{ fontSize: 8, padding: '1px 5px', borderRadius: 4, background: '#00D4FF22', border: '1px solid #00D4FF', marginLeft: 'auto', fontWeight: 900, animation: 'ml-live 2s infinite' }}>LIVE</span>}
+            </Link>
+            
+            <Link to="/dashboard" style={{
+              display: 'flex', alignItems: 'center', gap: 8, padding: '9px 12px', borderRadius: 9,
+              background: location.pathname === '/dashboard' ? 'linear-gradient(90deg, rgba(0,255,156,.12), transparent)' : 'rgba(255,255,255,.01)',
+              border: location.pathname === '/dashboard' ? '1px solid rgba(0,255,156,.35)' : '1px solid rgba(255,255,255,.05)',
+              color: '#00FF9C', textDecoration: 'none', fontWeight: 900, fontSize: 12, transition: 'all 0.2s',
+            }}>
+              <span style={{ fontSize: 15 }}>📊</span> 老闆視覺總控台
+            </Link>
+            <div style={{ height: 1, background: 'rgba(0,212,255,.1)', margin: '4px 8px 2px' }} />
+          </div>
+
           {NAV_GROUPS.map(group => {
             const validCenterKeys = group.centerKeys.filter(k => activeCenterKeys.has(k as any));
             if (validCenterKeys.length === 0) return null;

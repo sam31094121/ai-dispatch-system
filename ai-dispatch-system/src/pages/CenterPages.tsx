@@ -7,7 +7,10 @@ import { DailyReportInputPage } from './DailyReportInputPage';
 import { OneClickPipelinePage } from './OneClickPipelinePage';
 import { RankingDispatchPage } from './RankingDispatchPage';
 import { AnnouncementPage } from './AnnouncementPage';
+import { BroadcastPage } from './BroadcastPage';
+import { LineForwardPage } from './LineForwardPage';
 import { SettingsPage } from './SettingsPage';
+import { SystemStatusPanel } from '../components/SystemStatusPanel';
 
 // 導入強大功能的資料引擎與面板 (恢復 V50 體驗)
 import CeoDashboard from '../components/CeoDashboard';
@@ -120,9 +123,8 @@ export function ReportCenterPage() {
 }
 
 // 3. 主管派單台
-export function DispatchCenterPage() { 
-  const today = new Date().toLocaleDateString('zh-TW');
-  return <RankingDispatchPage reportDate={today} />; 
+export function DispatchCenterPage() {
+  return <RankingDispatchPage />;
 }
 
 // 4. 播報總控台
@@ -142,11 +144,18 @@ export function HvScriptsPage() { return <div className="p-8 text-xl font-bold">
 export function HvTargetsPage() { return <div className="p-8 text-xl font-bold">🎯 攻單名單 (V50 模組準備中...)</div>; }
 export function HvTrainingPage() { return <div className="p-8 text-xl font-bold">🎓 高價訓練 (V50 模組準備中...)</div>; }
 export function HvRallyPage() { return <div className="p-8 text-xl font-bold">📣 團隊喊話 (V50 模組準備中...)</div>; }
-export function BcScriptsPage() { return <div className="p-8 text-xl font-bold">📝 播報稿管理 (V50 模組準備中...)</div>; }
+export function BcScriptsPage() { return <BroadcastPage />; }
 export function BcStylesPage() { return <div className="p-8 text-xl font-bold">⚙️ 播報風格 (V50 模組準備中...)</div>; }
-export function BcPlaybackPage() { return <div className="p-8 text-xl font-bold">🔊 播放控制 (V50 模組準備中...)</div>; }
-export function LineCenterPage() { return <div className="p-8 text-xl font-bold">💬 LINE 轉傳台 (V50 模組準備中...)</div>; }
+export function BcPlaybackPage() { return <BroadcastPage />; }
+export function LineCenterPage() { return <LineForwardPage />; }
 export function LineRulesPage() { return <div className="p-8 text-xl font-bold">📖 轉傳規則 (V50 模組準備中...)</div>; }
 export function RecruiterPage() { return <div className="p-8 text-xl font-bold">🎯 招聘管理 (V50 模組準備中...)</div>; }
 export function TrainerPage() { return <div className="p-8 text-xl font-bold">🎓 訓練管理 (V50 模組準備中...)</div>; }
-export function SystemCenterPage() { return <div className="p-8 bg-stone-50 min-h-screen"><SettingsPage /></div>; }
+export function SystemCenterPage() {
+  return (
+    <div className="p-6 bg-stone-50 min-h-screen space-y-8 max-w-4xl mx-auto">
+      <SystemStatusPanel />
+      <SettingsPage />
+    </div>
+  );
+}

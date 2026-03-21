@@ -99,18 +99,69 @@ router.post('/:id/parse', (req, res) => {
       cleaned = cleaned.replace(/\(新人\)/g, '（新人）');
     }
 
-    const match = cleaned.match(/(\d+)[、,.\s]+(.+?)(?:（新人）)?\s*[｜|]\s*【追單】\s*(\d[\d,]*)\s*[｜|]\s*【續單】\s*([\d,]+)\s*[｜|]\s*【總業績】\s*([\d,]+)\s*[｜|]\s*【實收】\s*([\d,]+)/);
-    if (match) {
-      const rawName = match[2].trim();
+    const isNew = cleaned.includes('（新人）') || cleaned.includes('(新人)') || cleaned.includes('新人');
+
+    // ── 格式一（標準公告格式）：序號、姓名｜【追單】X｜【續單】X｜【總業績】X
+    const fmt1 = cleaned.match(/(\d+)[、,.]\s*(.+?)(?:（新人）)?\s*[｜|]\s*【追[單单]】\s*([\d,]+)\s*[｜|]\s*【續[單单]】\s*([\d,]+)\s*[｜|]\s*【總業績】\s*([\d,]+)/);
+    if (fmt1) {
       rows.push({
-        employee_name: rawName,
-        identity_tag: cleaned.includes('（新人）') ? '新人' : '一般',
-        followup_deals_count: parseNumber(match[3]),
-        followup_amount: parseNumber(match[4]),
-        total_revenue_amount: parseNumber(match[5]),
-        total_actual: parseNumber(match[6]),
+        employee_name: fmt1[2].trim(),
+        identity_tag: isNew ? '新人' : '一般',
+        followup_deals_count: parseNumber(fmt1[3]),
+        followup_amount: parseNumber(fmt1[4]),
+        total_revenue_amount: parseNumber(fmt1[5]),
         raw_row_order: rows.length + 1,
       });
+      continue;
+    }
+
+    // ── 格式二（完整舊格式，含【實收】）：序號、姓名｜…｜【實收】X
+    const fmt2 = cleaned.match(/(\d+)[、,.]\s*(.+?)(?:（新人）)?\s*[｜|]\s*【追[單单]】\s*([\d,]+)\s*[｜|]\s*【續[單单]】\s*([\d,]+)\s*[｜|]\s*【總業績】\s*([\d,]+)\s*[｜|]\s*【實收】\s*([\d,]+)/);
+    if (fmt2) {
+      rows.push({
+        employee_name: fmt2[2].trim(),
+        identity_tag: isNew ? '新人' : '一般',
+        followup_deals_count: parseNumber(fmt2[3]),
+        followup_amount: parseNumber(fmt2[4]),
+        total_revenue_amount: parseNumber(fmt2[5]),
+        raw_row_order: rows.length + 1,
+      });
+      continue;
+    }
+
+    // ── 格式三（Tab/空格分隔表格）：姓名 追續 續單 總業績
+    //    例：王小明  35  350,000  650,000
+    const fmt3 = cleaned.match(/^([^\d\s｜|【]+(?:（新人）)?)\s+([\d,]+)\s+([\d,]+)\s+([\d,]+)/);
+    if (fmt3) {
+      const name = fmt3[1].replace(/（新人）/, '').trim();
+      if (name.length >= 2 && name.length <= 6) {
+        rows.push({
+          employee_name: name,
+          identity_tag: isNew ? '新人' : '一般',
+          followup_deals_count: parseNumber(fmt3[2]),
+          followup_amount: parseNumber(fmt3[3]),
+          total_revenue_amount: parseNumber(fmt3[4]),
+          raw_row_order: rows.length + 1,
+        });
+        continue;
+      }
+    }
+
+    // ── 格式四（逗號CSV）：姓名,追續,續單,總業績
+    const fmt4 = cleaned.split(',');
+    if (fmt4.length >= 4) {
+      const name = fmt4[0].replace(/（新人）/, '').trim();
+      if (name.length >= 2 && name.length <= 6 && /\d/.test(fmt4[1])) {
+        rows.push({
+          employee_name: name,
+          identity_tag: isNew ? '新人' : '一般',
+          followup_deals_count: parseNumber(fmt4[1]),
+          followup_amount: parseNumber(fmt4[2]),
+          total_revenue_amount: parseNumber(fmt4[3]),
+          raw_row_order: rows.length + 1,
+        });
+        continue;
+      }
     }
   }
 

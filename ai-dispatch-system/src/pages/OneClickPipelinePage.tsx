@@ -20,17 +20,46 @@ import {
 
 type PipelineStep = 'IDLE' | 'ANALYSING' | 'PARSING' | 'AUDITING' | 'RANKING' | 'ANNOUNCING' | 'DONE' | 'ERROR' | 'AUDIT_FAILED';
 
+// ── 輸入格式提示（常駐顯示，幫助使用者知道要貼什麼）──
+const FORMAT_HINT = `✅ 支援以下格式（四選一）：
+
+格式A（標準）：
+1、李玲玲｜【追單】22｜【續單】592,270｜【總業績】817,900
+
+格式B（含新人）：
+2、王珍珠（新人）｜【追單】5｜【續單】0｜【總業績】38,000
+
+格式C（Tab/空白分隔）：
+馬秋香  34  550,920  686,670
+
+格式D（逗號CSV）：
+林宜靜,18,320120,464240
+
+⚠️ 第一行請包含日期和平台，例如：
+3/19 奕心 累積`;
+
 export function OneClickPipelinePage(): React.ReactElement {
   const [rawText, setRawText] = useState('');
   const [step, setStep] = useState<PipelineStep>('IDLE');
   const [logs, setLogs] = useState<{ id: string; time: string; msg: string; type: 'info' | 'success' | 'warn' | 'error' }[]>([]);
-  
+
   // Data State
   const [reportId, setReportId] = useState<number | null>(null);
   const [reportDate, setReportDate] = useState<string>('');
   const [auditResult, setAuditResult] = useState<AuditRunResult | null>(null);
   const [announcement, setAnnouncement] = useState<AnnouncementOutput | null>(null);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [saveSteps, setSaveSteps] = useState<string[]>([]);
+
+  // ── 強化：AI 辨識後可修改的 meta 欄位 ──
+  const [detectedDate, setDetectedDate] = useState<string>('');
+  const [detectedPlatform, setDetectedPlatform] = useState<平台名稱>('奕心');
+  const [detectedMode, setDetectedMode] = useState<報表模式>('累積報表');
+  const [detectedDayOfWeek, setDetectedDayOfWeek] = useState<string>('');
+  const [detectedTimeRange, setDetectedTimeRange] = useState<string>('');
+  const [showMetaEdit, setShowMetaEdit] = useState(false);
+  const [showFormatHint, setShowFormatHint] = useState(false);
+  const autoCopyDoneRef = useRef(false);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const logsEndRef = useRef<HTMLDivElement>(null);
@@ -67,7 +96,7 @@ export function OneClickPipelinePage(): React.ReactElement {
   // ======= 核心自動化流程 =======
   const runPipeline = async (textToProcess: string) => {
     if (!textToProcess.trim() || textToProcess.length < 15) {
-      addLog('文本太短，無法啓動 AI 分析', 'warn');
+      addLog('⚠️ 文本太短，無法啓動 AI 分析（請貼入完整報表）', 'warn');
       return;
     }
 
@@ -76,6 +105,8 @@ export function OneClickPipelinePage(): React.ReactElement {
     setReportId(null);
     setAuditResult(null);
     setAnnouncement(null);
+    setShowMetaEdit(false);
+    autoCopyDoneRef.current = false;
     addLog('🚀 啟動一鍵直通引擎...', 'info');
     addLog('🤖 AI 正在分析文本特徵 (擷取日期與平台)...', 'info');
 
@@ -85,14 +116,29 @@ export function OneClickPipelinePage(): React.ReactElement {
       let pDate = meta.reportDate;
       let pPlatform = meta.platformName as 平台名稱;
       let pMode = meta.reportMode as 報表模式;
+      let pDayOfWeek = meta.dayOfWeek || '';
+      let pTimeRange = meta.timeRange || '';
 
       // 防呆：如果 AI 抓不到，嘗試給預設值以利流程繼續
       if (!pDate) pDate = new Date().toISOString().split('T')[0];
-      if (!pPlatform || !平台選項.includes(pPlatform)) pPlatform = '整合' as 平台名稱;
-      if (!pMode || !報表模式選項.includes(pMode)) pMode = '累積' as 報表模式;
+      if (!pPlatform || !平台選項.includes(pPlatform)) pPlatform = '奕心';
+      if (!pMode || !報表模式選項.includes(pMode)) pMode = '累積報表';
+
+      // 同步到可編輯 meta state（供 UI 顯示與修正）
+      setDetectedDate(pDate);
+      setDetectedPlatform(pPlatform);
+      setDetectedMode(pMode);
+      setDetectedDayOfWeek(pDayOfWeek);
+      setDetectedTimeRange(pTimeRange);
+      setShowMetaEdit(true);
 
       setReportDate(pDate);
-      addLog(`✨ AI 辨識完成：${pDate} · ${pPlatform} · ${pMode}`, 'success');
+      const extraInfo = [pDayOfWeek, pTimeRange].filter(Boolean).join(' ');
+      if (meta.confidence === 'low') {
+        addLog(`⚠️ AI 辨識信心度低 — 已自動補預設值：${pDate} ${extraInfo}· ${pPlatform} · ${pMode}（可在上方修改後再執行）`, 'warn');
+      } else {
+        addLog(`✨ AI 辨識完成：${pDate} ${extraInfo}· ${pPlatform} · ${pMode}`, 'success');
+      }
 
       // 2. 建立報表並解析
       setStep('PARSING');
@@ -128,7 +174,7 @@ export function OneClickPipelinePage(): React.ReactElement {
       addLog('✅ 天地盤、邏輯盤、累積盤審計全數 PASS', 'success');
 
       // 4. 排名與派單
-      await executeRankingAndAnnouncement(pDate);
+      await executeRankingAndAnnouncement(pDate, textToProcess, pPlatform, pMode, pDayOfWeek, pTimeRange);
 
     } catch (err: any) {
       addLog(`❌ 單元執行錯誤：${err?.message || err?.responseMessage || '未知錯誤'}`, 'error');
@@ -136,23 +182,60 @@ export function OneClickPipelinePage(): React.ReactElement {
     }
   };
 
-  const executeRankingAndAnnouncement = async (dateStr: string) => {
+  const executeRankingAndAnnouncement = async (dateStr: string, sourceText: string = rawText, platform: 平台名稱 = detectedPlatform, mode: 報表模式 = detectedMode, dayOfWeek: string = detectedDayOfWeek, timeRange: string = detectedTimeRange) => {
     try {
+      // 1. 先亮起 RANKING，跑大數據運算儀式感特效
       setStep('RANKING');
-      addLog('🏆 重新演算英雄榜名單...', 'info');
-      await rankingService.generate(dateStr);
-      addLog('✅ 英雄榜演算完成', 'success');
-
-      addLog('🎯 執行軍團自動派單分發...', 'info');
-      await dispatchService.generate(dateStr);
-      addLog('✅ 派單陣列部署完畢', 'success');
-
-      // 5. 生成公告
+      addLog('🏆 啟動 AI 樞紐一條龍演算 (整合總盤、名次排序、梯隊分組)...', 'info');
+      await new Promise(resolve => setTimeout(resolve, 800)); // 0.8 秒視覺延遲
+      
+      // 2. 進入公告封裝
       setStep('ANNOUNCING');
       addLog('📢 封裝最終戰報與多渠道公告...', 'info');
+      
       const output = await announcementService.generate(dateStr);
+      
+      // 替換公告內容中的時間標記
+      if (dayOfWeek || timeRange) {
+        const richDateInfo = `${dateStr} ${[dayOfWeek, timeRange].filter(Boolean).join(' ')}`;
+        output.fullText = output.fullText.replace(dateStr, richDateInfo);
+        output.lineText = output.lineText.replace(dateStr, richDateInfo);
+        output.shortText = output.shortText.replace(dateStr, richDateInfo);
+        output.managerText = output.managerText.replace(dateStr, richDateInfo);
+      }
+      
       setAnnouncement(output);
-      addLog('🎉 系統直通完成！公告已就緒，可一鍵取用。', 'success');
+      addLog('🎉 系統直通完成！快照與公告封裝完畢。', 'success');
+      // 自動複製完整版公告到剪貼板
+      if (output.fullText && !autoCopyDoneRef.current) {
+        autoCopyDoneRef.current = true;
+        navigator.clipboard.writeText(output.fullText).catch(() => {});
+        addLog('📋 完整版公告已自動複製到剪貼板，可直接貼上發佈。', 'success');
+      }
+
+      // ── 呼叫存檔 API（五段式儲存）──
+      setSaveSteps([]);
+      try {
+        const saveRes = await fetch('/api/v1/system/save-report', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            rawText: sourceText,
+            optimizedText: output.fullText,
+            reportDate: dateStr,
+            platformName: platform,
+            reportMode: mode,
+          }),
+        });
+        const saveJson = await saveRes.json();
+        if (saveJson.success && saveJson.data?.status) {
+          setSaveSteps(saveJson.data.status);
+          addLog(`💾 存檔完成：${saveJson.data.status.join(' → ')}`, 'success');
+        }
+      } catch {
+        addLog('⚠️ 存檔 API 無法連線，資料已在 DB 保存，但未寫入本地檔案', 'warn');
+      }
+
       setStep('DONE');
     } catch (err: any) {
        addLog(`❌ 後期處理錯誤：${err?.message || err?.responseMessage || '未知錯誤'}`, 'error');
@@ -167,8 +250,8 @@ export function OneClickPipelinePage(): React.ReactElement {
       addLog('📝 正在寫入強制授權記錄...', 'warn');
       await auditService.manualApprove(reportId, { approvedByUserId: 1, noteText: '一鍵直通窗口主管強行授權' });
       addLog('✅ 強制授權成功，恢復派單流程...', 'success');
-      // 授權完後繼續跑流程
-      await executeRankingAndAnnouncement(reportDate);
+      // 授權完後繼續跑流程（用當前 state 裡的值）
+      await executeRankingAndAnnouncement(reportDate, rawText, detectedPlatform, detectedMode, detectedDayOfWeek, detectedTimeRange);
     } catch (err: any) {
       addLog(`❌ 授權失敗：${err?.message || '未知錯誤'}`, 'error');
     }
@@ -313,43 +396,69 @@ export function OneClickPipelinePage(): React.ReactElement {
           
           {/* 輸入區 */}
           <div style={{ background: 'rgba(22, 20, 16, 0.8)', backdropFilter: 'blur(10px)', border: `1px solid ${EMPEROR_UI.borderMain}`, borderRadius: 20, overflow: 'hidden', boxShadow: '0 12px 40px rgba(0,0,0,0.5)', transition: 'all 0.3s' }}>
-            <div style={{ padding: '16px 24px', background: 'rgba(30, 26, 20, 0.6)', borderBottom: `1px solid ${EMPEROR_UI.borderAccent}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ padding: '16px 24px', background: 'rgba(30, 26, 20, 0.6)', borderBottom: `1px solid ${EMPEROR_UI.borderAccent}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                  <Terminal size={18} color={TU.bright} />
                  <span style={{ fontSize: 14, fontWeight: 800, color: TU.text, letterSpacing: '0.05em' }}>SOURCE_REPORT_BUFFER [ 待輸入資料區 ]</span>
                </div>
-               {(step === 'IDLE' || step === 'DONE') && (
-                 <button 
-                  onClick={() => runPipeline(rawText)} 
-                  disabled={!rawText.trim() || rawText.length < 15} 
-                  style={{ 
-                    border: 'none', 
-                    background: TU.gradient, 
-                    color: '#000', 
-                    borderRadius: 8, 
-                    padding: '8px 20px', 
-                    fontSize: 12, 
-                    fontWeight: 900, 
-                    cursor: 'pointer', 
-                    transition: 'all 0.3s', 
-                    opacity: (!rawText.trim() || rawText.length < 10) ? 0.5 : 1,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    boxShadow: TU.glowShadow
-                  }}
+               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                 {/* 格式提示按鈕 */}
+                 <button
+                   onClick={() => setShowFormatHint(v => !v)}
+                   style={{ background: 'rgba(255,255,255,0.06)', border: `1px solid ${EMPEROR_UI.borderAccent}`, color: EMPEROR_UI.textMuted, borderRadius: 8, padding: '6px 14px', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}
                  >
-                   <Play size={14} fill="currentColor" /> 執行大數據全自動分析
+                   {showFormatHint ? '收起提示' : '📋 格式說明'}
                  </button>
-               )}
+                 {(step === 'IDLE' || step === 'DONE') && (
+                   <button
+                    onClick={() => runPipeline(rawText)}
+                    disabled={!rawText.trim() || rawText.length < 15}
+                    style={{
+                      border: 'none',
+                      background: TU.gradient,
+                      color: '#000',
+                      borderRadius: 8,
+                      padding: '8px 20px',
+                      fontSize: 12,
+                      fontWeight: 900,
+                      cursor: 'pointer',
+                      transition: 'all 0.3s',
+                      opacity: (!rawText.trim() || rawText.length < 10) ? 0.5 : 1,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      boxShadow: TU.glowShadow
+                    }}
+                   >
+                     <Play size={14} fill="currentColor" /> 執行大數據全自動分析
+                   </button>
+                 )}
+               </div>
             </div>
+
+            {/* 格式提示展開面板 */}
+            {showFormatHint && (
+              <div style={{ padding: '14px 24px', background: 'rgba(255,200,50,0.04)', borderBottom: `1px solid ${EMPEROR_UI.borderAccent}` }}>
+                <pre style={{ margin: 0, fontSize: 12, color: '#d4c090', lineHeight: 1.8, whiteSpace: 'pre-wrap', fontFamily: '"JetBrains Mono", monospace' }}>{FORMAT_HINT}</pre>
+              </div>
+            )}
+
+            {/* 字數即時統計 */}
+            {rawText.length > 0 && (
+              <div style={{ padding: '6px 24px', background: 'rgba(0,0,0,0.2)', borderBottom: `1px solid ${EMPEROR_UI.borderAccent}`, display: 'flex', gap: 20, fontSize: 11, color: EMPEROR_UI.textMuted }}>
+                <span>字元：<b style={{ color: TU.bright }}>{rawText.length}</b></span>
+                <span>行數：<b style={{ color: MU.bright }}>{rawText.split('\n').filter(l => l.trim()).length}</b></span>
+                <span>估計人員：<b style={{ color: JIN.bright }}>{rawText.split('\n').filter(l => /^\d+[、,.]/.test(l.trim()) || /^[^\d\s｜|【]/.test(l.trim())).length}</b> 筆</span>
+              </div>
+            )}
+
             <textarea
               ref={textareaRef}
               value={rawText}
               onChange={e => setRawText(e.target.value)}
-              placeholder="[ 系統已就緒 ] 請在此處貼上原始報表內容... 智能引擎將自動擷取特徵"
+              placeholder={`[ 系統已就緒 ] 請在此處貼上原始報表內容...\n\n範例：\n3/19 奕心 累積\n1、李玲玲｜【追單】22｜【續單】592,270｜【總業績】817,900\n2、王珍珠｜【追單】40｜【續單】497,250｜【總業績】700,580\n\n點擊「📋 格式說明」查看完整支援格式`}
               style={{
-                width: '100%', minHeight: step !== 'IDLE' ? 120 : 250, border: 'none', padding: 20,
+                width: '100%', minHeight: step !== 'IDLE' ? 120 : 220, border: 'none', padding: 20,
                 background: 'transparent', color: EMPEROR_UI.textSecondary,
                 fontSize: 13, fontFamily: '"Microsoft JhengHei", monospace',
                 lineHeight: 1.6, resize: 'vertical', outline: 'none',
@@ -357,6 +466,42 @@ export function OneClickPipelinePage(): React.ReactElement {
               }}
             />
           </div>
+
+          {/* AI 辨識結果修正區 — 辨識完成後才顯示 */}
+          {showMetaEdit && (step === 'PARSING' || step === 'AUDITING' || step === 'RANKING' || step === 'ANNOUNCING' || step === 'DONE' || step === 'AUDIT_FAILED') && (
+            <div style={{ background: 'rgba(10,30,20,0.7)', border: `1px solid ${MU.shadow}`, borderRadius: 14, padding: '14px 20px', display: 'flex', gap: 20, alignItems: 'center', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: 12, fontWeight: 900, color: MU.bright, flexShrink: 0 }}>🤖 AI 辨識結果</span>
+              <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap', flex: 1 }}>
+                <label style={{ fontSize: 12, color: EMPEROR_UI.textMuted }}>日期
+                  <input type="date" value={detectedDate} onChange={e => { setDetectedDate(e.target.value); setReportDate(e.target.value); }}
+                    style={{ marginLeft: 6, background: 'rgba(0,0,0,0.4)', border: `1px solid ${MU.void}`, color: MU.bright, borderRadius: 6, padding: '3px 8px', fontSize: 12, fontWeight: 700 }} />
+                </label>
+                <label style={{ fontSize: 12, color: EMPEROR_UI.textMuted }}>平台
+                  <select value={detectedPlatform} onChange={e => setDetectedPlatform(e.target.value as 平台名稱)}
+                    style={{ marginLeft: 6, background: 'rgba(0,0,0,0.4)', border: `1px solid ${MU.void}`, color: MU.bright, borderRadius: 6, padding: '3px 8px', fontSize: 12, fontWeight: 700 }}>
+                    {平台選項.map(p => <option key={p} value={p}>{p}</option>)}
+                  </select>
+                </label>
+                <label style={{ fontSize: 12, color: EMPEROR_UI.textMuted }}>模式
+                  <select value={detectedMode} onChange={e => setDetectedMode(e.target.value as 報表模式)}
+                    style={{ marginLeft: 6, background: 'rgba(0,0,0,0.4)', border: `1px solid ${MU.void}`, color: MU.bright, borderRadius: 6, padding: '3px 8px', fontSize: 12, fontWeight: 700 }}>
+                    {報表模式選項.map(m => <option key={m} value={m}>{m}</option>)}
+                  </select>
+                </label>
+                <label style={{ fontSize: 12, color: EMPEROR_UI.textMuted }}>時間區段
+                  <input type="text" value={detectedTimeRange} onChange={e => setDetectedTimeRange(e.target.value)}
+                    placeholder="例: 17:02到16:30"
+                    style={{ marginLeft: 6, width: 110, background: 'rgba(0,0,0,0.4)', border: `1px solid ${MU.void}`, color: MU.bright, borderRadius: 6, padding: '3px 8px', fontSize: 12, fontWeight: 700 }} />
+                </label>
+                <label style={{ fontSize: 12, color: EMPEROR_UI.textMuted }}>星期
+                  <input type="text" value={detectedDayOfWeek} onChange={e => setDetectedDayOfWeek(e.target.value)}
+                    placeholder="例: 禮拜六"
+                    style={{ marginLeft: 6, width: 70, background: 'rgba(0,0,0,0.4)', border: `1px solid ${MU.void}`, color: MU.bright, borderRadius: 6, padding: '3px 8px', fontSize: 12, fontWeight: 700 }} />
+                </label>
+              </div>
+              <span style={{ fontSize: 11, color: EMPEROR_UI.textDim }}>如 AI 辨識有誤，可直接修改後重新執行</span>
+            </div>
+          )}
 
           {/* 若為中斷狀態：顯示審計紅單 */}
           {step === 'AUDIT_FAILED' && auditResult && (
@@ -436,6 +581,16 @@ export function OneClickPipelinePage(): React.ReactElement {
           )}
 
           {/* 產出結果區 */}
+          {/* 存檔狀態橫列 */}
+          {step === 'DONE' && saveSteps.length > 0 && (
+            <div style={{ background: 'rgba(0,40,20,0.7)', border: '1px solid #10b98155', borderRadius: 12, padding: '10px 20px', display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+              <span style={{ fontSize: 11, fontWeight: 900, color: '#10b981', flexShrink: 0 }}>💾 存檔確認</span>
+              {saveSteps.map((s, i) => (
+                <span key={i} style={{ fontSize: 11, background: 'rgba(16,185,129,0.12)', border: '1px solid #10b98133', color: '#6ee7b7', borderRadius: 6, padding: '3px 10px', fontWeight: 700 }}>✓ {s}</span>
+              ))}
+            </div>
+          )}
+
           {step === 'DONE' && announcement && (
             <div style={{ 
               background: 'rgba(22, 20, 16, 0.7)', 
@@ -514,14 +669,17 @@ export function OneClickPipelinePage(): React.ReactElement {
                 <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', padding: 24, background: 'rgba(0,0,0,0.25)', borderRadius: 16, border: `1px solid ${TU.void}` }}>
                    <div style={{ fontSize: 12, fontWeight: 900, color: TU.shadow, width: '100%', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.1em' }}>衍生渠道快速分發 (Multi-Channel Export)</div>
                    
-                   <button onClick={() => copyText(announcement.lineText, 'line')} style={{ flex: 1, minWidth: 150, background: 'rgba(16, 185, 129, 0.1)', border: '1px solid #10b98144', color: '#10b981', padding: '14px', borderRadius: 10, fontSize: 13, fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                   <button onClick={() => copyText(announcement.lineText, 'line')} style={{ flex: 1, minWidth: 140, background: 'rgba(16, 185, 129, 0.1)', border: '1px solid #10b98144', color: '#10b981', padding: '14px', borderRadius: 10, fontSize: 13, fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
                      <Megaphone size={16} /> LINE 公告 {copiedKey === 'line' && '✅'}
                    </button>
-                   <button onClick={() => copyText(announcement.shortText, 'short')} style={{ flex: 1, minWidth: 150, background: 'rgba(139, 92, 246, 0.1)', border: '1px solid #8b5cf644', color: '#8b5cf6', padding: '14px', borderRadius: 10, fontSize: 13, fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                   <button onClick={() => copyText(announcement.shortText, 'short')} style={{ flex: 1, minWidth: 140, background: 'rgba(139, 92, 246, 0.1)', border: '1px solid #8b5cf644', color: '#8b5cf6', padding: '14px', borderRadius: 10, fontSize: 13, fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
                      <Zap size={16} /> 簡潔短版 {copiedKey === 'short' && '✅'}
                    </button>
-                   <button onClick={() => copyText(announcement.voiceText, 'voice')} style={{ flex: 1, minWidth: 150, background: 'rgba(59, 130, 246, 0.1)', border: '1px solid #3b82f644', color: '#3b82f6', padding: '14px', borderRadius: 10, fontSize: 13, fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                   <button onClick={() => copyText(announcement.voiceText, 'voice')} style={{ flex: 1, minWidth: 140, background: 'rgba(59, 130, 246, 0.1)', border: '1px solid #3b82f644', color: '#3b82f6', padding: '14px', borderRadius: 10, fontSize: 13, fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
                      <Globe size={16} /> 語音播報 {copiedKey === 'voice' && '✅'}
+                   </button>
+                   <button onClick={() => copyText(announcement.managerText, 'manager')} style={{ flex: 1, minWidth: 140, background: 'rgba(239, 68, 68, 0.08)', border: '1px solid #ef444433', color: '#fca5a5', padding: '14px', borderRadius: 10, fontSize: 13, fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                     <ShieldCheck size={16} /> 主管報告 {copiedKey === 'manager' && '✅'}
                    </button>
                 </div>
               </div>

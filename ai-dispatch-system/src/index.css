@@ -92,18 +92,59 @@
   --radius-md: 14px;
 }
 
-/* ── 全局 body — 深空量子底 ── */
+/* ══════════════════════════════════════════
+   BLACK HOLE · 5D WORMHOLE · GRAVITY ENGINE
+   ══════════════════════════════════════════ */
+@keyframes bh-rotate    { 0%{transform:translate(-50%,-50%) rotate(0deg)}    100%{transform:translate(-50%,-50%) rotate(360deg)} }
+@keyframes bh-rrotate   { 0%{transform:translate(-50%,-50%) rotate(360deg)}  100%{transform:translate(-50%,-50%) rotate(0deg)} }
+@keyframes bh-ticker    { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+@keyframes bh-lense     { 0%,100%{box-shadow:0 0 80px 30px rgba(0,212,255,.06),0 0 160px 60px rgba(139,92,246,.04),inset 0 0 100px rgba(0,0,0,.97)} 50%{box-shadow:0 0 140px 50px rgba(0,212,255,.14),0 0 280px 90px rgba(139,92,246,.08),inset 0 0 160px rgba(0,0,0,.99)} }
+@keyframes bh-city-ping { 0%,100%{opacity:.7;transform:scale(1)} 50%{opacity:1;transform:scale(1.4)} }
+@keyframes bh-grav-warp { 0%,100%{letter-spacing:.1em;text-shadow:0 0 20px rgba(0,212,255,.5),0 0 60px rgba(0,212,255,.2)} 50%{letter-spacing:.16em;text-shadow:0 0 40px rgba(0,212,255,1),0 0 100px rgba(0,212,255,.4),0 0 200px rgba(139,92,246,.25)} }
+@keyframes bh-depth     { 0%,100%{transform:perspective(900px) rotateX(0deg) rotateY(0deg) translateZ(0);box-shadow:0 4px 24px rgba(0,0,0,.65)} 33%{transform:perspective(900px) rotateX(.8deg) rotateY(-.4deg) translateZ(10px);box-shadow:0 16px 48px rgba(0,0,0,.85),0 0 40px rgba(0,212,255,.07)} 66%{transform:perspective(900px) rotateX(-.5deg) rotateY(.6deg) translateZ(5px);box-shadow:0 10px 32px rgba(0,0,0,.75),0 0 24px rgba(139,92,246,.05)} }
+@keyframes bh-scan      { 0%{left:-60%;opacity:0} 10%{opacity:.7} 90%{opacity:.4} 100%{left:110%;opacity:0} }
+@keyframes bh-num-roll  { 0%{transform:translateY(8px);opacity:0} 100%{transform:translateY(0);opacity:1} }
+@keyframes bh-ring-spin { 0%{stroke-dashoffset:0} 100%{stroke-dashoffset:-440} }
+@keyframes bh-horizon   { 0%,100%{filter:brightness(1) hue-rotate(0deg)} 50%{filter:brightness(1.15) hue-rotate(12deg)} }
+@property --bsa { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@keyframes bh-border-ang { 0%{--bsa:0deg} 100%{--bsa:360deg} }
+
+/* 5D 面板基底 */
+.bh-panel {
+  position: relative; overflow: hidden;
+  background: linear-gradient(145deg, rgba(0,5,16,.88) 0%, rgba(0,3,10,.94) 100%) !important;
+  backdrop-filter: blur(28px) saturate(200%) !important;
+  animation: bh-depth 8s ease-in-out infinite !important;
+  transform-style: preserve-3d;
+}
+.bh-panel::before {
+  content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none; z-index:0;
+  background: conic-gradient(from var(--bsa), transparent 0%, rgba(0,212,255,.05) 15%, rgba(139,92,246,.04) 30%, transparent 45%, rgba(0,255,156,.03) 60%, transparent 75%);
+  animation: bh-border-ang 8s linear infinite;
+}
+.bh-panel::after {
+  content:''; position:absolute; top:0; left:-70%; width:35%; height:100%; pointer-events:none; z-index:1;
+  background: linear-gradient(90deg, transparent, rgba(0,212,255,.035), transparent);
+  animation: bh-scan 5s ease-in-out infinite; transform: skewX(-18deg);
+}
+
+/* 重力扭曲標題 */
+.bh-title { animation: bh-grav-warp 4s ease-in-out infinite !important; }
+
+/* 全局 body — 深空量子底 + 黑洞漸層 */
 body {
   margin: 0;
   color: var(--text-main);
   font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
   background:
-    radial-gradient(ellipse 70% 45% at 75% 20%, rgba(0, 212, 255, 0.10) 0%, transparent 50%),
-    radial-gradient(ellipse 55% 40% at 25% 18%, rgba(139, 92, 246, 0.08) 0%, transparent 48%),
-    radial-gradient(ellipse 80% 60% at 50% 90%, rgba(0, 255, 156, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(0,0,0,.98) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 45% at 75% 20%, rgba(0,212,255,.08) 0%, transparent 50%),
+    radial-gradient(ellipse 55% 40% at 25% 18%, rgba(139,92,246,.07) 0%, transparent 48%),
+    radial-gradient(ellipse 80% 60% at 50% 90%, rgba(0,255,156,.03) 0%, transparent 60%),
     linear-gradient(180deg, #060A14 0%, #03050C 100%);
   background-attachment: fixed;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 /* ── 殼層容器 ── */
