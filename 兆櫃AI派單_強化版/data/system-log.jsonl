@@ -1,0 +1,153 @@
+{"timestamp":"2026-03-21T07:53:22.001Z","step":"接收","status":"成功","message":"接收到原始業績文字"}
+{"timestamp":"2026-03-21T07:53:22.001Z","step":"解析","status":"成功","message":"解析成功，共 28 筆人員資料"}
+{"timestamp":"2026-03-21T07:53:22.005Z","step":"審計","status":"成功","message":"審計全數通過"}
+{"timestamp":"2026-03-21T07:53:22.008Z","step":"排序","status":"成功","message":"排名計算完成"}
+{"timestamp":"2026-03-21T07:53:22.025Z","step":"公告","status":"成功","message":"公告與周邊文本生成"}
+{"timestamp":"2026-03-21T07:53:22.032Z","step":"存檔","status":"成功","message":"存檔與備份完成：report_1774079602030.json"}
+{"timestamp":"2026-03-21T07:59:47.146Z","step":"接收","status":"成功","message":"接收到原始業績文字"}
+{"timestamp":"2026-03-21T07:59:47.147Z","step":"解析","status":"成功","message":"解析成功，共 28 筆人員資料"}
+{"timestamp":"2026-03-21T07:59:47.150Z","step":"審計","status":"成功","message":"審計全數通過"}
+{"timestamp":"2026-03-21T07:59:47.152Z","step":"排序","status":"成功","message":"排名計算完成"}
+{"timestamp":"2026-03-21T07:59:47.156Z","step":"公告","status":"成功","message":"公告與周邊文本生成"}
+{"timestamp":"2026-03-21T07:59:47.161Z","step":"存檔","status":"成功","message":"存檔與備份完成：report_1774079987159.json"}
+{"timestamp":"2026-03-21T08:01:52.583Z","step":"接收","status":"成功","message":"接收到原始業績文字"}
+{"timestamp":"2026-03-21T08:01:52.583Z","step":"解析","status":"成功","message":"解析成功，共 28 筆人員資料"}
+{"timestamp":"2026-03-21T08:01:52.586Z","step":"審計","status":"成功","message":"審計全數通過"}
+{"timestamp":"2026-03-21T08:01:52.588Z","step":"排序","status":"成功","message":"排名計算完成"}
+{"timestamp":"2026-03-21T08:01:52.591Z","step":"公告","status":"成功","message":"公告與周邊文本生成"}
+{"timestamp":"2026-03-21T08:01:52.596Z","step":"存檔","status":"成功","message":"存檔與備份完成：report_1774080112594.json"}
+{"timestamp":"2026-03-21T08:01:55.920Z","step":"接收","status":"成功","message":"接收到原始業績文字"}
+{"timestamp":"2026-03-21T08:01:55.920Z","step":"解析","status":"成功","message":"解析成功，共 28 筆人員資料"}
+{"timestamp":"2026-03-21T08:01:55.922Z","step":"審計","status":"成功","message":"審計全數通過"}
+{"timestamp":"2026-03-21T08:01:55.923Z","step":"排序","status":"成功","message":"排名計算完成"}
+{"timestamp":"2026-03-21T08:01:55.926Z","step":"公告","status":"成功","message":"公告與周邊文本生成"}
+{"timestamp":"2026-03-21T08:01:55.931Z","step":"存檔","status":"成功","message":"存檔與備份完成：report_1774080115929.json"}
+{"timestamp":"2026-03-21T08:06:33.695Z","step":"接收","status":"成功","message":"接收到原始業績文字"}
+{"timestamp":"2026-03-21T08:06:33.695Z","step":"解析","status":"成功","message":"解析成功，共 28 筆人員資料"}
+{"timestamp":"2026-03-21T08:06:33.698Z","step":"審計","status":"成功","message":"審計全數通過"}
+{"timestamp":"2026-03-21T08:06:33.702Z","step":"排序","status":"成功","message":"排名計算完成"}
+{"timestamp":"2026-03-21T08:06:33.707Z","step":"公告","status":"成功","message":"公告與周邊文本生成"}
+{"timestamp":"2026-03-21T08:06:33.713Z","step":"存檔","status":"成功","message":"存檔與備份完成：report_1774080393712.json"}
+{"timestamp":"2026-03-21T09:06:11.353Z","step":"接收","status":"成功","message":"接收到原始業績文字"}
+{"timestamp":"2026-03-21T09:06:11.354Z","step":"解析","status":"成功","message":"解析成功，共 28 筆人員資料"}
+{"timestamp":"2026-03-21T09:06:11.357Z","step":"審計","status":"成功","message":"審計全數通過"}
+{"timestamp":"2026-03-21T09:06:11.359Z","step":"排序","status":"成功","message":"排名計算完成"}
+{"timestamp":"2026-03-21T09:06:11.363Z","step":"公告","status":"成功","message":"公告與周邊文本生成"}
+{"timestamp":"2026-03-21T09:06:11.370Z","step":"存檔","status":"成功","message":"存檔與備份完成：report_1774083971368.json"}
+{"timestamp":"2026-03-21T09:08:29.828Z","step":"接收","status":"成功","message":"接收到原始業績文字"}
+{"timestamp":"2026-03-21T09:08:29.829Z","step":"解析","status":"成功","message":"解析成功，共 28 筆人員資料"}
+{"timestamp":"2026-03-21T09:08:29.831Z","step":"審計","status":"成功","message":"審計全數通過"}
+{"timestamp":"2026-03-21T09:08:29.833Z","step":"排序","status":"成功","message":"排名計算完成"}
+{"timestamp":"2026-03-21T09:08:29.838Z","step":"公告","status":"成功","message":"公告與周邊文本生成"}
+{"timestamp":"2026-03-21T09:08:29.843Z","step":"存檔","status":"成功","message":"存檔與備份完成：report_1774084109841.json"}
+{"timestamp":"2026-03-22T13:23:58.335Z","step":"預載","status":"成功","message":"載入 3/22 業績預設資料"}
+{"timestamp":"2026-03-22T13:24:35.845Z","step":"接收","status":"成功","message":"接收到原始業績文字"}
+{"timestamp":"2026-03-22T13:24:35.846Z","step":"解析","status":"成功","message":"解析成功，共 21 筆人員資料"}
+{"timestamp":"2026-03-22T13:24:35.850Z","step":"審計","status":"成功","message":"審計全數通過"}
+{"timestamp":"2026-03-22T13:24:35.853Z","step":"排序","status":"成功","message":"排名計算完成"}
+{"timestamp":"2026-03-22T13:24:36.510Z","step":"公告","status":"成功","message":"公告與周邊文本生成"}
+{"timestamp":"2026-03-22T13:24:37.772Z","step":"存檔","status":"成功","message":"存檔與備份完成：report_1774185877767.json"}
+{"timestamp":"2026-03-22T13:24:38.081Z","step":"建議","status":"成功","message":"已為 21 位人員生成 AI 建議"}
+{"timestamp":"2026-03-22T13:34:57.907Z","step":"接收","status":"成功","message":"接收到原始業績文字"}
+{"timestamp":"2026-03-22T13:34:57.907Z","step":"解析","status":"成功","message":"解析成功，共 21 筆人員資料"}
+{"timestamp":"2026-03-22T13:34:57.914Z","step":"審計","status":"成功","message":"審計全數通過"}
+{"timestamp":"2026-03-22T13:34:57.917Z","step":"排序","status":"成功","message":"排名計算完成"}
+{"timestamp":"2026-03-22T13:34:58.543Z","step":"公告","status":"成功","message":"公告與周邊文本生成"}
+{"timestamp":"2026-03-22T13:34:59.810Z","step":"存檔","status":"成功","message":"存檔與備份完成：report_1774186499808.json"}
+{"timestamp":"2026-03-22T13:35:00.136Z","step":"建議","status":"成功","message":"已為 21 位人員生成 AI 建議"}
+{"timestamp":"2026-03-22T13:35:00.793Z","step":"接收","status":"成功","message":"接收到原始業績文字"}
+{"timestamp":"2026-03-22T13:35:00.794Z","step":"解析","status":"成功","message":"解析成功，共 21 筆人員資料"}
+{"timestamp":"2026-03-22T13:35:00.797Z","step":"審計","status":"成功","message":"審計全數通過"}
+{"timestamp":"2026-03-22T13:35:00.800Z","step":"排序","status":"成功","message":"排名計算完成"}
+{"timestamp":"2026-03-22T13:35:01.434Z","step":"公告","status":"成功","message":"公告與周邊文本生成"}
+{"timestamp":"2026-03-22T13:35:02.689Z","step":"存檔","status":"成功","message":"存檔與備份完成：report_1774186502686.json"}
+{"timestamp":"2026-03-22T13:35:03.004Z","step":"建議","status":"成功","message":"已為 21 位人員生成 AI 建議"}
+{"timestamp":"2026-03-22T13:35:10.351Z","step":"預載","status":"成功","message":"載入 3/22 業績預設資料"}
+{"timestamp":"2026-03-22T13:35:13.185Z","step":"預載","status":"成功","message":"載入 3/22 業績預設資料"}
+{"timestamp":"2026-03-22T13:35:22.780Z","step":"接收","status":"成功","message":"接收到原始業績文字"}
+{"timestamp":"2026-03-22T13:35:22.780Z","step":"解析","status":"成功","message":"解析成功，共 21 筆人員資料"}
+{"timestamp":"2026-03-22T13:35:22.784Z","step":"審計","status":"成功","message":"審計全數通過"}
+{"timestamp":"2026-03-22T13:35:22.787Z","step":"排序","status":"成功","message":"排名計算完成"}
+{"timestamp":"2026-03-22T13:35:23.411Z","step":"公告","status":"成功","message":"公告與周邊文本生成"}
+{"timestamp":"2026-03-22T13:35:24.689Z","step":"存檔","status":"成功","message":"存檔與備份完成：report_1774186524687.json"}
+{"timestamp":"2026-03-22T13:35:25.014Z","step":"建議","status":"成功","message":"已為 21 位人員生成 AI 建議"}
+{"timestamp":"2026-03-22T13:36:32.098Z","step":"接收","status":"成功","message":"接收到原始業績文字"}
+{"timestamp":"2026-03-22T13:36:32.099Z","step":"解析","status":"成功","message":"解析成功，共 21 筆人員資料"}
+{"timestamp":"2026-03-22T13:36:32.103Z","step":"審計","status":"成功","message":"審計全數通過"}
+{"timestamp":"2026-03-22T13:36:32.107Z","step":"排序","status":"成功","message":"排名計算完成"}
+{"timestamp":"2026-03-22T13:36:32.742Z","step":"公告","status":"成功","message":"公告與周邊文本生成"}
+{"timestamp":"2026-03-22T13:36:33.997Z","step":"存檔","status":"成功","message":"存檔與備份完成：report_1774186593994.json"}
+{"timestamp":"2026-03-22T13:36:34.329Z","step":"建議","status":"成功","message":"已為 21 位人員生成 AI 建議"}
+{"timestamp":"2026-03-22T13:36:39.637Z","step":"預載","status":"成功","message":"載入 3/22 業績預設資料"}
+{"timestamp":"2026-03-22T13:38:40.195Z","step":"接收","status":"成功","message":"接收到原始業績文字"}
+{"timestamp":"2026-03-22T13:38:40.196Z","step":"解析","status":"成功","message":"解析成功，共 21 筆人員資料"}
+{"timestamp":"2026-03-22T13:38:40.209Z","step":"審計","status":"成功","message":"審計全數通過"}
+{"timestamp":"2026-03-22T13:38:40.213Z","step":"排序","status":"成功","message":"排名計算完成"}
+{"timestamp":"2026-03-22T13:38:40.849Z","step":"公告","status":"成功","message":"公告與周邊文本生成"}
+{"timestamp":"2026-03-22T13:38:42.112Z","step":"存檔","status":"成功","message":"存檔與備份完成：report_1774186722108.json"}
+{"timestamp":"2026-03-22T13:38:42.435Z","step":"建議","status":"成功","message":"已為 21 位人員生成 AI 建議"}
+{"timestamp":"2026-03-22T13:39:10.441Z","step":"預載","status":"成功","message":"載入 3/22 業績預設資料"}
+{"timestamp":"2026-03-22T13:40:27.972Z","step":"接收","status":"成功","message":"接收到原始業績文字"}
+{"timestamp":"2026-03-22T13:40:27.972Z","step":"解析","status":"成功","message":"解析成功，共 21 筆人員資料"}
+{"timestamp":"2026-03-22T13:40:27.976Z","step":"審計","status":"成功","message":"審計全數通過"}
+{"timestamp":"2026-03-22T13:40:27.979Z","step":"排序","status":"成功","message":"排名計算完成"}
+{"timestamp":"2026-03-22T13:40:28.606Z","step":"公告","status":"成功","message":"公告與周邊文本生成"}
+{"timestamp":"2026-03-22T13:40:29.858Z","step":"存檔","status":"成功","message":"存檔與備份完成：report_1774186829856.json"}
+{"timestamp":"2026-03-22T13:40:30.193Z","step":"建議","status":"成功","message":"已為 21 位人員生成 AI 建議"}
+{"timestamp":"2026-03-22T14:06:45.866Z","step":"接收","status":"成功","message":"接收到原始業績文字"}
+{"timestamp":"2026-03-22T14:06:45.871Z","step":"解析","status":"成功","message":"解析成功，共 21 筆人員資料"}
+{"timestamp":"2026-03-22T14:06:45.886Z","step":"審計","status":"成功","message":"審計全數通過"}
+{"timestamp":"2026-03-22T14:06:45.889Z","step":"排序","status":"成功","message":"排名計算完成（共用契約）"}
+{"timestamp":"2026-03-22T14:06:46.536Z","step":"公告","status":"成功","message":"公告與周邊文本生成"}
+{"timestamp":"2026-03-22T14:06:47.804Z","step":"存檔","status":"成功","message":"存檔與備份完成：report_1774188407791.json"}
+{"timestamp":"2026-03-22T14:06:48.126Z","step":"建議","status":"成功","message":"已為 21 位人員生成 AI 建議"}
+{"timestamp":"2026-03-22T14:06:55.213Z","step":"接收","status":"成功","message":"接收到原始業績文字"}
+{"timestamp":"2026-03-22T14:06:55.213Z","step":"解析","status":"成功","message":"解析成功，共 21 筆人員資料"}
+{"timestamp":"2026-03-22T14:06:55.217Z","step":"審計","status":"成功","message":"審計全數通過"}
+{"timestamp":"2026-03-22T14:06:55.220Z","step":"排序","status":"成功","message":"排名計算完成（共用契約）"}
+{"timestamp":"2026-03-22T14:06:55.856Z","step":"公告","status":"成功","message":"公告與周邊文本生成"}
+{"timestamp":"2026-03-22T14:06:57.111Z","step":"存檔","status":"成功","message":"存檔與備份完成：report_1774188417109.json"}
+{"timestamp":"2026-03-22T14:06:57.430Z","step":"建議","status":"成功","message":"已為 21 位人員生成 AI 建議"}
+{"timestamp":"2026-03-22T14:07:37.742Z","step":"接收","status":"成功","message":"接收到原始業績文字"}
+{"timestamp":"2026-03-22T14:07:37.743Z","step":"解析","status":"成功","message":"解析成功，共 21 筆人員資料"}
+{"timestamp":"2026-03-22T14:07:37.746Z","step":"審計","status":"成功","message":"審計全數通過"}
+{"timestamp":"2026-03-22T14:07:37.749Z","step":"排序","status":"成功","message":"排名計算完成（共用契約）"}
+{"timestamp":"2026-03-22T14:07:38.375Z","step":"公告","status":"成功","message":"公告與周邊文本生成"}
+{"timestamp":"2026-03-22T14:07:39.626Z","step":"存檔","status":"成功","message":"存檔與備份完成：report_1774188459612.json"}
+{"timestamp":"2026-03-22T14:07:39.959Z","step":"建議","status":"成功","message":"已為 21 位人員生成 AI 建議"}
+{"timestamp":"2026-03-22T14:08:52.524Z","step":"接收","status":"成功","message":"接收到原始業績文字"}
+{"timestamp":"2026-03-22T14:08:52.525Z","step":"解析","status":"成功","message":"解析成功，共 21 筆人員資料"}
+{"timestamp":"2026-03-22T14:08:52.539Z","step":"審計","status":"成功","message":"審計全數通過"}
+{"timestamp":"2026-03-22T14:08:52.542Z","step":"排序","status":"成功","message":"排名計算完成（共用契約）"}
+{"timestamp":"2026-03-22T14:08:53.179Z","step":"公告","status":"成功","message":"公告與周邊文本生成"}
+{"timestamp":"2026-03-22T14:08:54.438Z","step":"存檔","status":"成功","message":"存檔與備份完成：report_1774188534436.json"}
+{"timestamp":"2026-03-22T14:08:54.761Z","step":"建議","status":"成功","message":"已為 21 位人員生成 AI 建議"}
+{"timestamp":"2026-03-22T14:08:57.236Z","step":"預載","status":"成功","message":"載入 3/22 業績預設資料"}
+{"timestamp":"2026-03-22T14:20:37.450Z","step":"接收","status":"成功","message":"接收到原始業績文字"}
+{"timestamp":"2026-03-22T14:20:37.451Z","step":"解析","status":"成功","message":"解析成功，共 21 筆人員資料"}
+{"timestamp":"2026-03-22T14:20:37.455Z","step":"審計","status":"成功","message":"審計全數通過"}
+{"timestamp":"2026-03-22T14:20:37.458Z","step":"排序","status":"成功","message":"排名計算完成（共用契約）"}
+{"timestamp":"2026-03-22T14:20:38.077Z","step":"公告","status":"成功","message":"公告與周邊文本生成"}
+{"timestamp":"2026-03-22T14:20:39.328Z","step":"存檔","status":"成功","message":"存檔與備份完成：report_1774189239326.json"}
+{"timestamp":"2026-03-22T14:20:39.636Z","step":"建議","status":"成功","message":"已為 21 位人員生成 AI 建議"}
+{"timestamp":"2026-03-22T15:52:51.708Z","step":"接收","status":"成功","message":"接收到原始業績文字"}
+{"timestamp":"2026-03-22T15:52:51.708Z","step":"解析","status":"成功","message":"解析成功，共 21 筆人員資料"}
+{"timestamp":"2026-03-22T15:52:51.726Z","step":"審計","status":"成功","message":"審計全數通過"}
+{"timestamp":"2026-03-22T15:52:51.730Z","step":"排序","status":"成功","message":"排名計算完成（共用契約）"}
+{"timestamp":"2026-03-22T15:52:52.353Z","step":"公告","status":"成功","message":"公告與周邊文本生成"}
+{"timestamp":"2026-03-22T15:52:53.616Z","step":"存檔","status":"成功","message":"存檔與備份完成：report_1774194773613.json"}
+{"timestamp":"2026-03-22T15:52:53.939Z","step":"建議","status":"成功","message":"已為 21 位人員生成 AI 建議"}
+{"timestamp":"2026-03-22T16:01:38.554Z","step":"接收","status":"成功","message":"接收到原始業績文字"}
+{"timestamp":"2026-03-22T16:01:38.554Z","step":"解析","status":"成功","message":"解析成功，共 21 筆人員資料"}
+{"timestamp":"2026-03-22T16:01:38.557Z","step":"審計","status":"成功","message":"審計全數通過"}
+{"timestamp":"2026-03-22T16:01:38.560Z","step":"排序","status":"成功","message":"排名計算完成（共用契約）"}
+{"timestamp":"2026-03-22T16:01:39.207Z","step":"公告","status":"成功","message":"公告與周邊文本生成"}
+{"timestamp":"2026-03-22T16:01:40.482Z","step":"存檔","status":"成功","message":"存檔與備份完成：report_1774195300480.json"}
+{"timestamp":"2026-03-22T16:01:40.800Z","step":"建議","status":"成功","message":"已為 21 位人員生成 AI 建議"}
+{"timestamp":"2026-03-22T16:01:44.334Z","step":"接收","status":"成功","message":"接收到原始業績文字"}
+{"timestamp":"2026-03-22T16:01:44.334Z","step":"解析","status":"成功","message":"解析成功，共 21 筆人員資料"}
+{"timestamp":"2026-03-22T16:01:44.338Z","step":"審計","status":"成功","message":"審計全數通過"}
+{"timestamp":"2026-03-22T16:01:44.340Z","step":"排序","status":"成功","message":"排名計算完成（共用契約）"}
+{"timestamp":"2026-03-22T16:01:44.983Z","step":"公告","status":"成功","message":"公告與周邊文本生成"}
+{"timestamp":"2026-03-22T16:01:46.250Z","step":"存檔","status":"成功","message":"存檔與備份完成：report_1774195306248.json"}
+{"timestamp":"2026-03-22T16:01:46.558Z","step":"建議","status":"成功","message":"已為 21 位人員生成 AI 建議"}

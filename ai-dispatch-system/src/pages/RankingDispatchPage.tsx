@@ -80,12 +80,12 @@ function DispatchCard({
         {items.map((item) => {
           const mot = motivations[item.employee_name] ?? item.suggestion_text ?? '';
           return (
-            <div key={item.group_order_no} style={{ background: EMPEROR_UI.pageBg, border: '1px solid ' + EMPEROR_UI.borderMain, borderRadius: 8, padding: '8px 10px 8px 20px', position: 'relative' }}>
+            <div key={item.group_order_no} className="glass" style={{ border: '1px solid ' + EMPEROR_UI.borderMain, borderRadius: 8, padding: '8px 10px 8px 20px', position: 'relative' }}>
               {/* 序號泡 — 點擊複製「梯隊第X順位：姓名」 */}
               <div
                 onClick={() => onCopy(`${gs.label} 第${item.group_order_no}順位：${item.employee_name}`, '派單順位')}
                 title="點擊複製派單順位"
-                style={{ position: 'absolute', top: -9, left: -9, background: gs.accent, color: '#000', width: 22, height: 22, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: 11, cursor: 'pointer' }}
+                style={{ position: 'absolute', top: -9, left: -9, background: gs.accent, color: '#000', width: 22, height: 22, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: 13, fontFamily: '"Orbitron", sans-serif', cursor: 'pointer', boxShadow: '0 0 10px ' + gs.accent }}
               >
                 {item.group_order_no}
               </div>
@@ -104,7 +104,7 @@ function DispatchCard({
                   onClick={() => onCopy(`${item.employee_name} 整合名次：第 ${item.rank_no} 名`, '整合名次')}
                   title="點擊複製整合名次"
                 >
-                  <div style={{ fontSize: 10, color: EMPEROR_UI.textMuted, background: EMPEROR_UI.cardBg, padding: '2px 8px', borderRadius: 20, border: '1px solid ' + EMPEROR_UI.borderAccent }}>
+                  <div style={{ fontSize: 11, fontFamily: '"Orbitron", sans-serif', color: EMPEROR_UI.textMuted, background: EMPEROR_UI.cardBg, padding: '2px 8px', borderRadius: 20, border: '1px solid ' + EMPEROR_UI.borderAccent, boxShadow: '0 0 8px rgba(0,212,255,0.1)' }}>
                     總 #{item.rank_no}
                   </div>
                 </Clickable>
@@ -319,7 +319,7 @@ export function RankingDispatchPage(): React.ReactElement {
                   <div style={{ background: EMPEROR_UI.sidebarBg, border: '1px solid ' + TU.shadow, borderLeft: '3px solid ' + TU.bright, borderRadius: 10, padding: '10px 12px', position: 'relative', overflow: 'hidden' }}>
                     <div style={{ position: 'absolute', right: -8, top: -6, fontSize: 36, opacity: 0.07, pointerEvents: 'none' }}>💰</div>
                     <div style={{ fontSize: 10, color: EMPEROR_UI.textMuted, fontWeight: 700, marginBottom: 3 }}>💰 整合總業績 <span style={{ color: TU.core, fontSize: 9 }}>▸ 點擊 → 管理者日報</span></div>
-                    <div style={{ fontSize: 22, fontWeight: 900, color: TU.bright }}>{fmt(totalRevenue)}</div>
+                    <div style={{ fontSize: 24, fontWeight: 900, color: TU.bright, fontFamily: '"Orbitron", sans-serif' }}>{fmt(totalRevenue)}</div>
                   </div>
                 </Clickable>
               );
@@ -327,7 +327,7 @@ export function RankingDispatchPage(): React.ReactElement {
             <Clickable onClick={() => onCopy(`本次排名共 ${data.rankings.length} 人`, '參賽人數')} title="點擊複製參賽人數">
               <div style={{ background: EMPEROR_UI.cardBg, border: '1px solid ' + EMPEROR_UI.borderAccent, borderLeft: '3px solid ' + MU.bright, borderRadius: 10, padding: '10px 12px' }}>
                 <div style={{ fontSize: 10, color: EMPEROR_UI.textMuted, fontWeight: 700, marginBottom: 3 }}>參賽人數</div>
-                <div style={{ fontSize: 22, fontWeight: 900, color: MU.text }}>{data.rankings.length} 人</div>
+                <div style={{ fontSize: 24, fontWeight: 900, color: MU.text, fontFamily: '"Orbitron", sans-serif' }}>{data.rankings.length} 人</div>
               </div>
             </Clickable>
           </div>
@@ -472,7 +472,7 @@ export function RankingDispatchPage(): React.ReactElement {
                             {/* 名次 — 點擊複製「第X名：姓名」 */}
                             <td style={{ padding: '8px 10px', borderBottom: '1px solid ' + EMPEROR_UI.borderMain, textAlign: 'center', verticalAlign: 'middle' }}>
                               <Clickable onClick={() => onCopy(`第 ${row.rank_no} 名：${row.employee_name}`, '名次')} title="點擊複製名次＋姓名" color={rankColor} bold>
-                                <span style={{ fontSize: isTop3 ? 17 : 13 }}>#{row.rank_no}</span>
+                                <span style={{ fontSize: isTop3 ? 18 : 14, fontFamily: '"Orbitron", sans-serif' }}>#{row.rank_no}</span>
                               </Clickable>
                             </td>
 
@@ -525,28 +525,28 @@ export function RankingDispatchPage(): React.ReactElement {
                             {/* 追續 — 點擊複製筆數 */}
                             <td style={{ padding: '8px 10px', borderBottom: '1px solid ' + EMPEROR_UI.borderMain, textAlign: 'right', verticalAlign: 'middle' }}>
                               <Clickable onClick={() => onCopy(`${row.employee_name} 追續成交：${row.total_followup_count} 筆`, '追續')} title="點擊複製追續成交筆數" color={EMPEROR_UI.textSecondary}>
-                                {row.total_followup_count}
+                                <span style={{ fontFamily: '"Orbitron", sans-serif', fontSize: 13 }}>{row.total_followup_count}</span>
                               </Clickable>
                             </td>
 
                             {/* 續單業績 — 點擊複製 */}
                             <td style={{ padding: '8px 10px', borderBottom: '1px solid ' + EMPEROR_UI.borderMain, textAlign: 'right', verticalAlign: 'middle' }}>
                               <Clickable onClick={() => onCopy(`${row.employee_name} 續單業績：${fmtRaw(row.total_followup_amount)} 元`, '續單業績')} title="點擊複製續單業績金額" color={EMPEROR_UI.textSecondary}>
-                                {fmt(row.total_followup_amount)}
+                                <span style={{ fontFamily: '"Orbitron", sans-serif', fontSize: 13 }}>{fmt(row.total_followup_amount)}</span>
                               </Clickable>
                             </td>
 
                             {/* 總業績 — 點擊複製 */}
                             <td style={{ padding: '8px 10px', borderBottom: '1px solid ' + EMPEROR_UI.borderMain, textAlign: 'right', verticalAlign: 'middle' }}>
                               <Clickable onClick={() => onCopy(`${row.employee_name} 總業績：${fmtRaw(row.total_revenue_amount)} 元`, '總業績')} title="點擊複製總業績" color={EMPEROR_UI.textSecondary}>
-                                {fmt(row.total_revenue_amount)}
+                                <span style={{ fontFamily: '"Orbitron", sans-serif', fontSize: 13 }}>{fmt(row.total_revenue_amount)}</span>
                               </Clickable>
                             </td>
 
                             {/* 實收 — 點擊複製 */}
                             <td style={{ padding: '8px 10px', borderBottom: '1px solid ' + EMPEROR_UI.borderMain, textAlign: 'right', verticalAlign: 'middle', fontSize: 13 }}>
                               <Clickable onClick={() => onCopy(`${row.employee_name} 實收：${fmtRaw(row.total_actual_amount)} 元`, '實收')} title="點擊複製實收金額" color={TU.bright} bold>
-                                {fmt(row.total_actual_amount)}
+                                <span style={{ fontFamily: '"Orbitron", sans-serif', fontSize: 14 }}>{fmt(row.total_actual_amount)}</span>
                               </Clickable>
                             </td>
                           </tr>

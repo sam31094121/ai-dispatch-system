@@ -1,0 +1,2320 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>兆櫃 AI 派單 · BLACK HOLE CORE v8.0</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --void:       #050005;
+      --deep:       #0a0005;
+      --glass:      rgba(255,50,50,0.03);
+      --glass-b:    rgba(255,50,50,0.08);
+      --cyan:       #00ffcc; /* Nerve Flash */
+      --cyan-dim:   rgba(0,255,204,0.15);
+      --cyan-glow:  rgba(0,255,204,0.5);
+      --purple:     #ff2a4b; /* Blood Red replacing purple */
+      --purple-dim: rgba(255,42,75,0.15);
+      --gold:       #ffaa00; /* Bio Energy */
+      --gold-dim:   rgba(255,170,0,0.2);
+      --red:        #ff003c;
+      --green:      #00ff88;
+      --txt:        #ffd6e0;
+      --muted:      #a8849c;
+      --panel-bg:   rgba(8,0,5,0.88); /* Organic dark tissue */
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body {
+      background:var(--void);
+      color:var(--txt);
+      font-family:'Outfit',sans-serif;
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+
+    /* ═══════════════════════════════════════════
+       ANIMATED CANVAS BACKGROUND
+    ═══════════════════════════════════════════ */
+    #bg-canvas {
+      position:fixed; inset:0; z-index:0;
+      width:100%; height:100%;
+      pointer-events:none;
+    }
+
+    /* ═══════════════════════════════════════════
+       CONTENT WRAPPER
+    ═══════════════════════════════════════════ */
+    #app { position:relative; z-index:1; }
+
+    /* ═══════════════════════════════════════════
+       TICKER STRIP
+    ═══════════════════════════════════════════ */
+    .ticker-strip {
+      background:linear-gradient(90deg, var(--void), rgba(0,245,212,0.04), var(--void));
+      border-bottom:1px solid rgba(0,245,212,0.12);
+      padding:.3rem 0;
+      overflow:hidden;
+      white-space:nowrap;
+    }
+    .ticker-inner {
+      display:inline-block;
+      animation:tickerScroll 32s linear infinite;
+      font-family:'Orbitron',sans-serif;
+      font-size:.65rem;
+      letter-spacing:3px;
+      color:rgba(0,245,212,0.55);
+    }
+    @keyframes tickerScroll {
+      0%   { transform:translateX(100vw); }
+      100% { transform:translateX(-100%); }
+    }
+
+    /* ═══════════════════════════════════════════
+       HEADER
+    ═══════════════════════════════════════════ */
+    header {
+      position:sticky; top:0; z-index:100;
+      background:rgba(0,0,5,0.88);
+      backdrop-filter:blur(24px);
+      border-bottom:1px solid rgba(139,92,246,0.2);
+      box-shadow:0 4px 40px rgba(0,0,0,0.8), 0 0 0 1px rgba(0,245,212,0.04);
+      padding:.8rem 2rem;
+      display:flex; justify-content:space-between; align-items:center;
+      gap:1rem; flex-wrap:wrap;
+    }
+
+    /* City network SVG map area */
+    .city-net {
+      display:flex; align-items:center; gap:1.4rem;
+      flex-shrink:0;
+    }
+    .city-node {
+      display:flex; flex-direction:column; align-items:center; gap:.25rem;
+      font-family:'Orbitron',sans-serif; font-size:.52rem;
+      color:rgba(0,245,212,0.5); letter-spacing:1px;
+    }
+    .city-dot {
+      width:7px; height:7px; border-radius:50%;
+      background:var(--cyan);
+      box-shadow:0 0 6px var(--cyan), 0 0 14px rgba(0,245,212,0.5);
+      animation:cityPulse 2.2s ease-in-out infinite;
+    }
+    .city-node:nth-child(2) .city-dot { animation-delay:.3s; background:var(--purple); box-shadow:0 0 6px var(--purple),0 0 14px rgba(139,92,246,0.5); }
+    .city-node:nth-child(3) .city-dot { animation-delay:.6s; background:var(--gold); box-shadow:0 0 6px var(--gold),0 0 14px rgba(255,215,0,0.5); }
+    .city-node:nth-child(4) .city-dot { animation-delay:.9s; }
+    .city-node:nth-child(5) .city-dot { animation-delay:1.2s; background:var(--purple); box-shadow:0 0 6px var(--purple),0 0 14px rgba(139,92,246,0.5); }
+    .city-node:nth-child(6) .city-dot { animation-delay:1.5s; background:var(--gold); box-shadow:0 0 6px var(--gold),0 0 14px rgba(255,215,0,0.5); }
+    @keyframes cityPulse {
+      0%,100% { transform:scale(1); opacity:.7; }
+      50%      { transform:scale(1.6); opacity:1; }
+    }
+
+    .header-center {
+      display:flex; flex-direction:column; align-items:center; gap:.2rem;
+    }
+    .header-title {
+      font-family:'Orbitron',sans-serif; font-size:1.15rem; font-weight:900;
+      letter-spacing:3px; color:#fff;
+      text-shadow:0 0 20px var(--cyan), 0 0 40px rgba(0,255,204,0.6);
+      animation: nerveFlash 4s infinite;
+    }
+    .header-sub {
+      font-family:'Orbitron',sans-serif; font-size:.58rem;
+      letter-spacing:4px; color:rgba(255,42,75,0.9);
+      text-shadow:0 0 10px rgba(255,42,75,0.5);
+    }
+
+    @keyframes nerveFlash {
+      0%, 96%, 100% { opacity: 0.9; text-shadow:0 0 20px var(--cyan); }
+      97% { opacity: 1; filter: brightness(2) contrast(1.5); text-shadow:0 0 50px #fff, 0 0 20px var(--cyan); }
+      98% { opacity: 0.6; }
+      99% { opacity: 1; filter: brightness(2.5); text-shadow:0 0 40px var(--cyan); }
+    }
+
+    .header-right { display:flex; align-items:center; gap:1.2rem; flex-wrap:wrap; }
+
+    .uptime-badge {
+      display:flex; align-items:center; gap:.45rem;
+      font-family:'Orbitron',sans-serif; font-size:.68rem;
+      color:var(--green); letter-spacing:1px;
+    }
+    .uptime-dot {
+      width:8px; height:8px; border-radius:50%;
+      background:var(--green);
+      box-shadow:0 0 8px var(--green);
+      animation:heartBeat 1.4s ease-in-out infinite;
+    }
+    @keyframes heartBeat {
+      0%   { transform: scale(1); opacity:0.8; filter: brightness(1) drop-shadow(0 0 5px currentColor); }
+      15%  { transform: scale(1.15); opacity:1; filter: brightness(1.5) drop-shadow(0 0 25px currentColor); }
+      25%  { transform: scale(1); opacity:0.9; filter: brightness(1.1) drop-shadow(0 0 10px currentColor); }
+      35%  { transform: scale(1.25); opacity:1; filter: brightness(2) drop-shadow(0 0 40px currentColor); }
+      55%  { transform: scale(1); opacity:0.8; filter: brightness(1) drop-shadow(0 0 5px currentColor); }
+      100% { transform: scale(1); opacity:0.8; }
+    }
+
+    #sys-clock {
+      font-family:'Orbitron',sans-serif; font-size:.85rem;
+      color:var(--cyan); letter-spacing:2px;
+      text-shadow:0 0 10px var(--cyan-glow);
+    }
+
+    .nav-tabs { display:flex; gap:.5rem; flex-wrap:wrap; }
+    .tab-btn {
+      background:transparent;
+      border:1px solid var(--glass-b);
+      color:rgba(255,255,255,0.6);
+      padding:.42rem 1.1rem; border-radius:8px;
+      cursor:pointer; transition:.3s;
+      font-family:'Orbitron',sans-serif; font-size:.68rem; letter-spacing:1px;
+      position:relative; overflow:hidden;
+    }
+    .tab-btn::before {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(135deg, var(--cyan-dim), var(--purple-dim));
+      opacity:0; transition:.3s;
+    }
+    .tab-btn:hover::before, .tab-btn.active::before { opacity:1; }
+    .tab-btn:hover, .tab-btn.active {
+      border-color:var(--cyan);
+      color:#fff;
+      box-shadow:0 0 16px rgba(0,245,212,0.25), inset 0 0 20px rgba(0,245,212,0.05);
+    }
+    .tab-btn span { position:relative; z-index:1; }
+
+    /* ═══════════════════════════════════════════
+       HERO COUNTER STRIP
+    ═══════════════════════════════════════════ */
+    .hero-counters {
+      display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
+      border-bottom:1px solid rgba(0,245,212,0.08);
+      background:rgba(0,245,212,0.08);
+      margin-bottom:0;
+    }
+    .hero-card {
+      background:var(--void);
+      padding:1rem 1.8rem;
+      display:flex; flex-direction:column; gap:.2rem;
+      position:relative; overflow:hidden;
+      transition:.3s;
+    }
+    .hero-card::after {
+      content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
+      background:var(--cyan);
+      box-shadow:0 0 12px var(--cyan);
+      animation:scanLine 3s ease-in-out infinite;
+    }
+    .hero-card:nth-child(2)::after { background:var(--purple); box-shadow:0 0 12px var(--purple); animation-delay:1s; }
+    .hero-card:nth-child(3)::after { background:var(--gold); box-shadow:0 0 12px var(--gold); animation-delay:2s; }
+    @keyframes scanLine {
+      0%,100% { opacity:.4; transform:scaleX(0.3); }
+      50%      { opacity:1; transform:scaleX(1); }
+    }
+    .hero-feed-label {
+      font-family:'Orbitron',sans-serif; font-size:.55rem; letter-spacing:3px;
+      color:var(--muted); display:flex; align-items:center; gap:.4rem;
+    }
+    .feed-live-dot {
+      width:5px; height:5px; border-radius:50%; background:var(--red);
+      animation:uptimePulse .8s infinite;
+    }
+    .hero-value {
+      font-family:'Orbitron',sans-serif; font-size:1.6rem; font-weight:900;
+      color:#fff; line-height:1;
+      text-shadow:0 0 20px var(--cyan-glow);
+    }
+    .hero-card:nth-child(2) .hero-value { text-shadow:0 0 20px rgba(139,92,246,0.7); }
+    .hero-card:nth-child(3) .hero-value { text-shadow:0 0 20px rgba(255,215,0,0.7); color:var(--gold); }
+    .hero-unit {
+      font-family:'Orbitron',sans-serif; font-size:.6rem;
+      letter-spacing:2px; color:var(--cyan); margin-top:.1rem;
+    }
+    .hero-card:nth-child(2) .hero-unit { color:var(--purple); }
+    .hero-card:nth-child(3) .hero-unit { color:var(--gold); }
+
+    /* ═══════════════════════════════════════════
+       MAIN LAYOUT
+    ═══════════════════════════════════════════ */
+    main { padding:1.5rem; display:flex; flex-direction:column; gap:1.5rem; }
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+    .full   { grid-column:1/-1; }
+
+    /* ═══════════════════════════════════════════
+       PANEL BASE (Glassmorphism + 3D)
+    ═══════════════════════════════════════════ */
+    .panel {
+      background:var(--panel-bg);
+      border:1px solid var(--glass-b);
+      border-radius:16px;
+      padding:1.5rem;
+      backdrop-filter:blur(20px);
+      box-shadow:
+        0 0 0 1px rgba(0,245,212,0.04),
+        0 8px 32px rgba(0,0,0,0.6),
+        0 2px 8px rgba(0,245,212,0.06),
+        inset 0 1px 0 rgba(255,255,255,0.04);
+      animation:panelIn .5s cubic-bezier(.22,1,.36,1) both;
+      transform-style:preserve-3d;
+      position:relative;
+      overflow:hidden;
+    }
+    .panel::before {
+      content:''; position:absolute; inset:0;
+      border-radius:16px;
+      background:linear-gradient(135deg, rgba(0,245,212,0.03) 0%, transparent 50%, rgba(139,92,246,0.03) 100%);
+      pointer-events:none;
+    }
+    /* Animated gradient border */
+    .panel-border-anim {
+      border:1px solid transparent;
+      background-clip:padding-box;
+      position:relative;
+    }
+    .panel-border-anim::after {
+      content:''; position:absolute; inset:-1px;
+      border-radius:17px;
+      background:linear-gradient(var(--ang,0deg), var(--cyan), var(--purple), var(--gold), var(--cyan));
+      z-index:-1;
+      animation:borderRotate 5s linear infinite;
+      opacity:.5;
+    }
+    @keyframes borderRotate {
+      to { --ang:360deg; }
+    }
+    @property --ang {
+      syntax:'<angle>'; initial-value:0deg; inherits:false;
+    }
+
+    @keyframes panelIn {
+      from { opacity:0; transform:translateY(16px) rotateX(4deg); }
+      to   { opacity:1; transform:translateY(0) rotateX(0deg); }
+    }
+    .panel:hover {
+      box-shadow:
+        0 0 0 1px rgba(0,245,212,0.12),
+        0 16px 48px rgba(0,0,0,0.7),
+        0 4px 16px rgba(0,245,212,0.1),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+      transform:translateY(-2px);
+      transition:transform .3s, box-shadow .3s;
+    }
+
+    .ph {
+      display:flex; justify-content:space-between; align-items:center;
+      margin-bottom:1.2rem;
+      padding-bottom:.8rem;
+      border-bottom:1px solid rgba(255,255,255,0.05);
+      gap:.5rem; flex-wrap:wrap;
+    }
+    .ph h2 {
+      font-family:'Orbitron',sans-serif; font-size:.9rem; font-weight:700;
+      color:var(--cyan); letter-spacing:1px;
+      text-shadow:0 0 12px var(--cyan-glow);
+    }
+
+    /* ═══════════════════════════════════════════
+       INJECTION TERMINAL (main input)
+    ═══════════════════════════════════════════ */
+    .terminal-panel {
+      background:#000008;
+      border-radius:16px;
+      padding:0;
+      overflow:hidden;
+      box-shadow:
+        0 0 0 1px rgba(0,245,212,0.2),
+        0 0 60px rgba(0,0,0,0.9),
+        0 0 0 4px rgba(0,0,0,1),
+        0 0 0 5px rgba(0,245,212,0.06);
+    }
+
+    .terminal-titlebar {
+      background:rgba(0,245,212,0.04);
+      border-bottom:1px solid rgba(0,245,212,0.15);
+      padding:.7rem 1.2rem;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:1rem; flex-wrap:wrap;
+    }
+    .terminal-title-left {
+      display:flex; align-items:center; gap:.8rem;
+    }
+    .terminal-dots { display:flex; gap:.4rem; }
+    .terminal-dots span {
+      width:11px; height:11px; border-radius:50%;
+      display:block;
+    }
+    .terminal-dots .d1 { background:#ef4444; box-shadow:0 0 6px #ef4444; }
+    .terminal-dots .d2 { background:#ffd700; box-shadow:0 0 6px #ffd700; }
+    .terminal-dots .d3 { background:#10b981; box-shadow:0 0 6px #10b981; }
+    .terminal-label {
+      font-family:'Orbitron',sans-serif; font-size:.72rem; font-weight:700;
+      color:var(--cyan); letter-spacing:2px;
+      text-shadow:0 0 8px var(--cyan-glow);
+    }
+
+    .terminal-meta {
+      display:flex; gap:1.2rem; flex-wrap:wrap;
+      font-family:'Orbitron',sans-serif; font-size:.6rem; color:var(--muted); letter-spacing:1px;
+    }
+    .terminal-meta .hl-c { color:var(--cyan); text-shadow:0 0 8px var(--cyan-glow); }
+    .terminal-meta .hl-g { color:var(--green); text-shadow:0 0 8px var(--green); }
+    .terminal-meta .hl-o { color:var(--gold); }
+
+    .terminal-body { padding:1.2rem 1.4rem; }
+
+    .terminal-prompt-line {
+      font-family:'Courier New',monospace; font-size:.72rem;
+      color:rgba(0,245,212,0.35); margin-bottom:.5rem;
+      letter-spacing:.5px;
+    }
+    .terminal-prompt-line .cursor {
+      display:inline-block; width:8px; height:1em;
+      background:var(--cyan); opacity:.8;
+      animation:blinkCursor .9s step-end infinite;
+      vertical-align:text-bottom; margin-left:2px;
+    }
+    @keyframes blinkCursor { 0%,100%{opacity:.8} 50%{opacity:0} }
+
+    .wormhole-textarea-wrap {
+      position:relative;
+      border-radius:16px;
+      padding:3px;
+      background:linear-gradient(var(--ta-ang,135deg), var(--red), var(--purple), var(--gold), transparent, var(--cyan));
+      animation:taBorderSpin 4s linear infinite, heartBeat 1.4s ease-in-out infinite;
+      box-shadow: 0 0 60px rgba(255,42,75,0.8), 0 0 20px rgba(0,255,204,0.3);
+      perspective: 1000px;
+    }
+    .wormhole-textarea-wrap::after {
+      content:''; position:absolute; inset:4px;
+      border-radius:12px;
+      box-shadow: inset 0 0 120px rgba(5,0,5,1), inset 0 0 50px rgba(255,42,75,0.7);
+      pointer-events:none;
+      animation:breatheVoid 1.4s ease-in-out infinite alternate;
+      z-index: 2;
+    }
+    @property --ta-ang {
+      syntax:'<angle>'; initial-value:135deg; inherits:false;
+    }
+    @keyframes taBorderSpin { to { --ta-ang:495deg; } }
+    @keyframes breatheVoid {
+      0% { box-shadow: inset 0 0 120px rgba(5,0,5,1), inset 0 0 40px rgba(255,42,75,0.5); transform:translateZ(-5px); }
+      100% { box-shadow: inset 0 0 220px rgba(5,0,5,1), inset 0 0 100px rgba(0,255,204,0.7); transform:translateZ(-30px) scale(0.98); }
+    }
+
+    #raw-input {
+      width:100%; height:16rem;
+      background:radial-gradient(circle at 50% 50%, #050002 0%, rgba(20,0,5,0.95) 80%);
+      border:1px solid rgba(255,42,75,0.3); border-radius:12px;
+      color:var(--cyan);
+      padding:2rem 1.5rem;
+      font-size:.9rem; font-family:'Courier New',monospace;
+      resize:vertical; outline:none;
+      line-height:1.8;
+      text-shadow:0 0 8px rgba(0,255,204,0.6), 0 0 20px rgba(0,255,204,0.3);
+      display:block;
+      box-shadow:inset 0 0 100px rgba(5,0,5,1), inset 0 0 20px rgba(255,42,75,0.2);
+      transform-style: preserve-3d;
+      transition:transform .3s, box-shadow .3s;
+      position: relative;
+      z-index: 1;
+    }
+    #raw-input::placeholder {
+      color:rgba(255,42,75,0.4); text-shadow:0 0 10px rgba(255,42,75,0.4); font-family:'Courier New',monospace;
+    }
+    #raw-input:focus { 
+      transform:translateZ(-20px); 
+      box-shadow:inset 0 0 150px rgba(5,0,5,1), inset 0 0 80px rgba(255,42,75,0.6); 
+    }
+
+    /* ─ city bar ─ */
+    .city-bar {
+      display:flex; align-items:center; gap:.6rem;
+      font-family:'Orbitron',sans-serif; font-size:.58rem; letter-spacing:1.5px;
+      color:rgba(0,245,212,0.35); margin-top:1rem; flex-wrap:wrap;
+    }
+    .city-bar .cb-dot {
+      width:5px; height:5px; border-radius:50%;
+      background:var(--cyan); box-shadow:0 0 6px var(--cyan);
+      animation:cityPulse 2s infinite;
+      flex-shrink:0;
+    }
+    .city-bar .cb-sep { opacity:.2; }
+
+    /* ─ action row ─ */
+    .action-row { display:flex; gap:.8rem; justify-content:flex-end; align-items:center; margin-top:1rem; flex-wrap:wrap; }
+
+    /* ═══════════════════════════════════════════
+       BUTTONS
+    ═══════════════════════════════════════════ */
+    .btn-ghost {
+      background:rgba(255,42,75,0.08);
+      border:1px solid rgba(255,42,75,0.3);
+      color:rgba(255,214,224,0.8);
+      padding:.5rem 1.1rem; border-radius:8px;
+      font-family:'Orbitron',sans-serif; font-size:.65rem; letter-spacing:1px;
+      cursor:pointer; transition:.25s;
+    }
+    .btn-ghost:hover { background:rgba(255,42,75,0.2); border-color:rgba(255,42,75,0.6); color:#fff; box-shadow:0 0 10px var(--purple); }
+
+    .btn-quantum {
+      position:relative; overflow:hidden;
+      background:linear-gradient(135deg, #33000b, #66001a, #33000b);
+      border:1px solid var(--purple);
+      color:#fff;
+      padding:.7rem 2.4rem; border-radius:10px;
+      font-family:'Orbitron',sans-serif; font-weight:900; font-size:.78rem; letter-spacing:2px;
+      cursor:pointer; transition:.3s;
+      text-shadow:0 0 12px var(--cyan);
+      box-shadow:0 0 30px rgba(255,42,75,0.4), inset 0 0 30px rgba(255,42,75,0.2);
+      animation: heartBeat 1.4s ease-in-out infinite;
+    }
+    .btn-quantum::before {
+      content:''; position:absolute; top:0; left:-120%; width:60%; height:100%;
+      background:linear-gradient(90deg, transparent, rgba(0,255,204,0.8), transparent);
+      transition:0s;
+    }
+    .btn-quantum:hover::before { left:150%; transition:.4s; }
+    .btn-quantum:hover {
+      background:rgba(255,42,75,0.3);
+      box-shadow:0 0 60px rgba(255,42,75,0.8), 0 8px 30px rgba(255,42,75,0.4), inset 0 0 50px rgba(255,42,75,0.4);
+      transform:scale(1.05);
+      color: var(--cyan);
+    }
+    .btn-quantum:active { transform:translateY(0) scale(.98); box-shadow:0 0 10px rgba(0,245,212,0.3); }
+    .btn-quantum span { position:relative; z-index:1; }
+
+    /* Copy button */
+    .btn-copy {
+      background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.1);
+      color:rgba(255,255,255,0.7);
+      padding:.38rem .85rem; border-radius:7px;
+      font-size:.72rem; cursor:pointer; transition:.2s;
+      font-family:'Outfit',sans-serif;
+    }
+    .btn-copy:hover { background:var(--cyan-dim); border-color:var(--cyan); color:var(--cyan); }
+
+    .btn-sm { padding:.35rem .75rem; font-size:.7rem; }
+
+    /* ═══════════════════════════════════════════
+       FLOW LED PIPELINE
+    ═══════════════════════════════════════════ */
+    .flow-pipeline {
+      display:flex; align-items:center; gap:0;
+      margin-top:1.2rem; padding:.9rem 1rem;
+      background:rgba(0,0,0,0.4);
+      border:1px solid rgba(0,245,212,0.08);
+      border-radius:12px;
+      overflow-x:auto;
+      scrollbar-width:thin; scrollbar-color:rgba(0,245,212,0.2) transparent;
+    }
+
+    .flow-node-wrap { display:flex; align-items:center; flex-shrink:0; }
+
+    .node {
+      display:flex; flex-direction:column; align-items:center; gap:.3rem;
+      font-size:.65rem; font-family:'Orbitron',sans-serif; letter-spacing:.5px;
+      opacity:.35; transition:.4s ease;
+      cursor:default; min-width:52px;
+    }
+    .node-hex {
+      width:32px; height:32px;
+      clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+      background:#1a1a2e;
+      display:flex; align-items:center; justify-content:center;
+      transition:.4s;
+      position:relative;
+    }
+    .node-hex::before {
+      content:''; position:absolute; inset:-2px;
+      clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+      background:#374151;
+      z-index:-1; transition:.4s;
+    }
+    .node-dot { width:8px; height:8px; border-radius:50%; background:#374151; transition:.4s; }
+
+    .flow-arrow { color:rgba(255,42,75,0.5); font-size:.9rem; margin:0 .15rem; flex-shrink:0; padding-bottom:14px; transition:.4s; filter: drop-shadow(0 0 6px rgba(255,42,75,0.8)); }
+
+    /* States */
+    .node.running { opacity:1; color:var(--gold); }
+    .node.running .node-hex::before { background:var(--gold); }
+    .node.running .node-dot { background:var(--gold); box-shadow:0 0 25px var(--gold); animation:heartBeat 0.6s infinite; }
+    .node.running .flow-arrow + & { color:var(--gold); }
+
+    .node.success { opacity:1; color:var(--cyan); }
+    .node.success .node-hex::before { background:var(--cyan); }
+    .node.success .node-dot { background:var(--cyan); box-shadow:0 0 20px var(--cyan); }
+
+    .node.failed { opacity:1; color:var(--red); }
+    .node.failed .node-hex::before { background:var(--red); animation: heartBeat 0.3s infinite; }
+    .node.failed .node-dot { background:var(--red); box-shadow:0 0 25px var(--red); animation: heartBeat 0.3s infinite; }
+
+    .flow-node-wrap.active-conn .flow-arrow { color:var(--red); text-shadow:0 0 20px var(--red); animation: nerveFlash 0.5s infinite alternate; scale: 1.2; }
+
+    /* ═══════════════════════════════════════════
+       STAT CARDS -> MARKET MATRIX
+    ═══════════════════════════════════════════ */
+    .market-matrix {
+      display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:2px;
+      background:var(--purple-dim); border:1px solid rgba(255,42,75,0.3);
+      border-radius:10px; overflow:hidden; margin-bottom:1.2rem;
+      box-shadow:0 8px 32px rgba(5,0,5,0.9), 0 0 20px rgba(255,42,75,0.2) inset;
+    }
+    .mm-cell {
+      background:var(--deep); padding:.8rem 1rem;
+      display:flex; flex-direction:column; justify-content:center; gap:.25rem;
+      cursor:pointer; transition:.2s; position:relative;
+      animation: cellBreathe 4s infinite alternate;
+    }
+    @keyframes cellBreathe {
+      from { background: rgba(5,0,5,0.9); }
+      to { background: rgba(20,0,10,0.9); }
+    }
+    .mm-cell:hover { background:var(--purple-dim); transform:scale(1.04); z-index:10; box-shadow:0 0 30px var(--purple); border:1px solid var(--purple); }
+    .mm-cell::after { content:''; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--purple); opacity:0.8; box-shadow: 0 0 10px var(--purple); }
+    .mm-cell:nth-child(even)::after { background:var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+    .mm-label { font-size:.65rem; color:var(--muted); font-family:'Orbitron',sans-serif; letter-spacing:1px; display:flex; justify-content:space-between; align-items:center;}
+    .mm-val { font-size:1.3rem; color:#fff; font-family:'Courier New',monospace; font-weight:900; text-shadow:0 0 15px var(--cyan); animation: heartbeat 2s infinite; }
+    .mm-sub { font-size:.6rem; color:var(--green); font-family:'Orbitron',sans-serif; text-shadow:0 0 8px var(--green);}
+
+    /* ═══════════════════════════════════════════
+       RANKING TABLE
+    ═══════════════════════════════════════════ */
+    #rank-container { max-height:60vh; overflow-y:auto; scrollbar-width:thin; scrollbar-color:rgba(0,245,212,0.2) transparent; }
+
+    table { width:100%; border-collapse:collapse; font-size:.85rem; }
+    th {
+      text-align:left; padding:.6rem .8rem;
+      border-bottom:1px solid rgba(255,215,0,0.2);
+      color:var(--gold); font-size:.72rem; font-family:'Orbitron',sans-serif; letter-spacing:.5px;
+      background:rgba(255,215,0,0.03);
+    }
+    td { padding:.6rem .8rem; border-bottom:1px solid rgba(255,255,255,0.03); vertical-align:middle; }
+    tr:hover td { background:rgba(0,245,212,0.03); }
+
+    .badge { padding:.18rem .5rem; border-radius:5px; font-size:.68rem; font-weight:700; font-family:'Orbitron',sans-serif; }
+    .A1 { background:rgba(255,42,75,.2); color:var(--purple); border:1px solid rgba(255,42,75,.5); box-shadow:0 0 12px rgba(255,42,75,.4); }
+    .A2 { background:rgba(255,170,0,.2); color:var(--gold); border:1px solid rgba(255,170,0,.5); box-shadow:0 0 12px rgba(255,170,0,.4); }
+    .B  { background:rgba(0,255,204,.2); color:var(--cyan); border:1px solid rgba(0,255,204,.5); box-shadow:0 0 12px rgba(0,255,204,.4); }
+    .C  { background:rgba(100,116,139,.2); color:#94a3b8; border:1px solid rgba(100,116,139,.3); }
+    .rank-top { color:var(--cyan); font-weight:900; font-family:'Orbitron',sans-serif; text-shadow:0 0 15px var(--cyan), 0 0 30px #fff; animation: nerveFlash 3s infinite;}
+
+    .click-name {
+      cursor:pointer; transition:.2s;
+      border-bottom:1px dashed transparent;
+      font-weight: 700;
+      color: #ffd6e0;
+    }
+    .click-name:hover { color:var(--cyan); border-bottom-color:var(--cyan); text-shadow:0 0 12px var(--cyan); letter-spacing: 1px;}
+    .click-name:active { color:var(--purple); }
+
+    .group-header {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:.55rem .4rem; cursor:pointer;
+      border-bottom:1px solid rgba(255,255,255,0.05);
+      margin-bottom:.4rem; transition:.2s;
+    }
+    .group-header:hover { background:rgba(255,255,255,0.02); border-radius:6px; }
+    .group-header span { font-size:.72rem; color:var(--muted); }
+    .group-header strong { border-bottom:1px dashed transparent; transition:.15s; font-family:'Orbitron',sans-serif; font-size:.8rem; }
+    .group-header:hover strong { border-bottom-color:currentColor; }
+
+    /* ═══════════════════════════════════════════
+       AUDIT BADGE
+    ═══════════════════════════════════════════ */
+    #audit-badge {
+      font-family:'Orbitron',sans-serif; font-size:.65rem; letter-spacing:1px;
+      padding:.3rem .8rem; border-radius:20px;
+      background:rgba(100,116,139,0.15);
+      border:1px solid rgba(100,116,139,0.3);
+      color:var(--muted);
+    }
+
+    /* ═══════════════════════════════════════════
+       OUTPUT BOXES
+    ═══════════════════════════════════════════ */
+    .out-box {
+      width:100%; background:rgba(0,0,6,0.7);
+      border:1px solid rgba(255,255,255,0.07);
+      border-radius:10px; color:var(--txt);
+      padding:.9rem 1rem; font-size:.83rem;
+      font-family:'Courier New',monospace; resize:vertical; min-height:6rem; line-height:1.6;
+      outline:none; transition:border-color .2s;
+    }
+    .out-box:focus { border-color:rgba(0,245,212,0.2); }
+
+    /* ═══════════════════════════════════════════
+       TOAST — centered top
+    ═══════════════════════════════════════════ */
+    #toast {
+      position:fixed; top:1.4rem; left:50%; transform:translateX(-50%) translateY(-10px);
+      z-index:9999;
+      background:rgba(0,0,10,0.92);
+      border:1px solid rgba(0,245,212,0.35);
+      color:#fff; padding:.7rem 2rem; border-radius:30px;
+      font-size:.83rem; font-family:'Outfit',sans-serif;
+      backdrop-filter:blur(20px);
+      box-shadow:0 0 30px rgba(0,245,212,0.2), 0 8px 32px rgba(0,0,0,0.7);
+      opacity:0; pointer-events:none;
+      transition:opacity .3s, transform .3s;
+      white-space:nowrap;
+    }
+    #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    /* ═══════════════════════════════════════════
+       LOG MONITOR
+    ═══════════════════════════════════════════ */
+    #log-monitor {
+      height:22rem; overflow-y:auto;
+      font-family:'Courier New',monospace; font-size:.75rem;
+      scrollbar-width:thin; scrollbar-color:rgba(0,245,212,0.2) transparent;
+    }
+    .log-line {
+      display:flex; gap:.7rem; padding:.38rem .5rem;
+      border-bottom:1px solid rgba(255,255,255,0.02);
+      border-radius:5px; cursor:pointer; transition:.15s; align-items:center;
+    }
+    .log-line:hover { background:rgba(0,245,212,.04); border-color:rgba(0,245,212,.08); }
+    .log-line:hover .log-ts { color:var(--cyan); }
+    .log-ts   { color:var(--muted); flex-shrink:0; transition:.15s; cursor:pointer; }
+    .log-ts:hover { color:var(--cyan); text-decoration:underline dotted; }
+    .log-step { color:var(--cyan); flex-shrink:0; min-width:3.5rem; cursor:pointer; transition:.15s; font-weight:700; }
+    .log-step:hover { color:#fff; text-shadow:0 0 8px var(--cyan); }
+    .log-ok   { color:var(--green); cursor:pointer; }
+    .log-ok:hover { text-shadow:0 0 6px var(--green); }
+    .log-fail { color:var(--red); cursor:pointer; }
+    .log-fail:hover { text-shadow:0 0 6px var(--red); }
+    .log-msg  { color:rgba(255,255,255,.55); flex:1; cursor:pointer; transition:.15s; }
+    .log-msg:hover { color:rgba(255,255,255,.85); }
+    /* 日誌統計列 */
+    #log-stats { display:flex; gap:.8rem; padding:.5rem .2rem; margin-bottom:.5rem; flex-wrap:wrap; }
+    .log-stat-pill { font-size:.68rem; padding:.2rem .7rem; border-radius:20px; cursor:pointer; transition:.2s; font-family:'Orbitron',sans-serif; letter-spacing:.05em; }
+    .log-stat-pill:hover { transform:scale(1.06); box-shadow:0 0 12px currentColor; }
+
+    /* ═══════════════════════════════════════════
+       MISC UTILS
+    ═══════════════════════════════════════════ */
+    .empty { color:var(--muted); font-size:.85rem; padding:1rem 0; text-align:center; }
+    @keyframes pulse  { 0%,100%{opacity:.5} 50%{opacity:1} }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+    /* Responsive */
+    @media(max-width:768px) {
+      .grid-2 { grid-template-columns:1fr; }
+      .hero-counters { grid-template-columns:1fr; }
+      .header-title { font-size:.85rem; }
+      .city-net { display:none; }
+      main { padding:1rem; }
+      .seq-grid { grid-template-columns:repeat(5,1fr) !important; }
+    }
+
+    /* ═══════════════════════════════════════════
+       視覺連動與流光強化
+    ═══════════════════════════════════════════ */
+    @keyframes sparkRing {
+      0% { transform: scale(0.5) translate(-50%, -50%); opacity: 1; box-shadow: 0 0 0px var(--cyan); }
+      100% { transform: scale(1.8) translate(-50%, -50%); opacity: 0; box-shadow: 0 0 40px var(--cyan); }
+    }
+    .node-hex { position: relative; }
+    .node-hex::after {
+      content: ''; position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; border-radius: 50%;
+      border: 2px solid var(--cyan); opacity: 0; pointer-events: none; transform: translate(-50%, -50%);
+    }
+    .node.success .node-hex::after {
+      animation: sparkRing 0.8s ease-out;
+    }
+    @keyframes arrowFlow {
+      0% { color: rgba(255,42,75,0.3); text-shadow: none; }
+      50% { color: var(--cyan); text-shadow: 0 0 15px var(--cyan); transform: scale(1.3); }
+      100% { color: rgba(255,42,75,0.5); }
+    }
+    .flow-arrow { transition: color 0.3s; }
+    .flow-arrow.pulse {
+      animation: arrowFlow 0.8s ease;
+    }
+    #nexus-pulse {
+      position: fixed; inset: 0; z-index: 99999;
+      pointer-events: none; opacity: 0;
+      box-shadow: inset 0 0 80px var(--cyan);
+    }
+    #nexus-pulse.active {
+      animation: pulseFlash 0.6s ease-out forwards;
+    }
+    @keyframes pulseFlash {
+      0% { opacity: 0; box-shadow: inset 0 0 120px var(--cyan); }
+      40% { opacity: 0.5; }
+      100% { opacity: 0; }
+    }
+
+    /* ═══════════════════════════════════════════
+       功能性啟動序列面板（ACTIVATION SEQUENCE）
+    ═══════════════════════════════════════════ */
+    .seq-panel {
+      background: linear-gradient(135deg, rgba(5,0,8,0.95), rgba(10,0,15,0.9));
+      border: 1px solid rgba(0,255,204,0.15);
+      border-radius: 16px;
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .seq-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(0,255,204,0.04), transparent 70%);
+      pointer-events: none;
+    }
+    .seq-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 8px;
+      margin-top: 1rem;
+    }
+    .seq-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 4px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.02);
+      cursor: default;
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .seq-cell::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      opacity: 0;
+      transition: opacity 0.5s;
+      pointer-events: none;
+    }
+    .seq-num {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: rgba(255,255,255,0.15);
+      text-shadow: none;
+      transition: all 0.5s;
+      line-height: 1;
+    }
+    .seq-label {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.55rem;
+      letter-spacing: 1.5px;
+      color: rgba(255,255,255,0.2);
+      text-align: center;
+      transition: all 0.5s;
+    }
+    .seq-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      transition: all 0.5s;
+    }
+    /* 啟動狀態 */
+    .seq-cell.active {
+      border-color: var(--seq-color, var(--cyan));
+      background: rgba(var(--seq-rgb, 0,255,204), 0.08);
+      transform: scale(1.05);
+    }
+    .seq-cell.active::after {
+      opacity: 1;
+      background: radial-gradient(circle at 50% 30%, rgba(var(--seq-rgb, 0,255,204), 0.15), transparent 70%);
+    }
+    .seq-cell.active .seq-num {
+      color: var(--seq-color, var(--cyan));
+      text-shadow: 0 0 20px var(--seq-color, var(--cyan)), 0 0 40px var(--seq-color, var(--cyan));
+      animation: seqNumPulse 1.2s ease-in-out infinite;
+    }
+    .seq-cell.active .seq-label {
+      color: var(--seq-color, var(--cyan));
+      text-shadow: 0 0 8px var(--seq-color, var(--cyan));
+    }
+    .seq-cell.active .seq-dot {
+      background: var(--seq-color, var(--cyan));
+      box-shadow: 0 0 12px var(--seq-color, var(--cyan)), 0 0 24px var(--seq-color, var(--cyan));
+      animation: seqDotPulse 0.8s ease-in-out infinite;
+    }
+    /* 完成狀態 */
+    .seq-cell.done {
+      border-color: rgba(var(--seq-rgb, 0,255,204), 0.4);
+      background: rgba(var(--seq-rgb, 0,255,204), 0.05);
+    }
+    .seq-cell.done .seq-num {
+      color: var(--seq-color, var(--cyan));
+      text-shadow: 0 0 10px var(--seq-color, var(--cyan));
+      opacity: 0.8;
+    }
+    .seq-cell.done .seq-label {
+      color: rgba(var(--seq-rgb, 0,255,204), 0.6);
+    }
+    .seq-cell.done .seq-dot {
+      background: var(--seq-color, var(--cyan));
+      box-shadow: 0 0 6px var(--seq-color, var(--cyan));
+    }
+    @keyframes seqNumPulse {
+      0%, 100% { transform: scale(1); filter: brightness(1); }
+      50% { transform: scale(1.12); filter: brightness(1.5); }
+    }
+    @keyframes seqDotPulse {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.6); opacity: 1; }
+    }
+    .seq-status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 1rem;
+      padding: .6rem 1rem;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.04);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 1px;
+    }
+    .seq-progress {
+      height: 3px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 2px;
+      flex: 1;
+      margin: 0 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .seq-progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 2px;
+      transition: width 0.5s ease, background 0.5s;
+      background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan);
+    }
+    /* 全螢幕色彩閃爍 */
+    #seq-flash {
+      position: fixed;
+      inset: 0;
+      z-index: 99998;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    #seq-flash.flash {
+      animation: seqFlashAnim 0.6s ease-out forwards;
+    }
+    @keyframes seqFlashAnim {
+      0% { opacity: 0; }
+      20% { opacity: 0.25; }
+      100% { opacity: 0; }
+    }
+
+    /* ═══════════════════════════════════════════
+       AI 建議面板
+    ═══════════════════════════════════════════ */
+    .advice-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 50vh;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0,255,204,0.2) transparent;
+    }
+    .advice-card {
+      display: flex;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.04);
+      cursor: pointer;
+      transition: all 0.25s;
+      align-items: flex-start;
+    }
+    .advice-card:hover {
+      background: rgba(0,255,204,0.04);
+      border-color: rgba(0,255,204,0.15);
+      transform: translateX(4px);
+    }
+    .advice-rank {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 900;
+      min-width: 32px;
+      text-align: center;
+      padding: 4px 0;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+    .advice-body {
+      flex: 1;
+    }
+    .advice-name {
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .advice-text {
+      font-size: 0.78rem;
+      color: rgba(255,214,224,0.7);
+      line-height: 1.6;
+    }
+    .advice-copy-hint {
+      font-size: 0.55rem;
+      color: rgba(0,255,204,0.3);
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+      margin-top: 3px;
+    }
+    /* 預載按鈕特效 */
+    .btn-preload {
+      background: linear-gradient(135deg, #001a33, #003366, #001a33);
+      border: 1px solid rgba(0,136,255,0.5);
+      color: #4dc9ff;
+      padding: .5rem 1.2rem;
+      border-radius: 8px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: .65rem;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: .3s;
+      text-shadow: 0 0 8px rgba(0,136,255,0.5);
+      box-shadow: 0 0 15px rgba(0,136,255,0.2);
+    }
+    .btn-preload:hover {
+      background: rgba(0,136,255,0.2);
+      box-shadow: 0 0 30px rgba(0,136,255,0.4);
+      border-color: #4dc9ff;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+<div id="nexus-pulse"></div>
+<div id="seq-flash"></div>
+<!-- ═══ ANIMATED CANVAS BG ═══ -->
+<canvas id="bg-canvas"></canvas>
+
+<div id="app">
+
+<!-- ─── TICKER STRIP ─── -->
+<div class="ticker-strip">
+  <div class="ticker-inner">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    GLOBAL &middot; AI &middot; DATA &middot; ENGINE &middot; v8.0
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    全球大數據 AI 核心中控台
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    APEX &middot; CENTRAL &middot; INTELLIGENCE &middot; SYSTEM
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    BLACK HOLE DISPATCH CORE &middot; QUANTUM PIPELINE ACTIVE
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    兆櫃 AI 派單系統 &middot; RANK ENGINE ONLINE
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    GLOBAL &middot; AI &middot; DATA &middot; ENGINE &middot; v8.0
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    全球大數據 AI 核心中控台
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    APEX &middot; CENTRAL &middot; INTELLIGENCE &middot; SYSTEM
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </div>
+</div>
+
+<!-- ─── HEADER ─── -->
+<header>
+  <!-- City Network -->
+  <div class="city-net">
+    <div class="city-node"><div class="city-dot"></div>TOKYO</div>
+    <div class="city-node"><div class="city-dot"></div>LONDON</div>
+    <div class="city-node"><div class="city-dot"></div>NEW YORK</div>
+    <div class="city-node"><div class="city-dot"></div>SHANGHAI</div>
+    <div class="city-node"><div class="city-dot"></div>SINGAPORE</div>
+    <div class="city-node"><div class="city-dot"></div>DUBAI</div>
+  </div>
+
+  <!-- Center branding -->
+  <div class="header-center">
+    <div class="header-title">兆櫃 AI 派單總控</div>
+    <div class="header-sub">APEX · CENTRAL · INTELLIGENCE · SYSTEM</div>
+  </div>
+
+  <!-- Right: tabs + clock + uptime -->
+  <div class="header-right">
+    <div class="uptime-badge">
+      <div class="uptime-dot"></div>
+      99.97% UPTIME
+    </div>
+    <div id="sys-clock">00:00:00</div>
+    <nav class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('dash')"><span>老闆總控台</span></button>
+      <button class="tab-btn" onclick="switchTab('announce')"><span>公告/播報/LINE</span></button>
+      <button class="tab-btn" onclick="switchTab('syslog')"><span>系統日誌</span></button>
+    </nav>
+  </div>
+</header>
+
+<!-- ─── HERO COUNTER STRIP ─── -->
+<div class="hero-counters">
+  <div class="hero-card">
+    <div class="hero-feed-label"><div class="feed-live-dot"></div>GLOBAL FEED LIVE</div>
+    <div class="hero-value" id="counter-data">9,162,485</div>
+    <div class="hero-unit">DATA / SEC</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-feed-label"><div class="feed-live-dot"></div>LIVE REVENUE FEED</div>
+    <div class="hero-value" id="counter-rev">$2,477,403</div>
+    <div class="hero-unit">USD REVENUE</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-feed-label"><div class="feed-live-dot"></div>SYSTEM VITALITY</div>
+    <div class="hero-value" id="counter-vital">97</div>
+    <div class="hero-unit">VITALITY IDX</div>
+  </div>
+</div>
+
+<main>
+
+  <!-- ════ TAB: 老闆總控台 ════ -->
+  <div id="tab-dash">
+    <div class="grid-2">
+
+      <!-- ─ DATA INJECTION TERMINAL (full width) ─ -->
+      <div class="full terminal-panel panel-border-anim">
+        <div class="terminal-titlebar">
+          <div class="terminal-title-left">
+            <div class="terminal-dots">
+              <span class="d1"></span><span class="d2"></span><span class="d3"></span>
+            </div>
+            <div class="terminal-label">⬡ DATA INJECTION TERMINAL</div>
+          </div>
+          <div class="terminal-meta">
+            <span class="hl-c" id="t-data-sec">9,162,485 DATA/SEC</span>
+            <span id="sys-time2" class="hl-c"></span>
+            <span class="hl-g">UPTIME 99.97%</span>
+            <span class="hl-o">97 VITALITY IDX</span>
+            <span class="hl-o">$2,477,403 USD REVENUE</span>
+          </div>
+        </div>
+        <div class="terminal-body">
+          <div class="terminal-prompt-line">
+            root@blackhole:~# cat /dev/dispatch | ai-pipeline --quantum<span class="cursor"></span>
+          </div>
+          <div class="wormhole-textarea-wrap">
+            <textarea id="raw-input"
+              placeholder=">> WAITING FOR DATA INJECTION...&#10;>> PASTE DAILY REVENUE DATA HERE TO INITIALIZE QUANTUM PROCESSING...&#10;>> FORMAT: 1、王小明｜【追續】3｜【續單】120,000｜【總業績】350,000"></textarea>
+          </div>
+          <div class="city-bar">
+            <span>TOKYO</span><span class="cb-dot"></span>
+            <span>LONDON</span><span class="cb-dot"></span>
+            <span>NEW YORK</span><span class="cb-dot"></span>
+            <span>SHANGHAI</span><span class="cb-dot"></span>
+            <span>SINGAPORE</span><span class="cb-dot"></span>
+            <span>DUBAI</span>
+            <span class="cb-sep">|</span>
+            <span style="color:rgba(0,245,212,0.5)">GLOBAL NODES ONLINE</span>
+          </div>
+          <div class="action-row">
+            <button class="btn-ghost btn-sm" onclick="clearInput()">CLEAR TERMINAL</button>
+            <button class="btn-preload" onclick="preload322()" title="一鍵載入 3/22 完整 21 人業績資料">📥 預載 3/22 業績</button>
+            <button class="btn-quantum" onclick="startWorkflow()"><span>一鍵全鏈路 · CONNECT TO CORE ⬡</span></button>
+          </div>
+
+          <!-- LED Flow Pipeline -->
+          <div class="flow-pipeline" id="flow-display"></div>
+
+          <!-- 功能性啟動序列（ACTIVATION SEQUENCE） -->
+          <div class="seq-panel" style="margin-top:1.2rem;">
+            <div class="ph" style="margin-bottom:.6rem;padding-bottom:.5rem;">
+              <h2 style="font-size:.8rem;">⚡ 功能性啟動序列 · ACTIVATION SEQUENCE</h2>
+              <span style="font-family:'Orbitron',sans-serif;font-size:.55rem;color:var(--muted);letter-spacing:1px;" id="seq-counter">0 / 10 MODULES</span>
+            </div>
+            <div class="seq-grid" id="seq-grid"></div>
+            <div class="seq-status-bar">
+              <span style="color:var(--muted);" id="seq-status-text">STANDBY</span>
+              <div class="seq-progress"><div class="seq-progress-fill" id="seq-progress-fill"></div></div>
+              <span style="color:var(--cyan);" id="seq-pct">0%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─ 大盤分析核心 (Market Analysis Core) ─ -->
+      <div class="panel">
+        <div class="ph">
+          <h2>大數據分析核心</h2>
+          <span id="audit-badge">等待中</span>
+        </div>
+        <div class="market-matrix" id="stat-grid">
+          <div class="mm-cell">
+            <div class="mm-label"><span>TOTAL VOL</span><span>📈</span></div>
+            <div class="mm-val">WAITING</div>
+            <div class="mm-sub">MOMENTUM [--]</div>
+          </div>
+          <div class="mm-cell">
+            <div class="mm-label"><span>ACTIVE NODES</span><span>👥</span></div>
+            <div class="mm-val">--</div>
+            <div class="mm-sub">UPTIME [--]</div>
+          </div>
+          <div class="mm-cell">
+            <div class="mm-label"><span>AVG / REP</span><span>⚖️</span></div>
+            <div class="mm-val">--</div>
+            <div class="mm-sub">RATING [--]</div>
+          </div>
+          <div class="mm-cell">
+            <div class="mm-label"><span>CYCLE DATE</span><span>📅</span></div>
+            <div class="mm-val">--</div>
+            <div class="mm-sub">SYNC [--]</div>
+          </div>
+        </div>
+        <div id="rank-container"><p class="empty">執行數據注入後解鎖分析模組</p></div>
+      </div>
+
+      <!-- ─ AI 建議面板 ─ -->
+      <div class="panel full">
+        <div class="ph">
+          <h2 style="cursor:pointer;" onclick="copyAllAdvice()" title="點擊複製全部建議">🤖 AI 大數據建議 · 每人一句 <span style="font-size:.55rem;color:rgba(0,245,212,.4);font-family:'Courier New',monospace;">▸ 點標題複製全部</span></h2>
+          <div style="display:flex;gap:.5rem;">
+            <button class="btn-copy btn-sm" onclick="copyAllAdvice()">📋 複製全部建議</button>
+          </div>
+        </div>
+        <div class="advice-grid" id="advice-container">
+          <p class="empty">執行分析後解鎖 AI 建議模組</p>
+        </div>
+      </div>
+
+      <!-- ─ 公告/播報面板 ─ -->
+      <div class="panel">
+        <div class="ph">
+          <h2 style="cursor:pointer;" onclick="copyEl('announce-box','公告文')" title="點擊複製完整公告">📢 公告與播報 <span style="font-size:.55rem;color:rgba(0,245,212,.4);font-family:'Courier New',monospace;">▸ 標題複製公告</span></h2>
+          <div style="display:flex;gap:.5rem;">
+            <button class="btn-copy btn-sm" onclick="copyEl('announce-box','公告文')" title="複製完整公告文字">📋 複製公告</button>
+            <button class="btn-copy btn-sm" onclick="copyEl('broadcast-box','播報稿')" title="複製播報稿">🎙 複製播報</button>
+          </div>
+        </div>
+        <label style="font-size:.7rem;color:var(--muted);font-family:'Orbitron',sans-serif;letter-spacing:1px;cursor:pointer;" onclick="copyEl('announce-box','公告文')" title="點擊複製完整公告">完整公告 ▸</label>
+        <textarea class="out-box" id="announce-box" readonly style="margin:.4rem 0 .9rem;" ondblclick="this.select()" title="雙擊全選｜點上方標籤快速複製"></textarea>
+        <label style="font-size:.7rem;color:var(--muted);font-family:'Orbitron',sans-serif;letter-spacing:1px;cursor:pointer;" onclick="copyEl('broadcast-box','播報稿')" title="點擊複製播報稿">播報稿 ▸</label>
+        <textarea class="out-box" id="broadcast-box" readonly style="margin:.4rem 0 0;height:5rem;" ondblclick="this.select()" title="雙擊全選"></textarea>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════ TAB: 公告/播報/LINE ════ -->
+  <div id="tab-announce" style="display:none;">
+    <div class="grid-2">
+      <div class="panel">
+        <div class="ph">
+          <h2 style="cursor:pointer;" onclick="copyEl('ann2','完整公告')" title="點標題複製完整公告">📄 完整公告 <span style="font-size:.55rem;color:rgba(0,245,212,.4);font-family:'Courier New',monospace;">▸ 點擊複製</span></h2>
+          <div style="display:flex;gap:.5rem;">
+            <button class="btn-copy btn-sm" onclick="copyEl('ann2','公告')" title="複製公告全文">📋 複製全文</button>
+            <button class="btn-copy btn-sm" onclick="copyAnnounceFirstLine()" title="只複製第一行（標題行）">📌 複製標題</button>
+          </div>
+        </div>
+        <textarea class="out-box" id="ann2" readonly style="height:22rem;" ondblclick="this.select()" title="雙擊全選｜點標題複製"></textarea>
+        <div style="display:flex;gap:.5rem;margin-top:.6rem;flex-wrap:wrap;">
+          <button class="btn-copy btn-sm" onclick="copyAnnounceTopN(3)" title="複製前3名名單">🥇 複製前3名</button>
+          <button class="btn-copy btn-sm" onclick="copyAnnounceTopN(10)" title="複製前10名名單">📊 複製前10名</button>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="ph">
+          <h2 style="cursor:pointer;" onclick="copyEl('bc2','播報稿')" title="點標題複製播報稿">🎙 播報稿 <span style="font-size:.55rem;color:rgba(0,245,212,.4);font-family:'Courier New',monospace;">▸ 點擊複製</span></h2>
+          <div style="display:flex;gap:.5rem;">
+            <button class="btn-copy btn-sm" onclick="speakText()" title="語音合成播報（zh-TW）" id="speak-btn">🔊 語音播報</button>
+            <button class="btn-copy btn-sm" onclick="copyEl('bc2','播報稿')" title="複製播報稿文字">📋 複製</button>
+          </div>
+        </div>
+        <textarea class="out-box" id="bc2" readonly style="height:10rem;" ondblclick="this.select()" title="雙擊全選｜點標題複製"></textarea>
+        <div class="ph" style="margin-top:1.2rem;">
+          <h2 style="cursor:pointer;" onclick="copyAllLineMessages()" title="點標題一鍵複製全部分組訊息">💬 LINE 各組訊息 <span style="font-size:.55rem;color:rgba(0,245,212,.4);font-family:'Courier New',monospace;">▸ 點擊複製全部</span></h2>
+          <button class="btn-copy btn-sm" onclick="copyAllLineMessages()" title="複製所有組別的訊息合集">📋 複製全部</button>
+        </div>
+        <div id="line-blocks"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ TAB: 日誌 ════ -->
+  <div id="tab-syslog" style="display:none;">
+    <div class="panel">
+      <div class="ph">
+        <h2 style="cursor:pointer;transition:.2s;" onclick="copyText(document.getElementById('log-monitor').innerText,'完整系統日誌')" title="點擊複製全部日誌">⚙️ 系統日誌 <span style="font-size:.6rem;color:rgba(0,245,212,.4);font-family:'Courier New',monospace;">▸ 點標題複製全部</span></h2>
+        <div style="display:flex;gap:.5rem;">
+          <button class="btn-copy btn-sm" onclick="fetchLogs()" title="重新從後端拉取最新日誌">🔄 重新整理</button>
+          <button class="btn-copy btn-sm" onclick="exportLogs()" title="下載日誌為 .txt 檔">📥 匯出</button>
+          <button class="btn-copy btn-sm" onclick="checkHealth()" title="向後端發送 /api/health 檢查">💚 健康檢查</button>
+          <button class="btn-copy btn-sm" onclick="clearLogView()" title="僅清除畫面顯示，不刪除後端日誌" style="color:rgba(239,68,68,.7);">🗑 清除畫面</button>
+        </div>
+      </div>
+      <!-- 日誌統計摘要 -->
+      <div id="log-stats"></div>
+      <div id="log-monitor"><p class="empty">載入中…</p></div>
+    </div>
+  </div>
+
+</main>
+</div><!-- #app -->
+
+<div id="toast"></div>
+
+<!-- ═══════════════════════════════════════════
+     CANVAS ANIMATION: BLACK HOLE / WORMHOLE
+═══════════════════════════════════════════ -->
+<script>
+(function() {
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, cx, cy;
+  let particles = [];
+  let stars = [];
+  let t = 0;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    cx = W * 0.5;
+    cy = H * 0.5;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // Star field
+  function initStars() {
+    stars = [];
+    for (let i = 0; i < 280; i++) {
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.2,
+        a: Math.random()
+      });
+    }
+  }
+  initStars();
+
+  // Particles sucked into vortex
+  function spawnParticle() {
+    const angle = Math.random() * Math.PI * 2;
+    const dist  = 200 + Math.random() * Math.max(W, H) * 0.55;
+    const arm   = Math.floor(Math.random() * 3); // galaxy arms
+    const armOffset = (arm / 3) * Math.PI * 2;
+    const spiralAngle = angle + armOffset;
+    return {
+      x: cx + Math.cos(spiralAngle) * dist,
+      y: cy + Math.sin(spiralAngle) * dist * 0.55,
+      dist,
+      angle: spiralAngle,
+      speed: 0.002 + Math.random() * 0.004,
+      inSpeed: 0.4 + Math.random() * 0.6,
+      r: 1 + Math.random() * 2,
+      life: 1,
+      hue: Math.random() > 0.6 ? 180 : (Math.random() > 0.5 ? 270 : 200),
+      alpha: 0.4 + Math.random() * 0.5
+    };
+  }
+
+  for (let i = 0; i < 200; i++) {
+    const p = spawnParticle();
+    p.angle += Math.random() * Math.PI * 2;
+    p.dist   = 40 + Math.random() * Math.max(W, H) * 0.55;
+    particles.push(p);
+  }
+
+  function draw() {
+    t += 0.01;
+
+    // Fade trail
+    ctx.fillStyle = 'rgba(0,0,5,0.18)';
+    ctx.fillRect(0, 0, W, H);
+
+    // Draw stars
+    for (const s of stars) {
+      const flicker = 0.5 + 0.5 * Math.sin(t * 1.2 + s.a * 10);
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${s.a * flicker * 0.6})`;
+      ctx.fill();
+    }
+
+    // Nebula glow clouds
+    const ng = ctx.createRadialGradient(cx - W*0.18, cy - H*0.12, 0, cx - W*0.18, cy - H*0.12, W*0.35);
+    ng.addColorStop(0, 'rgba(139,92,246,0.04)');
+    ng.addColorStop(1, 'transparent');
+    ctx.fillStyle = ng;
+    ctx.fillRect(0, 0, W, H);
+
+    const ng2 = ctx.createRadialGradient(cx + W*0.2, cy + H*0.15, 0, cx + W*0.2, cy + H*0.15, W*0.3);
+    ng2.addColorStop(0, 'rgba(0,245,212,0.03)');
+    ng2.addColorStop(1, 'transparent');
+    ctx.fillStyle = ng2;
+    ctx.fillRect(0, 0, W, H);
+
+    // Gravitational lensing rings
+    for (let i = 5; i >= 1; i--) {
+      const rr = 60 + i * 28 + Math.sin(t * 0.7 + i) * 6;
+      const alpha = 0.03 + i * 0.012;
+      const hue = 180 + i * 15;
+      ctx.beginPath();
+      ctx.arc(cx, cy, rr, 0, Math.PI * 2);
+      ctx.strokeStyle = `hsla(${hue},100%,70%,${alpha})`;
+      ctx.lineWidth = 1.5 + i * 0.4;
+      ctx.stroke();
+    }
+
+    // Lensing distortion arcs
+    for (let i = 0; i < 3; i++) {
+      const arcR = 90 + i * 40;
+      const startA = t * 0.3 + (i * Math.PI * 2 / 3);
+      ctx.beginPath();
+      ctx.arc(cx, cy, arcR, startA, startA + Math.PI * 0.7);
+      ctx.strokeStyle = `rgba(0,245,212,${0.06 - i * 0.015})`;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    // Event horizon — dark core
+    const ehGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, 55);
+    ehGrad.addColorStop(0,   'rgba(0,0,0,1)');
+    ehGrad.addColorStop(0.7, 'rgba(0,0,8,0.98)');
+    ehGrad.addColorStop(1,   'rgba(0,0,20,0)');
+    ctx.fillStyle = ehGrad;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 55, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Singularity core pulse
+    const coreAlpha = 0.6 + 0.4 * Math.sin(t * 2.5);
+    const coreGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, 22);
+    coreGrad.addColorStop(0, `rgba(255,255,255,${coreAlpha * 0.9})`);
+    coreGrad.addColorStop(0.3, `rgba(0,245,212,${coreAlpha * 0.4})`);
+    coreGrad.addColorStop(1, 'transparent');
+    ctx.fillStyle = coreGrad;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 22, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Spiral galaxy arms
+    for (let arm = 0; arm < 3; arm++) {
+      const armAngle = (arm / 3) * Math.PI * 2 + t * 0.08;
+      ctx.beginPath();
+      for (let s = 0; s < 180; s++) {
+        const frac  = s / 180;
+        const d     = 30 + frac * (Math.min(W, H) * 0.45);
+        const spiral = armAngle + frac * Math.PI * 3.5;
+        const px = cx + Math.cos(spiral) * d;
+        const py = cy + Math.sin(spiral) * d * 0.55;
+        if (s === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      const armHue = arm === 0 ? 180 : arm === 1 ? 270 : 200;
+      ctx.strokeStyle = `hsla(${armHue},100%,70%,0.035)`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    // Particles spiraling inward
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.angle += p.speed;
+      p.dist  -= p.inSpeed;
+
+      if (p.dist < 28) {
+        particles.splice(i, 1);
+        particles.push(spawnParticle());
+        continue;
+      }
+
+      const px = cx + Math.cos(p.angle) * p.dist;
+      const py = cy + Math.sin(p.angle) * p.dist * 0.55;
+
+      const fade = Math.min(1, p.dist / 80);
+      ctx.beginPath();
+      ctx.arc(px, py, p.r * fade, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${p.hue},100%,75%,${p.alpha * fade})`;
+      ctx.fill();
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  // 導出連動函式
+  window.triggerNexusFlash = function() {
+    const p = document.getElementById('nexus-pulse');
+    if (p) { p.classList.remove('active'); void p.offsetWidth; p.classList.add('active'); }
+    // 瞬間大量粒子爆發
+    for (let i = 0; i < 60; i++) {
+        const pt = spawnParticle();
+        pt.speed *= 4; pt.inSpeed *= 3;
+        pt.r *= 1.5;
+        pt.hue = 180; 
+        particles.push(pt);
+    }
+  };
+
+  draw();
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════
+     APP LOGIC
+═══════════════════════════════════════════ -->
+<script>
+// ─── Global state ───
+const S = { rawInput:'', parsedData:null, auditPassed:false, rankedData:null, outputs:null, suggestions:null };
+const FLOW_NODES = ['接收','解析','審計','排序','公告','播報','LINE','存檔','備份','日誌'];
+
+// ─── 功能性啟動序列配色（10 階段大數據科技色） ───
+const SEQ_COLORS = [
+  { name:'接收', num:'1', color:'#ff3c5a', rgb:'255,60,90'  },    // 紅
+  { name:'解析', num:'2', color:'#ff8c1a', rgb:'255,140,26' },    // 橙
+  { name:'審計', num:'3', color:'#ffd700', rgb:'255,215,0'  },    // 金
+  { name:'排序', num:'4', color:'#00ff88', rgb:'0,255,136'  },    // 翠綠
+  { name:'公告', num:'5', color:'#00ffcc', rgb:'0,255,204'  },    // 青
+  { name:'播報', num:'6', color:'#00aaff', rgb:'0,170,255'  },    // 藍
+  { name:'LINE', num:'7', color:'#5566ff', rgb:'85,102,255' },    // 靛
+  { name:'存檔', num:'8', color:'#aa44ff', rgb:'170,68,255' },    // 紫
+  { name:'備份', num:'9', color:'#ff44aa', rgb:'255,68,170' },    // 粉
+  { name:'日誌', num:'0', color:'#ffffff', rgb:'255,255,255'},    // 白
+];
+
+// ─── Clock (Taiwan timezone) ───
+function updateClock() {
+  const t = new Date().toLocaleTimeString('zh-TW', { hour12:false, timeZone:'Asia/Taipei' });
+  document.getElementById('sys-clock').textContent = t;
+  document.getElementById('sys-time2').textContent = t;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// ─── Hero counter animation (cosmetic) ───
+(function() {
+  let dataBase = 9162485, revBase = 2477403;
+  function tick() {
+    dataBase += Math.floor(Math.random() * 1800 - 400);
+    revBase  += Math.floor(Math.random() * 80 - 10);
+    if (dataBase < 0) dataBase = 100000;
+    document.getElementById('counter-data').textContent = dataBase.toLocaleString();
+    document.getElementById('t-data-sec').textContent   = dataBase.toLocaleString() + ' DATA/SEC';
+    document.getElementById('counter-rev').textContent  = '$' + revBase.toLocaleString();
+    const v = 94 + Math.floor(Math.random() * 6);
+    document.getElementById('counter-vital').textContent = v;
+  }
+  setInterval(tick, 1200);
+})();
+
+// ─── Tab switch ───
+function switchTab(id) {
+  ['dash','announce','syslog'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t === id ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', ['dash','announce','syslog'][i] === id);
+  });
+  if (id === 'syslog') fetchLogs();
+}
+
+// ─── LED Flow init ───
+function initFlow() {
+  document.getElementById('flow-display').innerHTML = FLOW_NODES.map((n, i) => {
+    const arrow = i ? '<span class="flow-arrow">›</span>' : '';
+    return `${arrow}<div class="flow-node-wrap"><div class="node" id="node-${n}">
+      <div class="node-hex"><div class="node-dot"></div></div>
+      <span>${n}</span>
+    </div></div>`;
+  }).join('');
+}
+
+function setNode(name, status) {
+  const el = document.getElementById('node-'+name);
+  if (!el) return;
+  el.className = 'node ' + status;
+  if (status === 'success') {
+    window.triggerNexusFlash && window.triggerNexusFlash();
+    // 讓其前面的箭頭閃爍
+    const wrap = el.closest('.flow-node-wrap');
+    if (wrap) {
+      const arrow = wrap.previousElementSibling;
+      if (arrow && arrow.classList.contains('flow-arrow')) {
+        arrow.classList.remove('pulse');
+        void arrow.offsetWidth; // trigger reflow
+        arrow.classList.add('pulse');
+      }
+    }
+  }
+}
+
+// ─── API ───
+async function api(url, body) {
+  const r = await fetch(url, {
+    method: body === undefined ? 'GET' : 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: body !== undefined ? JSON.stringify(body) : undefined
+  });
+  return r.json();
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// 大數據數字遞增動畫
+function animateValue(id, start, end, duration, format = n => n.toLocaleString()) {
+  const obj = document.getElementById(id);
+  if (!obj) return;
+  let startTimestamp = null;
+  const step = (timestamp) => {
+    if (!startTimestamp) startTimestamp = timestamp;
+    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+    obj.innerHTML = format(Math.floor(progress * (end - start) + start));
+    if (progress < 1) window.requestAnimationFrame(step);
+  };
+  window.requestAnimationFrame(step);
+}
+
+// ─── Toast (centered top) ───
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+function copyText(text, label) {
+  if (!text || text === '尚無數據') { toast('尚無資料，請先執行分析'); return; }
+  navigator.clipboard.writeText(text).then(() => toast('已複製：' + label));
+}
+
+function copyEl(id, label) {
+  const el = document.getElementById(id);
+  if (!el || !el.value.trim()) { toast('尚無內容可複製'); return; }
+  navigator.clipboard.writeText(el.value).then(() => toast('已複製：' + label));
+}
+
+// ─── 功能性啟動序列初始化 ───
+function initSeqGrid() {
+  const grid = document.getElementById('seq-grid');
+  if (!grid) return;
+  grid.innerHTML = SEQ_COLORS.map((s, i) => `
+    <div class="seq-cell" id="seq-cell-${i}"
+         style="--seq-color:${s.color};--seq-rgb:${s.rgb};">
+      <div class="seq-dot"></div>
+      <div class="seq-num">${s.num}</div>
+      <div class="seq-label">${s.name}</div>
+    </div>
+  `).join('');
+}
+
+// 啟動序列：逐一點亮
+function activateSeq(index) {
+  const cell = document.getElementById(`seq-cell-${index}`);
+  if (!cell) return;
+  // 前一個設為完成態
+  if (index > 0) {
+    const prev = document.getElementById(`seq-cell-${index - 1}`);
+    if (prev) { prev.classList.remove('active'); prev.classList.add('done'); }
+  }
+  cell.classList.add('active');
+  // 更新計數器與進度條
+  const counter = document.getElementById('seq-counter');
+  const pct = document.getElementById('seq-pct');
+  const fill = document.getElementById('seq-progress-fill');
+  const statusText = document.getElementById('seq-status-text');
+  const percent = Math.round(((index + 1) / 10) * 100);
+  if (counter) counter.textContent = `${index + 1} / 10 MODULES`;
+  if (pct) pct.textContent = `${percent}%`;
+  if (fill) {
+    fill.style.width = `${percent}%`;
+    fill.style.background = SEQ_COLORS[index].color;
+    fill.style.boxShadow = `0 0 12px ${SEQ_COLORS[index].color}`;
+  }
+  if (statusText) {
+    statusText.textContent = `ACTIVATING: ${SEQ_COLORS[index].name}`;
+    statusText.style.color = SEQ_COLORS[index].color;
+  }
+  // 全螢幕色彩閃爍
+  triggerSeqFlash(SEQ_COLORS[index].color);
+}
+
+function completeSeq(index) {
+  const cell = document.getElementById(`seq-cell-${index}`);
+  if (!cell) return;
+  cell.classList.remove('active');
+  cell.classList.add('done');
+}
+
+function completeAllSeq() {
+  const statusText = document.getElementById('seq-status-text');
+  if (statusText) { statusText.textContent = 'ALL MODULES ONLINE'; statusText.style.color = '#00ff88'; }
+}
+
+function resetSeqGrid() {
+  for (let i = 0; i < 10; i++) {
+    const cell = document.getElementById(`seq-cell-${i}`);
+    if (cell) { cell.classList.remove('active', 'done'); }
+  }
+  const fill = document.getElementById('seq-progress-fill');
+  if (fill) { fill.style.width = '0%'; }
+  const counter = document.getElementById('seq-counter');
+  if (counter) counter.textContent = '0 / 10 MODULES';
+  const pct = document.getElementById('seq-pct');
+  if (pct) pct.textContent = '0%';
+  const statusText = document.getElementById('seq-status-text');
+  if (statusText) { statusText.textContent = 'STANDBY'; statusText.style.color = 'var(--muted)'; }
+}
+
+function triggerSeqFlash(color) {
+  const flash = document.getElementById('seq-flash');
+  if (!flash) return;
+  flash.style.boxShadow = `inset 0 0 120px ${color}`;
+  flash.classList.remove('flash');
+  void flash.offsetWidth;
+  flash.classList.add('flash');
+}
+
+// ─── 預載 3/22 業績 ───
+async function preload322() {
+  try {
+    toast('正在載入 3/22 業績資料...');
+    const res = await api('/api/preload/322');
+    if (res.success && res.data) {
+      document.getElementById('raw-input').value = res.data;
+      toast('✅ 已載入 3/22 完整 21 人業績！可直接執行全鏈路');
+    } else {
+      toast('⚠️ 預載失敗');
+    }
+  } catch (err) {
+    toast('❌ 預載連線失敗');
+    console.error(err);
+  }
+}
+
+// ─── Main workflow（含啟動序列連動） ───
+async function startWorkflow() {
+  const btn = document.querySelector('.btn-quantum');
+  if (btn && btn.disabled) return;
+  if (btn) btn.disabled = true;
+
+  const input = document.getElementById('raw-input').value.trim();
+  if (!input) { toast('請先貼上業績數據'); if (btn) btn.disabled = false; return; }
+  S.rawInput = input;
+  initFlow();
+  resetSeqGrid();
+
+  try {
+    // ①=接收（紅）
+    activateSeq(0);
+    setNode('接收','running'); await delay(400); setNode('接收','success');
+    completeSeq(0);
+
+    // ②=解析（橙）
+    activateSeq(1);
+    setNode('解析','running');
+    const pr = await api('/api/report/parse', {rawText: input});
+    if (!pr.success) throw {step:'解析', msg: pr.message};
+    S.parsedData = pr.data;
+    setNode('解析','success');
+    completeSeq(1);
+
+    // ③=審計（金）
+    activateSeq(2);
+    setNode('審計','running');
+    const ar = await api('/api/report/audit', {data: S.parsedData});
+    if (!ar.success) {
+      setNode('審計','failed');
+      const b = document.getElementById('audit-badge');
+      b.textContent = '審計失敗';
+      b.style.background = 'rgba(239,68,68,0.2)';
+      b.style.color = '#f87171';
+      b.style.borderColor = 'rgba(239,68,68,0.3)';
+      throw {step:'審計', msg: (ar.errors || [ar.message]).join('\n')};
+    }
+    setNode('審計','success');
+    completeSeq(2);
+    const b = document.getElementById('audit-badge');
+    b.textContent = '審計通過';
+    b.style.background = 'rgba(16,185,129,0.15)';
+    b.style.color = '#10b981';
+    b.style.borderColor = 'rgba(16,185,129,0.3)';
+
+    // ④=排序（翠綠）
+    activateSeq(3);
+    setNode('排序','running');
+    const rr = await api('/api/report/rank', {data: S.parsedData});
+    if (!rr.success) throw {step:'排序', msg: rr.message};
+    S.rankedData = rr.data;
+    setNode('排序','success');
+    completeSeq(3);
+
+    updateDashboard();
+
+    // ⑤=公告（青）
+    activateSeq(4);
+    setNode('公告','running'); await delay(200);
+    // ⑥=播報（藍）
+    activateSeq(5);
+    setNode('播報','running'); await delay(200);
+    // ⑦=LINE（靛）
+    activateSeq(6);
+    setNode('LINE','running'); await delay(200);
+    const or = await api('/api/report/generate_outputs', {rankedData: S.rankedData, reportDate: S.parsedData.reportDate});
+    S.outputs = or.data;
+    setAnnounce(S.outputs);
+    setNode('公告','success'); completeSeq(4); await delay(200);
+    setNode('播報','success'); completeSeq(5); await delay(200);
+    setNode('LINE','success'); completeSeq(6); await delay(200);
+
+    // ⑧=存檔（紫）
+    activateSeq(7);
+    setNode('存檔','running'); await delay(200);
+    // ⑨=備份（粉）
+    activateSeq(8);
+    setNode('備份','running'); await delay(200);
+    // ⓪=日誌（白）
+    activateSeq(9);
+    setNode('日誌','running'); await delay(200);
+    await api('/api/report/save', {fullState: S});
+    setNode('存檔','success'); completeSeq(7); await delay(150);
+    setNode('備份','success'); completeSeq(8); await delay(150);
+    setNode('日誌','success'); completeSeq(9);
+
+    completeAllSeq();
+
+    // 取得 AI 建議
+    try {
+      const sugRes = await api('/api/suggestions', {rankedData: S.rankedData});
+      if (sugRes.success) {
+        S.suggestions = sugRes.data;
+        renderAdvice(sugRes.data);
+      }
+    } catch (e) { console.warn('建議取得失敗', e); }
+
+    // 終極大數據爆發
+    if(window.triggerNexusFlash) { window.triggerNexusFlash(); window.triggerNexusFlash(); }
+
+    toast('全鏈路自動連動執行成功！');
+    fetchLogs();
+
+  } catch(e) {
+    toast('故障於【' + (e.step || '未知') + '】：' + (e.msg || e.message || e));
+    console.error(e);
+  } finally {
+    const btn = document.querySelector('.btn-quantum');
+    if (btn) btn.disabled = false;
+  }
+}
+
+// ─── Dashboard render ───
+function updateDashboard() {
+  const d = S.parsedData;
+  const ranked = S.rankedData;
+
+  const avg = d.rows.length ? (d.totalRevenue / d.rows.length) : 0;
+  const rating = avg > 80000 ? 'S+ MAX' : avg > 40000 ? 'S STRONG' : 'A STABLE';
+
+  document.getElementById('stat-grid').innerHTML = `
+    <div class="mm-cell" onclick="copyText('總交易量: $${d.totalRevenue.toLocaleString()}','總結算')">
+      <div class="mm-label"><span>TOTAL VOL</span><span>📈</span></div>
+      <div class="mm-val" style="color:var(--cyan);" id="stat-tot-vol">$0</div>
+      <div class="mm-sub">MOMENTUM [MAX]</div>
+    </div>
+    <div class="mm-cell" onclick="copyText('人數: ${d.rows.length}','活躍點')">
+      <div class="mm-label"><span>ACTIVE NODES</span><span>👥</span></div>
+      <div class="mm-val" id="stat-act-nodes">0</div>
+      <div class="mm-sub" style="color:var(--gold);">UPTIME 100%</div>
+    </div>
+    <div class="mm-cell" onclick="copyText('均值: $${Math.round(avg).toLocaleString()}','市場均價')">
+      <div class="mm-label"><span>AVG / REP</span><span>⚖️</span></div>
+      <div class="mm-val" style="color:var(--gold);" id="stat-avg-rep">$0</div>
+      <div class="mm-sub">RATING: [${rating}]</div>
+    </div>
+    <div class="mm-cell" onclick="copyText('${d.reportDate}','資料週期')">
+      <div class="mm-label"><span>CYCLE DATE</span><span>📅</span></div>
+      <div class="mm-val" style="font-size:1.1rem;margin-top:.1rem;">${d.reportDate}</div>
+      <div class="mm-sub" style="color:var(--muted);">SYNC: COMPLETE</div>
+    </div>
+  `;
+
+  // 實施大數據遞增動畫
+  animateValue('stat-tot-vol', 0, d.totalRevenue, 1200, n => '$' + n.toLocaleString());
+  animateValue('stat-act-nodes', 0, d.rows.length, 800);
+  animateValue('stat-avg-rep', 0, Math.round(avg), 1000, n => '$' + n.toLocaleString());
+
+  const top3 = ranked.slice(0,3).map((r,i) => `第${i+1}名：${r.name}（$${r.revenueAmount.toLocaleString()}）`).join('　');
+  const groups = {A1:[], A2:[], B:[], C:[]};
+  ranked.forEach(r => { if (groups[r.group]) groups[r.group].push(r.name); });
+  const managerReport = [
+    `【AI 大數據派單總盤】${d.reportDate}`,
+    `📈 總體交易動能：$${d.totalRevenue.toLocaleString()}`,
+    `👥 活躍端點數：${d.rows.length} 人`,
+    `⚡ 團隊戰力評級：[${rating}]`,
+    `🏆 頂級火力：${top3}`,
+    `─────────────────`,
+    ...Object.entries(groups).filter(([,m]) => m.length).map(([g,m]) => `【${g}】${m.join('、')}（${m.length}人）`),
+    `─────────────────`,
+    `${new Date().toLocaleTimeString('zh-TW',{hour12:false})} | APEX AI DATA ENGINE`
+  ].join('\n');
+
+  document.querySelector('#stat-grid .mm-cell:first-child').onclick = () =>
+    copyText(managerReport, '大盤深度矩陣日報');
+
+  renderRankTable(ranked, d);
+}
+
+// ─── Ranking table ───
+function renderRankTable(ranked, parsedData) {
+  if (!ranked || !ranked.length) {
+    document.getElementById('rank-container').innerHTML = '<p class="empty">無排名資料</p>';
+    return;
+  }
+  const avg = parsedData.rows.length ? (parsedData.totalRevenue / parsedData.rows.length) : 1;
+  const groups = {A1:[], A2:[], B:[], C:[]};
+  ranked.forEach(r => { if (groups[r.group]) groups[r.group].push(r); });
+
+  const groupLabel = {A1:'A1 突破之刃', A2:'A2 獵鷹部隊', B:'B 磐石陣線', C:'C 破風新銳'};
+  const groupColor = {A1:'#f87171', A2:'#fbbf24', B:'#a5b4fc', C:'#94a3b8'};
+
+  let html = '';
+  for (const [g, members] of Object.entries(groups)) {
+    if (!members.length) continue;
+    const roster = members.map(r => r.name).join('、');
+    const rosterCopy = `【${groupLabel[g]}】${roster}（共 ${members.length} 人）`;
+    
+    const gScore = members.reduce((sum, r) => sum + r.revenueAmount, 0);
+    const gPct = ((gScore / parsedData.totalRevenue) * 100).toFixed(1);
+
+    html += `
+    <div class="group-header" onclick="copyText('${escAttr(rosterCopy)}','${g}組名單')"
+         style="color:${groupColor[g]}; border-left:3px solid currentColor; padding-left:.8rem;" title="點擊複製全員">
+      <strong style="text-shadow:0 0 8px currentColor;">${groupLabel[g]} [VOL: ${gPct}%]</strong>
+      <span>▸ 抓取全組節點（${members.length}人）</span>
+    </div>
+    <table style="margin-bottom:1.5rem;">
+      <thead><tr>
+        <th>RANK</th><th>GROUP</th><th>AGENT</th><th>VOL (REVENUE)</th><th>AI RATING</th>
+      </tr></thead>
+      <tbody>`;
+
+    members.forEach(r => {
+      const isTop = r.rank <= 3;
+      const momentum = (r.revenueAmount / avg * 100).toFixed(0);
+      const aiTag = r.rank === 1 ? `<span style="color:var(--cyan);font-weight:900;text-shadow:0 0 8px rgba(0,245,212,0.6)">[S+] MAX🔥</span>`
+                  : isTop ? `<span style="color:var(--gold);font-weight:700;">[S] BUY</span>`
+                  : momentum > 100 ? `<span style="color:var(--green);">[A] HOLD: ${momentum}</span>`
+                  : `<span style="color:var(--muted);">[B] RSI: ${momentum}</span>`;
+
+      const aiCmt = r.rank === 1  ? '火力全開，頂級動能，大盤完全由你主導！'
+                  : isTop   ? '高位運行，隨時準備突破天際！'
+                  : momentum > 100 ? '動能穩定在均線之上，持續擴張。'
+                  : '目前處於盤整區間，請加強火力突破。';
+      
+      const dm = `【${r.name} 指標分析】${r.reportDate || parsedData.reportDate}\n` +
+                 `📈 戰力位階：第 ${r.rank} 名\n` +
+                 `💰 總交易量：$${r.revenueAmount.toLocaleString()}\n` +
+                 `⚡ AI 評級：${(r.revenueAmount / 1000).toFixed(0)} IDX (動能 ${momentum}%)\n\n` +
+                 `💡 ${aiCmt}`;
+      
+      html += `<tr style="border-left:2px solid ${isTop?'var(--gold)':'transparent'}">
+        <td class="${isTop ? 'rank-top' : ''}">#${r.rank}</td>
+        <td><span class="badge ${r.group}">${r.group}</span></td>
+        <td><span class="click-name" onclick="copyText('${escAttr(dm)}','${r.name} 數據分析')"
+              title="點擊導出">${r.name}</span></td>
+        <td style="font-family:'Courier New',monospace;font-weight:800;color:${isTop?'var(--gold)':'#fff'};">$${r.revenueAmount.toLocaleString()}</td>
+        <td style="font-family:'Orbitron',sans-serif;font-size:.65rem;letter-spacing:1px;">${aiTag}</td>
+      </tr>`;
+    });
+    html += `</tbody></table>`;
+  }
+  document.getElementById('rank-container').innerHTML = html;
+}
+
+// ─── AI 建議面板渲染 ───
+function renderAdvice(suggestions) {
+  const container = document.getElementById('advice-container');
+  if (!container || !suggestions || !suggestions.length) return;
+
+  const groupColor = {A1:'#f87171', A2:'#fbbf24', B:'#a5b4fc', C:'#94a3b8'};
+
+  container.innerHTML = suggestions.map(s => {
+    const color = groupColor[s.group] || '#94a3b8';
+    const fullText = `【${s.name}・第${s.rank}名・${s.group}組】\n${s.advice}`;
+    return `
+      <div class="advice-card" onclick="copyText('${escAttr(fullText)}','${s.name} AI 建議')" title="點擊複製此人建議">
+        <div class="advice-rank" style="background:${color}22;color:${color};border:1px solid ${color}44;">#${s.rank}</div>
+        <div class="advice-body">
+          <div class="advice-name" style="color:${color};">
+            ${s.name}
+            <span class="badge ${s.group}" style="font-size:.55rem;padding:.1rem .35rem;">${s.group}</span>
+          </div>
+          <div class="advice-text">${escHtml(s.advice)}</div>
+          <div class="advice-copy-hint">▸ CLICK TO COPY</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function copyAllAdvice() {
+  if (!S.suggestions || !S.suggestions.length) { toast('⚠️ 尚無 AI 建議'); return; }
+  const text = S.suggestions.map(s =>
+    `【${s.rank}、${s.name}（${s.group}）】\n${s.advice}`
+  ).join('\n\n────────────────\n\n');
+  copyText('📣 AI 大數據建議・完整版\n\n' + text, '全部建議');
+}
+
+
+
+// ─── Announce / broadcast / LINE ───
+function setAnnounce(data) {
+  if (!data) return;
+  ['announce-box','ann2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = data.announce || '';
+  });
+  ['broadcast-box','bc2'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = data.broadcast || '';
+  });
+
+  const ranked = S.rankedData || [];
+  const groups = {A1:[], A2:[], B:[], C:[]};
+  ranked.forEach(r => { if (groups[r.group]) groups[r.group].push(r); });
+  const gColor = {
+    A1:'rgba(239,68,68,0.12)',
+    A2:'rgba(245,158,11,0.12)',
+    B:'rgba(99,102,241,0.12)',
+    C:'rgba(100,116,139,0.1)'
+  };
+  const gBorder = {A1:'rgba(239,68,68,0.25)', A2:'rgba(245,158,11,0.25)', B:'rgba(99,102,241,0.25)', C:'rgba(100,116,139,0.2)'};
+
+  let lineHtml = '';
+  for (const [g, members] of Object.entries(groups)) {
+    if (!members.length) continue;
+    const msg = `${S.parsedData?.reportDate || ''} 業績派單（${g} 組）\n${'━'.repeat(16)}\n`
+      + members.map((r,i) => `${i+1}. ${r.name}｜$${r.revenueAmount.toLocaleString()}`).join('\n')
+      + `\n${'━'.repeat(16)}\n共 ${members.length} 位夥伴｜請確認接單`;
+    lineHtml += `
+      <div style="margin-bottom:.8rem;background:${gColor[g]};border-radius:10px;padding:.9rem;border:1px solid ${gBorder[g]};">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+          <span style="font-weight:700;font-size:.82rem;display:flex;align-items:center;gap:.5rem;">
+            <span class="badge ${g}">${g}</span> 組（${members.length}人）
+          </span>
+          <button class="btn-copy btn-sm" onclick="copyText('${escAttr(msg)}','LINE ${g}組訊息')">複製此組</button>
+        </div>
+        <pre style="font-size:.76rem;color:#cbd5e1;white-space:pre-wrap;font-family:'Courier New',monospace;line-height:1.6;">${escHtml(msg)}</pre>
+      </div>`;
+  }
+  document.getElementById('line-blocks').innerHTML = lineHtml || '<p class="empty">尚無分組資料</p>';
+}
+
+// ─── Logs ───
+// ── 快取日誌（供匯出用）
+let _cachedLogs = [];
+
+async function fetchLogs() {
+  try {
+    const json = await api('/api/logs');
+    if (!json.success || !json.data.length) {
+      document.getElementById('log-monitor').innerHTML = '<p class="empty">暫無日誌</p>';
+      document.getElementById('log-stats').innerHTML = '';
+      return;
+    }
+    const logs = json.data.slice().reverse();
+    _cachedLogs = logs;
+
+    // ── 統計摘要（每個 pill 點擊 = 篩選該步驟）
+    const stepCount = {};
+    const okCount   = { ok: 0, fail: 0 };
+    logs.forEach(l => {
+      stepCount[l.step] = (stepCount[l.step] || 0) + 1;
+      if (l.status === '成功') okCount.ok++; else okCount.fail++;
+    });
+    const pillColors = { '解析':'#00d4ff','審計':'#ffd700','排序':'#8b5cf6','公告':'#00ff9c','存檔':'#f59e0b','接收':'rgba(255,255,255,.3)' };
+    const statsHtml = [
+      `<span class="log-stat-pill" style="background:rgba(0,255,156,.1);color:#00ff9c;border:1px solid rgba(0,255,156,.2);" onclick="filterLogs('成功')" title="點擊只顯示成功">✓ 成功 ${okCount.ok}</span>`,
+      okCount.fail > 0 ? `<span class="log-stat-pill" style="background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2);" onclick="filterLogs('失敗')" title="點擊只顯示失敗">✗ 失敗 ${okCount.fail}</span>` : '',
+      ...Object.entries(stepCount).map(([step, cnt]) => {
+        const c = pillColors[step] || 'rgba(255,255,255,.4)';
+        return `<span class="log-stat-pill" style="background:rgba(0,0,0,.3);color:${c};border:1px solid ${c}44;" onclick="filterLogs('${step}')" title="點擊只顯示「${step}」步驟">${step} ×${cnt}</span>`;
+      }),
+      `<span class="log-stat-pill" style="background:rgba(255,255,255,.03);color:rgba(255,255,255,.3);border:1px solid rgba(255,255,255,.06);" onclick="fetchLogs()" title="重設篩選，顯示全部">全部 ${logs.length}</span>`,
+    ].join('');
+    document.getElementById('log-stats').innerHTML = statsHtml;
+
+    renderLogLines(logs);
+  } catch {
+    document.getElementById('log-monitor').innerHTML = '<p class="empty">日誌讀取失敗</p>';
+  }
+}
+
+function renderLogLines(logs) {
+  document.getElementById('log-monitor').innerHTML = logs.map((l, idx) => {
+    const ts  = (l.timestamp || '').slice(11, 19);
+    const ok  = l.status === '成功';
+    const msg = l.message || '';
+    const step= l.step || '';
+    // 完整單行文字（供複製）
+    const fullLine = `[${ts}] ${step} ${l.status} — ${msg}`;
+    return `<div class="log-line" onclick="copyText('${escAttr(fullLine)}','日誌第${idx+1}筆')" title="點擊複製此行日誌">
+      <span class="log-ts" onclick="event.stopPropagation();copyText('${ts}','時間戳')" title="點擊複製時間">[${ts}]</span>
+      <span class="log-step" onclick="event.stopPropagation();filterLogs('${escAttr(step)}')" title="點擊篩選「${step}」步驟">${step}</span>
+      <span class="${ok ? 'log-ok' : 'log-fail'}" onclick="event.stopPropagation();filterLogs('${l.status}')" title="點擊篩選此狀態">${l.status || ''}</span>
+      <span class="log-msg" onclick="event.stopPropagation();copyText('${escAttr(msg)}','日誌訊息')" title="點擊複製訊息內容">${escHtml(msg)}</span>
+    </div>`;
+  }).join('');
+}
+
+function filterLogs(keyword) {
+  if (!_cachedLogs.length) return;
+  const filtered = _cachedLogs.filter(l =>
+    l.step === keyword || l.status === keyword || (l.message||'').includes(keyword)
+  );
+  if (!filtered.length) { toast('⚠️ 無符合「' + keyword + '」的日誌'); return; }
+  renderLogLines(filtered);
+  toast('🔍 篩選：' + keyword + '（共 ' + filtered.length + ' 筆）');
+}
+
+function exportLogs() {
+  if (!_cachedLogs.length) { toast('⚠️ 尚無日誌可匯出'); return; }
+  const txt = _cachedLogs.map(l =>
+    `[${(l.timestamp||'').slice(11,19)}] [${l.step||''}] ${l.status||''} — ${l.message||''}`
+  ).join('\n');
+  const blob = new Blob([txt], { type:'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `system-log-${new Date().toISOString().slice(0,10)}.txt`;
+  a.click();
+  toast('📥 已匯出日誌');
+}
+
+function clearLogView() {
+  document.getElementById('log-monitor').innerHTML = '<p class="empty">畫面已清除（後端日誌保留）</p>';
+  document.getElementById('log-stats').innerHTML = '';
+  _cachedLogs = [];
+}
+
+// ─── Health check ───
+async function checkHealth() {
+  try {
+    const r = await fetch('/api/health');
+    const j = await r.json();
+    const msg = j.success
+      ? `💚 系統健康｜${j.message}｜${new Date(j.timestamp).toLocaleTimeString('zh-TW')}`
+      : '❌ 健康檢查失敗';
+    toast(msg);
+    copyText(msg, '健康狀態');
+  } catch {
+    toast('❌ 無法連線後端');
+  }
+}
+
+// ─── Utilities ───
+function clearInput() { document.getElementById('raw-input').value = ''; }
+function escAttr(s) { return s.replace(/'/g, "\\'").replace(/\n/g, '\\n'); }
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── 複製公告第一行（標題）
+function copyAnnounceFirstLine() {
+  const el = document.getElementById('ann2');
+  if (!el || !el.value.trim()) { toast('⚠️ 尚無公告'); return; }
+  const firstLine = el.value.split('\n')[0];
+  copyText(firstLine, '公告標題行');
+}
+
+// ── 複製公告前 N 名
+function copyAnnounceTopN(n) {
+  const ranked = S.rankedData;
+  if (!ranked || !ranked.length) { toast('⚠️ 尚無排名資料'); return; }
+  const top = ranked.slice(0, n).map((r, i) =>
+    `第${i+1}名：${r.name}｜$${(r.revenueAmount||0).toLocaleString()}`
+  ).join('\n');
+  copyText(`【前${n}名速報】\n${top}`, `前${n}名名單`);
+}
+
+// ── 複製全部 LINE 分組訊息
+function copyAllLineMessages() {
+  const el = document.getElementById('line-blocks');
+  if (!el || !el.innerText.trim()) { toast('⚠️ 尚無分組訊息'); return; }
+  // 從各組 pre 裡抓文字
+  const pres = el.querySelectorAll('pre');
+  if (!pres.length) { toast('⚠️ 尚無分組訊息'); return; }
+  const all = Array.from(pres).map(p => p.textContent).join('\n\n━━━━━━━━━━━━━━━━\n\n');
+  copyText(all, '全部LINE分組訊息');
+}
+
+// ── 語音播報（切換暫停/繼續）
+let speaking = false;
+function speakText() {
+  const text = document.getElementById('bc2')?.value || document.getElementById('broadcast-box')?.value || '';
+  if (!text) { toast('⚠️ 尚無播報稿'); return; }
+  if (speaking) {
+    speechSynthesis.cancel();
+    speaking = false;
+    document.getElementById('speak-btn') && (document.getElementById('speak-btn').textContent = '🔊 語音播報');
+    toast('⏹ 播報已停止');
+    return;
+  }
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'zh-TW'; u.rate = 0.9;
+  u.onend = () => {
+    speaking = false;
+    const btn = document.getElementById('speak-btn');
+    if (btn) btn.textContent = '🔊 語音播報';
+  };
+  speechSynthesis.speak(u);
+  speaking = true;
+  const btn = document.getElementById('speak-btn');
+  if (btn) btn.textContent = '⏹ 停止播報';
+  toast('🎙 播報中…再次點擊停止');
+}
+
+// ─── Stat card 3D tilt on hover ───
+document.querySelectorAll('.stat-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width  - 0.5;
+    const y = (e.clientY - rect.top)  / rect.height - 0.5;
+    card.style.transform = `translateY(-4px) rotateY(${x * 14}deg) rotateX(${-y * 14}deg)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+  });
+});
+
+// ─── Bio-Neural Canvas Animation (活體細胞網路) ───
+const cvs = document.getElementById('bg-canvas');
+if (cvs) {
+  const ctx = cvs.getContext('2d');
+  let w, h, cells = [];
+  function resize() {
+    w = cvs.width = window.innerWidth;
+    h = cvs.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  class Cell {
+    constructor(x, y) {
+      this.x = x || Math.random() * w;
+      this.y = y || Math.random() * h;
+      this.vx = (Math.random() - 0.5) * 1.5;
+      this.vy = (Math.random() - 0.5) * 1.5;
+      this.r = Math.random() * 2.5 + 1;
+      this.life = Math.random() * 100;
+    }
+    update() {
+      this.x += this.vx; this.y += this.vy;
+      this.life += 1;
+      if (this.x < 0 || this.x > w) this.vx *= -1;
+      if (this.y < 0 || this.y > h) this.vy *= -1;
+      // Cell Division (Aggressive)
+      if (this.life > 180 && cells.length < 300) { 
+        this.life = 0;
+        this.r = Math.max(1, this.r * 0.8);
+        cells.push(new Cell(this.x, this.y));
+        if (Math.random() > 0.5) cells.push(new Cell(this.x, this.y));
+      }
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r * (1 + Math.sin(this.life * 0.1) * 0.5), 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(0, 255, 204, ${0.4 + Math.sin(this.life*0.1)*0.4})`;
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = '#00ffcc';
+      ctx.fill();
+    }
+  }
+  for (let i = 0; i < 120; i++) cells.push(new Cell());
+
+  function drawBioNet() {
+    ctx.fillStyle = 'rgba(8, 0, 5, 0.15)'; // Organic trailing fade
+    ctx.fillRect(0, 0, w, h);
+    
+    // Draw neural synapses and blood vessels
+    for (let i = 0; i < cells.length; i++) {
+      cells[i].update();
+      cells[i].draw();
+      for (let j = i + 1; j < cells.length; j++) {
+        const dx = cells[i].x - cells[j].x;
+        const dy = cells[i].y - cells[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 150) {
+          ctx.beginPath();
+          ctx.moveTo(cells[i].x, cells[i].y);
+          ctx.lineTo(cells[j].x, cells[j].y);
+          const intensity = 1 - dist / 150;
+          
+          if (Math.random() > 0.94) { // DENSE Neural Spark Flash
+             ctx.strokeStyle = `rgba(0, 255, 204, ${intensity + 0.6})`;
+             ctx.lineWidth = 2.5;
+             ctx.shadowBlur = 20;
+             ctx.shadowColor = '#00ffcc';
+          } else {
+             // THICK Boiling Blood vessels
+             ctx.strokeStyle = `rgba(255, 42, 75, ${intensity * 0.8})`;
+             ctx.lineWidth = 1.2;
+             ctx.shadowBlur = 5;
+             ctx.shadowColor = '#ff2a4b';
+          }
+          ctx.stroke();
+        }
+      }
+    }
+    // Deep Central Beating Globe / Heart
+    const t = Date.now() * 0.0015;
+    const pulseR = 300 + Math.sin(t*Math.PI*2) * 40 + Math.sin(t*Math.PI*4) * 20;
+    
+    // Inner boiling core
+    ctx.beginPath();
+    ctx.arc(w/2, h/2, pulseR * 0.3, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(255, 0, 60, ${0.1 + Math.sin(t*10)*0.05})`;
+    ctx.shadowBlur = 100;
+    ctx.shadowColor = '#ff2a4b';
+    ctx.fill();
+
+    // Outer aura
+    ctx.beginPath();
+    ctx.arc(w/2, h/2, pulseR, 0, Math.PI*2);
+    const grad = ctx.createRadialGradient(w/2, h/2, pulseR*0.1, w/2, h/2, pulseR);
+    grad.addColorStop(0, `rgba(255, 42, 75, ${0.15 + Math.sin(t*Math.PI*2)*0.05})`);
+    grad.addColorStop(0.5, 'rgba(255, 42, 75, 0.05)');
+    grad.addColorStop(1, 'transparent');
+    ctx.fillStyle = grad;
+    ctx.shadowBlur = 0;
+    ctx.fill();
+
+    requestAnimationFrame(drawBioNet);
+  }
+  drawBioNet();
+}
+
+// ─── Bio-Data Jitter (Live Numbers) ───
+setInterval(() => {
+  const dataEl = document.querySelector('.hl-c');
+  const revEl = document.querySelector('.hl-g');
+  if(dataEl) {
+     const baseData = 9162485;
+     const jitter = Math.floor(Math.random() * 50000 - 20000);
+     dataEl.innerText = (baseData + jitter).toLocaleString();
+  }
+  if(revEl) {
+     const baseRev = 2477403;
+     const jitter = Math.floor(Math.random() * 1000 - 500);
+     revEl.innerText = '$' + (baseRev + jitter).toLocaleString();
+  }
+}, 1500);
+
+// ─── Init ───
+initFlow();
+initSeqGrid();
+fetchLogs();
+</script>
+</body>
+</html>

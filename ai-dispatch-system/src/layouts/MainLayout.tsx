@@ -1,9 +1,17 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { 取得保留中心設定 } from '../服務/系統自動維修服務';
-import { GROUP_ELEMENT, EMPEROR_UI } from '../constants/wuxingColors';
+import { GROUP_ELEMENT, EMPEROR_UI, UI } from '../constants/wuxingColors';
 
-const SIDEBAR_WIDTH = 272;
+const SIDEBAR_WIDTH = 256;
+
+// 核心頁面（固定，不依賴後端設定）
+const CORE_LINKS = [
+  { icon: '🔮', label: 'AI 派單工作台', path: '/',          color: '#00D4FF' },
+  { icon: '🎯', label: '戰力雷達分析',  path: '/ranking',   color: '#c084fc' },
+  { icon: '📋', label: 'AI 派單報表',   path: '/report',    color: '#00FF9C' },
+  { icon: '📊', label: '老闆視覺總控台', path: '/dashboard', color: '#00FF9C' },
+];
 
 const NAV_GROUPS = [
   { groupName: '主選單',      icon: '📊', centerKeys: ['老闆總控台','業績輸入與智能審計中心','主管派單台','員工個人頁','AI行銷建議','療癒金流'] },
@@ -13,82 +21,25 @@ const NAV_GROUPS = [
   { groupName: '系統管理',    icon: '⚙️', centerKeys: ['招聘管理','訓練管理','系統設定中心'] },
 ];
 
-// 每個頂部狀態標籤對應的功能路徑
-const STATUS_TAGS = [
-  { label: 'AI',  desc: 'AI引擎',  color: '#00D4FF', bg: 'rgba(0,212,255,.12)', path: '/workbench',   pulse: true },
-  { label: '即時', desc: '數據流',  color: '#00FF9C', bg: 'rgba(0,255,156,.12)', path: '/workbench',   pulse: false },
-  { label: '派單', desc: '排名派單', color: '#8B5CF6', bg: 'rgba(139,92,246,.12)', path: '/ranking',  pulse: false },
-  { label: '審計', desc: '智能審計', color: '#FFD700', bg: 'rgba(255,215,0,.12)', path: '/audit',      pulse: false },
-  { label: 'LIVE', desc: '直播狀態', color: '#FF4D85', bg: 'rgba(255,77,133,.12)', path: '/dashboard', pulse: true },
-];
-
-// ── 全球城市節點
-const CITY_NODES = [
-  { name: 'Tokyo',     color: '#00D4FF', x: 82, y: 38 },
-  { name: 'Shanghai',  color: '#00FF9C', x: 78, y: 44 },
-  { name: 'Singapore', color: '#8B5CF6', x: 76, y: 58 },
-  { name: 'Dubai',     color: '#F2C200', x: 62, y: 46 },
-  { name: 'London',    color: '#FF6EC7', x: 48, y: 32 },
-  { name: 'New York',  color: '#00E5FF', x: 20, y: 38 },
-];
-
-// ── 英雄計數器（裝飾性全球數據流）
-function HeroCounters() {
-  const [vals, setVals] = useState({ data: 9162485, rev: 2477403, vit: 97 });
-  useEffect(() => {
-    const t = setInterval(() => {
-      setVals(v => ({
-        data: v.data + Math.floor(Math.random() * 3200 - 400),
-        rev:  v.rev  + Math.floor(Math.random() * 1200 - 200),
-        vit:  Math.max(90, Math.min(99, v.vit + (Math.random() > 0.5 ? 1 : -1))),
-      }));
-    }, 1800);
-    return () => clearInterval(t);
-  }, []);
-  const cards = [
-    { label: 'DATA / SEC',   val: vals.data.toLocaleString(), color: '#00D4FF' },
-    { label: 'USD REVENUE',  val: '$' + vals.rev.toLocaleString(), color: '#F2C200' },
-    { label: 'VITALITY IDX', val: vals.vit + '%', color: '#00FF9C' },
-  ];
-  return (
-    <div style={{ display:'flex', gap:6 }}>
-      {cards.map(c => (
-        <div key={c.label} style={{
-          background: 'rgba(0,0,0,.55)', border: `1px solid ${c.color}28`,
-          borderRadius: 8, padding: '4px 10px', minWidth: 80, textAlign: 'center',
-          boxShadow: `0 0 14px ${c.color}18`,
-          animation: 'bh-num-roll .4s ease-out',
-        }}>
-          <div style={{ fontFamily:'monospace', fontSize:13, fontWeight:900, color:c.color, letterSpacing:'.04em', lineHeight:1.2 }}>{c.val}</div>
-          <div style={{ fontSize:8, color:'rgba(255,255,255,.35)', letterSpacing:'.08em', marginTop:1 }}>{c.label}</div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// CSS 注入 singleton
+// CSS singleton
 let _mlInjected = false;
 function injectMainStyles() {
   if (_mlInjected || typeof document === 'undefined') return;
   _mlInjected = true;
   const s = document.createElement('style');
   s.textContent = `
-    @keyframes ml-pulse   { 0%,100%{opacity:.6;transform:scale(1)}   50%{opacity:1;transform:scale(1.05)} }
-    @keyframes ml-dot     { 0%,100%{box-shadow:0 0 4px #00D4FF,0 0 10px rgba(0,212,255,.5)} 50%{box-shadow:0 0 8px #00D4FF,0 0 20px rgba(0,212,255,.9)} }
-    @keyframes ml-scan    { 0%{left:-60%} 100%{left:110%} }
-    @keyframes ml-brand   { 0%,100%{text-shadow:0 0 14px rgba(0,229,200,.5),0 0 28px rgba(0,212,255,.3)} 50%{text-shadow:0 0 22px rgba(0,229,200,.85),0 0 44px rgba(0,212,255,.5)} }
-    @keyframes ml-live    { 0%,100%{opacity:.85} 50%{opacity:1} }
-    @keyframes ml-modcount{ 0%{transform:scale(.7);opacity:0} 100%{transform:scale(1);opacity:1} }
-    @keyframes ml-city-ping{ 0%,100%{transform:scale(1);opacity:.7} 50%{transform:scale(1.5);opacity:1} }
-    @keyframes ml-ticker  { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
-    .ml-tag:hover   { filter:brightness(1.3)!important; transform:translateY(-1px) scale(1.04)!important; }
-    .ml-group:hover { background:rgba(0,212,255,.04)!important; }
-    .ml-link:hover  { transform:translateX(2px)!important; }
-    .ml-gfooter { animation: ml-live 3s ease-in-out infinite; }
-    .ml-city-dot { animation: ml-city-ping 2.4s ease-in-out infinite; }
-    .ml-ticker-wrap { overflow:hidden; white-space:nowrap; }
-    .ml-ticker-inner { display:inline-block; animation: ml-ticker 28s linear infinite; }
+    @keyframes ml-pulse  { 0%,100%{opacity:.6;transform:scale(1)} 50%{opacity:1;transform:scale(1.05)} }
+    @keyframes ml-dot    { 0%,100%{box-shadow:0 0 4px #00D4FF,0 0 10px rgba(0,212,255,.5)} 50%{box-shadow:0 0 8px #00D4FF,0 0 20px rgba(0,212,255,.9)} }
+    @keyframes ml-brand  { 0%,100%{text-shadow:0 0 14px rgba(0,229,200,.5),0 0 28px rgba(0,212,255,.3)} 50%{text-shadow:0 0 22px rgba(0,229,200,.85),0 0 44px rgba(0,212,255,.5)} }
+    @keyframes ml-live   { 0%,100%{opacity:.85} 50%{opacity:1} }
+    @keyframes ml-pageIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes ml-sideGlow { 0%,100%{box-shadow:inset -1px 0 0 rgba(0,212,255,.18)} 50%{box-shadow:inset -1px 0 0 rgba(0,212,255,.35), 8px 0 30px rgba(0,212,255,.04)} }
+    @keyframes ml-linkSlide { from{opacity:0;transform:translateX(-6px)} to{opacity:1;transform:translateX(0)} }
+    .ml-group:hover{ background:rgba(0,212,255,.06)!important; border-left-color:rgba(0,212,255,.3)!important; }
+    .ml-link:hover { transform:translateX(3px)!important; background:rgba(0,212,255,.04)!important; }
+    .ml-link:active{ transform:translateX(1px) scale(0.98)!important; }
+    .ml-gfooter    { animation: ml-live 3s ease-in-out infinite; }
+    .ml-page-enter { animation: ml-pageIn 0.3s ease-out both; }
   `;
   document.head.appendChild(s);
 }
@@ -98,9 +49,8 @@ export function MainLayout() {
   const location = useLocation();
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
   const [now, setNow] = useState(() => new Date());
-  const [isAiOptimized, setIsAiOptimized] = useState(false); // 🔱 新增全局優化狀態
+  const [isAiOptimized, setIsAiOptimized] = useState(false);
 
-  // 每秒更新時間（LIVE 意境）
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(t);
@@ -110,374 +60,259 @@ export function MainLayout() {
     setCollapsedGroups(prev => ({ ...prev, [groupName]: !prev[groupName] }));
   }
 
-  const activeCenters = useMemo(() => 取得保留中心設定(), []);
+  const activeCenters    = useMemo(() => 取得保留中心設定(), []);
   const activeCenterKeys = useMemo(() => new Set(activeCenters.map(c => c.代碼)), [activeCenters]);
 
   const timeStr = now.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
   const dateStr = now.toLocaleDateString('zh-TW', { month: '2-digit', day: '2-digit', weekday: 'short' });
 
   return (
-    <div style={{
-      display: 'flex', minHeight: '100vh',
-      background: EMPEROR_UI.pageBg,
-      fontFamily: 'system-ui, -apple-system, "Microsoft JhengHei", "Noto Serif TC", sans-serif',
-    }}>
+    <div style={{ display: 'flex', minHeight: '100vh', background: EMPEROR_UI.pageBg, fontFamily: UI.font }}>
 
       {/* ════ 左側固定導覽列 ════ */}
       <aside style={{
         width: isAiOptimized ? 0 : SIDEBAR_WIDTH,
         overflow: isAiOptimized ? 'hidden' : 'auto',
-        background: `linear-gradient(180deg, rgba(3,5,12,.82) 0%, rgba(6,10,20,.86) 55%, rgba(4,7,15,.92) 100%)`,
+        background: `linear-gradient(180deg, rgba(3,5,12,.92) 0%, rgba(4,8,18,.95) 50%, rgba(3,5,12,.97) 100%)`,
+        backdropFilter: 'blur(32px) saturate(200%)',
         display: 'flex', flexDirection: 'column',
-        boxShadow: isAiOptimized ? 'none' : `20px 0 80px rgba(0,0,0,.85), inset -1px 0 0 rgba(0,212,255,.18)`,
+        boxShadow: isAiOptimized ? 'none' : `20px 0 80px rgba(0,0,0,.9), 4px 0 30px rgba(0,0,0,.5), inset -1px 0 0 rgba(0,212,255,.15)`,
         position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 50,
-        borderRight: isAiOptimized ? 'none' : '1px solid rgba(0,229,200,.2)',
-        transition: 'width 0.3s ease, box-shadow 0.3s ease',
+        borderRight: isAiOptimized ? 'none' : '1px solid rgba(0,212,255,.12)',
+        transition: 'width 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s ease, opacity 0.3s',
+        animation: isAiOptimized ? 'none' : 'ml-sideGlow 6s ease-in-out infinite',
         minWidth: 0,
       }}>
 
         {/* ── 品牌區 ── */}
         <div style={{
-          padding: '12px 16px 10px',
-          borderBottom: `1px solid rgba(0,212,255,.16)`,
-          background: `linear-gradient(135deg, rgba(3,5,12,.7) 0%, rgba(7,12,24,.5) 100%)`,
-          flexShrink: 0, position: 'relative', overflow: 'hidden',
+          padding: '14px 14px 12px',
+          borderBottom: `1px solid rgba(0,212,255,.12)`,
+          background: `linear-gradient(135deg, rgba(0,212,255,0.03) 0%, rgba(3,5,12,.6) 50%, rgba(139,92,246,0.02) 100%)`,
+          flexShrink: 0,
+          position: 'relative',
+          overflow: 'hidden',
         }}>
-          {/* 背景電漿暈 */}
-          <div style={{ position:'absolute', top:-28, right:-28, width:120, height:120, borderRadius:'50%', background:'radial-gradient(circle, rgba(0,229,200,.2) 0%, transparent 70%)', filter:'blur(20px)', pointerEvents:'none' }} />
-          <div style={{ position:'absolute', bottom:-20, left:-20, width:100, height:100, borderRadius:'50%', background:'radial-gradient(circle, rgba(139,92,246,.14) 0%, transparent 70%)', filter:'blur(18px)', pointerEvents:'none' }} />
-
-          {/* 品牌名稱 + 即時時鐘 */}
-          <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:3 }}>
-            <div style={{
-              fontSize: 16, fontWeight: 900, letterSpacing: '0.05em',
-              animation: 'ml-brand 3s ease-in-out infinite',
-              color: '#7DF9FF',
-            }}>
+          <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:4 }}>
+            <div style={{ fontSize:15, fontWeight:900, letterSpacing:'.05em', animation:'ml-brand 3s ease-in-out infinite', color:'#7DF9FF' }}>
               ⚡ 兆櫃AI派單
             </div>
-            {/* 即時時鐘 — LIVE 意境功能字 */}
             <div style={{ textAlign:'right', flexShrink:0 }}>
               <div style={{ fontSize:12, fontWeight:900, color:'#00FF9C', fontFamily:'monospace', letterSpacing:'.05em', lineHeight:1 }}>{timeStr}</div>
-              <div style={{ fontSize:9, color:'rgba(0,255,156,.55)', letterSpacing:'.06em', marginTop:1 }}>{dateStr}</div>
+              <div style={{ fontSize:8, color:'rgba(0,255,156,.5)', letterSpacing:'.06em', marginTop:1 }}>{dateStr}</div>
             </div>
           </div>
-
-          {/* 副標 + UPTIME */}
-          <div style={{ fontSize:9, color:'#7DF9FF', letterSpacing:'0.12em', display:'flex', alignItems:'center', justifyContent:'space-between', gap:5, marginBottom:5 }}>
-            <span style={{ display:'flex', alignItems:'center', gap:5 }}>
-              <span style={{ display:'inline-block', width:6, height:6, borderRadius:'50%', background:'#00D4FF', animation:'ml-dot 2s ease-in-out infinite', flexShrink:0 }} />
-              全球大數據 AI 派單中樞
-            </span>
-            <span style={{ fontSize:8, color:'rgba(0,255,156,.6)', fontFamily:'monospace', letterSpacing:'.06em' }}>UPTIME 99.97%</span>
-          </div>
-
-          {/* 全球跑馬燈 */}
-          <div className="ml-ticker-wrap" style={{ marginBottom:5, borderTop:'1px solid rgba(0,212,255,.08)', borderBottom:'1px solid rgba(0,212,255,.08)', padding:'3px 0' }}>
-            <div className="ml-ticker-inner" style={{ fontSize:7.5, color:'rgba(0,212,255,.5)', letterSpacing:'.1em', fontFamily:'monospace' }}>
-              {'GLOBAL · AI · DATA · ENGINE · v8.0 　 全球大數據 AI 核心中控台 　 APEX · CENTRAL · INTELLIGENCE · SYSTEM 　 GLOBAL · AI · DATA · ENGINE · v8.0 　 全球大數據 AI 核心中控台 　 APEX · CENTRAL · INTELLIGENCE · SYSTEM 　'}
-            </div>
-          </div>
-
-          {/* 城市節點 */}
-          <div style={{ display:'flex', gap:4, flexWrap:'wrap', marginBottom:5 }}>
-            {CITY_NODES.map(c => (
-              <div key={c.name} style={{ display:'flex', alignItems:'center', gap:3 }}>
-                <span className="ml-city-dot" style={{
-                  display:'inline-block', width:5, height:5, borderRadius:'50%',
-                  background: c.color, boxShadow: `0 0 6px ${c.color}`,
-                  flexShrink:0,
-                }} />
-                <span style={{ fontSize:8, color:'rgba(255,255,255,.4)', letterSpacing:'.05em' }}>{c.name}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* 英雄計數器 */}
-          <HeroCounters />
-          <div style={{ marginBottom:5 }} />
-
-          {/* 功能狀態標籤 — 每個都可點擊跳轉 */}
-          <div style={{ display:'flex', gap:3, flexWrap:'wrap' }}>
-            {STATUS_TAGS.map(({ label, desc, color, bg, path, pulse }) => (
-              <Link
-                key={label}
-                to={path}
-                title={desc}
-                className="ml-tag"
-                style={{
-                  fontSize: 9, padding: '3px 7px', borderRadius: 5,
-                  background: bg, color: color,
-                  border: `1px solid ${color}44`, fontWeight: 900,
-                  letterSpacing: '0.08em', lineHeight: 1.5,
-                  textShadow: `0 0 8px ${color}88`,
-                  textDecoration: 'none', display: 'inline-block',
-                  animation: pulse ? 'ml-pulse 2.5s ease-in-out infinite' : 'none',
-                  cursor: 'pointer', transition: 'all .15s',
-                  transform: 'translateY(0) scale(1)',
-                }}
-              >
-                {label}
-              </Link>
-            ))}
+          <div style={{ fontSize:8, color:'rgba(0,212,255,.65)', letterSpacing:'.1em', display:'flex', alignItems:'center', gap:4 }}>
+            <span style={{ display:'inline-block', width:5, height:5, borderRadius:'50%', background:'#00D4FF', animation:'ml-dot 2s ease-in-out infinite', flexShrink:0 }} />
+            AI 派單中樞 · {activeCenters.length} 模組
           </div>
         </div>
 
-        {/* ── 導覽群組 ── */}
-        <nav style={{ padding: '8px 8px', flex: 1 }}>
-          {/* 🔱 核心系統特快管道 */}
-          <div style={{ marginBottom: 14, padding: '0 4px', display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <Link to="/" style={{
-              display: 'flex', alignItems: 'center', gap: 8, padding: '9px 12px', borderRadius: 9,
-              background: location.pathname === '/' ? 'linear-gradient(90deg, rgba(0,229,200,.15), transparent)' : 'rgba(0,229,200,.03)',
-              border: location.pathname === '/' ? '1px solid rgba(0,229,200,.4)' : '1px solid rgba(0,229,200,.08)',
-              color: '#00D4FF', textDecoration: 'none', fontWeight: 900, fontSize: 13, transition: 'all 0.2s',
-              boxShadow: location.pathname === '/' ? '0 0 20px rgba(0,229,200,.25)' : 'none',
-            }}>
-              <span style={{ fontSize: 15 }}>🔮</span> 
-              <span style={{ textShadow: '0 0 8px rgba(0,229,200,.4)' }}>AI 派單工作台</span>
-              {location.pathname === '/' && <span style={{ fontSize: 8, padding: '1px 5px', borderRadius: 4, background: '#00D4FF22', border: '1px solid #00D4FF', marginLeft: 'auto', fontWeight: 900, animation: 'ml-live 2s infinite' }}>LIVE</span>}
-            </Link>
-            
-            <Link to="/dashboard" style={{
-              display: 'flex', alignItems: 'center', gap: 8, padding: '9px 12px', borderRadius: 9,
-              background: location.pathname === '/dashboard' ? 'linear-gradient(90deg, rgba(0,255,156,.12), transparent)' : 'rgba(255,255,255,.01)',
-              border: location.pathname === '/dashboard' ? '1px solid rgba(0,255,156,.35)' : '1px solid rgba(255,255,255,.05)',
-              color: '#00FF9C', textDecoration: 'none', fontWeight: 900, fontSize: 12, transition: 'all 0.2s',
-            }}>
-              <span style={{ fontSize: 15 }}>📊</span> 老闆視覺總控台
-            </Link>
-            <div style={{ height: 1, background: 'rgba(0,212,255,.1)', margin: '4px 8px 2px' }} />
-          </div>
+        {/* ── 統一導覽（核心頁面 + 模組群組 合一）── */}
+        <nav style={{ padding:'8px', flex:1, overflow:'auto' }}>
 
-          {NAV_GROUPS.map(group => {
-            const validCenterKeys = group.centerKeys.filter(k => activeCenterKeys.has(k as any));
-            if (validCenterKeys.length === 0) return null;
-
-            const el = GROUP_ELEMENT[group.groupName];
-            const accent = el?.bright ?? EMPEROR_UI.brandGold;
-            const isCollapsed = collapsedGroups[group.groupName] ?? false;
-            const modulesInGroup = activeCenters
-              .filter(m => validCenterKeys.includes(m.代碼))
-              .sort((a, b) => a.顯示順序 - b.顯示順序);
-            const isGroupActive = modulesInGroup.some(m => location.pathname === m.路徑);
-            const modCount = modulesInGroup.length;
-
-            return (
-              <div key={group.groupName} style={{ marginBottom: 2 }}>
-                {/* 群組標題 — 含模組數量徽章 */}
-                <button
-                  type="button"
-                  onClick={() => toggleGroup(group.groupName)}
-                  className="ml-group"
+          {/* 核心功能 */}
+          <div style={{ display:'flex', flexDirection:'column', gap:2, marginBottom:6 }}>
+            {CORE_LINKS.map(link => {
+              const isActive = location.pathname === link.path;
+              return (
+                <Link
+                  key={link.path} to={link.path} className="ml-link"
                   style={{
-                    width: '100%', display: 'flex', alignItems: 'center',
-                    justifyContent: 'space-between', padding: '5px 10px',
-                    borderRadius: 8, border: 'none', cursor: 'pointer',
-                    background: isGroupActive
-                      ? `linear-gradient(90deg, ${el?.void ?? EMPEROR_UI.cardBg}, transparent)`
-                      : 'transparent',
-                    color: isGroupActive ? accent : EMPEROR_UI.textMuted,
-                    fontWeight: 800, fontSize: 11, letterSpacing: '0.08em',
-                    transition: 'all 0.2s',
-                    borderLeft: isGroupActive ? `2px solid ${accent}` : '2px solid transparent',
-                  }}
-                  onMouseOver={e => {
-                    if (!isGroupActive) {
-                      e.currentTarget.style.color = accent;
-                      e.currentTarget.style.borderLeft = `2px solid ${accent}66`;
-                    }
-                  }}
-                  onMouseOut={e => {
-                    if (!isGroupActive) {
-                      e.currentTarget.style.color = EMPEROR_UI.textMuted;
-                      e.currentTarget.style.borderLeft = '2px solid transparent';
-                    }
+                    display:'flex', alignItems:'center', gap:8, padding:'7px 12px', borderRadius:7,
+                    background: isActive ? `linear-gradient(90deg, ${link.color}18, transparent)` : 'transparent',
+                    border: isActive ? `1px solid ${link.color}44` : '1px solid transparent',
+                    color: isActive ? link.color : EMPEROR_UI.textMuted,
+                    textDecoration:'none', fontWeight: isActive ? 900 : 600, fontSize:12,
+                    transition:'all .2s',
+                    borderLeft: isActive ? `3px solid ${link.color}` : '3px solid transparent',
+                    boxShadow: isActive ? `0 0 16px ${link.color}22, inset 0 0 12px ${link.color}08` : 'none',
                   }}
                 >
-                  <span style={{ display:'flex', alignItems:'center', gap:6 }}>
-                    {/* 群組圖示 */}
-                    <span style={{ fontSize: 13 }}>{group.icon}</span>
-                    {/* 群組名稱 */}
-                    <span style={{ fontSize: 11 }}>{group.groupName}</span>
-                    {/* 五行元素標籤 */}
-                    {el && (
-                      <span style={{
-                        fontSize: 9, padding: '1px 5px', borderRadius: 4,
-                        background: el.void, color: el.bright,
-                        border: `1px solid ${el.shadow}`, fontWeight: 900,
-                        letterSpacing: '0.04em', flexShrink: 0,
-                      }}>
-                        {el.element}
-                      </span>
-                    )}
-                    {/* 模組數量 — 功能數字 */}
-                    <span style={{
-                      fontSize: 9, padding: '0 5px', borderRadius: 10,
-                      background: isGroupActive ? `${accent}22` : 'rgba(255,255,255,.06)',
-                      color: isGroupActive ? accent : EMPEROR_UI.textDim,
-                      border: `1px solid ${isGroupActive ? accent + '44' : 'rgba(255,255,255,.08)'}`,
-                      fontWeight: 900, fontFamily: 'monospace', flexShrink: 0,
-                      lineHeight: '16px', minWidth: 16, textAlign: 'center',
-                    }}>
+                  <span style={{ fontSize:13 }}>{link.icon}</span>
+                  <span style={{ flex:1 }}>{link.label}</span>
+                  {isActive && (
+                    <span style={{ fontSize:7, padding:'1px 5px', borderRadius:3, background:`${link.color}22`, color:link.color, border:`1px solid ${link.color}44`, fontWeight:900, animation:'ml-live 2s infinite' }}>●</span>
+                  )}
+                </Link>
+              );
+            })}
+          </div>
+
+          <div style={{ height:1, background:'rgba(0,212,255,.1)', margin:'2px 8px 6px' }} />
+
+          {/* 模組群組 */}
+          {(() => {
+            const AGGREGATE_GROUPS: Record<string, string> = {
+              '高價成交爆發': '/hv',
+              '女聲智慧播報': '/bc',
+              'LINE群組轉傳': '/line',
+            };
+
+            return NAV_GROUPS.map(group => {
+              const validCenterKeys = group.centerKeys.filter(k => activeCenterKeys.has(k as any));
+              if (!validCenterKeys.length) return null;
+              const el          = GROUP_ELEMENT[group.groupName];
+              const accent      = el?.bright ?? EMPEROR_UI.brandGold;
+              const isCollapsed = collapsedGroups[group.groupName] ?? false;
+              const modulesInGroup = activeCenters.filter(m => validCenterKeys.includes(m.代碼)).sort((a, b) => a.顯示順序 - b.顯示順序);
+              const aggPath     = AGGREGATE_GROUPS[group.groupName];
+              const isGroupActive  = aggPath ? location.pathname === aggPath : modulesInGroup.some(m => location.pathname === m.路徑);
+              const modCount       = modulesInGroup.length;
+
+              const style: React.CSSProperties = {
+                width:'100%', display:'flex', alignItems:'center', justifyContent:'space-between',
+                padding:'5px 10px', borderRadius:7, border:'none', cursor:'pointer',
+                background: isGroupActive ? `linear-gradient(90deg, ${el?.void ?? EMPEROR_UI.cardBg}, transparent)` : 'transparent',
+                color: isGroupActive ? accent : EMPEROR_UI.textMuted,
+                fontWeight:800, fontSize:11, letterSpacing:'.06em', transition:'all .2s',
+                borderLeft: isGroupActive ? `2px solid ${accent}` : '2px solid transparent',
+                textDecoration: 'none',
+              };
+
+              const content = (
+                <span style={{ display:'flex', alignItems:'center', gap:5 }}>
+                  <span style={{ fontSize:12 }}>{group.icon}</span>
+                  <span>{group.groupName}</span>
+                  {el && (
+                    <span style={{ fontSize:8, padding:'1px 5px', borderRadius:4, background:el.void, color:el.bright, border:`1px solid ${el.shadow}`, fontWeight:900, letterSpacing:'.04em' }}>
+                      {el.element}
+                    </span>
+                  )}
+                  {!aggPath && (
+                    <span style={{ fontSize:8, padding:'0 5px', borderRadius:10, background: isGroupActive ? `${accent}22` : 'rgba(255,255,255,.05)', color: isGroupActive ? accent : EMPEROR_UI.textDim, border:`1px solid ${isGroupActive ? accent + '44' : 'rgba(255,255,255,.08)'}`, fontWeight:900, fontFamily:'monospace', lineHeight:'16px', minWidth:16, textAlign:'center' }}>
                       {modCount}
                     </span>
-                  </span>
-                  {/* 展開箭頭 */}
-                  <span style={{
-                    fontSize: 10, color: EMPEROR_UI.textDim,
-                    transform: isCollapsed ? 'rotate(-90deg)' : 'rotate(0deg)',
-                    transition: 'transform 0.2s', display: 'inline-block', flexShrink: 0,
-                  }}>▾</span>
-                </button>
+                  )}
+                </span>
+              );
 
-                {/* 群組內導覽連結 */}
-                {!isCollapsed && (
-                  <div style={{ paddingLeft: 6, marginTop: 1, display:'flex', flexDirection:'column', gap: 1 }}>
-                    {modulesInGroup.map((mod, idx) => {
-                      const isActive = location.pathname === mod.路徑;
-                      return (
-                        <Link
-                          key={mod.代碼}
-                          to={mod.路徑}
-                          className="ml-link"
-                          style={{
-                            display: 'flex', alignItems: 'center', gap: 7,
-                            padding: '5px 10px', borderRadius: 7,
-                            textDecoration: 'none',
-                            color: isActive ? EMPEROR_UI.textPrimary : EMPEROR_UI.textMuted,
-                            background: isActive
-                              ? `linear-gradient(90deg, ${el?.void ?? EMPEROR_UI.cardBg}, ${el?.shadow ?? EMPEROR_UI.borderMain} 80%, transparent)`
-                              : 'transparent',
-                            fontWeight: isActive ? 800 : 500, fontSize: 12,
-                            transition: 'all 0.15s',
-                            borderLeft: isActive ? `3px solid ${accent}` : '3px solid transparent',
-                            boxShadow: isActive ? `inset 0 0 16px ${el?.core ?? EMPEROR_UI.borderMain}44` : 'none',
-                            transform: 'translateX(0)',
-                          }}
-                          onMouseOver={e => {
-                            if (!isActive) {
-                              e.currentTarget.style.color = el?.text ?? EMPEROR_UI.textSecondary;
-                              e.currentTarget.style.background = el?.void ?? EMPEROR_UI.cardBg;
-                              e.currentTarget.style.borderLeft = `3px solid ${el?.core ?? EMPEROR_UI.borderAccent}`;
-                            }
-                          }}
-                          onMouseOut={e => {
-                            if (!isActive) {
-                              e.currentTarget.style.color = EMPEROR_UI.textMuted;
-                              e.currentTarget.style.background = 'transparent';
-                              e.currentTarget.style.borderLeft = '3px solid transparent';
-                            }
-                          }}
-                        >
-                          {/* 序號 + 狀態點 */}
-                          <span style={{
-                            display: 'flex', alignItems: 'center', gap: 3, flexShrink: 0,
-                          }}>
-                            <span style={{
-                              fontSize: 8, color: isActive ? accent : EMPEROR_UI.textDim,
-                              fontFamily: 'monospace', fontWeight: 700, opacity: .7,
-                            }}>{String(idx + 1).padStart(2, '0')}</span>
-                            <span style={{
-                              width: 5, height: 5, borderRadius: '50%', flexShrink: 0,
-                              background: isActive ? accent : EMPEROR_UI.borderAccent,
-                              boxShadow: isActive ? `0 0 6px ${accent}, 0 0 14px ${accent}55` : 'none',
-                              transition: 'all 0.2s',
-                            }} />
-                          </span>
-                          {/* 模組名稱 */}
-                          <span style={{ flex: 1, fontSize: 12 }}>{mod.名稱}</span>
-                          {/* 活躍時顯示 ACTIVE 指示 */}
-                          {isActive && (
-                            <span style={{
-                              fontSize: 8, padding: '1px 5px', borderRadius: 3,
-                              background: `${accent}22`, color: accent,
-                              border: `1px solid ${accent}44`, fontWeight: 900,
-                              letterSpacing: '.05em', flexShrink: 0,
-                              animation: 'ml-live 2s ease-in-out infinite',
-                            }}>ON</span>
-                          )}
-                        </Link>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+              return (
+                <div key={group.groupName} style={{ marginBottom:2 }}>
+                  {aggPath ? (
+                    <Link
+                      to={aggPath}
+                      className="ml-group"
+                      style={style}
+                      onMouseOver={e => { if (!isGroupActive) { e.currentTarget.style.color = accent; e.currentTarget.style.borderLeft = `2px solid ${accent}55`; } }}
+                      onMouseOut={e => { if (!isGroupActive) { e.currentTarget.style.color = EMPEROR_UI.textMuted; e.currentTarget.style.borderLeft = '2px solid transparent'; } }}
+                    >
+                      {content}
+                    </Link>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => toggleGroup(group.groupName)}
+                      className="ml-group"
+                      style={style}
+                      onMouseOver={e => { if (!isGroupActive) { e.currentTarget.style.color = accent; e.currentTarget.style.borderLeft = `2px solid ${accent}55`; } }}
+                      onMouseOut={e => { if (!isGroupActive) { e.currentTarget.style.color = EMPEROR_UI.textMuted; e.currentTarget.style.borderLeft = '2px solid transparent'; } }}
+                    >
+                      {content}
+                      <span style={{ fontSize:9, color:EMPEROR_UI.textDim, transform: isCollapsed ? 'rotate(-90deg)' : 'rotate(0)', transition:'transform .2s', display:'inline-block' }}>▾</span>
+                    </button>
+                  )}
+
+                  {!aggPath && !isCollapsed && (
+                    <div style={{ paddingLeft:6, marginTop:1, display:'flex', flexDirection:'column', gap:1, overflow:'hidden' }}>
+                      {modulesInGroup.map((mod, idx) => {
+                        const isActive = location.pathname === mod.路徑;
+                        return (
+                          <Link
+                            key={mod.代碼} to={mod.路徑} className="ml-link"
+                            style={{
+                              animation: `ml-linkSlide 0.2s ease-out ${idx * 0.04}s both`,
+                              display:'flex', alignItems:'center', gap:6,
+                              padding:'5px 10px', borderRadius:6, textDecoration:'none',
+                              color: isActive ? EMPEROR_UI.textPrimary : EMPEROR_UI.textMuted,
+                              background: isActive ? `linear-gradient(90deg, ${el?.void ?? EMPEROR_UI.cardBg}, transparent)` : 'transparent',
+                              fontWeight: isActive ? 800 : 500, fontSize:12, transition:'all .15s',
+                              borderLeft: isActive ? `3px solid ${accent}` : '3px solid transparent',
+                              boxShadow: isActive ? `inset 0 0 14px ${el?.core ?? EMPEROR_UI.borderMain}44` : 'none',
+                            }}
+                            onMouseOver={e => { if (!isActive) { e.currentTarget.style.color = el?.text ?? EMPEROR_UI.textSecondary; e.currentTarget.style.background = el?.void ?? EMPEROR_UI.cardBg; e.currentTarget.style.borderLeft = `3px solid ${el?.core ?? EMPEROR_UI.borderAccent}`; } }}
+                            onMouseOut={e => { if (!isActive) { e.currentTarget.style.color = EMPEROR_UI.textMuted; e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderLeft = '3px solid transparent'; } }}
+                          >
+                            <span style={{ display:'flex', alignItems:'center', gap:3, flexShrink:0 }}>
+                              <span style={{ fontSize:7, color: isActive ? accent : EMPEROR_UI.textDim, fontFamily:'monospace', fontWeight:700, opacity:.7 }}>{String(idx + 1).padStart(2, '0')}</span>
+                              <span style={{ width:5, height:5, borderRadius:'50%', background: isActive ? accent : EMPEROR_UI.borderAccent, boxShadow: isActive ? `0 0 6px ${accent}, 0 0 12px ${accent}55` : 'none', transition:'all .2s', flexShrink:0 }} />
+                            </span>
+                            <span style={{ flex:1 }}>{mod.名稱}</span>
+                            {isActive && (
+                              <span style={{ fontSize:7, padding:'1px 5px', borderRadius:3, background:`${accent}22`, color:accent, border:`1px solid ${accent}44`, fontWeight:900, animation:'ml-live 2s ease-in-out infinite', flexShrink:0 }}>●</span>
+                            )}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            });
+          })()}
+
         </nav>
 
-        {/* ── 頁尾：系統狀態 ── */}
+        {/* ── 頁尾 ── */}
         <div style={{
-          padding: '10px 12px 6px',
-          borderTop: `1px solid ${isAiOptimized ? '#00FF9C' : 'rgba(0,212,255,.12)'}`,
-          background: isAiOptimized ? 'rgba(0, 255, 156, 0.03)' : 'transparent',
-          flexShrink: 0,
-          transition: 'all 0.3s'
+          padding:'10px 12px 8px',
+          borderTop:`1px solid ${isAiOptimized ? 'rgba(0,255,156,.2)' : 'rgba(0,212,255,.1)'}`,
+          background: isAiOptimized ? 'rgba(0,255,156,.03)' : 'transparent',
+          flexShrink:0, transition:'all .3s',
         }}>
-          {/* 🔱 啟動優化核心按鈕 (字體意境+功能) */}
-          <button 
+          <button
             onClick={() => setIsAiOptimized(!isAiOptimized)}
             style={{
-              width: '100%', padding: '7px', borderRadius: 8, marginBottom: 8,
-              background: isAiOptimized ? 'rgba(0, 255, 156, 0.08)' : 'rgba(0, 212, 255, 0.04)',
-              border: `1px solid ${isAiOptimized ? '#00FF9C' : '#00D4FF44'}`,
+              width:'100%', padding:'7px', borderRadius:7, marginBottom:6,
+              background: isAiOptimized ? 'rgba(0,255,156,.08)' : 'rgba(0,212,255,.04)',
+              border:`1px solid ${isAiOptimized ? '#00FF9C55' : '#00D4FF33'}`,
               color: isAiOptimized ? '#00FF9C' : '#00D4FF',
-              fontSize: 11, fontWeight: 900, cursor: 'pointer', transition: 'all 0.2s',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-              boxShadow: isAiOptimized ? '0 0 10px rgba(0,255,156,0.3)' : 'none',
-              fontFamily: '"Microsoft JhengHei", sans-serif'
+              fontSize:11, fontWeight:900, cursor:'pointer', transition:'all .2s',
+              display:'flex', alignItems:'center', justifyContent:'center', gap:6,
+              boxShadow: isAiOptimized ? '0 0 14px rgba(0,255,156,.3), inset 0 0 8px rgba(0,255,156,.08)' : 'none',
+              animation: isAiOptimized ? 'ml-pulse 2.5s ease-in-out infinite' : 'none',
             }}
           >
-            <span style={{ fontSize: 13 }}>{isAiOptimized ? '🔋' : '⚡'}</span> 
-            {isAiOptimized ? 'AI 全域優化已啟動' : '啟動 AI 全域優化'}
+            <span style={{ fontSize:12, transition:'transform .3s', transform: isAiOptimized ? 'rotate(360deg)' : 'none' }}>{isAiOptimized ? '🔋' : '⚡'}</span>
+            {isAiOptimized ? '已啟動全幅模式' : '啟動全幅模式'}
           </button>
 
-          {/* 系統狀態列 */}
-          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:3 }}>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
             <div style={{ display:'flex', gap:4, alignItems:'center' }}>
-              <span style={{ width:5, height:5, borderRadius:'50%', background: isAiOptimized ? '#00FF9C' : '#00FF9C', boxShadow: `0 0 6px ${isAiOptimized ? '#00FF9C' : '#00FF9C'}`, display:'inline-block', animation:'ml-dot 2s ease-in-out infinite' }} />
-              <span style={{ fontSize:9, color: isAiOptimized ? '#00FF9C' : '#00FF9C', fontWeight:700, letterSpacing:'.06em' }}>系統運行中</span>
+              <span style={{ width:5, height:5, borderRadius:'50%', background:'#00FF9C', boxShadow:'0 0 6px #00FF9C', display:'inline-block', animation:'ml-dot 2s ease-in-out infinite' }} />
+              <span style={{ fontSize:8, color:'#00FF9C', fontWeight:700, letterSpacing:'.06em' }}>系統運行中</span>
             </div>
-            <span style={{ fontSize:9, color:EMPEROR_UI.textDim, fontFamily:'monospace' }}>
-              {isAiOptimized ? 'MODE: 100vh' : `${activeCenters.length} 模組`}
-            </span>
           </div>
-          <div className="ml-gfooter" style={{ fontSize:8, color:EMPEROR_UI.textDim, letterSpacing:'.1em', textAlign:'center', textShadow: isAiOptimized ? '0 0 4px #00FF9C44' : 'none' }}>
-            {isAiOptimized ? '◈ 空間鎖死概念 0 浪費運作中' : '© 兆櫃AI 數據中樞'}
+          <div className="ml-gfooter" style={{ fontSize:7, color:EMPEROR_UI.textDim, letterSpacing:'.08em', textAlign:'center', marginTop:4 }}>
+            © 兆櫃AI 數據中樞
           </div>
         </div>
       </aside>
 
       {/* ════ 右側主內容區 ════ */}
       <main style={{
-        flex: 1,
-        marginLeft: isAiOptimized ? 0 : SIDEBAR_WIDTH,
-        display: 'flex', flexDirection: 'column', minWidth: 0,
-        background: EMPEROR_UI.pageBg,
-        transition: 'margin-left 0.3s ease',
+        flex:1, marginLeft: isAiOptimized ? 0 : SIDEBAR_WIDTH,
+        display:'flex', flexDirection:'column', minWidth:0,
+        background:EMPEROR_UI.pageBg, transition:'margin-left .3s ease',
       }}>
-        {/* 優化模式：頂部返回欄 */}
         {isAiOptimized && (
           <div style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            padding: '5px 16px', flexShrink: 0,
-            background: 'rgba(0,255,156,.04)',
-            borderBottom: '1px solid rgba(0,255,156,.15)',
+            display:'flex', alignItems:'center', justifyContent:'space-between',
+            padding:'5px 16px', flexShrink:0,
+            background:'rgba(0,255,156,.04)', borderBottom:'1px solid rgba(0,255,156,.14)',
           }}>
             <div style={{ display:'flex', alignItems:'center', gap:8 }}>
               <span style={{ width:6, height:6, borderRadius:'50%', background:'#00FF9C', boxShadow:'0 0 8px #00FF9C', display:'inline-block', animation:'ml-dot 2s ease-in-out infinite' }} />
-              <span style={{ fontSize:10, fontWeight:900, color:'#00FF9C', letterSpacing:'.1em', fontFamily:'monospace' }}>◈ 全幅模式 · 空間鎖死 · 零浪費</span>
+              <span style={{ fontSize:10, fontWeight:900, color:'#00FF9C', letterSpacing:'.08em' }}>全幅模式</span>
             </div>
-            <button
-              onClick={() => setIsAiOptimized(false)}
-              style={{ fontSize:10, color:'rgba(0,255,156,.6)', background:'none', border:'1px solid rgba(0,255,156,.2)', borderRadius:5, padding:'2px 10px', cursor:'pointer', fontWeight:700, letterSpacing:'.06em' }}
-            >
-              ✕ 退出全幅
+            <button onClick={() => setIsAiOptimized(false)} style={{ fontSize:10, color:'rgba(0,255,156,.6)', background:'none', border:'1px solid rgba(0,255,156,.2)', borderRadius:5, padding:'2px 10px', cursor:'pointer', fontWeight:700 }}>
+              ✕ 退出
             </button>
           </div>
         )}
-        <Outlet />
+        <div key={location.pathname} className="ml-page-enter">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

@@ -157,7 +157,7 @@ app.put('/api/v1/report-details/:detailId', (req, res) => {
 });
 
 // ── 啟動 ──
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   // 確保 storage 資料夾存在
   ensureStorage();
   systemLog('INFO', `後端啟動 — http://localhost:${PORT}/api/v1/`);
@@ -175,3 +175,8 @@ app.listen(PORT, () => {
   console.log('📌 核心金額禁止自動修正');
   console.log('');
 });
+
+// 保持進程存活 — 防止 tsx 在 Windows 上提前退出
+server.on('close', () => { console.log('⏹ 後端已關閉'); });
+process.on('SIGTERM', () => { server.close(); });
+process.on('SIGINT', () => { server.close(); });

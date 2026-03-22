@@ -6,6 +6,8 @@ export interface ReportMetaDetection {
   reportDate: string;     // YYYY-MM-DD，空字串表示辨識失敗
   platformName: string;   // '奕心' | '民視' | '公司產品' | ''
   reportMode: string;     // '累積報表' | '單日報表' | ''
+  dayOfWeek?: string;     // 例如：星期六、禮拜六
+  timeRange?: string;     // 例如：17:02到16:30
   confidence: 'high' | 'low';
 }
 
@@ -25,68 +27,140 @@ const MODEL_NAME = 'gemini-2.5-flash';
 function localDetectMeta(raw: string): ReportMetaDetection {
   const text = raw;
 
-  // 日期辨識：匹配 3/10、03/10、3月10日、3-10 等格式
+  // ── 日期辨識（優先：結算日期 > 報表日期 > 完整格式 > 一般日期）──
   let reportDate = '';
-  const dateMatch =
-    text.match(/(\d{1,2})[\/月\-](\d{1,2})[日\s]/)?.[0] ||
-    text.match(/(\d{1,2})[\/\-](\d{1,2})/)?.[0];
-  if (dateMatch) {
-    const parts = dateMatch.replace(/[月日\s]/g, '/').split(/[\/\-]/);
-    const m = parts[0]?.padStart(2, '0');
-    const d = parts[1]?.padStart(2, '0');
+  const datePattern = /(\d{1,2})[\/月\-](\d{1,2})[日號]?/g;
+
+  // 策略 1：找「結算」關鍵字附近的日期
+  const settleDateMatch = text.match(/(\d{1,2})[\/月\-](\d{1,2})[日號]?\s*結算/);
+  const settleDateMatch2 = text.match(/結算[日期：:\s]*(\d{1,2})[\/月\-](\d{1,2})[日號]?/);
+  // 策略 2：找「報表日期」格式
+  const reportDateMatch = text.match(/報表[日期：:\s]*(\d{1,2})[\/月\-](\d{1,2})[日號]?/);
+  // 策略 3：找完整格式 YYYY/MM/DD 或 YYYY-MM-DD
+  const fullDateMatch = text.match(/(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
+
+  const bestMatch: RegExpMatchArray | null = settleDateMatch || settleDateMatch2 || reportDateMatch;
+
+  if (bestMatch) {
+    const mm = bestMatch[1]?.padStart(2, '0');
+    const dd = bestMatch[2]?.padStart(2, '0');
     const y = new Date().getFullYear();
-    if (m && d) reportDate = `${y}-${m}-${d}`;
+    if (mm && dd) reportDate = `${y}-${mm}-${dd}`;
+  } else if (fullDateMatch) {
+    // 完整年月日格式
+    reportDate = `${fullDateMatch[1]}-${fullDateMatch[2].padStart(2, '0')}-${fullDateMatch[3].padStart(2, '0')}`;
+  } else {
+    // 回退：取所有日期，選最合理的
+    const allDates: { m: string; d: string; idx: number }[] = [];
+    let dm: RegExpExecArray | null;
+    while ((dm = datePattern.exec(text)) !== null) {
+      allDates.push({ m: dm[1], d: dm[2], idx: dm.index });
+    }
+    const reasonable = allDates.filter(d => {
+      const mm = parseInt(d.m), dd = parseInt(d.d);
+      return mm >= 1 && mm <= 12 && dd >= 1 && dd <= 31 && !(mm === 1 && dd === 1);
+    });
+    if (reasonable.length > 0) {
+      const pick = reasonable[0];
+      const y = new Date().getFullYear();
+      reportDate = `${y}-${pick.m.padStart(2, '0')}-${pick.d.padStart(2, '0')}`;
+    }
   }
 
-  // 平台辨識
-  let platformName = '';
-  if (text.includes('奕心')) platformName = '奕心';
-  else if (text.includes('民視')) platformName = '民視';
-  else if (text.includes('公司產品')) platformName = '公司產品';
+  // 提取星期與時間範圍
+  let dayOfWeek = '';
+  const dayMatch = text.match(/(星期[一二三四五六日]|禮拜[一二三四五六日]|週[一二三四五六日])/);
+  if (dayMatch) dayOfWeek = dayMatch[1];
 
-  // 模式辨識
+  let timeRange = '';
+  const timeMatch = text.match(/(\d{1,2}[:點]\d{1,2}分?(?:[\s~到至\-]*\d{1,2}[:點]\d{1,2}分?)?)/);
+  if (timeMatch) timeRange = timeMatch[1];
+
+  // ── 平台辨識（計數法 + 標題權重 + 別名支援）──
+  let platformName = '';
+  const platformCounts: { name: string; count: number }[] = [
+    { name: '奕心', count: (text.match(/奕心/g) || []).length },
+    { name: '民視', count: (text.match(/民視/g) || []).length },
+    { name: '公司產品', count: (text.match(/公司產品|自有產品/g) || []).length },
+  ];
+  const headerLines = text.split('\n').slice(0, 5).join(' ');
+  for (const p of platformCounts) {
+    if (headerLines.includes(p.name)) p.count += 10;
+  }
+  // 別名加權：「自有產品」= 公司產品
+  if (headerLines.includes('自有產品')) {
+    platformCounts[2].count += 10;
+  }
+  const bestPlatform = platformCounts.filter(p => p.count > 0).sort((a, b) => b.count - a.count)[0];
+  if (bestPlatform) platformName = bestPlatform.name;
+
+  // ── 模式辨識（增強：標題行優先，支援更多說法）──
   let reportMode = '';
-  if (text.includes('累積')) reportMode = '累積報表';
-  else if (text.includes('單日') || text.includes('今日')) reportMode = '單日報表';
+  const headerText = text.split('\n').slice(0, 3).join(' ');
+  // 標題行優先判斷
+  if (headerText.includes('累積')) reportMode = '累積報表';
+  else if (headerText.match(/單日|今日|當日/)) reportMode = '單日報表';
+  // 全文回退
+  else if (text.includes('累積')) reportMode = '累積報表';
+  else if (text.match(/單日|今日|當日/)) reportMode = '單日報表';
 
   const confidence =
     reportDate && platformName && reportMode ? 'high' : 'low';
 
-  return { reportDate, platformName, reportMode, confidence };
+  return { reportDate, platformName, reportMode, dayOfWeek, timeRange, confidence };
 }
 
 export const geminiService = {
   /** 用 AI 從日報原文自動辨識日期 / 平台 / 模式 */
   async extractReportMeta(rawText: string): Promise<ReportMetaDetection> {
-    // 文字太短直接用本地辨識
-    if (rawText.trim().length < 30) return localDetectMeta(rawText);
+    // 先跑本地辨識
+    const local = localDetectMeta(rawText);
 
-    // 無 API Key → 本地辨識
-    if (!apiKey) return localDetectMeta(rawText);
+    // 本地高信心（三欄齊全）→ 直接回傳，省 API 額度
+    if (local.confidence === 'high') return local;
+
+    // 文字太短 or 無 API Key → 回傳本地結果
+    if (rawText.trim().length < 30 || !apiKey) return local;
 
     try {
       const model = genAI.getGenerativeModel({ model: MODEL_NAME });
       const prompt = `
-你是一個日報解析助手。從以下原始日報文字中擷取三個欄位，並以 JSON 回傳（不要 markdown codeblock）：
-- "reportDate": 日期，格式 YYYY-MM-DD（西元年）。若不確定年份填 ${new Date().getFullYear()}。
-- "platformName": 只能是 "奕心"、"民視" 或 "公司產品" 其中一個，辨識不出填 ""。
-- "reportMode": 只能是 "累積報表" 或 "單日報表"，辨識不出填 ""。
+你是一個日報解析助手。從以下文字中擷取結算日期與相關欄位。
 
-原始日報：
-${rawText.slice(0, 800)}
+重要規則：
+1. 日期請找「結算日期」，通常出現在「X/Y 結算」、「結算日期 X/Y」、「X月Y日結算」等位置。
+2. 如果文字是一份「公告」或「派單」(含排名、建議、分析)，請從標題或開頭找結算日期，而非內文中隨意出現的日期。
+3. 年份用 ${new Date().getFullYear()}。
+4. 平台：看標題或內文出現最多的平台名稱，只能是 "奕心"、"民視" 或 "公司產品"。
+5. 如果文字裡同時提到「累積」和「單日」，看哪個是主要模式（通常看標題）。
+
+回傳 JSON（不要 markdown codeblock）：
+{
+  "reportDate": "YYYY-MM-DD",
+  "platformName": "奕心" | "民視" | "公司產品" | "",
+  "reportMode": "累積報表" | "單日報表" | "",
+  "dayOfWeek": "星期X" | "禮拜X" | "",
+  "timeRange": "HH:MM" | "HH:MM到HH:MM" | ""
+}
+
+原始文字：
+${rawText.slice(0, 2000)}
 
 直接輸出 JSON 物件，不要任何其他文字。`;
       const result = await model.generateContent(prompt);
       const text = result.response.text().replace(/```json|```/g, '').trim();
       const parsed = JSON.parse(text);
+      // 合併策略：API 有值就用 API，沒有就保留 local 已偵測的結果
       return {
-        reportDate: parsed.reportDate ?? '',
-        platformName: parsed.platformName ?? '',
-        reportMode: parsed.reportMode ?? '',
+        reportDate: parsed.reportDate || local.reportDate,
+        platformName: parsed.platformName || local.platformName,
+        reportMode: parsed.reportMode || local.reportMode,
+        dayOfWeek: parsed.dayOfWeek || local.dayOfWeek || '',
+        timeRange: parsed.timeRange || local.timeRange || '',
         confidence: 'high',
       };
     } catch {
-      return localDetectMeta(rawText);
+      return local;
     }
   },
   /**
@@ -133,12 +207,15 @@ ${rawText.slice(0, 800)}
       const parsed = JSON.parse(text);
       const rawText: string = parsed.rawText ?? '';
 
+      // 用 local regex 二次補強：API 漏掉的欄位由 regex 補上
+      const localEnrich = rawText.length > 15 ? localDetectMeta(rawText) : null;
+
       return {
         rawText,
         meta: {
-          reportDate: parsed.reportDate ?? '',
-          platformName: parsed.platformName ?? '',
-          reportMode: parsed.reportMode ?? '',
+          reportDate: parsed.reportDate || localEnrich?.reportDate || '',
+          platformName: parsed.platformName || localEnrich?.platformName || '',
+          reportMode: parsed.reportMode || localEnrich?.reportMode || '',
           confidence: rawText.length > 20 ? 'high' : 'low',
         },
         source: 'gemini-vision',

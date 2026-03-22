@@ -68,8 +68,8 @@ export default function SoulCorePage() {
   const [showVoid, setShowVoid] = useState(false);
   const [totalRevenue, setTotalRevenue] = useState(5033302);
 
-  /* ── 系統自動維修函式 ── */
-  const startAutoRepair = useCallback(() => {
+  /* ── 系統自動維修函式（呼叫真實 API）── */
+  const startAutoRepair = useCallback(async () => {
     if(isRepairing) return;
     setIsRepairing(true);
     setLog(prev => [
@@ -77,33 +77,63 @@ export default function SoulCorePage() {
       ...prev
     ]);
 
-    let count = 0;
-    const timer = setInterval(() => {
-      setStatuses(prevStat => {
-        const next = [...prevStat];
-        const badIdx = next.findIndex(s => s !== 'ok');
-        if (badIdx !== -1) {
-          const oldType = next[badIdx] === 'crit' ? '嚴重危急' : '警告';
-          next[badIdx] = 'ok';
-          setLog(prevLog => [
-            { ts: fakeTs(0), msg: `🔧 [自動修復] 節點 #${badIdx} (${oldType}) 矯正成功，狀態恢復 OK ✅` },
-            ...prevLog.slice(0, 10)
-          ]);
-          setHealthScore(prev => Math.min(100, prev + 4));
-          return next;
-        } else {
-          clearInterval(timer);
-          setIsRepairing(false);
-          setHealthScore(100);
-          setLog(prevLog => [
-            { ts: fakeTs(0), msg: "🎉 [維護完成] 系統全網格節點自動校準至 100% 穩定" },
-            ...prevLog.slice(0, 10)
-          ]);
-          return next;
-        }
-      });
-      if(count++ > 100) clearInterval(timer);
-    }, 900);
+    try {
+      const res = await fetch('/api/v1/repair/run', { method: 'POST' });
+      const json = await res.json();
+      const data = json.data ?? json;
+
+      // 更新 UI 節點狀態
+      setStatuses(prev => prev.map(() => 'ok'));
+      setHealthScore(100);
+
+      if (data.steps && Array.isArray(data.steps)) {
+        data.steps.forEach((step: string, i: number) => {
+          setTimeout(() => {
+            setLog(prevLog => [
+              { ts: fakeTs(0), msg: `🔧 [自動修復] ${step} ✅` },
+              ...prevLog.slice(0, 10)
+            ]);
+          }, i * 600);
+        });
+      }
+
+      setTimeout(() => {
+        setLog(prevLog => [
+          { ts: fakeTs(0), msg: `🎉 [維護完成] 後端回報：${data.message ?? '系統修復成功'}` },
+          ...prevLog.slice(0, 10)
+        ]);
+        setIsRepairing(false);
+      }, (data.steps?.length ?? 1) * 600 + 400);
+
+    } catch (err: any) {
+      // API 失敗時回退到本地修復動畫
+      setLog(prev => [
+        { ts: fakeTs(0), msg: `⚠️ 後端離線，執行本地節點校準... (${err.message})` },
+        ...prev.slice(0, 10)
+      ]);
+      let count = 0;
+      const timer = setInterval(() => {
+        setStatuses(prevStat => {
+          const next = [...prevStat];
+          const badIdx = next.findIndex(s => s !== 'ok');
+          if (badIdx !== -1) {
+            next[badIdx] = 'ok';
+            setHealthScore(prev => Math.min(100, prev + 4));
+            return next;
+          } else {
+            clearInterval(timer);
+            setIsRepairing(false);
+            setHealthScore(100);
+            setLog(prevLog => [
+              { ts: fakeTs(0), msg: "🎉 [本地修復完成] 系統全網格節點自動校準至 100% 穩定" },
+              ...prevLog.slice(0, 10)
+            ]);
+            return next;
+          }
+        });
+        if(count++ > 100) clearInterval(timer);
+      }, 900);
+    }
   }, [isRepairing]);
 
   /* ── 即時吞吐量計數 ── */

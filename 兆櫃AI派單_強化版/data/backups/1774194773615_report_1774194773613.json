@@ -1,0 +1,587 @@
+{
+  "rawInput": "1、李玲玲｜【追續】29｜【續單】739,535｜【總業績】1,051,935\n2、馬秋香｜【追續】40｜【續單】684,380｜【總業績】869,578\n3、王珍珠｜【追續】46｜【續單】548,410｜【總業績】825,800\n4、王梅慧｜【追續】27｜【續單】420,440｜【總業績】563,148\n5、林沛昕｜【追續】13｜【續單】337,195｜【總業績】523,111\n6、林宜靜｜【追續】20｜【續單】316,380｜【總業績】465,088\n7、徐華妤｜【追續】14｜【續單】270,240｜【總業績】401,330\n8、江麗勉｜【追續】7｜【續單】264,812｜【總業績】394,880\n9、高如郁｜【追續】15｜【續單】206,355｜【總業績】350,289\n10、廖姿惠｜【追續】15｜【續單】98,748｜【總業績】314,714\n11、湯玉琦｜【追續】16｜【續單】77,680｜【總業績】299,304\n12、高美雲｜【追續】11｜【續單】60,718｜【總業績】223,268\n13、蘇淑玲｜【追續】11｜【續單】79,550｜【總業績】181,376\n14、陳玲華｜【追續】11｜【續單】91,470｜【總業績】176,988\n15、梁依萍｜【追續】13｜【續單】74,990｜【總業績】152,660\n16、鄭珮恩｜【追續】23｜【續單】67,815｜【總業績】92,275\n17、江沛林｜【追續】8｜【續單】29,930｜【總業績】70,150\n18、董昭蘭｜【追續】6｜【續單】29,345｜【總業績】29,345\n19、謝啟芳（新人）｜【追續】3｜【續單】15,144｜【總業績】15,144\n20、陳旭宜（新人）｜【追續】1｜【續單】3,960｜【總業績】3,960\n21、林佩君｜【追續】1｜【續單】2,490｜【總業績】2,490",
+  "parsedData": {
+    "reportDate": "3/21",
+    "platform": "未指定平台",
+    "totalRevenue": 7006833,
+    "rows": [
+      {
+        "name": "李玲玲",
+        "followupCount": 29,
+        "followupAmount": 739535,
+        "revenueAmount": 1051935,
+        "dealsCount": 29,
+        "dealRate": "0.00"
+      },
+      {
+        "name": "馬秋香",
+        "followupCount": 40,
+        "followupAmount": 684380,
+        "revenueAmount": 869578,
+        "dealsCount": 40,
+        "dealRate": "0.00"
+      },
+      {
+        "name": "王珍珠",
+        "followupCount": 46,
+        "followupAmount": 548410,
+        "revenueAmount": 825800,
+        "dealsCount": 46,
+        "dealRate": "0.01"
+      },
+      {
+        "name": "王梅慧",
+        "followupCount": 27,
+        "followupAmount": 420440,
+        "revenueAmount": 563148,
+        "dealsCount": 27,
+        "dealRate": "0.00"
+      },
+      {
+        "name": "林沛昕",
+        "followupCount": 13,
+        "followupAmount": 337195,
+        "revenueAmount": 523111,
+        "dealsCount": 13,
+        "dealRate": "0.00"
+      },
+      {
+        "name": "林宜靜",
+        "followupCount": 20,
+        "followupAmount": 316380,
+        "revenueAmount": 465088,
+        "dealsCount": 20,
+        "dealRate": "0.00"
+      },
+      {
+        "name": "徐華妤",
+        "followupCount": 14,
+        "followupAmount": 270240,
+        "revenueAmount": 401330,
+        "dealsCount": 14,
+        "dealRate": "0.00"
+      },
+      {
+        "name": "江麗勉",
+        "followupCount": 7,
+        "followupAmount": 264812,
+        "revenueAmount": 394880,
+        "dealsCount": 7,
+        "dealRate": "0.00"
+      },
+      {
+        "name": "高如郁",
+        "followupCount": 15,
+        "followupAmount": 206355,
+        "revenueAmount": 350289,
+        "dealsCount": 15,
+        "dealRate": "0.00"
+      },
+      {
+        "name": "廖姿惠",
+        "followupCount": 15,
+        "followupAmount": 98748,
+        "revenueAmount": 314714,
+        "dealsCount": 15,
+        "dealRate": "0.00"
+      },
+      {
+        "name": "湯玉琦",
+        "followupCount": 16,
+        "followupAmount": 77680,
+        "revenueAmount": 299304,
+        "dealsCount": 16,
+        "dealRate": "0.01"
+      },
+      {
+        "name": "高美雲",
+        "followupCount": 11,
+        "followupAmount": 60718,
+        "revenueAmount": 223268,
+        "dealsCount": 11,
+        "dealRate": "0.00"
+      },
+      {
+        "name": "蘇淑玲",
+        "followupCount": 11,
+        "followupAmount": 79550,
+        "revenueAmount": 181376,
+        "dealsCount": 11,
+        "dealRate": "0.01"
+      },
+      {
+        "name": "陳玲華",
+        "followupCount": 11,
+        "followupAmount": 91470,
+        "revenueAmount": 176988,
+        "dealsCount": 11,
+        "dealRate": "0.01"
+      },
+      {
+        "name": "梁依萍",
+        "followupCount": 13,
+        "followupAmount": 74990,
+        "revenueAmount": 152660,
+        "dealsCount": 13,
+        "dealRate": "0.01"
+      },
+      {
+        "name": "鄭珮恩",
+        "followupCount": 23,
+        "followupAmount": 67815,
+        "revenueAmount": 92275,
+        "dealsCount": 23,
+        "dealRate": "0.02"
+      },
+      {
+        "name": "江沛林",
+        "followupCount": 8,
+        "followupAmount": 29930,
+        "revenueAmount": 70150,
+        "dealsCount": 8,
+        "dealRate": "0.01"
+      },
+      {
+        "name": "董昭蘭",
+        "followupCount": 6,
+        "followupAmount": 29345,
+        "revenueAmount": 29345,
+        "dealsCount": 6,
+        "dealRate": "0.02"
+      },
+      {
+        "name": "謝啟芳（新人）",
+        "followupCount": 3,
+        "followupAmount": 15144,
+        "revenueAmount": 15144,
+        "dealsCount": 3,
+        "dealRate": "0.02"
+      },
+      {
+        "name": "陳旭宜（新人）",
+        "followupCount": 1,
+        "followupAmount": 3960,
+        "revenueAmount": 3960,
+        "dealsCount": 1,
+        "dealRate": "0.03"
+      },
+      {
+        "name": "林佩君",
+        "followupCount": 1,
+        "followupAmount": 2490,
+        "revenueAmount": 2490,
+        "dealsCount": 1,
+        "dealRate": "0.04"
+      }
+    ]
+  },
+  "auditPassed": false,
+  "rankedData": [
+    {
+      "name": "李玲玲",
+      "followupCount": 29,
+      "followupAmount": 739535,
+      "revenueAmount": 1051935,
+      "dealsCount": 29,
+      "dealRate": "0.00",
+      "totalRevenue": 1051935,
+      "renewRevenue": 739535,
+      "renewDeals": 29,
+      "rank": 1,
+      "group": "A1"
+    },
+    {
+      "name": "馬秋香",
+      "followupCount": 40,
+      "followupAmount": 684380,
+      "revenueAmount": 869578,
+      "dealsCount": 40,
+      "dealRate": "0.00",
+      "totalRevenue": 869578,
+      "renewRevenue": 684380,
+      "renewDeals": 40,
+      "rank": 2,
+      "group": "A1"
+    },
+    {
+      "name": "王珍珠",
+      "followupCount": 46,
+      "followupAmount": 548410,
+      "revenueAmount": 825800,
+      "dealsCount": 46,
+      "dealRate": "0.01",
+      "totalRevenue": 825800,
+      "renewRevenue": 548410,
+      "renewDeals": 46,
+      "rank": 3,
+      "group": "A1"
+    },
+    {
+      "name": "王梅慧",
+      "followupCount": 27,
+      "followupAmount": 420440,
+      "revenueAmount": 563148,
+      "dealsCount": 27,
+      "dealRate": "0.00",
+      "totalRevenue": 563148,
+      "renewRevenue": 420440,
+      "renewDeals": 27,
+      "rank": 4,
+      "group": "A1"
+    },
+    {
+      "name": "林沛昕",
+      "followupCount": 13,
+      "followupAmount": 337195,
+      "revenueAmount": 523111,
+      "dealsCount": 13,
+      "dealRate": "0.00",
+      "totalRevenue": 523111,
+      "renewRevenue": 337195,
+      "renewDeals": 13,
+      "rank": 5,
+      "group": "A2"
+    },
+    {
+      "name": "林宜靜",
+      "followupCount": 20,
+      "followupAmount": 316380,
+      "revenueAmount": 465088,
+      "dealsCount": 20,
+      "dealRate": "0.00",
+      "totalRevenue": 465088,
+      "renewRevenue": 316380,
+      "renewDeals": 20,
+      "rank": 6,
+      "group": "A2"
+    },
+    {
+      "name": "徐華妤",
+      "followupCount": 14,
+      "followupAmount": 270240,
+      "revenueAmount": 401330,
+      "dealsCount": 14,
+      "dealRate": "0.00",
+      "totalRevenue": 401330,
+      "renewRevenue": 270240,
+      "renewDeals": 14,
+      "rank": 7,
+      "group": "A2"
+    },
+    {
+      "name": "江麗勉",
+      "followupCount": 7,
+      "followupAmount": 264812,
+      "revenueAmount": 394880,
+      "dealsCount": 7,
+      "dealRate": "0.00",
+      "totalRevenue": 394880,
+      "renewRevenue": 264812,
+      "renewDeals": 7,
+      "rank": 8,
+      "group": "A2"
+    },
+    {
+      "name": "高如郁",
+      "followupCount": 15,
+      "followupAmount": 206355,
+      "revenueAmount": 350289,
+      "dealsCount": 15,
+      "dealRate": "0.00",
+      "totalRevenue": 350289,
+      "renewRevenue": 206355,
+      "renewDeals": 15,
+      "rank": 9,
+      "group": "A2"
+    },
+    {
+      "name": "廖姿惠",
+      "followupCount": 15,
+      "followupAmount": 98748,
+      "revenueAmount": 314714,
+      "dealsCount": 15,
+      "dealRate": "0.00",
+      "totalRevenue": 314714,
+      "renewRevenue": 98748,
+      "renewDeals": 15,
+      "rank": 10,
+      "group": "A2"
+    },
+    {
+      "name": "湯玉琦",
+      "followupCount": 16,
+      "followupAmount": 77680,
+      "revenueAmount": 299304,
+      "dealsCount": 16,
+      "dealRate": "0.01",
+      "totalRevenue": 299304,
+      "renewRevenue": 77680,
+      "renewDeals": 16,
+      "rank": 11,
+      "group": "B"
+    },
+    {
+      "name": "高美雲",
+      "followupCount": 11,
+      "followupAmount": 60718,
+      "revenueAmount": 223268,
+      "dealsCount": 11,
+      "dealRate": "0.00",
+      "totalRevenue": 223268,
+      "renewRevenue": 60718,
+      "renewDeals": 11,
+      "rank": 12,
+      "group": "B"
+    },
+    {
+      "name": "蘇淑玲",
+      "followupCount": 11,
+      "followupAmount": 79550,
+      "revenueAmount": 181376,
+      "dealsCount": 11,
+      "dealRate": "0.01",
+      "totalRevenue": 181376,
+      "renewRevenue": 79550,
+      "renewDeals": 11,
+      "rank": 13,
+      "group": "B"
+    },
+    {
+      "name": "陳玲華",
+      "followupCount": 11,
+      "followupAmount": 91470,
+      "revenueAmount": 176988,
+      "dealsCount": 11,
+      "dealRate": "0.01",
+      "totalRevenue": 176988,
+      "renewRevenue": 91470,
+      "renewDeals": 11,
+      "rank": 14,
+      "group": "B"
+    },
+    {
+      "name": "梁依萍",
+      "followupCount": 13,
+      "followupAmount": 74990,
+      "revenueAmount": 152660,
+      "dealsCount": 13,
+      "dealRate": "0.01",
+      "totalRevenue": 152660,
+      "renewRevenue": 74990,
+      "renewDeals": 13,
+      "rank": 15,
+      "group": "B"
+    },
+    {
+      "name": "鄭珮恩",
+      "followupCount": 23,
+      "followupAmount": 67815,
+      "revenueAmount": 92275,
+      "dealsCount": 23,
+      "dealRate": "0.02",
+      "totalRevenue": 92275,
+      "renewRevenue": 67815,
+      "renewDeals": 23,
+      "rank": 16,
+      "group": "B"
+    },
+    {
+      "name": "江沛林",
+      "followupCount": 8,
+      "followupAmount": 29930,
+      "revenueAmount": 70150,
+      "dealsCount": 8,
+      "dealRate": "0.01",
+      "totalRevenue": 70150,
+      "renewRevenue": 29930,
+      "renewDeals": 8,
+      "rank": 17,
+      "group": "B"
+    },
+    {
+      "name": "董昭蘭",
+      "followupCount": 6,
+      "followupAmount": 29345,
+      "revenueAmount": 29345,
+      "dealsCount": 6,
+      "dealRate": "0.02",
+      "totalRevenue": 29345,
+      "renewRevenue": 29345,
+      "renewDeals": 6,
+      "rank": 18,
+      "group": "B"
+    },
+    {
+      "name": "謝啟芳（新人）",
+      "followupCount": 3,
+      "followupAmount": 15144,
+      "revenueAmount": 15144,
+      "dealsCount": 3,
+      "dealRate": "0.02",
+      "totalRevenue": 15144,
+      "renewRevenue": 15144,
+      "renewDeals": 3,
+      "rank": 19,
+      "group": "C"
+    },
+    {
+      "name": "陳旭宜（新人）",
+      "followupCount": 1,
+      "followupAmount": 3960,
+      "revenueAmount": 3960,
+      "dealsCount": 1,
+      "dealRate": "0.03",
+      "totalRevenue": 3960,
+      "renewRevenue": 3960,
+      "renewDeals": 1,
+      "rank": 20,
+      "group": "C"
+    },
+    {
+      "name": "林佩君",
+      "followupCount": 1,
+      "followupAmount": 2490,
+      "revenueAmount": 2490,
+      "dealsCount": 1,
+      "dealRate": "0.04",
+      "totalRevenue": 2490,
+      "renewRevenue": 2490,
+      "renewDeals": 1,
+      "rank": 21,
+      "group": "C"
+    }
+  ],
+  "outputs": {
+    "announce": "📣【AI 派單公告｜3/21】\n\n1、李玲玲 (A1) 業績: 1,051,935\n2、馬秋香 (A1) 業績: 869,578\n3、王珍珠 (A1) 業績: 825,800\n4、王梅慧 (A1) 業績: 563,148\n5、林沛昕 (A2) 業績: 523,111\n6、林宜靜 (A2) 業績: 465,088\n7、徐華妤 (A2) 業績: 401,330\n8、江麗勉 (A2) 業績: 394,880\n9、高如郁 (A2) 業績: 350,289\n10、廖姿惠 (A2) 業績: 314,714\n11、湯玉琦 (B) 業績: 299,304\n12、高美雲 (B) 業績: 223,268\n13、蘇淑玲 (B) 業績: 181,376\n14、陳玲華 (B) 業績: 176,988\n15、梁依萍 (B) 業績: 152,660\n16、鄭珮恩 (B) 業績: 92,275\n17、江沛林 (B) 業績: 70,150\n18、董昭蘭 (B) 業績: 29,345\n19、謝啟芳（新人） (C) 業績: 15,144\n20、陳旭宜（新人） (C) 業績: 3,960\n21、林佩君 (C) 業績: 2,490\n",
+    "broadcast": "🔊 各位夥伴請注意！3/21 最新排名揭曉：第一名 李玲玲，業績達 1,051,935。",
+    "lineText": "【AI派單通知】3/21 第一名 李玲玲。"
+  },
+  "suggestions": [
+    {
+      "name": "李玲玲",
+      "rank": 1,
+      "group": "A1",
+      "advice": "AI 大數據顯示你已正式站上最高級距，建議把【續單】739,535 持續往深處收，優先鎖定高命中率客戶；你現在就是整隊最明顯的壓力中心，前面沒人擋、後面全在追；你今天再補一筆大單，第一名不只是守住，而是再把差距拉大。"
+    },
+    {
+      "name": "馬秋香",
+      "rank": 2,
+      "group": "A1",
+      "advice": "AI 大數據顯示你穩住第 2，建議把【續單】684,380 做滿，優先把高價值名單轉成真正實收；你現在位置很關鍵，守得住就是前段核心，守不住就會被後面追上；你今天只要再補一筆，位置就會更穩。"
+    },
+    {
+      "name": "王珍珠",
+      "rank": 3,
+      "group": "A1",
+      "advice": "AI 大數據顯示你穩住第 3，建議把【續單】548,410 做滿，優先把高價值名單轉成真正實收；你現在位置很關鍵，守得住就是前段核心，守不住就會被後面追上；你今天只要再補一筆，位置就會更穩。"
+    },
+    {
+      "name": "王梅慧",
+      "rank": 4,
+      "group": "A1",
+      "advice": "AI 大數據判讀你仍在主力核心帶，建議把【續單】420,440 和【追續】27 做出更高兌現率；你現在與前面差距不大，但若停住容易被後面貼近；你今天只要補一筆，前面會開始感受到壓力。"
+    },
+    {
+      "name": "林沛昕",
+      "rank": 5,
+      "group": "A2",
+      "advice": "AI 大數據判讀你仍在主力核心帶，建議把【續單】337,195 和【追續】13 做出更高兌現率；你現在與前面差距不大，但若停住容易被後面貼近；你今天只要補一筆，前面會開始感受到壓力。"
+    },
+    {
+      "name": "林宜靜",
+      "rank": 6,
+      "group": "A2",
+      "advice": "AI 大數據判讀你仍在主力核心帶，建議把【續單】316,380 和【追續】20 做出更高兌現率；你現在與前面差距不大，但若停住容易被後面貼近；你今天只要補一筆，前面會開始感受到壓力。"
+    },
+    {
+      "name": "徐華妤",
+      "rank": 7,
+      "group": "A2",
+      "advice": "AI 大數據判讀你仍在主力核心帶，建議把【續單】270,240 和【追續】14 做出更高兌現率；你現在與前面差距不大，但若停住容易被後面貼近；你今天只要補一筆，前面會開始感受到壓力。"
+    },
+    {
+      "name": "江麗勉",
+      "rank": 8,
+      "group": "A2",
+      "advice": "AI 大數據顯示你目前穩住前十，建議把【追續】7 打密，讓【續單】264,812 變成真正成績；你現在不是只守前十，而是已正式踏進前段區；你今天再補一筆像樣實收，前面都會開始看到你。"
+    },
+    {
+      "name": "高如郁",
+      "rank": 9,
+      "group": "A2",
+      "advice": "AI 大數據顯示你目前穩住前十，建議把【追續】15 打密，讓【續單】206,355 變成真正成績；你現在不是只守前十，而是已正式踏進前段區；你今天再補一筆像樣實收，前面都會開始看到你。"
+    },
+    {
+      "name": "廖姿惠",
+      "rank": 10,
+      "group": "A2",
+      "advice": "AI 大數據顯示你目前穩住前十，建議把【追續】15 打密，讓【續單】98,748 變成真正成績；你現在不是只守前十，而是已正式踏進前段區；你今天再補一筆像樣實收，前面都會開始看到你。"
+    },
+    {
+      "name": "湯玉琦",
+      "rank": 11,
+      "group": "B",
+      "advice": "AI 大數據判讀你目前位於中段衝刺區，建議把【續單】77,680 和【追續】16 一起收穩，別讓零散單拖慢節奏；你不是沒能力，而是節奏還能更長、更穩；你今天多補一筆，順位很快就能換回來。"
+    },
+    {
+      "name": "高美雲",
+      "rank": 12,
+      "group": "B",
+      "advice": "AI 大數據判讀你目前位於中段衝刺區，建議把【續單】60,718 和【追續】11 一起收穩，別讓零散單拖慢節奏；你不是沒能力，而是節奏還能更長、更穩；你今天多補一筆，順位很快就能換回來。"
+    },
+    {
+      "name": "蘇淑玲",
+      "rank": 13,
+      "group": "B",
+      "advice": "AI 大數據判讀你目前位於中段衝刺區，建議把【續單】79,550 和【追續】11 一起收穩，別讓零散單拖慢節奏；你不是沒能力，而是節奏還能更長、更穩；你今天多補一筆，順位很快就能換回來。"
+    },
+    {
+      "name": "陳玲華",
+      "rank": 14,
+      "group": "B",
+      "advice": "AI 大數據判讀你目前位於中段衝刺區，建議把【續單】91,470 和【追續】11 一起收穩，別讓零散單拖慢節奏；你不是沒能力，而是節奏還能更長、更穩；你今天多補一筆，順位很快就能換回來。"
+    },
+    {
+      "name": "梁依萍",
+      "rank": 15,
+      "group": "B",
+      "advice": "AI 大數據判讀你目前位於中段衝刺區，建議把【續單】74,990 和【追續】13 一起收穩，別讓零散單拖慢節奏；你不是沒能力，而是節奏還能更長、更穩；你今天多補一筆，順位很快就能換回來。"
+    },
+    {
+      "name": "鄭珮恩",
+      "rank": 16,
+      "group": "B",
+      "advice": "AI 大數據判讀你目前最大優勢仍是量夠，建議把【追續】23 先轉現金，不要讓數字停在紙上；你現在不是缺量，是缺真正兌現；你只要把這波收回來，名次會直接往上跳。"
+    },
+    {
+      "name": "江沛林",
+      "rank": 17,
+      "group": "B",
+      "advice": "AI 大數據判讀你目前最大優勢仍是量夠，建議把【追續】8 先轉現金，不要讓數字停在紙上；你現在不是缺量，是缺真正兌現；你只要把這波收回來，名次會直接往上跳。"
+    },
+    {
+      "name": "董昭蘭",
+      "rank": 18,
+      "group": "B",
+      "advice": "AI 大數據判讀你目前最大優勢仍是量夠，建議把【追續】6 先轉現金，不要讓數字停在紙上；你現在不是缺量，是缺真正兌現；你只要把這波收回來，名次會直接往上跳。"
+    },
+    {
+      "name": "謝啟芳（新人）",
+      "rank": 19,
+      "group": "C",
+      "advice": "AI 大數據判讀你目前屬於起步期，建議先把節奏穩住，不要急、不要空轉，先把可收的單收回來；現在最重要的不是一次衝太快，而是先破第一筆再建立節奏；你只要開張，後面就會越來越順。"
+    },
+    {
+      "name": "陳旭宜（新人）",
+      "rank": 20,
+      "group": "C",
+      "advice": "AI 大數據判讀你目前屬於起步期，建議先把節奏穩住，不要急、不要空轉，先把可收的單收回來；現在最重要的不是一次衝太快，而是先破第一筆再建立節奏；你只要開張，後面就會越來越順。"
+    },
+    {
+      "name": "林佩君",
+      "rank": 21,
+      "group": "C",
+      "advice": "AI 大數據判讀你目前屬於起步期，建議先把節奏穩住，不要急、不要空轉，先把可收的單收回來；現在最重要的不是一次衝太快，而是先破第一筆再建立節奏；你只要開張，後面就會越來越順。"
+    }
+  ]
+}

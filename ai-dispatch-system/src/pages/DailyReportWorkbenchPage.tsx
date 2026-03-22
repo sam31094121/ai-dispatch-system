@@ -5,59 +5,9 @@ import { AuditCheckPage } from './AuditCheckPage';
 import { RankingDispatchPage } from './RankingDispatchPage';
 import { AnnouncementOutputPage } from './AnnouncementOutputPage';
 import { EMPEROR_UI, TU, MU, HUO, SHUI, JIN, EMPEROR } from '../constants/wuxingColors';
+import { ActionText as CW } from '../components/Unified';
 
 type StepKey = 'input' | 'parse' | 'audit' | 'ranking' | 'announcement';
-
-// ══════════════════════════════════════════════════════════
-// 意境點擊元件：每個字都有語意＋複製功能＋視覺回饋
-// ══════════════════════════════════════════════════════════
-function CW({
-  children, copy, title, color, bold, size, action,
-}: {
-  children: React.ReactNode;
-  copy?: string;       // 要複製的內容（省略則執行 action）
-  title: string;       // tooltip 說明
-  color?: string;
-  bold?: boolean;
-  size?: number;
-  action?: () => void; // 點擊動作（可取代複製）
-}) {
-  const [hover, setHover] = useState(false);
-  const [flash, setFlash] = useState(false);
-
-  function onClick(e: React.MouseEvent) {
-    e.stopPropagation();
-    if (action) {
-      action();
-    } else if (copy !== undefined) {
-      navigator.clipboard.writeText(copy).catch(() => {});
-    }
-    setFlash(true);
-    setTimeout(() => setFlash(false), 600);
-  }
-
-  return (
-    <span
-      onClick={onClick}
-      title={action ? title : `點擊複製：${title}`}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      style={{
-        cursor: 'pointer',
-        color: flash ? '#ffd700' : (color ?? 'inherit'),
-        fontWeight: bold ? 900 : undefined,
-        fontSize: size,
-        borderBottom: hover ? '1px solid currentColor' : '1px dashed transparent',
-        transition: 'all 0.15s',
-        userSelect: 'none',
-        textShadow: flash ? '0 0 10px #ffd700, 0 0 20px #ffd70066' : undefined,
-        filter: flash ? 'brightness(1.4)' : undefined,
-      }}
-    >
-      {children}
-    </span>
-  );
-}
 
 // ── 五行元素意境字典 ──
 const ELEMENT_MEANING: Record<string, string> = {
@@ -96,7 +46,7 @@ const STEPS: {
     key: 'audit', num: '③', label: '智能審計', sub: '天地盤/邏輯盤',
     element: '土', palette: TU, canGo: (r) => Boolean(r),
     meaning: '③ 天地盤×邏輯盤×累積盤三重校驗',
-    copyTpl: () => '③ 智能審計｜天地盤 · 邏輯盤 PASS',
+    copyTpl: () => '③ 智能審計｜天地盤 · 邏輯盤 通過',
   },
   {
     key: 'ranking', num: '④', label: '排名派單', sub: 'A1/A2/B/C 分組',
@@ -130,7 +80,7 @@ function AutoPipeline({
   const badges: Record<StepKey, string | null> = {
     input:        reportId ? '✓' : null,
     parse:        personCount !== null ? `${personCount}人` : null,
-    audit:        auditPassed ? 'PASS' : null,
+    audit:        auditPassed ? '通過' : null,
     ranking:      auditPassed ? '✓' : null,
     announcement: auditPassed ? '✓' : null,
   };
@@ -141,7 +91,8 @@ function AutoPipeline({
       background: EMPEROR.obsidian,
       border: `1px solid ${EMPEROR_UI.borderAccent}`,
       borderRadius: 10, overflow: 'hidden',
-      boxShadow: '0 2px 12px rgba(0,0,0,0.4)',
+      boxShadow: '0 2px 16px rgba(0,0,0,0.5), 0 0 1px rgba(0,212,255,0.1)',
+      animation: 'pipeGlow 4s ease-in-out infinite',
     }}>
       {STEPS.map((s, i) => {
         const p = s.palette;
@@ -370,7 +321,7 @@ export function DailyReportWorkbenchPage(): React.ReactElement {
   }, [reportDate, addLog]);
 
   function handleAuditPassed() {
-    addLog('③ 智能審計 PASS ✓', true);
+    addLog('③ 智能審計 通過 ✓', true);
     runFullRebuild();
   }
 
@@ -411,7 +362,7 @@ export function DailyReportWorkbenchPage(): React.ReactElement {
     `結算日：${reportDate || '未指定'}`,
     reportId ? `報表：#${reportId}` : '報表：待建立',
     personCount !== null ? `人數：${personCount}人` : '',
-    auditPassed ? '審計：PASS' : '',
+    auditPassed ? '審計：通過' : '',
     `當前步驟：${activeStepDef.label}`,
   ].filter(Boolean).join('｜');
 
@@ -420,10 +371,18 @@ export function DailyReportWorkbenchPage(): React.ReactElement {
       <style>{`
         @keyframes dataPulse { 0%,100%{opacity:0.6} 50%{opacity:1} }
         @keyframes autoFlow  { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-        @keyframes arrowPulse { 0%,100%{opacity:0.4;transform:translateX(0)} 50%{opacity:1;transform:translateX(2px)} }
-        @keyframes countUp   { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes logSlide  { from{opacity:0;transform:translateX(-6px)} to{opacity:1;transform:translateX(0)} }
+        @keyframes arrowPulse { 0%,100%{opacity:0.4;transform:translateX(0)} 50%{opacity:1;transform:translateX(3px)} }
+        @keyframes countUp   { from{opacity:0;transform:translateY(6px) scale(0.95)} to{opacity:1;transform:translateY(0) scale(1)} }
+        @keyframes logSlide  { from{opacity:0;transform:translateX(-8px)} to{opacity:1;transform:translateX(0)} }
         @keyframes scanLine  { 0%{transform:translateY(-100%)} 100%{transform:translateY(400%)} }
+        @keyframes engineGlow { 0%,100%{box-shadow:0 0 8px rgba(255,106,0,0.3)} 25%{box-shadow:0 0 18px rgba(255,106,0,0.6),0 0 30px rgba(255,106,0,0.2)} 50%{box-shadow:0 0 22px rgba(255,106,0,0.7),0 0 40px rgba(255,106,0,0.25)} 75%{box-shadow:0 0 14px rgba(255,106,0,0.5)} }
+        @keyframes stepTransition { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes ledChain { 0%{transform:scale(0.6);opacity:0;filter:brightness(0.5)} 40%{transform:scale(1.4);opacity:1;filter:brightness(1.8)} 100%{transform:scale(1);opacity:1;filter:brightness(1)} }
+        @keyframes ledRipple { 0%{box-shadow:0 0 4px currentColor} 50%{box-shadow:0 0 12px currentColor, 0 0 20px currentColor} 100%{box-shadow:0 0 8px currentColor, 0 0 14px rgba(0,255,156,0.3)} }
+        @keyframes spin { to{transform:rotate(360deg)} }
+        @keyframes pipeGlow { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.15) drop-shadow(0 2px 8px rgba(0,212,255,0.15))} }
+        @keyframes overlayPulse { 0%,100%{opacity:0.92} 50%{opacity:0.97} }
+        @keyframes termCursor { 0%,100%{opacity:1} 50%{opacity:0} }
       `}</style>
 
       {/* ── Sticky 頂部 ── */}
@@ -468,11 +427,12 @@ export function DailyReportWorkbenchPage(): React.ReactElement {
                     color: engineRunning ? HUO.bright : EMPEROR_UI.textDim,
                     display: 'inline-flex', alignItems: 'center', gap: 5,
                     boxShadow: engineRunning ? `0 0 8px ${HUO.bright}44` : 'none',
-                    transition: 'all 0.2s',
+                    transition: 'all 0.25s',
+                    animation: engineRunning ? 'engineGlow 2s ease-in-out infinite' : 'none',
                   }}
                 >
                   <span style={{ fontSize: 11 }}>{engineRunning ? '⚡' : '⏸'}</span>
-                  {engineRunning ? 'AI 全域引擎 ON' : '引擎已停止'}
+                  {engineRunning ? 'AI 全域引擎 啟用' : '引擎已停止'}
                 </button>
               </h1>
             </div>
@@ -498,10 +458,10 @@ export function DailyReportWorkbenchPage(): React.ReactElement {
                 },
                 {
                   label: '審計',
-                  val: auditPassed ? '✓ PASS' : reportId ? '待審計' : '—',
+                  val: auditPassed ? '✓ 通過' : reportId ? '待審計' : '—',
                   ok: auditPassed,
                   palette: TU,
-                  copyVal: auditPassed ? '審計 PASS｜天地盤/邏輯盤/累積盤全通過' : '待審計',
+                  copyVal: auditPassed ? '審計通過｜天地盤/邏輯盤/累積盤全通過' : '待審計',
                   tipLabel: '審計狀態',
                 },
               ].map(({ label, val, ok, palette: pl, copyVal, tipLabel }) => (
@@ -561,14 +521,15 @@ export function DailyReportWorkbenchPage(): React.ReactElement {
                   { key: 'saved',     label: '存檔' },
                   { key: 'backedup',  label: '備份' },
                   { key: 'logged',    label: '日誌' },
-                ].map((led) => {
+                ].map((led, ledIdx) => {
                   const status = ledStatus[led.key];
                   const isOn = status === 'success';
-                  const color = isOn ? '#00FF9C' : '#334155';
+                  const isFail = status === 'fail';
+                  const color = isOn ? '#00FF9C' : isFail ? '#ef4444' : '#334155';
                   return (
-                    <div key={led.key} style={{ display: 'flex', alignItems: 'center', gap: 4 }} title={`${led.label} 狀態：${status === 'success' ? '正常連鎖' : '等待中'}`}>
-                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: color, boxShadow: isOn ? `0 0 8px ${color}` : 'none', transition: 'all 0.4s ease-out' }} />
-                      <span style={{ fontSize: 9, color: isOn ? '#fff' : '#64748b', fontWeight: 900, fontFamily: 'sans-serif' }}>{led.label}</span>
+                    <div key={led.key} style={{ display: 'flex', alignItems: 'center', gap: 4, transition: 'transform 0.2s', transform: isOn ? 'scale(1)' : 'scale(0.95)' }} title={`${led.label} 狀態：${status === 'success' ? '正常連鎖' : status === 'fail' ? '異常' : '等待中'}`}>
+                      <span style={{ width: 6, height: 6, borderRadius: '50%', background: color, boxShadow: isOn ? `0 0 8px ${color}, 0 0 16px ${color}66` : isFail ? `0 0 6px ${color}` : 'none', transition: 'all 0.3s ease-out', animation: isOn ? `ledChain 0.4s ease-out ${ledIdx * 0.06}s both, ledRipple 2s ease-in-out ${ledIdx * 0.1}s infinite` : 'none' }} />
+                      <span style={{ fontSize: 9, color: isOn ? '#fff' : isFail ? '#fca5a5' : '#64748b', fontWeight: 900, transition: 'color 0.3s' }}>{led.label}</span>
                     </div>
                   );
                 })}
@@ -690,7 +651,7 @@ export function DailyReportWorkbenchPage(): React.ReactElement {
       </div>
 
       {/* ── 主體內容 ── */}
-      <div style={{ flex: 1, maxWidth: 1600, margin: '0 auto', width: '100%' }}>
+      <div key={step} style={{ flex: 1, maxWidth: 1600, margin: '0 auto', width: '100%', animation: 'stepTransition 0.3s cubic-bezier(0.22,1,0.36,1)' }}>
         {step === 'input' && <DailyReportInputPage onParsed={handleParsed} />}
         {step === 'parse' && reportId && <ParseResultConfirmPage reportId={reportId} onAudit={handleParseConfirmed} />}
         {step === 'audit' && reportId && <AuditCheckPage reportId={reportId} onPassed={handleAuditPassed} />}
@@ -702,10 +663,10 @@ export function DailyReportWorkbenchPage(): React.ReactElement {
       {isRebuilding && (
         <div style={{
           position: 'fixed', inset: 0, zIndex: 9999,
-          background: `radial-gradient(circle at center, rgba(0,0,0,0.92) 0%, rgba(5,5,10,0.98) 100%)`,
-          backdropFilter: 'blur(10px)',
+          background: `radial-gradient(circle at center, rgba(0,0,0,0.93) 0%, rgba(5,5,10,0.98) 100%)`,
+          backdropFilter: 'blur(14px)',
           display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-          gap: 24, animation: 'countUp 0.3s ease-out',
+          gap: 24, animation: 'countUp 0.35s cubic-bezier(0.22,1,0.36,1), overlayPulse 3s ease-in-out infinite',
         }}>
           {/* 光環與掃描線 */}
           <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
@@ -759,7 +720,9 @@ export function DailyReportWorkbenchPage(): React.ReactElement {
                 <span style={{ letterSpacing: '0.02em' }}>{log.msg}</span>
               </div>
             ))}
-            <div className="soul-cursor" style={{ fontSize: 11, color: MU.bright, marginLeft: 16 }} />
+            <div style={{ fontSize: 11, color: MU.bright, marginLeft: 16, display:'flex', alignItems:'center', gap:2 }}>
+              <span style={{ animation:'termCursor 1s step-end infinite' }}>▌</span>
+            </div>
           </div>
 
           <div style={{ fontSize: 10, color: EMPEROR_UI.textMuted, marginTop: -8 }}>

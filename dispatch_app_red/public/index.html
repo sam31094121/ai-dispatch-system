@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>兆櫃 AI 派單 · 紅色科技版</title>
+  <meta name="description" content="兆櫃 AI 派單系統 — 紅色科技整合版，後端統一運算，前端顯示與播報">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="seq-flash"></div>
+<div id="toast"></div>
+
+<!-- ─── 跑馬燈 ─── -->
+<div class="ticker-strip">
+  <div class="ticker-inner">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    兆櫃 AI 派單 · 紅色科技版 · RED CORE DATA ENGINE
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    前後端統一規則 · 後端運算 · 前端顯示
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    排序 · 審計 · 分組 · 公告 · 播報 · 存檔 · 備份
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    兆櫃 AI 派單 · 紅色科技版 · RED CORE DATA ENGINE
+    &nbsp;&nbsp;&nbsp;&nbsp;
+  </div>
+</div>
+
+<!-- ─── Header ─── -->
+<header>
+  <div class="header-brand">
+    <div class="header-title">⚡ 兆櫃 AI 派單</div>
+    <div class="header-sub">RED CORE · DATA ENGINE · v2.0</div>
+  </div>
+  <div class="header-right">
+    <div style="display:flex;align-items:center;gap:.4rem;">
+      <div class="live-dot"></div>
+      <span style="font-family:var(--font-tech);font-size:.6rem;color:var(--green);letter-spacing:1px;">系統運行中</span>
+    </div>
+    <div id="sys-clock">00:00:00</div>
+    <nav class="nav-tabs">
+      <button class="tab-btn active" data-tab="dash">老闆總控台</button>
+      <button class="tab-btn" data-tab="announce">公告／播報／LINE</button>
+      <button class="tab-btn" data-tab="syslog">系統日誌</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ─── 總覽數據列 ─── -->
+<div class="hero-counters">
+  <div class="hero-card">
+    <div class="hero-label"><div class="live-dot" style="width:5px;height:5px;"></div>總業績</div>
+    <div class="hero-value" id="hero-revenue">$0</div>
+    <div class="hero-unit">當日結算</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-label"><div class="live-dot" style="width:5px;height:5px;background:var(--gold);box-shadow:0 0 8px var(--gold);"></div>活躍人數</div>
+    <div class="hero-value" id="hero-people">0</div>
+    <div class="hero-unit">人</div>
+  </div>
+  <div class="hero-card">
+    <div class="hero-label"><div class="live-dot" style="width:5px;height:5px;background:var(--green);box-shadow:0 0 8px var(--green);"></div>系統狀態</div>
+    <div class="hero-value" id="hero-status">待命</div>
+    <div class="hero-unit">STANDBY</div>
+  </div>
+</div>
+
+<main>
+
+  <!-- ════ TAB: 老闆總控台 ════ -->
+  <section id="tab-dash">
+    <div class="grid-2">
+
+      <!-- ── 資料輸入終端 ── -->
+      <div class="full terminal-panel">
+        <div class="terminal-titlebar">
+          <div style="display:flex;align-items:center;gap:.8rem;">
+            <div class="terminal-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+            <div class="terminal-label">每日業績輸入中心</div>
+          </div>
+          <div style="font-family:var(--font-tech);font-size:.55rem;color:var(--muted);letter-spacing:1px;" id="terminal-status">等待輸入</div>
+        </div>
+        <div class="terminal-body">
+          <textarea id="raw-input"
+            placeholder=">> 貼上業績日報文字&#10;>> 格式：1、王小明｜【追續】3｜【續單】120,000｜【總業績】350,000&#10;>> AI 自動辨識日期 → 解析 → 審計 → 排名 → 派單 → 公告"></textarea>
+
+          <div class="action-row">
+            <button class="btn-ghost btn-sm" id="btn-clear">清空</button>
+            <button class="btn-preload" id="btn-preload">📥 預載 3/22 業績</button>
+            <button class="btn-red" id="btn-execute"><span>💰 一鍵全鏈路執行</span></button>
+          </div>
+
+          <!-- LED 流程管線 -->
+          <div class="flow-pipeline" id="flow-display"></div>
+
+          <!-- 功能性啟動序列 -->
+          <div class="seq-panel" style="margin-top:1rem;">
+            <div class="ph" style="margin-bottom:.5rem;padding-bottom:.4rem;">
+              <h2 style="font-size:.72rem;">⚡ 功能性啟動序列</h2>
+              <span style="font-family:var(--font-tech);font-size:.5rem;color:var(--muted);letter-spacing:1px;" id="seq-counter">0 / 10</span>
+            </div>
+            <div class="seq-grid" id="seq-grid"></div>
+            <div class="seq-status-bar">
+              <span style="color:var(--muted);" id="seq-status-text">待命</span>
+              <div class="seq-progress"><div class="seq-progress-fill" id="seq-progress-fill"></div></div>
+              <span style="color:var(--red);" id="seq-pct">0%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 大數據分析核心 ── -->
+      <div class="panel">
+        <div class="ph">
+          <h2>📊 大數據分析核心</h2>
+          <span id="audit-badge">等待中</span>
+        </div>
+        <div class="data-matrix" id="stat-grid">
+          <div class="dm-cell"><div class="dm-lbl">總業績</div><div class="dm-val">--</div><div class="dm-sub">等待數據</div></div>
+          <div class="dm-cell"><div class="dm-lbl">活躍人數</div><div class="dm-val">--</div><div class="dm-sub">等待數據</div></div>
+          <div class="dm-cell"><div class="dm-lbl">人均業績</div><div class="dm-val">--</div><div class="dm-sub">等待數據</div></div>
+          <div class="dm-cell"><div class="dm-lbl">資料週期</div><div class="dm-val">--</div><div class="dm-sub">等待數據</div></div>
+        </div>
+        <div id="rank-container"><p class="empty">執行分析後解鎖排名模組</p></div>
+      </div>
+
+      <!-- ── AI 建議面板 ── -->
+      <div class="panel full">
+        <div class="ph">
+          <h2 style="cursor:pointer;" id="btn-copy-all-advice" title="點擊複製全部建議">🤖 AI 大數據建議 <span style="font-size:.5rem;color:rgba(255,30,60,.3);font-family:var(--font-mono);">▸ 點標題複製全部</span></h2>
+          <button class="btn-copy btn-sm" id="btn-copy-advice">📋 複製全部建議</button>
+        </div>
+        <div class="advice-grid" id="advice-container"><p class="empty">執行分析後解鎖建議模組</p></div>
+      </div>
+
+      <!-- ── 公告預覽 ── -->
+      <div class="panel">
+        <div class="ph">
+          <h2>📢 公告預覽</h2>
+          <button class="btn-copy btn-sm" id="btn-copy-announce">📋 複製公告</button>
+        </div>
+        <textarea class="out-box" id="announce-box" readonly style="height:12rem;"></textarea>
+        <div style="margin-top:.6rem;">
+          <label style="font-size:.6rem;color:var(--muted);font-family:var(--font-tech);letter-spacing:1px;">播報稿</label>
+          <textarea class="out-box" id="broadcast-box" readonly style="margin-top:.3rem;height:4rem;"></textarea>
+        </div>
+        <div style="display:flex;gap:.4rem;margin-top:.5rem;">
+          <button class="btn-copy btn-sm" id="btn-copy-broadcast">🎙 複製播報</button>
+          <button class="btn-copy btn-sm" id="btn-speak">🔊 語音播報</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════ TAB: 公告/播報/LINE ════ -->
+  <section id="tab-announce" style="display:none;">
+    <div class="grid-2">
+      <div class="panel">
+        <div class="ph">
+          <h2>📄 完整公告</h2>
+          <div style="display:flex;gap:.4rem;">
+            <button class="btn-copy btn-sm" id="btn-copy-ann2">📋 複製全文</button>
+            <button class="btn-copy btn-sm" id="btn-copy-top3">🥇 前3名</button>
+            <button class="btn-copy btn-sm" id="btn-copy-top10">📊 前10名</button>
+          </div>
+        </div>
+        <textarea class="out-box" id="ann2" readonly style="height:22rem;"></textarea>
+      </div>
+      <div class="panel">
+        <div class="ph">
+          <h2>🎙 播報稿</h2>
+          <button class="btn-copy btn-sm" id="btn-copy-bc2">📋 複製</button>
+        </div>
+        <textarea class="out-box" id="bc2" readonly style="height:8rem;"></textarea>
+        <div class="ph" style="margin-top:1rem;">
+          <h2 style="cursor:pointer;" id="btn-copy-all-line">💬 LINE 各組訊息 <span style="font-size:.5rem;color:rgba(255,30,60,.3);">▸ 複製全部</span></h2>
+          <button class="btn-copy btn-sm" id="btn-copy-line-all">📋 複製全部</button>
+        </div>
+        <div id="line-blocks"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════ TAB: 系統日誌 ════ -->
+  <section id="tab-syslog" style="display:none;">
+    <div class="panel">
+      <div class="ph">
+        <h2>⚙️ 系統日誌</h2>
+        <div style="display:flex;gap:.4rem;">
+          <button class="btn-copy btn-sm" id="btn-refresh-logs">🔄 重新整理</button>
+          <button class="btn-copy btn-sm" id="btn-export-logs">📥 匯出</button>
+          <button class="btn-copy btn-sm" id="btn-health">💚 健康檢查</button>
+          <button class="btn-copy btn-sm" id="btn-clear-logs" style="color:rgba(255,68,102,.6);">🗑 清除畫面</button>
+        </div>
+      </div>
+      <div id="log-stats"></div>
+      <div id="log-monitor"><p class="empty">載入中…</p></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ─── 頁尾 ─── -->
+<footer style="text-align:center;padding:1.5rem;font-family:var(--font-tech);font-size:.5rem;color:rgba(255,30,60,0.25);letter-spacing:2px;">
+  © 兆櫃 AI 數據中樞 · RED CORE v2.0
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -99,7 +99,7 @@ function cleanForLine(text: string): string {
 function formatRankings(rankings: string[]): string {
   return rankings.map(r => {
     // 統一格式：序號. 姓名 ｜ 指標
-    let clean = r.replace(/【/g, '').replace(/】/g, '');
+    const clean = r.replace(/【/g, '').replace(/】/g, '');
     return clean;
   }).join('\n');
 }

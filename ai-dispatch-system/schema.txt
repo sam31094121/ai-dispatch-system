@@ -1,0 +1,48 @@
+
+--- integrated_rankings ---
+CREATE TABLE integrated_rankings (
+      id                    INTEGER PRIMARY KEY AUTOINCREMENT,
+      report_date           TEXT    NOT NULL,
+      employee_name         TEXT    NOT NULL,
+      normalized_name       TEXT    NOT NULL,
+      total_followup_count  INTEGER NOT NULL DEFAULT 0,
+      total_followup_amount INTEGER NOT NULL DEFAULT 0,
+      total_revenue_amount  INTEGER NOT NULL DEFAULT 0,
+      total_actual_amount   INTEGER NOT NULL DEFAULT 0,
+      total_cancel_amount   INTEGER NOT NULL DEFAULT 0,
+      rank_no               INTEGER NOT NULL,
+      ranking_rule_text     TEXT    NOT NULL,
+      source_platform_data  TEXT    NOT NULL DEFAULT '{}',
+      created_at            TEXT    NOT NULL DEFAULT (datetime('now','localtime')),
+      UNIQUE(report_date, normalized_name)
+    )
+
+--- dispatch_group_results ---
+CREATE TABLE dispatch_group_results (
+      id                INTEGER PRIMARY KEY AUTOINCREMENT,
+      report_date       TEXT    NOT NULL,
+      employee_name     TEXT    NOT NULL,
+      normalized_name   TEXT    NOT NULL,
+      rank_no           INTEGER NOT NULL,
+      dispatch_group    TEXT    NOT NULL CHECK(dispatch_group IN ('A1','A2','B','C')),
+      group_order_no    INTEGER NOT NULL,
+      suggestion_text   TEXT,
+      pressure_text     TEXT,
+      motivation_text   TEXT,
+      created_at        TEXT    NOT NULL DEFAULT (datetime('now','localtime')),
+      UNIQUE(report_date, normalized_name)
+    )
+
+--- announcement_outputs ---
+CREATE TABLE announcement_outputs (
+      id                INTEGER PRIMARY KEY AUTOINCREMENT,
+      report_date       TEXT    NOT NULL UNIQUE,
+      full_text         TEXT,
+      line_text         TEXT,
+      short_text        TEXT,
+      voice_text        TEXT,
+      manager_text      TEXT,
+      final_confirm_text TEXT,
+      created_at        TEXT    NOT NULL DEFAULT (datetime('now','localtime')),
+      updated_at        TEXT    NOT NULL DEFAULT (datetime('now','localtime'))
+    )

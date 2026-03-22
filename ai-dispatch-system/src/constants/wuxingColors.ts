@@ -178,6 +178,24 @@ export const GROUP_ELEMENT: Record<string, WuxingPalette> = {
   '管理後台':      JIN,
 };
 
+// ── 統一設計 Token（所有頁面共用，禁止各頁自定義）──
+export const UI = {
+  cyan:   '#00d4ff',
+  green:  '#00ff9c',
+  gold:   '#f2c200',
+  purple: '#c084fc',
+  amber:  '#f59e0b',
+  red:    '#ef4444',
+  text:   '#e2e8f0',
+  muted:  '#94a3b8',
+  dim:    '#475569',
+  bg:     '#020617',
+  card:   'rgba(3,7,18,0.58)',
+  border: 'rgba(0,212,255,0.12)',
+  font:   '"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif' as string,
+  mono:   '"Orbitron","Courier New",monospace' as string,
+} as const;
+
 // ── 全局深空科技 UI 常量 ──
 export const EMPEROR_UI = {
   // 全局背景 — 量子深黑
@@ -203,3 +221,25 @@ export const EMPEROR_UI = {
   borderAccent:  '#0F2A4A',
   borderGold:    'rgba(0,212,255,0.25)',
 };
+
+// ═══════════════════════════════════════════
+// 3D 深度系統 Token — 全局統一立體語言 v12.0
+// ═══════════════════════════════════════════
+export const DEPTH = {
+  // 卡片玻璃效果
+  glass: {
+    bg: 'linear-gradient(145deg, rgba(6,14,30,0.78), rgba(3,8,18,0.88))',
+    blur: 'blur(24px) saturate(180%)',
+    border: '1px solid rgba(0,212,255,0.10)',
+    shadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 1px rgba(0,212,255,0.15), inset 0 1px 0 rgba(255,255,255,0.04)',
+  },
+  // 深層卡片
+  glassDeep: {
+    bg: 'linear-gradient(145deg, rgba(3,6,16,0.90), rgba(2,4,12,0.95))',
+    blur: 'blur(32px) saturate(200%)',
+    border: '1px solid rgba(0,212,255,0.06)',
+    shadow: '0 16px 48px rgba(0,0,0,0.8), 0 0 2px rgba(0,212,255,0.08), inset 0 1px 0 rgba(255,255,255,0.03)',
+  },
+  // 頂部高光條
+  topHighlight: 'linear-gradient(90deg, transparent 5%, rgba(0,212,255,0.3) 30%, rgba(125,249,255,0.4) 50%, rgba(0,212,255,0.3) 70%, transparent 95%)',
+} as const;

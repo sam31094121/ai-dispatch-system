@@ -22,8 +22,8 @@ export const MatrixWall: React.FC<MatrixWallProps> = ({ tier }) => {
     window.addEventListener('resize', resize);
 
     const fontSize = 12;
-    let columns = Math.floor(cv.width / fontSize);
-    let drops: number[] = Array(columns).fill(1);
+    const columns = Math.floor(cv.width / fontSize);
+    const drops: number[] = Array(columns).fill(1);
 
     const drawShadows = tier !== 'light';
     const speed = tier === 'extreme' ? 1.5 : 1.0;

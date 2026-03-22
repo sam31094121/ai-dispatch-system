@@ -1,54 +1,20 @@
 @import "tailwindcss";
 
 /* =========================================================
-   兆櫃AI派單系統｜深空科技前端核心 v10.0
+   兆櫃AI派單系統｜深空科技前端核心 v12.0
    哲學：量子深黑 × 電漿青藍 × 神經綠 × 帝王金點綴
+   升級：統一 3D 深度語言 · 強化光暈邊界 · 精準科技色溫
    ========================================================= */
 
 :root {
   color-scheme: dark;
-}
 
-/* ── 全局深空背景動畫 ── */
-@keyframes floating-bg {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes sentient-pulse {
-  0%   { transform: scale(1); opacity: 0.85; }
-  50%  { transform: scale(1.08); opacity: 1; filter: brightness(1.15); }
-  100% { transform: scale(1); opacity: 0.85; }
-}
-
-@keyframes sentient-border {
-  0%   { border-color: rgba(0, 212, 255, 0.20); filter: drop-shadow(0 0 4px rgba(0, 212, 255, 0.08)); }
-  50%  { border-color: rgba(139, 92, 246, 0.22); filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.12)); }
-  100% { border-color: rgba(0, 212, 255, 0.20); filter: drop-shadow(0 0 4px rgba(0, 212, 255, 0.08)); }
-}
-
-.sentient-badge   { animation: sentient-pulse 3s ease-in-out infinite !important; display: inline-block !important; transform-origin: center !important; }
-.sentient-border  { animation: sentient-border 4s ease-in-out infinite !important; transition: border-color 0.5s ease-in-out !important; }
-
-.sentient-bg {
-  background:
-    radial-gradient(ellipse 55% 40% at 20% 15%, rgba(0, 212, 255, 0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 45% 35% at 80% 25%, rgba(139, 92, 246, 0.05) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 50% at 50% 80%, rgba(0, 255, 156, 0.03) 0%, transparent 65%),
-    linear-gradient(180deg, #060A14 0%, #04070F 100%) !important;
-  background-size: 200% 200% !important;
-  animation: floating-bg 25s ease-in-out infinite !important;
-}
-
-/* ── CSS 變數（統一科技配色系統）── */
-:root {
   /* 背景層 */
   --bg-0:    #03050C;
   --bg-1:    #060A14;
   --bg-2:    #0B1222;
-  --panel:   '#080D1A';
-  --panel-2: '#0C1428';
+  --panel:   #080D1A;
+  --panel-2: #0C1428;
 
   /* 電漿核心色 */
   --plasma-blue:   #00D4FF;
@@ -61,7 +27,6 @@
   --data-gold:     #F2C200;
   --data-gold-s:   rgba(242, 194, 0, 0.18);
 
-  /* 舊名稱保留（向下相容）*/
   --data-blue:       #00D4FF;
   --data-blue-soft:  rgba(0, 212, 255, 0.18);
   --engine-gold:     #F2C200;
@@ -92,9 +57,170 @@
   --radius-md: 14px;
 }
 
-/* ══════════════════════════════════════════
+/* ═══════════════════════════════════════════════
+   全局 body — 深空量子底 + 3D 光場
+   ═══════════════════════════════════════════════ */
+body {
+  margin: 0;
+  color: var(--text-main);
+  font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  background:
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(0,0,0,.98) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 45% at 75% 20%, rgba(0,212,255,.08) 0%, transparent 50%),
+    radial-gradient(ellipse 55% 40% at 25% 18%, rgba(139,92,246,.07) 0%, transparent 48%),
+    radial-gradient(ellipse 80% 60% at 50% 90%, rgba(0,255,156,.03) 0%, transparent 60%),
+    linear-gradient(180deg, #060A14 0%, #03050C 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── 全局深空背景動畫 ── */
+@keyframes floating-bg {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.sentient-bg {
+  background:
+    radial-gradient(ellipse 55% 40% at 20% 15%, rgba(0, 212, 255, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 45% 35% at 80% 25%, rgba(139, 92, 246, 0.05) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 50% 80%, rgba(0, 255, 156, 0.03) 0%, transparent 65%),
+    linear-gradient(180deg, #060A14 0%, #04070F 100%) !important;
+  background-size: 200% 200% !important;
+  animation: floating-bg 25s ease-in-out infinite !important;
+}
+
+/* ═══════════════════════════════════════════════
+   3D 深度系統 — 統一立體卡片語言 v12.0
+   ═══════════════════════════════════════════════ */
+
+/* 科技玻璃卡片 — 核心 class */
+.glass-card {
+  position: relative;
+  background: linear-gradient(145deg, rgba(6,14,30,0.78), rgba(3,8,18,0.88));
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(0,212,255,0.10);
+  border-radius: var(--radius-lg);
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.6),
+    0 0 1px rgba(0,212,255,0.15),
+    inset 0 1px 0 rgba(255,255,255,0.04);
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 頂部反射高光條 */
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 5%, rgba(0,212,255,0.25) 25%, rgba(125,249,255,0.35) 50%, rgba(0,212,255,0.25) 75%, transparent 95%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* 掃描光束 */
+.glass-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -70%;
+  width: 35%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0,212,255,0.025), transparent);
+  pointer-events: none;
+  z-index: 1;
+  transform: skewX(-18deg);
+  animation: card-scan 6s ease-in-out infinite;
+}
+
+@keyframes card-scan {
+  0%   { left: -70%; opacity: 0; }
+  10%  { opacity: 0.6; }
+  90%  { opacity: 0.3; }
+  100% { left: 110%; opacity: 0; }
+}
+
+/* Hover 懸浮提升 */
+.glass-card:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.7),
+    0 0 24px rgba(0,212,255,0.12),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  border-color: rgba(0,212,255,0.18);
+}
+
+/* 深層玻璃卡片 */
+.glass-deep {
+  background: linear-gradient(145deg, rgba(3,6,16,0.90), rgba(2,4,12,0.95)) !important;
+  backdrop-filter: blur(32px) saturate(200%) !important;
+  border: 1px solid rgba(0,212,255,0.06) !important;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.8), 0 0 2px rgba(0,212,255,0.08), inset 0 1px 0 rgba(255,255,255,0.03) !important;
+}
+
+/* 舊版 .glass 相容 — 升級到新系統 */
+.glass {
+  background: linear-gradient(145deg, rgba(6,14,30,0.78), rgba(3,8,18,0.88)) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border: 1px solid rgba(0,212,255,0.12) !important;
+  box-shadow: 0 8px 40px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.06) !important;
+}
+
+/* 金屬卡片 — 頂光條 + 3D 保持 */
+.metalCard {
+  position: relative !important;
+  overflow: hidden !important;
+  transform-style: preserve-3d !important;
+}
+.metalCard::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,212,255,0.2), rgba(125,249,255,0.35), rgba(0,212,255,0.2), transparent);
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ═══════════════════════════════════════════════
+   呼吸光暈 · 脈衝動畫系統
+   ═══════════════════════════════════════════════ */
+
+@keyframes sentient-pulse {
+  0%   { transform: scale(1); opacity: 0.85; }
+  50%  { transform: scale(1.08); opacity: 1; filter: brightness(1.15); }
+  100% { transform: scale(1); opacity: 0.85; }
+}
+
+@keyframes sentient-border {
+  0%   { border-color: rgba(0, 212, 255, 0.20); filter: drop-shadow(0 0 4px rgba(0, 212, 255, 0.08)); }
+  50%  { border-color: rgba(139, 92, 246, 0.22); filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.12)); }
+  100% { border-color: rgba(0, 212, 255, 0.20); filter: drop-shadow(0 0 4px rgba(0, 212, 255, 0.08)); }
+}
+
+@keyframes depthPulse {
+  0%,100% { box-shadow: 0 0 20px rgba(0,212,255,.10), inset 0 0 30px rgba(0,212,255,.03), 0 8px 32px rgba(0,0,0,.6); }
+  50%     { box-shadow: 0 0 50px rgba(0,212,255,.25), inset 0 0 50px rgba(0,212,255,.06), 0 20px 60px rgba(0,0,0,.9), 0 0 80px rgba(139,92,246,.10); }
+}
+
+@keyframes cardLift {
+  0%,100% { transform: translateY(0) translateZ(0); box-shadow: 0 4px 20px rgba(0,0,0,.6); }
+  50%     { transform: translateY(-6px) translateZ(20px); box-shadow: 0 20px 60px rgba(0,0,0,.8), 0 0 30px rgba(0,212,255,.15); }
+}
+
+.sentient-badge  { animation: sentient-pulse 3s ease-in-out infinite !important; display: inline-block !important; transform-origin: center !important; }
+.sentient-border { animation: sentient-border 4s ease-in-out infinite !important; transition: border-color 0.5s ease-in-out !important; }
+.depthCard       { animation: depthPulse 5s ease-in-out infinite !important; }
+
+/* ═══════════════════════════════════════════════
    BLACK HOLE · 5D WORMHOLE · GRAVITY ENGINE
-   ══════════════════════════════════════════ */
+   ═══════════════════════════════════════════════ */
 @keyframes bh-rotate    { 0%{transform:translate(-50%,-50%) rotate(0deg)}    100%{transform:translate(-50%,-50%) rotate(360deg)} }
 @keyframes bh-rrotate   { 0%{transform:translate(-50%,-50%) rotate(360deg)}  100%{transform:translate(-50%,-50%) rotate(0deg)} }
 @keyframes bh-ticker    { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
@@ -131,22 +257,6 @@
 /* 重力扭曲標題 */
 .bh-title { animation: bh-grav-warp 4s ease-in-out infinite !important; }
 
-/* 全局 body — 深空量子底 + 黑洞漸層 */
-body {
-  margin: 0;
-  color: var(--text-main);
-  font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
-  background:
-    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(0,0,0,.98) 0%, transparent 60%),
-    radial-gradient(ellipse 70% 45% at 75% 20%, rgba(0,212,255,.08) 0%, transparent 50%),
-    radial-gradient(ellipse 55% 40% at 25% 18%, rgba(139,92,246,.07) 0%, transparent 48%),
-    radial-gradient(ellipse 80% 60% at 50% 90%, rgba(0,255,156,.03) 0%, transparent 60%),
-    linear-gradient(180deg, #060A14 0%, #03050C 100%);
-  background-attachment: fixed;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
 /* ── 殼層容器 ── */
 .app-shell { min-height: 100vh; background: transparent; }
 
@@ -155,9 +265,9 @@ body {
 .sidebar,
 .dashboard-card,
 .hero-panel {
-  background: linear-gradient(180deg, rgba(0,212,255,0.03) 0%, rgba(0,0,0,0.01) 100%), #080D1A;
+  background: linear-gradient(145deg, rgba(6,14,30,0.65), rgba(3,8,18,0.80)), #080D1A;
   border: 1px solid rgba(0, 212, 255, 0.10);
-  box-shadow: 0 16px 40px rgba(0,0,0,0.65);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.03);
 }
 
 /* ── 標題文字 ── */
@@ -185,7 +295,9 @@ body {
 .hero-title .highlight { color: var(--plasma-blue); text-shadow: var(--glow-blue); }
 .hero-desc { max-width: 640px; font-size: 16px; line-height: 1.75; color: var(--text-sub); }
 
-/* ── 全球數據核 ── */
+/* ═══════════════════════════════════════════════
+   全球數據核 · 數據環 · 軌道
+   ═══════════════════════════════════════════════ */
 .global-core-wrap {
   position: relative; width: 420px; height: 420px;
   margin: 0 auto; perspective: 1000px;
@@ -229,24 +341,16 @@ body {
   mix-blend-mode: screen;
 }
 
-@keyframes mesh-rotate {
-  0%   { transform: rotate(0deg) scale(1); }
-  100% { transform: rotate(360deg) scale(1); }
-}
+@keyframes mesh-rotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-/* ── 掃描光 ── */
 .core-sweep {
   position: absolute; inset: 50%; width: 250px; height: 250px;
   transform: translate(-50%,-50%); border-radius: 50%;
   background: conic-gradient(from 0deg, rgba(0,212,255,0.35) 0deg, rgba(139,92,246,0.15) 50deg, transparent 80deg, transparent 360deg);
   mix-blend-mode: screen; animation: sweep 9s linear infinite; pointer-events: none;
 }
-@keyframes sweep {
-  0%   { transform: translate(-50%,-50%) rotate(0deg); }
-  100% { transform: translate(-50%,-50%) rotate(360deg); }
-}
+@keyframes sweep { 0% { transform: translate(-50%,-50%) rotate(0deg); } 100% { transform: translate(-50%,-50%) rotate(360deg); } }
 
-/* ── 數據環 ── */
 .data-ring {
   position: absolute; inset: 50%; transform: translate(-50%,-50%);
   border-radius: 50%;
@@ -265,13 +369,12 @@ body {
 @keyframes spin-slow    { 0% { transform: translate(-50%,-50%) rotate(0deg); } 100% { transform: translate(-50%,-50%) rotate(360deg); } }
 @keyframes spin-reverse { 0% { transform: translate(-50%,-50%) rotate(360deg); } 100% { transform: translate(-50%,-50%) rotate(0deg); } }
 
-/* ── 軌道 ── */
 .data-orbit {
   position: absolute; inset: 50%; width: 375px; height: 375px;
   transform: translate(-50%,-50%) rotate(22deg); border-radius: 50%;
-  border-top:    3px solid rgba(0, 212, 255, 0.55);
-  border-left:   2px solid rgba(0, 212, 255, 0.12);
-  border-right:  2px solid rgba(139, 92, 246, 0.35);
+  border-top: 3px solid rgba(0, 212, 255, 0.55);
+  border-left: 2px solid rgba(0, 212, 255, 0.12);
+  border-right: 2px solid rgba(139, 92, 246, 0.35);
   border-bottom: 3px solid rgba(139, 92, 246, 0.12);
   animation: orbit-tilt 16s ease-in-out infinite alternate;
 }
@@ -291,10 +394,7 @@ body {
   border: 1px solid rgba(0,212,255,0.4);
   animation: node-ping 1.6s ease-out infinite;
 }
-@keyframes node-ping {
-  0%   { transform: scale(0.6); opacity: 1; }
-  100% { transform: scale(1.9); opacity: 0; }
-}
+@keyframes node-ping { 0% { transform: scale(0.6); opacity: 1; } 100% { transform: scale(1.9); opacity: 0; } }
 .data-node.n1 { top: 12%; left: 35%; animation: float 6s ease-in-out infinite; }
 .data-node.n2 { top: 40%; left: 15%; background: var(--burst-purple); box-shadow: 0 0 14px var(--burst-purple), 0 0 4px #fff; animation: float 5s ease-in-out infinite reverse; }
 .data-node.n2::after { border-color: rgba(139,92,246,0.4); }
@@ -331,83 +431,92 @@ body {
 /* ── 指標卡片 ── */
 .metric-card {
   border-radius: var(--radius-lg); padding: 20px;
-  background: linear-gradient(180deg, rgba(0,212,255,0.04) 0%, rgba(0,0,0,0.02) 100%), #080D1A;
+  background: linear-gradient(145deg, rgba(6,14,30,0.7), rgba(3,8,18,0.85));
   border: 1px solid rgba(0,212,255,0.10);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.03);
 }
 .metric-title { font-size: 13px; color: var(--text-weak); font-weight: 700; }
 .metric-value { margin-top: 10px; font-size: 30px; font-weight: 900; color: var(--plasma-blue); letter-spacing: 0.02em; }
 
 /* ── 按鈕 ── */
 .btn-primary {
-  background: linear-gradient(135deg, #0066CC 0%, #00A8FF 100%);
-  color: #fff; border: 1px solid rgba(0,212,255,0.25);
+  background: linear-gradient(135deg, #0055BB 0%, #00A0F0 100%);
+  color: #fff; border: 1px solid rgba(0,212,255,0.30);
   border-radius: 14px; padding: 14px 22px; font-weight: 800;
-  box-shadow: 0 0 30px rgba(0,212,255,0.22);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 24px rgba(0,212,255,0.18);
+  transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5), 0 0 40px rgba(0,212,255,0.25);
 }
 .btn-secondary {
-  background: linear-gradient(135deg, #6D28D9 0%, #8B5CF6 100%);
-  color: #fff; border: 1px solid rgba(139,92,246,0.25);
+  background: linear-gradient(135deg, #5B21B6 0%, #7C3AED 100%);
+  color: #fff; border: 1px solid rgba(139,92,246,0.30);
   border-radius: 14px; padding: 14px 22px; font-weight: 800;
-  box-shadow: 0 0 30px rgba(139,92,246,0.20);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 24px rgba(139,92,246,0.18);
+  transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+}
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5), 0 0 40px rgba(139,92,246,0.25);
 }
 
 /* ── 數據光束 ── */
 .data-beam { animation: beam-flow 1.5s linear infinite; }
-@keyframes beam-flow {
-  from { stroke-dashoffset: 40; }
-  to   { stroke-dashoffset: 0; }
-}
+@keyframes beam-flow { from { stroke-dashoffset: 40; } to { stroke-dashoffset: 0; } }
 
 /* ── 淡入 ── */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 .animate-fadeIn { animation: fadeIn 0.8s ease-out both; }
 
-/* ── Tailwind 覆寫 ── */
-
-/* =========================================================
-   兆櫃 3D 螢光力核心 Class 庫 (AIGC 自動連動)
-   ========================================================= */
+/* ═══════════════════════════════════════════════
+   3D 螢光力核心 Class 庫 v12.0
+   ═══════════════════════════════════════════════ */
 
 @keyframes float3D    { 0%,100%{transform:translateY(0) translateZ(0) rotateX(0deg)} 33%{transform:translateY(-12px) translateZ(18px) rotateX(1.5deg)} 66%{transform:translateY(-6px) translateZ(8px) rotateX(-1deg)} }
-@keyframes textDepth  { 0%,100%{text-shadow:1px 2px 0 #00e5ff,2px 4px 0 rgba(0,0,0,.9),0 0 30px rgba(0,229,200,.7),0 0 60px rgba(0,229,200,.3),0 0 100px rgba(0,229,200,.1)} 50%{text-shadow:1px 2px 0 #7c4dff,2px 4px 0 rgba(0,0,0,.9),0 0 50px rgba(124,77,255,.9),0 0 100px rgba(124,77,255,.4),0 0 160px rgba(0,229,200,.2)} }
-@keyframes neonFlare  { 0%,100%{filter:drop-shadow(0 0 8px #00e5ff) drop-shadow(0 0 20px rgba(0,229,200,.5))} 25%{filter:drop-shadow(0 0 18px #7c4dff) drop-shadow(0 0 40px rgba(124,77,255,.6)) drop-shadow(0 0 80px rgba(124,77,255,.2))} 50%{filter:drop-shadow(0 0 22px #00e5ff) drop-shadow(0 0 50px rgba(0,229,200,.8)) drop-shadow(0 0 100px rgba(0,229,200,.25))} 75%{filter:drop-shadow(0 0 16px #ffd700) drop-shadow(0 0 36px rgba(255,215,0,.5))} }
-@keyframes cardLift   { 0%,100%{transform:translateY(0) translateZ(0) rotateY(0deg);box-shadow:0 4px 20px rgba(0,0,0,.6),0 0 0 rgba(0,229,200,0)} 50%{transform:translateY(-6px) translateZ(20px) rotateY(0.5deg);box-shadow:0 20px 60px rgba(0,0,0,.8),0 0 30px rgba(0,229,200,.18)} }
+@keyframes textDepth  { 0%,100%{text-shadow:1px 2px 0 #00d4ff,2px 4px 0 rgba(0,0,0,.9),0 0 30px rgba(0,212,255,.7),0 0 60px rgba(0,212,255,.3)} 50%{text-shadow:1px 2px 0 #8b5cf6,2px 4px 0 rgba(0,0,0,.9),0 0 50px rgba(139,92,246,.9),0 0 100px rgba(139,92,246,.4)} }
+@keyframes neonFlare  { 0%,100%{filter:drop-shadow(0 0 8px #00d4ff) drop-shadow(0 0 20px rgba(0,212,255,.5))} 25%{filter:drop-shadow(0 0 18px #8b5cf6) drop-shadow(0 0 40px rgba(139,92,246,.6))} 50%{filter:drop-shadow(0 0 22px #00d4ff) drop-shadow(0 0 50px rgba(0,212,255,.8))} 75%{filter:drop-shadow(0 0 16px #f2c200) drop-shadow(0 0 36px rgba(242,194,0,.5))} }
 @keyframes pulseRing3D{ 0%{opacity:.7;transform:translate(-50%,-50%) scale(1) translateZ(0)} 100%{opacity:0;transform:translate(-50%,-50%) scale(2.8) translateZ(80px)} }
 @keyframes hologram   { 0%,100%{opacity:.85;transform:scaleY(1)} 48%{opacity:.92;transform:scaleY(1.002)} 50%{opacity:.7;transform:scaleY(.998) skewX(.4deg)} 52%{opacity:.9;transform:scaleY(1.001)} }
-@keyframes glitchDepth{ 0%,88%,100%{transform:none;text-shadow:1px 2px 0 #00e5ff,2px 4px 0 rgba(0,0,0,.9)} 89%{transform:translate(-2px,0) skewX(4deg);text-shadow:-2px 2px 0 #f0f,4px 2px 0 #0ff,1px 3px 0 rgba(0,0,0,.9)} 91%{transform:translate(2px,0) skewX(-2deg);text-shadow:2px 2px 0 #0f0,1px 3px 0 rgba(0,0,0,.9)} 93%{transform:none;text-shadow:1px 2px 0 #00e5ff,2px 4px 0 rgba(0,0,0,.9)} }
-@keyframes orbitGlow  { 0%,100%{stroke-opacity:.15;stroke-width:.6} 50%{stroke-opacity:.7;stroke-width:2;filter:drop-shadow(0 0 6px #00e5ff)} }
-@keyframes depthPulse { 0%,100%{box-shadow:0 0 20px rgba(0,229,200,.12),inset 0 0 30px rgba(0,229,200,.04),0 8px 32px rgba(0,0,0,.6)} 50%{box-shadow:0 0 60px rgba(0,229,200,.35),inset 0 0 60px rgba(0,229,200,.10),0 20px 60px rgba(0,0,0,.9),0 0 100px rgba(124,77,255,.15)} }
+@keyframes glitchDepth{ 0%,88%,100%{transform:none;text-shadow:1px 2px 0 #00d4ff,2px 4px 0 rgba(0,0,0,.9)} 89%{transform:translate(-2px,0) skewX(4deg);text-shadow:-2px 2px 0 #f0f,4px 2px 0 #0ff} 91%{transform:translate(2px,0) skewX(-2deg);text-shadow:2px 2px 0 #0f0} 93%{transform:none;text-shadow:1px 2px 0 #00d4ff,2px 4px 0 rgba(0,0,0,.9)} }
+@keyframes orbitGlow  { 0%,100%{stroke-opacity:.15;stroke-width:.6} 50%{stroke-opacity:.7;stroke-width:2;filter:drop-shadow(0 0 6px #00d4ff)} }
 @keyframes floatIcon  { 0%,100%{transform:translateY(0) scale(1) rotateZ(0deg)} 50%{transform:translateY(-8px) scale(1.12) rotateZ(3deg)} }
 @keyframes scanV      { 0%{left:-3px;opacity:0} 5%{opacity:.8} 95%{opacity:.5} 100%{left:102%;opacity:0} }
 @keyframes perspShift { 0%,100%{transform:perspective(800px) rotateY(0deg) translateZ(0)} 50%{transform:perspective(800px) rotateY(1.5deg) translateZ(8px)} }
-@keyframes shm       { 0%{background-position:200% center} 100%{background-position:-200% center} }
-@keyframes hb        { 0%,100%{transform:scale(1);opacity:.85} 8%{transform:scale(1.22);opacity:1;filter:brightness(2.1)} 20%{transform:scale(.91);opacity:.87} }
+@keyframes shm        { 0%{background-position:200% center} 100%{background-position:-200% center} }
+@keyframes hb         { 0%,100%{transform:scale(1);opacity:.85} 8%{transform:scale(1.22);opacity:1;filter:brightness(2.1)} 20%{transform:scale(.91);opacity:.87} }
 
-.glass {
-  background: linear-gradient(145deg,rgba(0,15,35,.65),rgba(0,8,22,.75)) !important;
-  backdrop-filter: blur(28px) !important; -webkit-backdrop-filter: blur(28px) !important;
-  border: 1px solid rgba(0,229,200,.18) !important;
-  box-shadow: 0 8px 40px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.09) !important;
-}
-.glass-deep {
-  background: rgba(0,6,20,.82) !important; backdrop-filter: blur(36px) !important;
-  border: 1px solid rgba(0,229,200,.10) !important;
-}
-.metalCard { position:relative !important; overflow:hidden !important; transform-style: preserve-3d !important; }
-.metalCard::before {
-  content:''; position:absolute; top:0; left:0; right:0; height:1px;
-  background: linear-gradient(90deg,transparent,rgba(255,255,255,.22),rgba(0,229,200,.4),rgba(255,255,255,.22),transparent);
-  border-radius:inherit; pointer-events:none; z-index:2;
-}
-.depthCard { animation: depthPulse 5s ease-in-out infinite !important; }
-
+/* 流光文字 */
 .shimmerTxt {
-  background: linear-gradient(90deg,#00ffd0,#7c4dff,#00e5ff,#ff6ec7,#ffd700,#00ffd0);
-  background-size: 250% auto; -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent; animation: shm 3.2s linear infinite !important;
-  filter: drop-shadow(0 0 12px rgba(0,229,200,.55)) drop-shadow(0 2px 0 rgba(0,0,0,.9));
+  background: linear-gradient(90deg, #00d4ff, #8b5cf6, #00d4ff, #f2c200, #00ff9c, #00d4ff);
+  background-size: 250% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shm 3.2s linear infinite !important;
+  filter: drop-shadow(0 0 12px rgba(0,212,255,.55)) drop-shadow(0 2px 0 rgba(0,0,0,.9));
 }
 
+/* ═══════════════════════════════════════════════
+   全局滾動條 — 統一深空科技風
+   ═══════════════════════════════════════════════ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(3,5,12,0.6);
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(0,212,255,0.25), rgba(139,92,246,0.2));
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(0,212,255,0.4), rgba(139,92,246,0.35));
+}
+
+/* ── 全局選取色 ── */
+::selection {
+  background: rgba(0, 212, 255, 0.25);
+  color: #fff;
+}

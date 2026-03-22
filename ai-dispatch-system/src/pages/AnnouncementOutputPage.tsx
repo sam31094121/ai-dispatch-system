@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLatest } from '../hooks/useLatest';
 import { EMPEROR_UI, TU, MU, HUO, SHUI, JIN, EMPEROR } from '../constants/wuxingColors';
+import { AnnouncementStructuredView } from '../components/AnnouncementStructuredView';
+import type { StructuredAnnouncement } from '../types/announcement';
 
 // ── 版本設定 ──
 const VERSIONS = [
@@ -55,10 +57,13 @@ type VersionKey = typeof VERSIONS[number]['key'];
 
 export function AnnouncementOutputPage(): React.ReactElement {
   const { loading, data, auditOk, errorReason, version, lastFetchedAt, refetch } = useLatest();
-  const [copiedKey, setCopiedKey]   = useState<VersionKey | null>(null);
-  const [activeTab, setActiveTab]   = useState<VersionKey>('fullText');
-  const [autoCopied, setAutoCopied] = useState(false);
-  const [copyFlash, setCopyFlash]   = useState(false);
+  const [copiedKey, setCopiedKey]       = useState<VersionKey | null>(null);
+  const [activeTab, setActiveTab]       = useState<VersionKey>('fullText');
+  const [autoCopied, setAutoCopied]     = useState(false);
+  const [copyFlash, setCopyFlash]       = useState(false);
+  const [viewMode, setViewMode]         = useState<'text' | 'structured'>('text');
+  const [structuredData, setStructuredData] = useState<StructuredAnnouncement | null>(null);
+  const [structuredLoading, setStructuredLoading] = useState(false);
   const autoCopyDone = useRef(false);
 
   const ann        = data?.announcement ?? null;
@@ -86,6 +91,22 @@ export function AnnouncementOutputPage(): React.ReactElement {
     navigator.clipboard.writeText(text).catch(() => {});
     setCopiedKey(key);
     setTimeout(() => setCopiedKey(null), 2000);
+  }
+
+  async function loadStructured() {
+    if (!reportDate || structuredLoading) return;
+    setStructuredLoading(true);
+    try {
+      const r = await fetch(`/api/v1/announcements/${reportDate}/structured`);
+      const j = await r.json();
+      if (j.success && j.data) setStructuredData(j.data);
+    } catch { /* silently ignore — text view remains available */ }
+    finally { setStructuredLoading(false); }
+  }
+
+  async function switchToStructured() {
+    if (!structuredData) await loadStructured();
+    setViewMode('structured');
   }
 
   const activeVersion = VERSIONS.find(v => v.key === activeTab)!;
@@ -122,6 +143,19 @@ export function AnnouncementOutputPage(): React.ReactElement {
           )}
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          {/* 視圖切換 */}
+          <div style={{ display: 'flex', borderRadius: 7, overflow: 'hidden', border: `1px solid rgba(0,212,255,0.2)` }}>
+            <button
+              onClick={() => setViewMode('text')}
+              style={{ fontSize: 10, padding: '5px 12px', cursor: 'pointer', border: 'none', fontWeight: 700, background: viewMode === 'text' ? 'rgba(0,212,255,0.15)' : 'transparent', color: viewMode === 'text' ? '#00d4ff' : '#94a3b8', transition: 'all 0.15s' }}
+            >📄 文字版</button>
+            <button
+              onClick={switchToStructured}
+              style={{ fontSize: 10, padding: '5px 12px', cursor: 'pointer', border: 'none', fontWeight: 700, background: viewMode === 'structured' ? 'rgba(0,255,156,0.12)' : 'transparent', color: viewMode === 'structured' ? '#00ff9c' : '#94a3b8', transition: 'all 0.15s' }}
+            >
+              {structuredLoading ? '⏳' : '📊 卡片版'}
+            </button>
+          </div>
           {/* 自動複製狀態徽章 */}
           {autoCopied && (
             <div style={{
@@ -188,8 +222,18 @@ export function AnnouncementOutputPage(): React.ReactElement {
         </div>
       )}
 
+      {/* ── 結構化卡片視圖 ── */}
+      {viewMode === 'structured' && structuredData && (
+        <AnnouncementStructuredView data={structuredData} onClose={() => setViewMode('text')} />
+      )}
+      {viewMode === 'structured' && !structuredData && !structuredLoading && (
+        <div style={{ margin: '16px 20px', padding: '14px 18px', borderRadius: 10, background: HUO.abyss, border: `1px solid ${HUO.shadow}`, color: HUO.text, fontWeight: 700, fontSize: 13 }}>
+          ⚠️ 結構化資料尚未生成，請先完成排名派單流程後再切換卡片視圖。
+        </div>
+      )}
+
       {/* ── 主體：版本標籤 + 內容 ── */}
-      {!loading && auditOk && ann && (
+      {viewMode === 'text' && !loading && auditOk && ann && (
         <div style={{ padding: '12px 20px 20px' }}>
 
           {/* 版本選擇 Tab 列 */}

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>兆櫃 AI 派單全鏈控管系統</title>
+  <!-- 引入 Outfit & Orbitron 字型 -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --glass: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --neon-cyan: rgba(0, 245, 212, 0.8);
+      --neon-gold: rgba(255, 215, 0, 0.8);
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text-main: #e2e8f0;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; font-family: 'Outfit', sans-serif; }
+    body { background: var(--bg); color: var(--text-main); fill-opacity: 0.9; }
+
+    /* 背景流動光暈 */
+    .bg-glowing {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+      background: radial-gradient(circle at 20% 20%, rgba(0, 245, 212, 0.05), transparent 40%),
+                  radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.05), transparent 40%);
+    }
+
+    /* 頂部 Header */
+    header {
+      padding: 1.5rem 2rem; border-bottom: 1px solid var(--glass-border);
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(11, 15, 25, 0.8); backdrop-filter: blur(10px);
+      position: sticky; top: 0; z-index: 100;
+    }
+    header h1 { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; letter-spacing: 2px; color: #fff; text-shadow: 0 0 10px var(--neon-cyan); }
+    .nav-tabs { display: flex; gap: 1rem; }
+    .tab-btn { background: transparent; border: 1px solid var(--glass-border); color: #fff; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; transition: 0.3s; }
+    .tab-btn:hover, .tab-btn.active { background: var(--glass); border-color: var(--neon-cyan); box-shadow: 0 0 8px rgba(0,245,212,0.3); }
+
+    /* 主要 Layout */
+    main { padding: 2rem; }
+    .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .full-width { grid-column: 1 / -1; }
+
+    /* 玻璃擬態 Panel */
+    .panel {
+      background: var(--glass); border: 1px solid var(--glass-border); border-radius: 12px;
+      padding: 1.5rem; backdrop-filter: blur(12px); animation: fadeIn 0.5s ease-out;
+    }
+    .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem; }
+    .panel-header h2 { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; color: var(--neon-cyan); }
+
+    /* 輸入區 */
+    textarea {
+      width: 100%; height: 15rem; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border);
+      border-radius: 8px; color: #fff; padding: 1rem; font-size: 0.9rem; resize: none; margin-bottom: 1rem;
+    }
+    .action-row { display: flex; gap: 1rem; justify-content: flex-end; }
+    .btn { background: var(--neon-cyan); color: #000; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,245,212,0.4); }
+
+    /* 流程燈號 */
+    .flow-display {
+      display: flex; justify-content: space-between; gap: 0.5rem; margin-top: 1rem; padding: 1rem;
+      background: rgba(0,0,0,0.2); border-radius: 8px; overflow-x: auto;
+    }
+    .node { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; font-size: 0.8rem; opacity: 0.5; transition: 0.4s; }
+    .node-light { width: 14px; height: 14px; border-radius: 50%; background: #4b5563; box-shadow: none; }
+    
+    .node.waiting { opacity: 0.4; }
+    .node.running .node-light { background: var(--warning); animation: pulse 1s infinite; box-shadow: 0 0 8px var(--warning); }
+    .node.running { opacity: 1; color: var(--warning); }
+    .node.success .node-light { background: var(--success); box-shadow: 0 0 10px var(--success); }
+    .node.success { opacity: 1; color: var(--success); }
+    .node.failed .node-light { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
+    .node.failed { opacity: 1; color: var(--danger); }
+
+    /* 表格 */
+    table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; font-size: 0.9rem; }
+    th { text-align: left; padding: 0.75rem; border-bottom: 2px solid rgba(255,255,255,0.1); color: var(--neon-gold); }
+    td { padding: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    tr:hover { background: rgba(255,255,255,0.02); }
+
+    /* 數字徽章 */
+    .badge { padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+    .badge.A1 { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+    .badge.A2 { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+
+    @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  </style>
+</head>
+<body>
+  <div class="bg-glowing"></div>
+  
+  <header>
+    <h1>兆櫃 AI 派單總控</h1>
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('dashboard-view')">老闆總控台</button>
+      <button class="tab-btn" onclick="switchTab('system-view')">系統設定與日誌</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="dashboard-view" class="dashboard">
+      
+      <!-- 1. 每日業績輸入中心 (主入口) -->
+      <div class="panel full-width">
+        <div class="panel-header">
+          <h2>📊 每日業績輸入中心 (唯一主輸入)</h2>
+        </div>
+        <textarea id="raw-input" placeholder="請在此貼上當日結算文字...
+格式範例：
+李玲玲｜【追續】25｜【續單】719,085｜【總業績】952,675"></textarea>
+        <div class="action-row">
+          <button class="btn" id="start-btn" onclick="startWorkflow()">🚀 立即執行一鍵一條龍連動</button>
+        </div>
+
+        <div class="flow-display" id="flow-display">
+          <!-- 節點動態載入 -->
+        </div>
+      </div>
+
+      <!-- 2. 老闆總控台 -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2>👑 老闆總控台</h2>
+          <span id="audit-status" style="font-size:0.8rem;">審計狀態: 等待中</span>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+          <div>新報表日期: <span id="out-date" class="badge">--</span></div>
+          <div>總業績: <span id="out-revenue" class="badge">--</span></div>
+          <div>存檔狀態: <span id="out-save-status" class="badge">等待中</span></div>
+        </div>
+        <div style="margin-top:1rem;">
+          <h4>🏅 最新 AI 排名摘要</h4>
+          <div id="rank-table-container">-- 暫無資料 --</div>
+        </div>
+      </div>
+
+      <!-- 3. 高價與公告總控台 -->
+      <div class="panel">
+        <div class="panel-header">
+          <h2>📢 公告、播報與 LINE 總控</h2>
+        </div>
+        <div>
+          <h4>📜 完整公告預覽</h4>
+          <textarea id="announce-box" style="height:8rem; margin-top:0.5rem;" readonly></textarea>
+        </div>
+        <div style="margin-top:1rem;">
+          <h4>🔊 播報稿</h4>
+          <textarea id="broadcast-box" style="height:4rem; margin-top:0.5rem;" readonly></textarea>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 4. 系統設定中心 -->
+    <div id="system-view" class="panel full-width" style="display:none;">
+      <div class="panel-header">
+        <h2>⚙️ 系統設定中心與日誌</h2>
+      </div>
+      <div style="height: 20rem; overflow-y: auto; background:rgba(0,0,0,0.3); padding:1rem; border-radius:8px;" id="log-monitor">
+        -- 日誌加載中 --
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // ══════════════════════════════════════════════════════
+    // 一、全域狀態管理
+    // ══════════════════════════════════════════════════════
+    const appState = {
+      rawInput: '',
+      parsedData: null,
+      auditPassed: false,
+      rankedData: null,
+      outputs: null
+    };
+
+    const flowNodes = ['接收', '解析', '審計', '排序', '公告', '播報', 'LINE', '存檔', '備份', '日誌'];
+
+    function initFlow() {
+      const parent = document.getElementById('flow-display');
+      parent.innerHTML = flowNodes.map(name => `
+        <div class="node waiting" id="node-${name}">
+          <div class="node-light"></div>
+          <span>${name}</span>
+        </div>
+      `).join('');
+    }
+
+    function updateNodeStatus(name, status) {
+      const el = document.getElementById(`node-${name}`);
+      if (!el) return;
+      el.className = `node ${status}`;
+    }
+
+    // ══════════════════════════════════════════════════════
+    // 二、一鍵式資料流控制 (Butterfly Effect)
+    // ══════════════════════════════════════════════════════
+    async function startWorkflow() {
+      const input = document.getElementById('raw-input').value.trim();
+      if (!input) { alert('請貼上數據才能往下執行！'); return; }
+      
+      appState.rawInput = input;
+      initFlow(); // 重置燈號
+
+      try {
+        // 1. 接收與解析
+        updateNodeStatus('接收', 'running');
+        await delay(500); 
+        updateNodeStatus('接收', 'success');
+        
+        updateNodeStatus('解析', 'running');
+        const parseRes = await apiCall('/api/report/parse', { rawText: input });
+        if (!parseRes.success) throw { step: '解析', msg: parseRes.message };
+        appState.parsedData = parseRes.data;
+        updateNodeStatus('解析', 'success');
+
+        // 2. 審計
+        updateNodeStatus('審計', 'running');
+        const auditRes = await apiCall('/api/report/audit', { data: appState.parsedData });
+        if (!auditRes.success) {
+           updateNodeStatus('審計', 'failed');
+           throw { step: '審計', msg: auditRes.errors ? auditRes.errors.join('<br>') : auditRes.message };
+        }
+        updateNodeStatus('審計', 'success');
+
+        // 3. 排序
+        updateNodeStatus('排序', 'running');
+        const rankRes = await apiCall('/api/report/rank', { data: appState.parsedData });
+        if (!rankRes.success) throw { step: '排序', msg: rankRes.message };
+        appState.rankedData = rankRes.data;
+        updateNodeStatus('排序', 'success');
+
+        renderDashboard(); // 渲染名次到老闆面板
+
+        // 4. 公告播報 LINE (合併後端生成)
+        updateNodeStatus('公告', 'running');
+        updateNodeStatus('播報', 'running');
+        updateNodeStatus('LINE', 'running');
+        const outRes = await apiCall('/api/report/generate_outputs', { rankedData: appState.rankedData, reportDate: appState.parsedData.reportDate });
+        if (!outRes.success) throw { step: '生成', msg: outRes.message };
+        appState.outputs = outRes.data;
+        
+        document.getElementById('announce-box').value = outRes.data.announce;
+        document.getElementById('broadcast-box').value = outRes.data.broadcast;
+        
+        updateNodeStatus('公告', 'success');
+        updateNodeStatus('播報', 'success');
+        updateNodeStatus('LINE', 'success');
+
+        // 5. 存檔與備份
+        updateNodeStatus('存檔', 'running');
+        updateNodeStatus('備份', 'running');
+        updateNodeStatus('日誌', 'running');
+        
+        const saveRes = await apiCall('/api/report/save', { fullState: appState });
+        if (!saveRes.success) throw { step: '儲存', msg: saveRes.message };
+        
+        updateNodeStatus('存檔', 'success');
+        updateNodeStatus('備份', 'success');
+        updateNodeStatus('日誌', 'success');
+
+        document.getElementById('out-save-status').innerText = '已輸入/已存入/已備份';
+        document.getElementById('out-save-status').className = 'badge';
+        document.getElementById('out-save-status').style.background = 'var(--success)';
+
+        alert('🔥 全鏈路自動連動執行成功！存檔備份已落袋。');
+        fetchLogs();
+
+      } catch (err) {
+        alert(`❌ 故障停止於 【${err.step}】\n原因: ${err.msg}`);
+        if (err.step) updateNodeStatus(err.step, 'failed');
+      }
+    }
+
+    // ══════════════════════════════════════════════════════
+    // 三、渲染與輔助功能
+    // ══════════════════════════════════════════════════════
+    function renderDashboard() {
+      const { parsedData, rankedData } = appState;
+      document.getElementById('out-date').innerText = parsedData.reportDate;
+      document.getElementById('out-revenue').innerText = parsedData.totalRevenue.toLocaleString();
+      document.getElementById('audit-status').innerText = '審計狀態: 通過 (綠燈)';
+
+      const container = document.getElementById('rank-table-container');
+      let html = `<table><thead><tr><th>名次</th><th>梯隊</th><th>姓名</th><th>總業績</th></tr></thead><tbody>`;
+      rankedData.forEach(r => {
+        html += `<tr>
+          <td>${r.rank}</td>
+          <td><span class="badge ${r.group}">${r.group}</span></td>
+          <td>${r.name}</td>
+          <td>${r.revenueAmount.toLocaleString()}</td>
+        </tr>`;
+      });
+      html += `</tbody></table>`;
+      container.innerHTML = html;
+    }
+
+    async function apiCall(endpoint, payload) {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload ? JSON.stringify(payload) : undefined
+      });
+      return res.json();
+    }
+
+    function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+    function switchTab(viewId) {
+      document.getElementById('dashboard-view').style.display = viewId === 'dashboard-view' ? 'grid' : 'none';
+      document.getElementById('system-view').style.display = viewId === 'system-view' ? 'block' : 'none';
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+
+    async function fetchLogs() {
+      const res = await fetch('/api/logs');
+      const json = await res.json();
+      const container = document.getElementById('log-monitor');
+      if (json.success && json.data.length) {
+        container.innerHTML = json.data.reverse().map(l => `
+          <div style="margin-bottom:0.5rem; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:0.3rem;">
+            <span style="color:var(--neon-cyan); font-size:0.8rem;">[${l.timestamp.slice(11, 19)}]</span>
+            <span style="color:var(--neon-gold)">[${l.step}]</span>
+            <span style="color:${l.status === '成功' ? 'var(--success)' : 'var(--danger)'}">(${l.status})</span>
+            <span>${l.message}</span>
+          </div>
+        `).join('');
+      } else {
+        container.innerHTML = '-- 暫無操作日誌 --';
+      }
+    }
+
+    // 初始化燈號與加載日誌
+    initFlow();
+    fetchLogs();
+  </script>
+</body>
+</html>

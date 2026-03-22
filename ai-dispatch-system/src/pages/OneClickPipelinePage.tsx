@@ -66,22 +66,34 @@ export function OneClickPipelinePage(): React.ReactElement {
   const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const runPipelineRef = useRef<(text: string) => Promise<void>>(async () => {});
 
-  const [metrics, setMetrics] = useState({ cpu: '0%', ram: '0GB', latency: '0ms' });
+  const [metrics, setMetrics] = useState({ cpu: '—', ram: '—', latency: '—' });
 
   const addLog = useCallback((msg: string, type: 'info' | 'success' | 'warn' | 'error' = 'info') => {
     setLogs(prev => [...prev, { id: Math.random().toString(36).substring(7), time: new Date().toLocaleTimeString('zh-TW', { hour12: false }), msg, type }]);
   }, []);
 
-  // 模擬動態跳動數字
+  // 從真實 API 取得系統狀態
   useEffect(() => {
-    const timer = setInterval(() => {
-      setMetrics({
-        cpu: (Math.random() * 20 + 30).toFixed(1) + '%',
-        ram: (Math.random() * 2 + 10).toFixed(2) + 'GB',
-        latency: (Math.random() * 5 + 15).toFixed(0) + 'ms'
-      });
-    }, 1500);
-    return () => clearInterval(timer);
+    let alive = true;
+    const fetchStatus = async () => {
+      try {
+        const res = await fetch('/api/v1/system/status');
+        if (!res.ok) throw new Error('offline');
+        const json = await res.json();
+        if (!alive) return;
+        const d = json.data ?? json;
+        setMetrics({
+          cpu: d.uptime != null ? `${Math.floor(d.uptime / 60)}m` : '—',
+          ram: d.memoryMB != null ? `${(d.memoryMB / 1024).toFixed(1)}GB` : '—',
+          latency: d.reportCount != null ? `${d.reportCount}筆` : '—',
+        });
+      } catch {
+        if (alive) setMetrics({ cpu: '離線', ram: '—', latency: '—' });
+      }
+    };
+    fetchStatus();
+    const timer = setInterval(fetchStatus, 10000);
+    return () => { alive = false; clearInterval(timer); };
   }, []);
 
   useEffect(() => {
@@ -116,8 +128,8 @@ export function OneClickPipelinePage(): React.ReactElement {
       let pDate = meta.reportDate;
       let pPlatform = meta.platformName as 平台名稱;
       let pMode = meta.reportMode as 報表模式;
-      let pDayOfWeek = meta.dayOfWeek || '';
-      let pTimeRange = meta.timeRange || '';
+      const pDayOfWeek = meta.dayOfWeek || '';
+      const pTimeRange = meta.timeRange || '';
 
       // 防呆：如果 AI 抓不到，嘗試給預設值以利流程繼續
       if (!pDate) pDate = new Date().toISOString().split('T')[0];
@@ -713,9 +725,9 @@ export function OneClickPipelinePage(): React.ReactElement {
            {/* 即時動態數據指標 */}
            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, background: 'rgba(0,0,0,0.4)', padding: 12, borderRadius: 12, border: `1px solid ${TU.void}` }}>
               {[
-                { label: 'CPU_LOAD', val: metrics.cpu, clr: TU.bright },
-                { label: 'RAM_CONS', val: metrics.ram, clr: MU.bright },
-                { label: 'NETWORK', val: metrics.latency, clr: JIN.bright }
+                { label: 'UPTIME', val: metrics.cpu, clr: TU.bright },
+                { label: 'MEMORY', val: metrics.ram, clr: MU.bright },
+                { label: 'REPORTS', val: metrics.latency, clr: JIN.bright }
               ].map(m => (
                 <div key={m.label} style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: 9, color: TU.shadow, fontWeight: 900 }}>{m.label}</div>

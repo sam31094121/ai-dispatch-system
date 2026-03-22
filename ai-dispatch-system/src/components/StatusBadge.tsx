@@ -1,5 +1,4 @@
 import React from 'react';
-import { 狀態顏色對照 } from '../constants/dictionaries';
 
 type BadgeTone = 'pass' | 'warn' | 'fail' | 'info';
 
@@ -10,24 +9,28 @@ interface StatusBadgeProps {
 
 const toneStyleMap: Record<BadgeTone, React.CSSProperties> = {
   pass: {
-    background: '#e8f5eb',
-    color: 狀態顏色對照.pass,
-    border: `1px solid ${狀態顏色對照.pass}`,
+    background: 'rgba(0,255,156,0.10)',
+    color: '#00ff9c',
+    border: '1px solid rgba(0,255,156,0.25)',
+    boxShadow: '0 0 12px rgba(0,255,156,0.10)',
   },
   warn: {
-    background: '#fff4e5',
-    color: 狀態顏色對照.warn,
-    border: `1px solid ${狀態顏色對照.warn}`,
+    background: 'rgba(245,158,11,0.10)',
+    color: '#fcd34d',
+    border: '1px solid rgba(245,158,11,0.25)',
+    boxShadow: '0 0 12px rgba(245,158,11,0.10)',
   },
   fail: {
-    background: '#fdecec',
-    color: 狀態顏色對照.fail,
-    border: `1px solid ${狀態顏色對照.fail}`,
+    background: 'rgba(239,68,68,0.10)',
+    color: '#fca5a5',
+    border: '1px solid rgba(239,68,68,0.25)',
+    boxShadow: '0 0 12px rgba(239,68,68,0.10)',
   },
   info: {
-    background: '#edf4fb',
-    color: 狀態顏色對照.info,
-    border: `1px solid ${狀態顏色對照.info}`,
+    background: 'rgba(0,212,255,0.10)',
+    color: '#7df9ff',
+    border: '1px solid rgba(0,212,255,0.25)',
+    boxShadow: '0 0 12px rgba(0,212,255,0.10)',
   },
 };
 
@@ -43,11 +46,12 @@ export function StatusBadge({
         alignItems: 'center',
         gap: 6,
         borderRadius: 999,
-        padding: '4px 10px',
+        padding: '4px 12px',
         fontSize: 12,
         fontWeight: 700,
         lineHeight: 1.2,
         whiteSpace: 'nowrap',
+        backdropFilter: 'blur(8px)',
       }}
     >
       {label}

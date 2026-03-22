@@ -400,7 +400,7 @@ export default function BigDataCorePage() {
 
       {/* 底部狀態列 */}
       <div style={{ position: 'absolute', bottom: 16, left: '50%', transform: 'translateX(-50%)', zIndex: 10, display: 'flex', gap: 24, background: 'rgba(4,6,10,.7)', backdropFilter: 'blur(12px)', border: '1px solid rgba(0,229,255,.12)', borderRadius: 12, padding: '8px 24px', pointerEvents: 'none' }}>
-        {([['NODES', '240'], ['STREAMS', '4,320'], ['SYNC', '99.98%'], ['ENERGY', 'LIVE']] as const).map(([k, v]) => (
+        {([['節點', '240'], ['串流', '4,320'], ['同步', '99.98%'], ['能量', '運行']] as const).map(([k, v]) => (
           <div key={k} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
             <span style={{ fontSize: 8, color: 'rgba(0,229,255,.45)', letterSpacing: '.1em', fontFamily: 'monospace' }}>{k}</span>
             <span style={{ fontSize: 13, fontWeight: 900, color: '#00e5ff', fontFamily: 'monospace', textShadow: '0 0 8px #00e5ff66' }}>{v}</span>

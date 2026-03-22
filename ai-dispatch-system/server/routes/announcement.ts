@@ -222,4 +222,137 @@ router.get('/:date', (req, res) => {
   return res.json({ success: true, message: '查詢成功', data: ann, error_code: null });
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /api/v1/announcements/:date/structured
+// 返回結構化 JSON（用於前端卡片渲染），從 DB 重新組裝真實資料
+// ─────────────────────────────────────────────────────────────────────────────
+router.get('/:date/structured', (req, res) => {
+  const db   = getDb();
+  const date = req.params.date;
+
+  // 需要排名與派單分組才能組裝
+  const rankings = db.prepare(
+    'SELECT * FROM integrated_rankings WHERE report_date = ? ORDER BY rank_no'
+  ).all(date) as any[];
+  if (!rankings.length) {
+    return res.status(404).json({ success: false, message: '排名尚未生成', data: null, error_code: 'NO_RANKING' });
+  }
+
+  const groups = db.prepare(
+    'SELECT * FROM dispatch_group_results WHERE report_date = ? ORDER BY rank_no'
+  ).all(date) as any[];
+
+  // 非活躍人員（identity_tag = '離職'）
+  const INACTIVE_TAGS = new Set(['離職', 'resigned', 'inactive']);
+  const NEWCOMER_TAGS = new Set(['新人', 'newcomer']);
+
+  // group lookup
+  const groupMap: Record<string, string> = {};
+  for (const g of groups) groupMap[g.employee_name] = g.dispatch_group;
+
+  // motivation lookup（複用已有生成器）
+  const motivMap: Record<string, string> = {};
+  for (const r of rankings) {
+    motivMap[r.employee_name] = genMotivation({
+      rank:       r.rank_no,
+      total:      r.total_revenue_amount,
+      follow:     r.total_followup_amount,
+      deals:      r.total_followup_count,
+      group:      groupMap[r.employee_name] ?? 'C',
+      isNew:      NEWCOMER_TAGS.has(r.identity_tag ?? ''),
+      totalCount: rankings.length,
+    });
+  }
+
+  // Build rankingItems — only active members in dispatch list
+  const activeNames = new Set(groups.map((g: any) => g.employee_name));
+  const inactiveRankings = rankings.filter((r: any) => !activeNames.has(r.employee_name));
+
+  const rankingItems = groups.map((g: any, idx: number) => {
+    const r        = rankings.find((x: any) => x.employee_name === g.employee_name) ?? g;
+    const isNew    = NEWCOMER_TAGS.has(r.identity_tag ?? '');
+    const motiv    = motivMap[g.employee_name] ?? '';
+    const groupCode = g.dispatch_group ?? 'C';
+    const groupLabels: Record<string, string> = { A1: '高單主力', A2: '續單收割', B: '一般量單', C: '觀察培養' };
+
+    return {
+      rank:             g.rank_no,
+      name:             g.employee_name,
+      isNewcomer:       isNew,
+      group:            groupCode,
+      groupLabel:       groupLabels[groupCode] ?? groupCode,
+      summaryTitle:     isNew ? '新人站穩榜位' : g.rank_no === 1 ? '穩居榜首' : `第 ${g.rank_no} 名`,
+      aiAnalysis:       motiv.split('；')[0] ?? motiv,
+      suggestion:       g.suggestion_text   ?? '',
+      focusMetrics:     [
+        r.total_followup_amount  ? `續單 ${r.total_followup_amount.toLocaleString()}` : null,
+        r.total_followup_count   ? `追單 ${r.total_followup_count} 筆` : null,
+        r.total_revenue_amount   ? `總業績 $${r.total_revenue_amount.toLocaleString()}` : null,
+      ].filter(Boolean) as string[],
+      pressureMessage:  g.pressure_text     ?? '',
+      actionMessage:    g.motivation_text   ?? motiv,
+      tags:             [groupCode, isNew ? '新人' : null, g.rank_no <= 3 ? `第${g.rank_no}名` : null].filter(Boolean) as string[],
+      status:           'active',
+      active:           true,
+      displayOrder:     idx + 1,
+      totalRevenue:     r.total_revenue_amount  ?? 0,
+      followupAmount:   r.total_followup_amount ?? 0,
+      followupCount:    r.total_followup_count  ?? 0,
+    };
+  });
+
+  // Notes — inactive people still in report
+  const notes = inactiveRankings.map((r: any, idx: number) => ({
+    type:             'employment-status',
+    title:            `${r.employee_name}（已離職）說明`,
+    content:          `本輪仍出現在三平台業績明細中，代表歷史業績仍計入審計總盤；但因已離職，不納入正式派單順序。`,
+    affectsReport:    true,
+    affectsDispatch:  false,
+    displayOrder:     idx + 1,
+  }));
+
+  const d       = new Date(date);
+  const nextDay = new Date(d); nextDay.setDate(d.getDate() + 1);
+  const dateStr = `${d.getMonth() + 1}/${d.getDate()}`;
+  const nextStr = `${nextDay.getMonth() + 1}/${nextDay.getDate()}`;
+
+  const totalRevenue   = rankings.reduce((s: number, r: any) => s + (r.total_revenue_amount ?? 0), 0);
+  const totalFollowup  = rankings.reduce((s: number, r: any) => s + (r.total_followup_amount ?? 0), 0);
+  const totalCount     = rankings.length;
+  const totalFollowCnt = rankings.reduce((s: number, r: any) => s + (r.total_followup_count ?? 0), 0);
+
+  const summaryMetrics = [
+    { key: 'totalRevenue',  label: '當月總業績',   value: totalRevenue,   highlight: true,  unit: '元', displayOrder: 1 },
+    { key: 'totalCount',    label: '上榜人數',     value: totalCount,     highlight: false,             displayOrder: 2 },
+    { key: 'totalFollowup', label: '追續單金額',   value: totalFollowup,  highlight: false, unit: '元', displayOrder: 3 },
+    { key: 'totalDeals',    label: '追續成交總數', value: totalFollowCnt, highlight: false, unit: '筆', displayOrder: 4 },
+  ];
+
+  const structured = {
+    reportMeta: {
+      title:      `AI 大數據派單公告`,
+      date:       date,
+      dateLabel:  dateStr,
+      nextDate:   nextStr,
+      reportType: 'dispatch-ranking',
+      theme:      'AI 派單公告',
+      requireAck: true,
+      totalRevenue,
+      totalCount,
+    },
+    summaryMetrics,
+    rankingItems,
+    notes,
+    footerAction: {
+      title:          '最後確認',
+      instruction:    '以上為今日統一派單規則與名單順序。請全員確認內容後，直接回覆「+1」。未回覆者，視為尚未確認今日派單規則。',
+      replyKeyword:   '+1',
+      fallbackText:   '看完請回 +1。',
+    },
+    generatedAt: new Date().toISOString(),
+  };
+
+  return res.json({ success: true, message: '結構化資料查詢成功', data: structured, error_code: null });
+});
+
 export default router;

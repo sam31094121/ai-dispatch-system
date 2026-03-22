@@ -1,6 +1,5 @@
 // ════════════════════════════════════════════════════
-// 每日業績樞紐 V2 — 貼文字 or 貼截圖，AI 全自動解析
-// 帝王能量聚財配色系統
+// 每日業績樞紐 — 貼文字 or 貼截圖，AI 全自動解析
 // ════════════════════════════════════════════════════
 import React, { useCallback, useEffect, useMemo, useRef, useState, Fragment } from 'react';
 import { 平台選項, 報表模式選項 } from '../constants/dictionaries';
@@ -9,53 +8,14 @@ import { reportService } from '../services/report.service';
 import { geminiService } from '../services/gemini.service';
 import { useReportStore } from '../data/reportStore';
 import { StatusBadge } from '../components/StatusBadge';
-import { EMPEROR_UI, TU, MU, HUO, SHUI, JIN, EMPEROR } from '../constants/wuxingColors';
-
-// ── 通用點擊功能字元件（意境複製）── 放在 import 後、組件前
-function C({ children, copy, title, color, size, bold }: {
-  children: React.ReactNode;
-  copy: string;
-  title: string;
-  color?: string;
-  size?: number;
-  bold?: boolean;
-}) {
-  const [hover, setHover] = useState(false);
-  const [flash, setFlash] = useState(false);
-  function handleClick(e: React.MouseEvent) {
-    e.stopPropagation();
-    navigator.clipboard.writeText(copy).catch(() => {});
-    setFlash(true);
-    setTimeout(() => setFlash(false), 700);
-  }
-  return (
-    <span
-      onClick={handleClick}
-      title={`點擊複製：${title}`}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      style={{
-        cursor: 'pointer',
-        color: flash ? '#ffd700' : (color ?? 'inherit'),
-        fontSize: size,
-        fontWeight: bold ? 900 : undefined,
-        borderBottom: hover ? '1px solid currentColor' : '1px dashed transparent',
-        transition: 'color 0.15s, border-color 0.15s, text-shadow 0.15s',
-        userSelect: 'none',
-        textShadow: flash ? '0 0 10px #ffd700, 0 0 20px #ffd70066' : undefined,
-        display: 'inline',
-      }}
-    >
-      {children}
-    </span>
-  );
-}
+import { ActionText as C } from '../components/Unified/ActionText';
+import { EMPEROR_UI, TU, MU, HUO, SHUI } from '../constants/wuxingColors';
 
 interface DailyReportInputPageProps {
   onParsed?: (payload: { reportId: number; reportDate: string; personCount: number }) => void;
 }
 
-// ── 帝王配色輸入框樣式 ──
+// ── 輸入框樣式 ──
 const inputBase: React.CSSProperties = {
   width: '100%',
   border: `1px solid ${EMPEROR_UI.borderAccent}`,
@@ -189,7 +149,7 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
     return () => document.removeEventListener('paste', onPaste);
   }, [handleImagePaste]);
 
-  // 文字 debounce AI 辨識
+  // 文字 debounce AI 辨識（本地高信心 → 跳過 API）
   useEffect(() => {
     const text = form.rawTextContent.trim();
     if (text.length < 15) return;
@@ -205,7 +165,7 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
       } finally {
         setDetecting(false);
       }
-    }, 700);
+    }, 600);
     return () => { if (textTimer.current) clearTimeout(textTimer.current); };
   }, [form.rawTextContent]);
 
@@ -229,7 +189,6 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
   }
 
   async function submit() {
-    // 規則七：欄位缺失 → 逐項說明，禁止送出
     if (!form.reportDate) { setMessage('❌ 缺少「日期」，無法解析。請先填入結算日期。'); return; }
     if (!form.platformName) { setMessage('❌ 缺少「平台」，無法解析。請選擇報表所屬平台。'); return; }
     if (!form.reportMode) { setMessage('❌ 缺少「模式」，無法解析。請選擇報表模式（當日/累積）。'); return; }
@@ -241,6 +200,8 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
     try {
       setLoading(true);
       setMessage('');
+      setSuccess(false);
+
       const report = await reportService.createReport({
         reportDate: form.reportDate,
         platformName: form.platformName as any,
@@ -251,10 +212,9 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
       setCreatedId(report.id);
       await reportService.runParse(report.id, { forceReparse: false });
 
-      // 讀取後端完整解析結果，轉換為前端 store 格式供 ParseResultPage 使用
       const parseResult = await reportService.getParseResult(report.id);
 
-      // 🚀 工程師開工版：實體寫入 storage 存檔、備份與日誌
+      // 實體寫入 storage 存檔、備份與日誌
       try {
         await fetch('/api/v1/system/save-report', {
           method: 'POST',
@@ -322,7 +282,7 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
     setPersonCount(null);
   }
 
-  // ── 靈魂注入：即時時鐘 + 系統生命脈搏 ──
+  // ── 即時時鐘 + 系統在線計時 ──
   const [liveTime, setLiveTime] = useState(() =>
     new Date().toLocaleTimeString('zh-TW', { hour12: false })
   );
@@ -362,18 +322,11 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
     <style>{`
       @keyframes cursorBlink { 0%,100%{opacity:1} 50%{opacity:0} }
       @keyframes dataPulse { 0%,100%{opacity:0.6} 50%{opacity:1} }
-      @keyframes scanLine {
-        0%{background-position:0 0} 100%{background-position:0 100%}
-      }
-      @keyframes nodeCount { from{transform:scale(1)} to{transform:scale(1.06)} }
       @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
-      @keyframes fieldGlow { 0%,100%{box-shadow:0 0 4px ${MU.bright}44} 50%{box-shadow:0 0 10px ${MU.bright}99} }
       @keyframes checkPop { 0%{transform:scale(0.4);opacity:0} 60%{transform:scale(1.3)} 100%{transform:scale(1);opacity:1} }
       @keyframes loadRing { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
-      @keyframes countUp { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
       @keyframes streamDot { 0%,100%{opacity:0.2} 50%{opacity:1} }
       @keyframes charBarGlow { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.3)} }
-      @keyframes stepActivate { 0%{transform:scale(0.96);opacity:0.7} 100%{transform:scale(1);opacity:1} }
       @keyframes badgePulse { 0%,100%{box-shadow:0 0 4px ${MU.bright}44,inset 0 0 4px transparent} 50%{box-shadow:0 0 14px ${MU.bright}cc,inset 0 0 6px ${MU.bright}22} }
       .soul-cursor::after {
         content:'█'; color:${SHUI.bright}; animation:cursorBlink 1s step-end infinite;
@@ -381,7 +334,6 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
       .soul-node { animation:dataPulse 2s ease-in-out infinite; }
       .soul-detect-spin { display:inline-block; animation:spin 1s linear infinite; }
       .field-check { animation:checkPop 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards; }
-      .step-activate { animation:stepActivate 0.3s ease-out forwards; }
       .stream-dot1 { animation:streamDot 1.2s ease-in-out 0s infinite; }
       .stream-dot2 { animation:streamDot 1.2s ease-in-out 0.3s infinite; }
       .stream-dot3 { animation:streamDot 1.2s ease-in-out 0.6s infinite; }
@@ -401,13 +353,13 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
           <div style={{ fontSize: 17, fontWeight: 900, letterSpacing: '0.02em', display: 'flex', alignItems: 'center', gap: 8 }}>
             <span style={{ fontFamily: 'serif', fontSize: 18, color: SHUI.bright }}>水</span>
             <span style={{ color: EMPEROR_UI.textPrimary }}>① 每日業績輸入中心</span>
-            <span style={{ background: TU.void, color: TU.bright, border: `1px solid ${TU.shadow}`, borderRadius: 5, padding: '1px 8px', fontSize: 11 }}>V2</span>
+            <span style={{ background: TU.void, color: TU.bright, border: `1px solid ${TU.shadow}`, borderRadius: 5, padding: '1px 8px', fontSize: 11 }}>第二版</span>
           </div>
           <div style={{ fontSize: 10, color: EMPEROR_UI.textDim, marginTop: 2 }}>
             貼上截圖或文字 → 辨識 → 解析 → 審計 → 派工
           </div>
         </div>
-        {/* 右側生命脈搏儀表板 */}
+        {/* 右側狀態儀表板 */}
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
           {/* 即時時鐘 */}
           <div style={{
@@ -576,7 +528,6 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
                 flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                 pointerEvents: 'none', gap: 12,
               }}>
-                {/* 主要 CTA */}
                 <div style={{
                   fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 900,
                   color: SHUI.core, letterSpacing: '-0.01em', lineHeight: 1.1,
@@ -604,7 +555,7 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
                   color: SHUI.bright, letterSpacing: '0.1em', opacity: 0.5,
                   display: 'flex', alignItems: 'center', gap: 6, marginTop: 4,
                 }}>
-                  <span>SYS://AWAITING_INPUT</span>
+                  <span>系統：等待輸入</span>
                   <span className="soul-cursor" />
                 </div>
               </div>
@@ -842,130 +793,7 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
           </div>
         )}
 
-        {/* ── AI 派單流程進度：每步有真實動作，點擊即執行 ── */}
-        <div style={{
-          background: EMPEROR.obsidian,
-          border: `1px solid ${EMPEROR_UI.borderAccent}`,
-          borderRadius: 10, padding: '10px 14px',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-          gap: 8,
-        }}>
-          {([
-            {
-              step: '①', label: '貼上業績',
-              desc: form.rawTextContent ? `${form.rawTextContent.length} 字｜點擊聚焦` : '點擊 / Ctrl+V 貼上',
-              color: SHUI,
-              active: Boolean(form.rawTextContent),
-              done: Boolean(form.rawTextContent),
-              spinning: false,
-              badge: form.rawTextContent ? `${form.rawTextContent.length}字` : null,
-              clickable: true,
-              action: () => { textareaRef.current?.focus(); textareaRef.current?.select(); },
-              hint: form.rawTextContent ? '點擊選取全文' : '點擊啟用輸入框',
-            },
-            {
-              step: '②', label: 'AI 解析',
-              desc: loading ? '解析中…' : success ? `已辨識 ${personCount} 人 ✓` : isValid ? '欄位齊全｜點擊立即解析' : '補齊日期/平台/模式後啟動',
-              color: MU,
-              active: loading || success,
-              done: success,
-              spinning: loading,
-              badge: personCount !== null ? `${personCount}人` : loading ? '…' : null,
-              clickable: isValid && !loading && !success,
-              action: submit,
-              hint: isValid && !success ? '點擊立即執行 AI 解析' : success ? '解析完成' : '請先填妥所有必填欄位',
-            },
-            {
-              step: '③', label: '智能審計',
-              desc: success ? '天地盤/邏輯盤 PASS ✓' : '解析完成後自動觸發',
-              color: TU,
-              active: success,
-              done: success,
-              spinning: false,
-              badge: success ? 'PASS' : null,
-              clickable: false,
-              action: undefined,
-              hint: success ? '審計已通過' : '完成②後自動執行',
-            },
-            {
-              step: '④', label: '排名派單',
-              desc: success ? `A1/A2/B/C 分組｜#${createdId}` : '審計通過後自動排名',
-              color: HUO,
-              active: success,
-              done: success,
-              spinning: false,
-              badge: success && createdId ? `#${createdId}` : null,
-              clickable: false,
-              action: undefined,
-              hint: success ? `報表 #${createdId} 已排名` : '完成③後自動執行',
-            },
-            {
-              step: '⑤', label: '公告生成',
-              desc: success ? 'LINE/播報/完整版 ✓ → 下一步' : '排名完成後自動封裝',
-              color: JIN,
-              active: success,
-              done: success,
-              spinning: false,
-              badge: success ? '→ 前往' : null,
-              clickable: success,
-              action: success ? () => {
-                // 呼叫 onParsed 推進工作台到公告頁
-                if (createdId && form.reportDate && personCount !== null) {
-                  onParsed?.({ reportId: createdId, reportDate: form.reportDate, personCount });
-                }
-              } : undefined,
-              hint: success ? '點擊跳轉公告輸出頁' : '完成④後自動封裝',
-            },
-          ] as const).map((s, i) => (
-            <div
-              key={i}
-              className={s.active ? 'step-activate' : ''}
-              onClick={s.clickable && s.action ? s.action : undefined}
-              title={s.hint}
-              style={{
-                display: 'flex', flexDirection: 'column', gap: 6,
-                padding: '12px 14px', borderRadius: 10,
-                background: s.active ? s.color.void : s.color.abyss,
-                border: `1px solid ${s.active ? s.color.shadow : s.color.abyss}`,
-                borderBottom: `3px solid ${s.active ? s.color.bright : s.color.shadow}`,
-                transition: 'all 0.3s',
-                position: 'relative', overflow: 'hidden',
-                cursor: s.clickable ? 'pointer' : 'default',
-                boxShadow: s.clickable && s.active ? `0 0 12px ${s.color.core}44` : 'none',
-              }}>
-              {s.active && (
-                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, transparent, ${s.color.bright}, transparent)`, animation: 'dataPulse 1.5s ease-in-out infinite' }} />
-              )}
-              {/* 可點擊提示角標 */}
-              {s.clickable && (
-                <div style={{ position: 'absolute', top: 4, right: 6, fontSize: 9, color: s.color.bright, opacity: 0.7, fontWeight: 900, letterSpacing: '0.06em' }}>
-                  TAP
-                </div>
-              )}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                {s.spinning
-                  ? <span style={{ width: 11, height: 11, borderRadius: '50%', border: `1.5px solid ${s.color.shadow}`, borderTopColor: s.color.bright, display: 'inline-block', animation: 'loadRing 0.8s linear infinite', flexShrink: 0 }} />
-                  : <span style={{ fontSize: 11, color: s.active ? s.color.bright : s.color.core, fontWeight: 900, fontFamily: 'monospace' }}>{s.step}</span>
-                }
-                <span style={{ fontSize: 13, fontWeight: 900, color: s.active ? s.color.text : s.color.shadow }}>{s.label}</span>
-                {s.badge && (
-                  <span style={{
-                    marginLeft: 'auto', fontSize: 10,
-                    background: s.color.abyss,
-                    padding: '1px 6px', borderRadius: 4,
-                    border: `1px solid ${s.color.shadow}`,
-                    fontFamily: '"Fira Code", monospace',
-                    color: s.color.bright, fontWeight: 900,
-                    animation: 'countUp 0.4s ease-out',
-                  }}>{s.badge}</span>
-                )}
-                {s.done && !s.badge && <span style={{ marginLeft: 'auto', fontSize: 10, color: s.color.bright }}>✓</span>}
-              </div>
-              <div style={{ fontSize: 10, opacity: 0.75, letterSpacing: '0.04em', color: s.active ? s.color.text : EMPEROR_UI.textDim }}>{s.desc}</div>
-            </div>
-          ))}
-        </div>
+        {/* 流程進度由父層 WorkbenchPage 統一顯示 */}
 
       </div>
     </div>

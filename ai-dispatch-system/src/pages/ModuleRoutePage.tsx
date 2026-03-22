@@ -55,6 +55,55 @@ function useLegacyData() {
 }
 
 // ════════════════════════════════════════════════════
+// 輔助元件：分頁切換容器
+// ════════════════════════════════════════════════════
+function TabbedConsole({ title, tabs, topGlow = '#00D4FF' }: { title: string, tabs: { label: string, component: React.ComponentType<any>, props?: any }[], topGlow?: string }) {
+  const [activeTab, setActiveTab] = React.useState(0);
+  const ActiveComponent = tabs[activeTab].component;
+
+  return (
+    <div style={{ padding: '16px 20px', animation: 'ml-pageIn 0.3s ease-out' }}>
+      <div style={{
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        marginBottom: 16, paddingBottom: 12, borderBottom: '1px solid rgba(0,212,255,0.08)'
+      }}>
+        <h1 style={{
+          fontSize: 16, fontWeight: 900, color: '#fff', letterSpacing: '1px',
+          textShadow: `0 0 16px ${topGlow}aa`, fontFamily: 'Orbitron, sans-serif'
+        }}>
+          {title}
+        </h1>
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          {tabs.map((tab, idx) => {
+            const isActive = activeTab === idx;
+            return (
+              <button
+                key={idx}
+                onClick={() => setActiveTab(idx)}
+                style={{
+                  padding: '5px 12px', borderRadius: 8, cursor: 'pointer',
+                  fontSize: 11, fontWeight: 800, fontFamily: 'Orbitron, sans-serif',
+                  transition: 'all 0.2s',
+                  background: isActive ? `${topGlow}22` : 'rgba(0,0,0,0.3)',
+                  color: isActive ? topGlow : '#94a3b8',
+                  border: isActive ? `1px solid ${topGlow}55` : '1px solid rgba(255,255,255,0.08)',
+                  boxShadow: isActive ? `0 0 12px ${topGlow}22` : 'none',
+                }}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      <div className="tab-content" style={{ animation: 'ml-pageIn 0.2s ease-out' }}>
+        <ActiveComponent {...(tabs[activeTab].props || {})} />
+      </div>
+    </div>
+  );
+}
+
+// ════════════════════════════════════════════════════
 // 各模組路由頁面
 // ════════════════════════════════════════════════════
 
@@ -82,84 +131,44 @@ export function MarketingPage() {
   return <MarketingAIDashboard suggestions={suggestions as any} trends={trends} />;
 }
 
-/** 高價總控台 */
-export function HvCommandPage() {
+// ──⬇️ 聚合控制台 ──
+
+/** 高價成交爆發 綜合主頁 */
+export function HighValuePage() {
   const { hvProfiles, hvSuggestions, hvAlerts, teamRally } = useLegacyData();
-  return (
-    <HighValueCommandCenter
-      profiles={hvProfiles}
-      suggestions={hvSuggestions}
-      alerts={hvAlerts}
-      teamRally={teamRally}
-    />
-  );
+
+  const tabs = [
+    { label: '總控台', component: HighValueCommandCenter, props: { profiles: hvProfiles, suggestions: hvSuggestions, alerts: hvAlerts, teamRally } },
+    { label: '個人頁', component: HighValuePersonalPage, props: { profiles: hvProfiles, suggestions: hvSuggestions } },
+    { label: '話術庫', component: ScriptLibraryPage },
+    { label: '攻單名單', component: CustomerTargetPage },
+    { label: '高價訓練', component: HighValueTrainingPage, props: { profiles: hvProfiles } },
+    { label: '團隊喊話', component: RallyAnnouncementPage, props: { profiles: hvProfiles } },
+  ];
+
+  return <TabbedConsole title="高價成交爆發總控" tabs={tabs} topGlow="#ff2a4b" />;
 }
 
-/** 高價個人頁 */
-export function HvPersonalPage() {
-  const { hvProfiles, hvSuggestions } = useLegacyData();
-  const topProfile = hvProfiles[0];
-  if (!topProfile) {
-    return (
-      <PageBlock title="高價個人頁">
-        <div style={{ padding: 32, color: '#94a3b8' }}>無資料</div>
-      </PageBlock>
-    );
-  }
-  return <HighValuePersonalPage profiles={hvProfiles} suggestions={hvSuggestions} />;
+/** 女聲智慧播報 綜合主頁 */
+export function BroadcastPage() {
+  const tabs = [
+    { label: '總控台', component: BroadcastCommandCenter },
+    { label: '稿管理', component: BroadcastScriptManager },
+    { label: '風格', component: BroadcastStyleSettings },
+    { label: '控制', component: BroadcastPlaybackControl },
+  ];
+
+  return <TabbedConsole title="女聲智慧播報總控" tabs={tabs} topGlow="#ffd700" />;
 }
 
-/** 話術素材庫 */
-export function HvScriptsPage() {
-  return <ScriptLibraryPage />;
-}
+/** LINE 群組轉傳 綜合主頁 */
+export function LinePage() {
+  const tabs = [
+    { label: '轉傳台', component: LineGroupDashboard },
+    { label: '規則', component: LineGroupRules },
+  ];
 
-/** 攻單名單 */
-export function HvTargetsPage() {
-  const { hvProfiles } = useLegacyData();
-  return <CustomerTargetPage />;
-}
-
-/** 高價訓練 */
-export function HvTrainingPage() {
-  const { hvProfiles } = useLegacyData();
-  return <HighValueTrainingPage profiles={hvProfiles} />;
-}
-
-/** 團隊喊話 */
-export function HvRallyPage() {
-  const { hvProfiles, teamRally } = useLegacyData();
-  return <RallyAnnouncementPage profiles={hvProfiles} />;
-}
-
-/** 播報總控台 */
-export function BcCommandPage() {
-  return <BroadcastCommandCenter />;
-}
-
-/** 播報稿管理 */
-export function BcScriptsPage() {
-  return <BroadcastScriptManager />;
-}
-
-/** 播報風格 */
-export function BcStylePage() {
-  return <BroadcastStyleSettings />;
-}
-
-/** 播放控制 */
-export function BcPlaybackPage() {
-  return <BroadcastPlaybackControl />;
-}
-
-/** LINE 轉傳台 */
-export function LineConvertPage() {
-  return <LineGroupDashboard />;
-}
-
-/** 轉傳規則 */
-export function LineRulesPage() {
-  return <LineGroupRules />;
+  return <TabbedConsole title="LINE 群組轉傳總控" tabs={tabs} topGlow="#00FF9C" />;
 }
 
 /** 招聘管理 */
@@ -172,3 +181,4 @@ export function TrainingPage() {
   const { employees } = useLegacyData();
   return <TrainingDashboard employees={employees} />;
 }
+

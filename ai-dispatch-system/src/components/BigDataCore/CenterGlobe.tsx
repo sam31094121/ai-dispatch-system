@@ -41,8 +41,8 @@ export const CenterGlobe: React.FC<GlobeProps> = ({ tier }) => {
       };
     });
 
-    let angleX = 0.003;
-    let angleY = 0.005;
+    const angleX = 0.003;
+    const angleY = 0.005;
 
     const render = () => {
       ctx.clearRect(0, 0, cv.width, cv.height);
@@ -82,11 +82,11 @@ export const CenterGlobe: React.FC<GlobeProps> = ({ tier }) => {
 
       points.forEach(p => {
         // Rotate Y
-        let x1 = p.x * cosY - p.z * sinY;
-        let z1 = p.z * cosY + p.x * sinY;
+        const x1 = p.x * cosY - p.z * sinY;
+        const z1 = p.z * cosY + p.x * sinY;
         // Rotate X
-        let y2 = p.y * cosX - z1 * sinX;
-        let z2 = z1 * cosX + p.y * sinX;
+        const y2 = p.y * cosX - z1 * sinX;
+        const z2 = z1 * cosX + p.y * sinX;
 
         p.x = x1; p.y = y2; p.z = z2;
 

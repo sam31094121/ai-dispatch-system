@@ -7,7 +7,8 @@ import { HealingCashFlowPage } from './pages/HealingCashFlowPage';
 import OldDashboardPage from './pages/OldDashboardPage';
 import BigDataCorePage from './pages/BigDataCorePage';
 import SoulCorePage from './pages/SoulCorePage';
-import RankingPage from './pages/RankingPage'; // ⬇️ 新增：大數據雷達分析頁
+import { RankingDispatchPage } from './pages/RankingDispatchPage';
+import { DispatchReportPage } from './pages/DispatchReportPage';
 
 
 import {
@@ -15,18 +16,9 @@ import {
   DispatchPage,
   MemberPage,
   MarketingPage,
-  HvCommandPage,
-  HvPersonalPage,
-  HvScriptsPage,
-  HvTargetsPage,
-  HvTrainingPage,
-  HvRallyPage,
-  BcCommandPage,
-  BcScriptsPage,
-  BcStylePage,
-  BcPlaybackPage,
-  LineConvertPage,
-  LineRulesPage,
+  HighValuePage,
+  BroadcastPage,
+  LinePage,
   HiringPage,
   TrainingPage,
 } from './pages/ModuleRoutePage';
@@ -53,8 +45,11 @@ function App() {
           {/* 靈魂核心：虛空數據導入控制台 */}
           <Route path="soul" element={<SoulCorePage />} />
           
-          {/* ⬇️ AI 加強：大數據戰力分析與雷達圖 */}
-          <Route path="ranking" element={<RankingPage />} />
+          {/* ⬇️ AI 加強：大數據排行派單二合一中心 */}
+          <Route path="ranking" element={<RankingDispatchPage />} />
+
+          {/* 派單報表：結構化 AI 報表閱覽 */}
+          <Route path="report" element={<DispatchReportPage />} />
           
           <Route path="boss"       element={<BossPage />} />
           <Route path="dispatch"   element={<DispatchPage />} />
@@ -62,22 +57,13 @@ function App() {
           <Route path="marketing"  element={<MarketingPage />} />
 
           {/* 高價成交爆發 */}
-          <Route path="hv-command"  element={<HvCommandPage />} />
-          <Route path="hv-personal" element={<HvPersonalPage />} />
-          <Route path="hv-scripts"  element={<HvScriptsPage />} />
-          <Route path="hv-targets"  element={<HvTargetsPage />} />
-          <Route path="hv-training" element={<HvTrainingPage />} />
-          <Route path="hv-rally"    element={<HvRallyPage />} />
+          <Route path="hv" element={<HighValuePage />} />
 
           {/* 女聲智慧播報 */}
-          <Route path="bc-command"  element={<BcCommandPage />} />
-          <Route path="bc-scripts"  element={<BcScriptsPage />} />
-          <Route path="bc-style"    element={<BcStylePage />} />
-          <Route path="bc-playback" element={<BcPlaybackPage />} />
+          <Route path="bc" element={<BroadcastPage />} />
 
           {/* LINE 群組轉傳 */}
-          <Route path="line-convert" element={<LineConvertPage />} />
-          <Route path="line-rules"   element={<LineRulesPage />} />
+          <Route path="line" element={<LinePage />} />
 
           {/* 系統管理 */}
           <Route path="hiring"   element={<HiringPage />} />

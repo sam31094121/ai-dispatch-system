@@ -1,7 +1,7 @@
 // ==========================================
 // 招聘管理頁 + 訓練管理頁 (合併元件)
 // ==========================================
-import React from 'react';
+import React, { useState } from 'react';
 import { type Employee } from '../data/mockData';
 import { EMPEROR_UI, EMPEROR, HUO, JIN, MU, SHUI, TU } from '../constants/wuxingColors';
 
@@ -38,11 +38,25 @@ function Bar({ value, palette }: { value: number; palette: typeof JIN }) {
 }
 
 // ─── 招聘管理頁 ───
-const candidates = [
+type Candidate = {
+  id: string; name: string; lang: number; comm: number; react: number;
+  learn: number; stable: number; sales: number; m3: number; m6: number;
+  rec: string; role: string;
+};
+
+const defaultCandidates: Candidate[] = [
   { id:'HC001', name:'張三',  lang:85, comm:90, react:78, learn:88, stable:72, sales:88, m3:180000, m6:420000, rec:'建議錄取',     role:'業務專員' },
   { id:'HC002', name:'李四',  lang:70, comm:65, react:80, learn:60, stable:55, sales:65, m3: 90000, m6:200000, rec:'備取',         role:'行銷助理' },
   { id:'HC003', name:'王五',  lang:92, comm:88, react:95, learn:90, stable:85, sales:92, m3:250000, m6:580000, rec:'強烈建議錄取', role:'業務經理' },
 ];
+
+function aiEvaluate(c: { lang: number; comm: number; react: number; learn: number; stable: number; sales: number }) {
+  const avg = Math.round((c.lang + c.comm + c.react + c.learn + c.stable + c.sales) / 6);
+  const m3 = Math.round(avg * 2200);
+  const m6 = Math.round(avg * 5500);
+  const rec = avg >= 85 ? '強烈建議錄取' : avg >= 70 ? '建議錄取' : '備取';
+  return { m3, m6, rec };
+}
 
 const SKILL_KEYS: [string, keyof typeof candidates[0], typeof JIN][] = [
   ['語言', 'lang', SHUI],
@@ -61,6 +75,30 @@ function recPalette(rec: string): typeof JIN {
 
 export function HiringDashboard() {
   injectHtStyles();
+  const [candidates, setCandidates] = useState<Candidate[]>(defaultCandidates);
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState({ name:'', role:'業務專員', lang:70, comm:70, react:70, learn:70, stable:70, sales:70 });
+
+  const handleAdd = () => {
+    if (!form.name.trim()) return;
+    const ai = aiEvaluate(form);
+    const newC: Candidate = {
+      id: `HC${String(candidates.length + 1).padStart(3, '0')}`,
+      name: form.name.trim(),
+      role: form.role,
+      lang: form.lang, comm: form.comm, react: form.react,
+      learn: form.learn, stable: form.stable, sales: form.sales,
+      m3: ai.m3, m6: ai.m6, rec: ai.rec,
+    };
+    setCandidates(prev => [...prev, newC]);
+    setForm({ name:'', role:'業務專員', lang:70, comm:70, react:70, learn:70, stable:70, sales:70 });
+    setShowForm(false);
+  };
+
+  const handleRemove = (id: string) => {
+    setCandidates(prev => prev.filter(c => c.id !== id));
+  };
+
   return (
     <div style={PAGE}>
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:8, borderBottom:`1px solid ${EMPEROR_UI.borderAccent}`, paddingBottom:10 }}>
@@ -68,10 +106,50 @@ export function HiringDashboard() {
           <h2 style={{ ...SECTION_TITLE, fontSize:17 }}>🎯 招聘智選中心</h2>
           <p style={SUB}>AI 候選人潛力評估 · {candidates.length} 位候選人</p>
         </div>
-        <button style={{ padding:'6px 14px', borderRadius:8, border:`1px solid ${MU.shadow}`, background:MU.abyss, color:MU.bright, fontSize:12, fontWeight:700, cursor:'pointer' }}>
-          + 新增候選人
+        <button onClick={() => setShowForm(v => !v)} style={{ padding:'6px 14px', borderRadius:8, border:`1px solid ${MU.shadow}`, background:MU.abyss, color:MU.bright, fontSize:12, fontWeight:700, cursor:'pointer' }}>
+          {showForm ? '✕ 取消' : '+ 新增候選人'}
         </button>
       </div>
+
+      {/* 新增候選人表單 */}
+      {showForm && (
+        <div style={{ ...CARD, padding:'12px 14px', marginBottom:8, border:`1px solid ${MU.shadow}` }}>
+          <div style={CARD_SCAN} />
+          <div style={{ fontSize:12, fontWeight:900, color:MU.bright, marginBottom:10 }}>新增候選人資料</div>
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginBottom:10 }}>
+            <div>
+              <label style={{ fontSize:10, color:EMPEROR_UI.textDim, display:'block', marginBottom:3 }}>姓名 *</label>
+              <input value={form.name} onChange={e => setForm(f => ({ ...f, name:e.target.value }))}
+                placeholder="輸入姓名"
+                style={{ width:'100%', padding:'5px 8px', borderRadius:6, border:`1px solid ${EMPEROR_UI.borderMain}`, background:EMPEROR.obsidianMid, color:EMPEROR_UI.textPrimary, fontSize:12, outline:'none', boxSizing:'border-box' }} />
+            </div>
+            <div>
+              <label style={{ fontSize:10, color:EMPEROR_UI.textDim, display:'block', marginBottom:3 }}>應徵職位</label>
+              <select value={form.role} onChange={e => setForm(f => ({ ...f, role:e.target.value }))}
+                style={{ width:'100%', padding:'5px 8px', borderRadius:6, border:`1px solid ${EMPEROR_UI.borderMain}`, background:EMPEROR.obsidianMid, color:EMPEROR_UI.textPrimary, fontSize:12, outline:'none' }}>
+                <option>業務專員</option><option>業務經理</option><option>行銷助理</option><option>客服主管</option>
+              </select>
+            </div>
+          </div>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8, marginBottom:10 }}>
+            {(['lang','comm','react','learn','stable','sales'] as const).map((k, i) => {
+              const labels = ['語言','溝通','反應','學習','穩定','成交潛力'];
+              return (
+                <div key={k}>
+                  <label style={{ fontSize:10, color:EMPEROR_UI.textDim, display:'block', marginBottom:3 }}>{labels[i]} ({form[k]})</label>
+                  <input type="range" min={0} max={100} value={form[k]}
+                    onChange={e => setForm(f => ({ ...f, [k]: Number(e.target.value) }))}
+                    style={{ width:'100%', accentColor:MU.bright }} />
+                </div>
+              );
+            })}
+          </div>
+          <button onClick={handleAdd} disabled={!form.name.trim()}
+            style={{ padding:'7px 18px', borderRadius:8, border:'none', background:form.name.trim() ? MU.gradient : EMPEROR.obsidianMid, color:form.name.trim() ? '#000' : EMPEROR_UI.textDim, fontSize:12, fontWeight:900, cursor:form.name.trim() ? 'pointer' : 'not-allowed', boxShadow: form.name.trim() ? MU.glowShadow : 'none' }}>
+            ✓ AI 評估並加入
+          </button>
+        </div>
+      )}
 
       <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8 }}>
         {candidates.map(c => {
@@ -121,8 +199,11 @@ export function HiringDashboard() {
                 ))}
               </div>
 
-              {/* 錄取建議 */}
-              <span style={{ ...BADGE, background:rp.abyss, color:rp.bright, border:`1px solid ${rp.shadow}` }}>{c.rec}</span>
+              {/* 錄取建議 + 移除 */}
+              <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                <span style={{ ...BADGE, background:rp.abyss, color:rp.bright, border:`1px solid ${rp.shadow}` }}>{c.rec}</span>
+                <button onClick={() => handleRemove(c.id)} style={{ fontSize:9, padding:'2px 8px', borderRadius:4, border:`1px solid ${HUO.shadow}`, background:'transparent', color:HUO.text, cursor:'pointer', opacity:0.6 }} title="移除候選人">✕</button>
+              </div>
             </div>
           );
         })}
