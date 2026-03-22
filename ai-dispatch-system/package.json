@@ -9,6 +9,8 @@
     "start": "concurrently -k -n \"後端,前端\" -c \"cyan,magenta\" \"tsx server/index.ts\" \"vite\"",
     "啟動": "concurrently -k -n \"後端,前端\" -c \"cyan,magenta\" \"tsx server/index.ts\" \"vite\"",
     "build": "tsc -b && vite build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
     "lint": "eslint .",
     "preview": "vite preview"
   },
