@@ -537,14 +537,14 @@
     .flow-arrow { color:rgba(255,42,75,0.5); font-size:.9rem; margin:0 .15rem; flex-shrink:0; padding-bottom:14px; transition:.4s; filter: drop-shadow(0 0 6px rgba(255,42,75,0.8)); }
 
     /* States */
-    .node.running { opacity:1; color:var(--gold); }
-    .node.running .node-hex::before { background:var(--gold); }
-    .node.running .node-dot { background:var(--gold); box-shadow:0 0 25px var(--gold); animation:heartBeat 0.6s infinite; }
-    .node.running .flow-arrow + & { color:var(--gold); }
+    .node.running { opacity:1; color:var(--node-color, var(--gold)); }
+    .node.running .node-hex::before { background:var(--node-color, var(--gold)); }
+    .node.running .node-dot { background:var(--node-color, var(--gold)); box-shadow:0 0 25px var(--node-color, var(--gold)); animation:heartBeat 0.6s infinite; }
+    .node.running .flow-arrow + & { color:var(--node-color, var(--gold)); }
 
-    .node.success { opacity:1; color:var(--cyan); }
-    .node.success .node-hex::before { background:var(--cyan); }
-    .node.success .node-dot { background:var(--cyan); box-shadow:0 0 20px var(--cyan); }
+    .node.success { opacity:1; color:var(--node-color, var(--cyan)); }
+    .node.success .node-hex::before { background:var(--node-color, var(--cyan)); }
+    .node.success .node-dot { background:var(--node-color, var(--cyan)); box-shadow:0 0 20px var(--node-color, var(--cyan)); }
 
     .node.failed { opacity:1; color:var(--red); }
     .node.failed .node-hex::before { background:var(--red); animation: heartBeat 0.3s infinite; }
@@ -1475,17 +1475,35 @@ const FLOW_NODES = ['接收','解析','審計','排序','公告','播報','LINE'
 
 // ─── 功能性啟動序列配色（10 階段大數據科技色） ───
 const SEQ_COLORS = [
-  { name:'接收', num:'1', color:'#ff3c5a', rgb:'255,60,90'  },    // 紅
-  { name:'解析', num:'2', color:'#ff8c1a', rgb:'255,140,26' },    // 橙
-  { name:'審計', num:'3', color:'#ffd700', rgb:'255,215,0'  },    // 金
-  { name:'排序', num:'4', color:'#00ff88', rgb:'0,255,136'  },    // 翠綠
-  { name:'公告', num:'5', color:'#00ffcc', rgb:'0,255,204'  },    // 青
-  { name:'播報', num:'6', color:'#00aaff', rgb:'0,170,255'  },    // 藍
-  { name:'LINE', num:'7', color:'#5566ff', rgb:'85,102,255' },    // 靛
-  { name:'存檔', num:'8', color:'#aa44ff', rgb:'170,68,255' },    // 紫
-  { name:'備份', num:'9', color:'#ff44aa', rgb:'255,68,170' },    // 粉
-  { name:'日誌', num:'0', color:'#ffffff', rgb:'255,255,255'},    // 白
+  { name:'接收', num:'1', color:'#ff7b72', rgb:'255,123,114' },
+  { name:'解析', num:'2', color:'#ff9b5e', rgb:'255,155,94'  },
+  { name:'審計', num:'3', color:'#ffd85f', rgb:'255,216,95'  },
+  { name:'排序', num:'4', color:'#9fdf63', rgb:'159,223,99'  },
+  { name:'公告', num:'5', color:'#47d7a7', rgb:'71,215,167'  },
+  { name:'播報', num:'6', color:'#3fd1ff', rgb:'63,209,255'  },
+  { name:'LINE', num:'7', color:'#4f9bff', rgb:'79,155,255'  },
+  { name:'存檔', num:'8', color:'#7888ff', rgb:'120,136,255' },
+  { name:'備份', num:'9', color:'#aa7cff', rgb:'170,124,255' },
+  { name:'日誌', num:'0', color:'#ff7ec8', rgb:'255,126,200' }
 ];
+
+// ─── SSE 前後端狀態即時連動 ───
+(function() {
+  const es = new EventSource('/api/events');
+  es.onmessage = function(e) {
+    try {
+      const data = JSON.parse(e.data);
+      const { step, status } = data;
+      setNode(step, status);
+      
+      const idx = FLOW_NODES.indexOf(step);
+      if (idx !== -1) {
+        if (status === 'running') { activateSeq(idx); }
+        else if (status === 'success') { completeSeq(idx); }
+      }
+    } catch(err) { /* 心跳或其他非 JSON 訊息略過 */ }
+  };
+})();
 
 // ─── Clock (Taiwan timezone) ───
 function updateClock() {
@@ -1527,7 +1545,8 @@ function switchTab(id) {
 function initFlow() {
   document.getElementById('flow-display').innerHTML = FLOW_NODES.map((n, i) => {
     const arrow = i ? '<span class="flow-arrow">›</span>' : '';
-    return `${arrow}<div class="flow-node-wrap"><div class="node" id="node-${n}">
+    const color = SEQ_COLORS[i] ? SEQ_COLORS[i].color : 'var(--cyan)';
+    return `${arrow}<div class="flow-node-wrap"><div class="node" id="node-${n}" style="--node-color:${color}">
       <div class="node-hex"><div class="node-dot"></div></div>
       <span>${n}</span>
     </div></div>`;
@@ -1710,26 +1729,12 @@ async function startWorkflow() {
   resetSeqGrid();
 
   try {
-    // ①=接收（紅）
-    activateSeq(0);
-    setNode('接收','running'); await delay(400); setNode('接收','success');
-    completeSeq(0);
-
-    // ②=解析（橙）
-    activateSeq(1);
-    setNode('解析','running');
     const pr = await api('/api/report/parse', {rawText: input});
     if (!pr.success) throw {step:'解析', msg: pr.message};
     S.parsedData = pr.data;
-    setNode('解析','success');
-    completeSeq(1);
 
-    // ③=審計（金）
-    activateSeq(2);
-    setNode('審計','running');
     const ar = await api('/api/report/audit', {data: S.parsedData});
     if (!ar.success) {
-      setNode('審計','failed');
       const b = document.getElementById('audit-badge');
       b.textContent = '審計失敗';
       b.style.background = 'rgba(239,68,68,0.2)';
@@ -1737,55 +1742,23 @@ async function startWorkflow() {
       b.style.borderColor = 'rgba(239,68,68,0.3)';
       throw {step:'審計', msg: (ar.errors || [ar.message]).join('\n')};
     }
-    setNode('審計','success');
-    completeSeq(2);
     const b = document.getElementById('audit-badge');
     b.textContent = '審計通過';
     b.style.background = 'rgba(16,185,129,0.15)';
     b.style.color = '#10b981';
     b.style.borderColor = 'rgba(16,185,129,0.3)';
 
-    // ④=排序（翠綠）
-    activateSeq(3);
-    setNode('排序','running');
     const rr = await api('/api/report/rank', {data: S.parsedData});
     if (!rr.success) throw {step:'排序', msg: rr.message};
     S.rankedData = rr.data;
-    setNode('排序','success');
-    completeSeq(3);
 
     updateDashboard();
 
-    // ⑤=公告（青）
-    activateSeq(4);
-    setNode('公告','running'); await delay(200);
-    // ⑥=播報（藍）
-    activateSeq(5);
-    setNode('播報','running'); await delay(200);
-    // ⑦=LINE（靛）
-    activateSeq(6);
-    setNode('LINE','running'); await delay(200);
     const or = await api('/api/report/generate_outputs', {rankedData: S.rankedData, reportDate: S.parsedData.reportDate});
     S.outputs = or.data;
     setAnnounce(S.outputs);
-    setNode('公告','success'); completeSeq(4); await delay(200);
-    setNode('播報','success'); completeSeq(5); await delay(200);
-    setNode('LINE','success'); completeSeq(6); await delay(200);
 
-    // ⑧=存檔（紫）
-    activateSeq(7);
-    setNode('存檔','running'); await delay(200);
-    // ⑨=備份（粉）
-    activateSeq(8);
-    setNode('備份','running'); await delay(200);
-    // ⓪=日誌（白）
-    activateSeq(9);
-    setNode('日誌','running'); await delay(200);
     await api('/api/report/save', {fullState: S});
-    setNode('存檔','success'); completeSeq(7); await delay(150);
-    setNode('備份','success'); completeSeq(8); await delay(150);
-    setNode('日誌','success'); completeSeq(9);
-
     completeAllSeq();
 
     // 取得 AI 建議
@@ -2147,6 +2120,9 @@ function copyAllLineMessages() {
   if (!pres.length) { toast('⚠️ 尚無分組訊息'); return; }
   const all = Array.from(pres).map(p => p.textContent).join('\n\n━━━━━━━━━━━━━━━━\n\n');
   copyText(all, '全部LINE分組訊息');
+  activateSeq(6);
+  setNode('LINE','running');
+  setTimeout(() => { setNode('LINE','success'); completeSeq(6); }, 600);
 }
 
 // ── 語音播報（切換暫停/繼續）
@@ -2157,14 +2133,19 @@ function speakText() {
   if (speaking) {
     speechSynthesis.cancel();
     speaking = false;
+    setNode('播報','failed');
     document.getElementById('speak-btn') && (document.getElementById('speak-btn').textContent = '🔊 語音播報');
     toast('⏹ 播報已停止');
     return;
   }
+  activateSeq(5);
+  setNode('播報','running');
   const u = new SpeechSynthesisUtterance(text);
   u.lang = 'zh-TW'; u.rate = 0.9;
   u.onend = () => {
     speaking = false;
+    setNode('播報','success');
+    completeSeq(5);
     const btn = document.getElementById('speak-btn');
     if (btn) btn.textContent = '🔊 語音播報';
   };

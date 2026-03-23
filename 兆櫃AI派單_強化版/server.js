@@ -53,6 +53,38 @@ function backupFile(srcPath, filename) {
 }
 
 // ══════════════════════════════════════════════════════
+//  一點五、SSE 即時推播機制（免安裝輕量連動）
+// ══════════════════════════════════════════════════════
+let clients = [];
+
+app.get('/api/events', (req, res) => {
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive'
+  });
+  
+  const clientId = Date.now();
+  const newClient = { id: clientId, res };
+  clients.push(newClient);
+  
+  // 保持連接（每 15 秒心跳）
+  const heartbeat = setInterval(() => {
+    res.write(': heartbeat\n\n');
+  }, 15000);
+
+  req.on('close', () => {
+    clearInterval(heartbeat);
+    clients = clients.filter(c => c.id !== clientId);
+  });
+});
+
+function broadcastStatus(step, status) {
+  const data = JSON.stringify({ step, status, timestamp: new Date() });
+  clients.forEach(c => c.res.write(`data: ${data}\n\n`));
+}
+
+// ══════════════════════════════════════════════════════
 //  二、API 路由實作
 // ══════════════════════════════════════════════════════
 
@@ -67,7 +99,11 @@ app.post('/api/report/parse', (req, res) => {
   if (!rawText) return res.status(400).json({ success: false, step: '解析', message: '原始輸入內容不可為空' });
 
   try {
+    broadcastStatus('接收', 'running');
     writeLog('接收', '成功', '接收到原始業績文字');
+    broadcastStatus('接收', 'success');
+    
+    broadcastStatus('解析', 'running');
     
     // 正則拆解日期、平台、模式
     const dateMatch = rawText.match(/(\d{1,2}\/\d{1,2})/);
@@ -102,9 +138,11 @@ app.post('/api/report/parse', (req, res) => {
     const parsedData = { reportDate, platform, totalRevenue, rows };
 
     writeLog('解析', '成功', `解析成功，共 ${rows.length} 筆人員資料`);
+    broadcastStatus('解析', 'success');
     res.json({ success: true, step: '解析', message: '解析成功', data: parsedData });
   } catch (err) {
     writeLog('解析', '失敗', err.message);
+    broadcastStatus('解析', 'failed');
     res.status(500).json({ success: false, step: '解析', message: `解析出錯: ${err.message}` });
   }
 });
@@ -115,6 +153,7 @@ app.post('/api/report/audit', (req, res) => {
   if (!data || !data.rows) return res.status(400).json({ success: false, step: '審計', message: '缺少解析數據' });
 
   try {
+    broadcastStatus('審計', 'running');
     const { rows, totalRevenue } = data;
     let errors = [];
 
@@ -131,13 +170,16 @@ app.post('/api/report/audit', (req, res) => {
 
     if (errors.length > 0) {
       writeLog('審計', '失敗', errors.join('; '));
+      broadcastStatus('審計', 'failed');
       return res.json({ success: false, step: '審計', message: '審計未通過', errors });
     }
 
     writeLog('審計', '成功', '審計全數通過');
+    broadcastStatus('審計', 'success');
     res.json({ success: true, step: '審計', message: '審計通過' });
   } catch (err) {
     writeLog('審計', '失敗', err.message);
+    broadcastStatus('審計', 'failed');
     res.status(500).json({ success: false, step: '審計', message: `審計出錯: ${err.message}` });
   }
 });
@@ -148,6 +190,7 @@ app.post('/api/report/rank', (req, res) => {
   if (!data || !data.rows) return res.status(400).json({ success: false, step: '排序', message: '缺少審計數據' });
 
   try {
+    broadcastStatus('排序', 'running');
     // 欄位映射：內部名 → 契約名
     const contractRows = data.rows.map(r => ({
       ...r,
@@ -170,9 +213,11 @@ app.post('/api/report/rank', (req, res) => {
     });
 
     writeLog('排序', '成功', '排名計算完成（共用契約）');
+    broadcastStatus('排序', 'success');
     res.json({ success: true, step: '排序', message: '排序成功', data: ranked });
   } catch (err) {
     writeLog('排序', '失敗', err.message);
+    broadcastStatus('排序', 'failed');
     res.json({ success: false, step: '排序', message: `排序出錯: ${err.message}` });
   }
 });
@@ -183,6 +228,9 @@ app.post('/api/report/generate_outputs', (req, res) => {
   if (!rankedData) return res.json({ success: false, step: '公告', message: '缺少排名數據' });
 
   try {
+    broadcastStatus('公告', 'running');
+    broadcastStatus('播報', 'running');
+    broadcastStatus('LINE', 'running');
     let announce = `📣【AI 派單公告｜${reportDate}】\n\n`;
     rankedData.forEach(r => {
       announce += `${r.rank}、${r.name} (${r.group}) 業績: ${r.revenueAmount.toLocaleString()}\n`;
@@ -192,9 +240,13 @@ app.post('/api/report/generate_outputs', (req, res) => {
     const lineText = `【AI派單通知】${reportDate} 第一名 ${rankedData[0]?.name}。`;
 
     writeLog('公告', '成功', '公告與周邊文本生成');
+    broadcastStatus('公告', 'success');
+    broadcastStatus('播報', 'success');
+    broadcastStatus('LINE', 'success');
     res.json({ success: true, data: { announce, broadcast, lineText } });
   } catch (err) {
     writeLog('公告', '失敗', err.message);
+    broadcastStatus('公告', 'failed');
     res.json({ success: false, step: '公告', message: `生成出錯: ${err.message}` });
   }
 });
@@ -205,6 +257,9 @@ app.post('/api/report/save', (req, res) => {
   if (!fullState) return res.status(400).json({ success: false, step: '存檔', message: '缺少存檔狀態' });
 
   try {
+    broadcastStatus('存檔', 'running');
+    broadcastStatus('備份', 'running');
+    broadcastStatus('日誌', 'running');
     const filename = `report_${Date.now()}.json`;
     const reportPath = path.join(REPORTS_DIR, filename);
 
@@ -220,9 +275,15 @@ app.post('/api/report/save', (req, res) => {
     backupFile(reportPath, filename);
 
     writeLog('存檔', '成功', `存檔與備份完成：${filename}`);
+    broadcastStatus('存檔', 'success');
+    broadcastStatus('備份', 'success');
+    broadcastStatus('日誌', 'success');
     res.json({ success: true, step: '存檔', message: '已輸入 / 已存入 / 已備份', path: reportPath });
   } catch (err) {
     writeLog('存檔', '失敗', err.message);
+    broadcastStatus('存檔', 'failed');
+    broadcastStatus('備份', 'failed');
+    broadcastStatus('日誌', 'failed');
     res.status(500).json({ success: false, step: '存檔', message: `存檔出錯: ${err.message}` });
   }
 });

@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { 取得保留中心設定 } from '../服務/系統自動維修服務';
 import { GROUP_ELEMENT, EMPEROR_UI, UI } from '../constants/wuxingColors';
+import { ConnectionStatus } from '../components/ConnectionStatus';
 
 const SIDEBAR_WIDTH = 256;
 
@@ -73,10 +74,13 @@ export function MainLayout() {
       <aside style={{
         width: isAiOptimized ? 0 : SIDEBAR_WIDTH,
         overflow: isAiOptimized ? 'hidden' : 'auto',
-        background: `linear-gradient(180deg, rgba(3,5,12,.92) 0%, rgba(4,8,18,.95) 50%, rgba(3,5,12,.97) 100%)`,
-        backdropFilter: 'blur(32px) saturate(200%)',
+        background: `linear-gradient(180deg, rgba(3,5,12,.95) 0%, rgba(5,10,24,.97) 50%, rgba(2,4,8,.98) 100%), 
+                     linear-gradient(rgba(0, 212, 255, 0.04) 1px, transparent 1px), 
+                     linear-gradient(90deg, rgba(0, 212, 255, 0.04) 1px, transparent 1px)`,
+        backgroundSize: '100% 100%, 24px 24px, 24px 24px',
+        backdropFilter: 'blur(32px) saturate(180%)',
         display: 'flex', flexDirection: 'column',
-        boxShadow: isAiOptimized ? 'none' : `20px 0 80px rgba(0,0,0,.9), 4px 0 30px rgba(0,0,0,.5), inset -1px 0 0 rgba(0,212,255,.15)`,
+        boxShadow: isAiOptimized ? 'none' : `25px 0 90px rgba(0,0,0,0.95), 5px 0 40px rgba(0,212,255,0.02), inset -1px 0 0 rgba(0,212,255,.1)`,
         position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 50,
         borderRight: isAiOptimized ? 'none' : '1px solid rgba(0,212,255,.12)',
         transition: 'width 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s ease, opacity 0.3s',
@@ -94,7 +98,16 @@ export function MainLayout() {
           overflow: 'hidden',
         }}>
           <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:4 }}>
-            <div style={{ fontSize:15, fontWeight:900, letterSpacing:'.05em', animation:'ml-brand 3s ease-in-out infinite', color:'#7DF9FF' }}>
+            <div style={{ 
+              fontSize: 15, 
+              fontWeight: 900, 
+              letterSpacing: '.06em', 
+              background: 'linear-gradient(45deg, #00D4FF, #00FF9C, #B966FF, #00D4FF)',
+              backgroundSize: '200% auto',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              animation: 'ml-brand 3s ease-in-out infinite',
+            }}>
               ⚡ 兆櫃AI派單
             </div>
             <div style={{ textAlign:'right', flexShrink:0 }}>
@@ -162,12 +175,13 @@ export function MainLayout() {
 
               const style: React.CSSProperties = {
                 width:'100%', display:'flex', alignItems:'center', justifyContent:'space-between',
-                padding:'5px 10px', borderRadius:7, border:'none', cursor:'pointer',
-                background: isGroupActive ? `linear-gradient(90deg, ${el?.void ?? EMPEROR_UI.cardBg}, transparent)` : 'transparent',
+                padding:'7px 12px', borderRadius:8, border: isGroupActive ? `1px solid ${accent}55` : '1px solid transparent', cursor:'pointer',
+                background: isGroupActive ? `linear-gradient(90deg, ${el?.void ?? EMPEROR_UI.cardBg}, rgba(0,0,0,0.2))` : 'transparent',
                 color: isGroupActive ? accent : EMPEROR_UI.textMuted,
-                fontWeight:800, fontSize:11, letterSpacing:'.06em', transition:'all .2s',
-                borderLeft: isGroupActive ? `2px solid ${accent}` : '2px solid transparent',
+                fontWeight:800, fontSize:11, letterSpacing:'.06em', transition:'all .3s cubic-bezier(0.4, 0, 0.2, 1)',
+                borderLeft: isGroupActive ? `4px solid ${accent}` : '4px solid transparent',
                 textDecoration: 'none',
+                boxShadow: isGroupActive ? `0 6px 20px ${accent}33, inset 0 0 10px ${accent}11` : 'none',
               };
 
               const content = (
@@ -194,8 +208,8 @@ export function MainLayout() {
                       to={aggPath}
                       className="ml-group"
                       style={style}
-                      onMouseOver={e => { if (!isGroupActive) { e.currentTarget.style.color = accent; e.currentTarget.style.borderLeft = `2px solid ${accent}55`; } }}
-                      onMouseOut={e => { if (!isGroupActive) { e.currentTarget.style.color = EMPEROR_UI.textMuted; e.currentTarget.style.borderLeft = '2px solid transparent'; } }}
+                      onMouseOver={e => { if (!isGroupActive) { e.currentTarget.style.color = accent; e.currentTarget.style.borderLeft = `4px solid ${accent}88`; e.currentTarget.style.border = `1px solid ${accent}33`; } }}
+                      onMouseOut={e => { if (!isGroupActive) { e.currentTarget.style.color = EMPEROR_UI.textMuted; e.currentTarget.style.borderLeft = '4px solid transparent'; e.currentTarget.style.border = '1px solid transparent'; } }}
                     >
                       {content}
                     </Link>
@@ -205,8 +219,8 @@ export function MainLayout() {
                       onClick={() => toggleGroup(group.groupName)}
                       className="ml-group"
                       style={style}
-                      onMouseOver={e => { if (!isGroupActive) { e.currentTarget.style.color = accent; e.currentTarget.style.borderLeft = `2px solid ${accent}55`; } }}
-                      onMouseOut={e => { if (!isGroupActive) { e.currentTarget.style.color = EMPEROR_UI.textMuted; e.currentTarget.style.borderLeft = '2px solid transparent'; } }}
+                      onMouseOver={e => { if (!isGroupActive) { e.currentTarget.style.color = accent; e.currentTarget.style.borderLeft = `4px solid ${accent}88`; e.currentTarget.style.border = `1px solid ${accent}33`; } }}
+                      onMouseOut={e => { if (!isGroupActive) { e.currentTarget.style.color = EMPEROR_UI.textMuted; e.currentTarget.style.borderLeft = '4px solid transparent'; e.currentTarget.style.border = '1px solid transparent'; } }}
                     >
                       {content}
                       <span style={{ fontSize:9, color:EMPEROR_UI.textDim, transform: isCollapsed ? 'rotate(-90deg)' : 'rotate(0)', transition:'transform .2s', display:'inline-block' }}>▾</span>
@@ -284,9 +298,11 @@ export function MainLayout() {
             </div>
           </div>
           <div className="ml-gfooter" style={{ fontSize:7, color:EMPEROR_UI.textDim, letterSpacing:'.08em', textAlign:'center', marginTop:4 }}>
-            © 兆櫃AI 數據中樞
+            © {new Date().getFullYear()} 兆櫃AI 數據中樞
           </div>
         </div>
+        {/* ── 邊緣微型極光導軌 ── */}
+        <div style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: '2.5px', background: `linear-gradient(to bottom, transparent, #00D4FF, #00FF9C, transparent)`, animation: 'ml-brand 4s infinite', filter: 'blur(0.5px)', boxShadow: '0 0 8px rgba(0,212,255,0.8)' }} />
       </aside>
 
       {/* ════ 右側主內容區 ════ */}
@@ -313,6 +329,7 @@ export function MainLayout() {
         <div key={location.pathname} className="ml-page-enter">
           <Outlet />
         </div>
+        <ConnectionStatus />
       </main>
     </div>
   );

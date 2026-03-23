@@ -135,6 +135,38 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
     }
   }, []);
 
+  // ── 網頁恢復快取 ──
+  useEffect(() => {
+    const backup = localStorage.getItem('ai_dispatch_daily_report_backup');
+    if (backup) {
+      try {
+        const parsed = JSON.parse(backup);
+        setForm(prev => ({ ...prev, ...parsed }));
+        setDetectMsg('📋 已從快取恢復未完成的內容');
+      } catch (e) {
+        console.error('Failed to parse backup', e);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (form.rawTextContent.trim() || form.reportDate || form.platformName || form.reportMode) {
+      localStorage.setItem('ai_dispatch_daily_report_backup', JSON.stringify(form));
+    }
+  }, [form]);
+
+  // 防誤關閉
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (form.rawTextContent.trim().length > 0) {
+        e.preventDefault();
+        e.returnValue = '內容尚未解析儲存，確定要離開嗎？';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [form.rawTextContent]);
+
   // 全域 paste 事件
   useEffect(() => {
     function onPaste(e: ClipboardEvent) {
@@ -262,6 +294,7 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
       setPersonCount(parseResult.details.length);
       setSuccess(true);
       setMessage(`✅ 已接收、已解析、已存檔、已備份、已寫入日誌 | 共 ${parseResult.details.length} 人`);
+      localStorage.removeItem('ai_dispatch_daily_report_backup');
       onParsed?.({ reportId: report.id, reportDate: form.reportDate, personCount: parseResult.details.length });
     } catch (err: any) {
       setMessage(err?.responseMessage || err?.message || '建立或解析失敗，請確認後端是否運行。');
@@ -273,6 +306,7 @@ export function DailyReportInputPage({ onParsed }: DailyReportInputPageProps): R
   function reset() {
     cancelCd();
     setForm(initialForm);
+    localStorage.removeItem('ai_dispatch_daily_report_backup');
     setAutoFilled(new Set());
     setDetectMsg('');
     setMessage('');
