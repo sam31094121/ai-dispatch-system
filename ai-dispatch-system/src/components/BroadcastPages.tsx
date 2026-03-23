@@ -213,8 +213,8 @@ export function BroadcastScriptManager() {
               { label:'📄 原始內容', content:script.originalContent, key:'原始', p:EMPEROR_UI },
               { label:'🎙️ 重排版', content:script.reformattedContent, key:'重排', p:null, border:JIN.shadow },
               { label:'🔊 TTS 朗讀版', content:script.ttsContent, key:'TTS', p:null, border:SHUI.shadow },
-            ] as const).map(({ label, content, key, border }) => (
-              <div key={key} style={{ ...CARD, border:`1px solid ${border ?? EMPEROR_UI.borderMain}` }}>
+            ] as const).map(({ label, content, key, ...rest }) => (
+              <div key={key} style={{ ...CARD, border:`1px solid ${'border' in rest ? rest.border : EMPEROR_UI.borderMain}` }}>
                 <div style={CARD_SCAN} />
                 <div style={{ fontSize:11, fontWeight:700, color:JIN.text, marginBottom:6 }}>{label}</div>
                 <pre style={{ fontSize:10, color:EMPEROR_UI.textSecondary, whiteSpace:'pre-wrap', fontFamily:'inherit', lineHeight:1.55, maxHeight:160, overflowY:'auto', margin:0 }}>{content}</pre>

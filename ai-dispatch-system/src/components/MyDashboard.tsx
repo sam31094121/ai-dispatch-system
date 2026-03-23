@@ -63,7 +63,7 @@ export default function MyDashboard({ employees }: Props) {
   const goalPalette = goalProgress >= 100 ? MU : goalProgress >= 70 ? TU : HUO;
 
   const GROUP_PALETTE: Record<string, typeof MU> = { A1: HUO, A2: MU, B: TU, C: SHUI };
-  const gp = GROUP_PALETTE[me.group] ?? SHUI;
+  const gp = GROUP_PALETTE[me.group ?? ''] ?? SHUI;
 
   const abilities = [
     { label: '成交能力', value: me.closeRate ?? 0,     max: 100   },

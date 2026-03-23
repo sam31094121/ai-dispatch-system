@@ -58,7 +58,7 @@ function aiEvaluate(c: { lang: number; comm: number; react: number; learn: numbe
   return { m3, m6, rec };
 }
 
-const SKILL_KEYS: [string, keyof typeof candidates[0], typeof JIN][] = [
+const SKILL_KEYS: [string, keyof Candidate, typeof JIN][] = [
   ['語言', 'lang', SHUI],
   ['溝通', 'comm', MU],
   ['反應', 'react', JIN],
@@ -242,7 +242,7 @@ export function TrainingDashboard({ employees }: { employees: Employee[] }) {
           <div style={{ fontSize:12, fontWeight:900, color:HUO.bright, marginBottom:8 }}>需加強人員（續單最低 5 名）</div>
           <div style={{ display:'flex', flexDirection:'column', gap:5 }}>
             {weak.map(w => {
-              const gp = GROUP_COLOR[w.group] ?? SHUI;
+              const gp = GROUP_COLOR[w.group ?? ''] ?? SHUI;
               return (
                 <div key={w.name} className="ht-row" style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'6px 8px', borderRadius:7, background:EMPEROR.obsidianMid, transition:'background .15s' }}>
                   <div>

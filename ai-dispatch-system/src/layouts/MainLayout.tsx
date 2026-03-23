@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { 取得保留中心設定 } from '../服務/系統自動維修服務';
 import { GROUP_ELEMENT, EMPEROR_UI, UI } from '../constants/wuxingColors';

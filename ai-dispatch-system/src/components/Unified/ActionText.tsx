@@ -1,4 +1,5 @@
-import React, { ReactNode, CSSProperties, useState } from 'react';
+import React, { useState } from 'react';
+import type { ReactNode, CSSProperties } from 'react';
 
 export interface ActionTextProps {
   children: ReactNode;
