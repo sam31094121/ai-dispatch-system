@@ -1,1 +1,316 @@
-{}
+{
+  "parsedData": {
+    "reportDate": "4/1",
+    "platform": "三平台整合",
+    "totalRevenue": 7006833,
+    "rows": [
+      {
+        "name": "李玲玲",
+        "renewDeals": 29,
+        "renewRevenue": 739535,
+        "totalRevenue": 1051935
+      },
+      {
+        "name": "馬秋香",
+        "renewDeals": 40,
+        "renewRevenue": 684380,
+        "totalRevenue": 869578
+      },
+      {
+        "name": "王珍珠",
+        "renewDeals": 46,
+        "renewRevenue": 548410,
+        "totalRevenue": 825800
+      },
+      {
+        "name": "王梅慧",
+        "renewDeals": 27,
+        "renewRevenue": 420440,
+        "totalRevenue": 563148
+      },
+      {
+        "name": "林沛昕",
+        "renewDeals": 13,
+        "renewRevenue": 337195,
+        "totalRevenue": 523111
+      },
+      {
+        "name": "林宜靜",
+        "renewDeals": 20,
+        "renewRevenue": 316380,
+        "totalRevenue": 465088
+      },
+      {
+        "name": "徐華妤",
+        "renewDeals": 14,
+        "renewRevenue": 270240,
+        "totalRevenue": 401330
+      },
+      {
+        "name": "江麗勉",
+        "renewDeals": 7,
+        "renewRevenue": 264812,
+        "totalRevenue": 394880
+      },
+      {
+        "name": "高如郁",
+        "renewDeals": 15,
+        "renewRevenue": 206355,
+        "totalRevenue": 350289
+      },
+      {
+        "name": "廖姿惠",
+        "renewDeals": 15,
+        "renewRevenue": 98748,
+        "totalRevenue": 314714
+      },
+      {
+        "name": "湯玉琦",
+        "renewDeals": 16,
+        "renewRevenue": 77680,
+        "totalRevenue": 299304
+      },
+      {
+        "name": "高美雲",
+        "renewDeals": 11,
+        "renewRevenue": 60718,
+        "totalRevenue": 223268
+      },
+      {
+        "name": "蘇淑玲",
+        "renewDeals": 11,
+        "renewRevenue": 79550,
+        "totalRevenue": 181376
+      },
+      {
+        "name": "陳玲華",
+        "renewDeals": 11,
+        "renewRevenue": 91470,
+        "totalRevenue": 176988
+      },
+      {
+        "name": "梁依萍",
+        "renewDeals": 13,
+        "renewRevenue": 74990,
+        "totalRevenue": 152660
+      },
+      {
+        "name": "鄭珮恩",
+        "renewDeals": 23,
+        "renewRevenue": 67815,
+        "totalRevenue": 92275
+      },
+      {
+        "name": "江沛林",
+        "renewDeals": 8,
+        "renewRevenue": 29930,
+        "totalRevenue": 70150
+      },
+      {
+        "name": "董昭蘭",
+        "renewDeals": 6,
+        "renewRevenue": 29345,
+        "totalRevenue": 29345
+      },
+      {
+        "name": "謝啟芳",
+        "renewDeals": 3,
+        "renewRevenue": 15144,
+        "totalRevenue": 15144
+      },
+      {
+        "name": "陳旭宜",
+        "renewDeals": 1,
+        "renewRevenue": 3960,
+        "totalRevenue": 3960
+      },
+      {
+        "name": "林佩君",
+        "renewDeals": 1,
+        "renewRevenue": 2490,
+        "totalRevenue": 2490
+      }
+    ]
+  },
+  "rankedData": [
+    {
+      "name": "李玲玲",
+      "renewDeals": 29,
+      "renewRevenue": 739535,
+      "totalRevenue": 1051935,
+      "rank": 1,
+      "group": "A1"
+    },
+    {
+      "name": "馬秋香",
+      "renewDeals": 40,
+      "renewRevenue": 684380,
+      "totalRevenue": 869578,
+      "rank": 2,
+      "group": "A1"
+    },
+    {
+      "name": "王珍珠",
+      "renewDeals": 46,
+      "renewRevenue": 548410,
+      "totalRevenue": 825800,
+      "rank": 3,
+      "group": "A1"
+    },
+    {
+      "name": "王梅慧",
+      "renewDeals": 27,
+      "renewRevenue": 420440,
+      "totalRevenue": 563148,
+      "rank": 4,
+      "group": "A1"
+    },
+    {
+      "name": "林沛昕",
+      "renewDeals": 13,
+      "renewRevenue": 337195,
+      "totalRevenue": 523111,
+      "rank": 5,
+      "group": "A2"
+    },
+    {
+      "name": "林宜靜",
+      "renewDeals": 20,
+      "renewRevenue": 316380,
+      "totalRevenue": 465088,
+      "rank": 6,
+      "group": "A2"
+    },
+    {
+      "name": "徐華妤",
+      "renewDeals": 14,
+      "renewRevenue": 270240,
+      "totalRevenue": 401330,
+      "rank": 7,
+      "group": "A2"
+    },
+    {
+      "name": "江麗勉",
+      "renewDeals": 7,
+      "renewRevenue": 264812,
+      "totalRevenue": 394880,
+      "rank": 8,
+      "group": "A2"
+    },
+    {
+      "name": "高如郁",
+      "renewDeals": 15,
+      "renewRevenue": 206355,
+      "totalRevenue": 350289,
+      "rank": 9,
+      "group": "A2"
+    },
+    {
+      "name": "廖姿惠",
+      "renewDeals": 15,
+      "renewRevenue": 98748,
+      "totalRevenue": 314714,
+      "rank": 10,
+      "group": "A2"
+    },
+    {
+      "name": "湯玉琦",
+      "renewDeals": 16,
+      "renewRevenue": 77680,
+      "totalRevenue": 299304,
+      "rank": 11,
+      "group": "B"
+    },
+    {
+      "name": "高美雲",
+      "renewDeals": 11,
+      "renewRevenue": 60718,
+      "totalRevenue": 223268,
+      "rank": 12,
+      "group": "B"
+    },
+    {
+      "name": "蘇淑玲",
+      "renewDeals": 11,
+      "renewRevenue": 79550,
+      "totalRevenue": 181376,
+      "rank": 13,
+      "group": "B"
+    },
+    {
+      "name": "陳玲華",
+      "renewDeals": 11,
+      "renewRevenue": 91470,
+      "totalRevenue": 176988,
+      "rank": 14,
+      "group": "B"
+    },
+    {
+      "name": "梁依萍",
+      "renewDeals": 13,
+      "renewRevenue": 74990,
+      "totalRevenue": 152660,
+      "rank": 15,
+      "group": "B"
+    },
+    {
+      "name": "鄭珮恩",
+      "renewDeals": 23,
+      "renewRevenue": 67815,
+      "totalRevenue": 92275,
+      "rank": 16,
+      "group": "B"
+    },
+    {
+      "name": "江沛林",
+      "renewDeals": 8,
+      "renewRevenue": 29930,
+      "totalRevenue": 70150,
+      "rank": 17,
+      "group": "B"
+    },
+    {
+      "name": "董昭蘭",
+      "renewDeals": 6,
+      "renewRevenue": 29345,
+      "totalRevenue": 29345,
+      "rank": 18,
+      "group": "C"
+    },
+    {
+      "name": "謝啟芳",
+      "renewDeals": 3,
+      "renewRevenue": 15144,
+      "totalRevenue": 15144,
+      "rank": 19,
+      "group": "C"
+    },
+    {
+      "name": "陳旭宜",
+      "renewDeals": 1,
+      "renewRevenue": 3960,
+      "totalRevenue": 3960,
+      "rank": 20,
+      "group": "C"
+    },
+    {
+      "name": "林佩君",
+      "renewDeals": 1,
+      "renewRevenue": 2490,
+      "totalRevenue": 2490,
+      "rank": 21,
+      "group": "C"
+    }
+  ],
+  "outputs": {
+    "announce": "📣【AI 派單公告｜4/1 結算】\n━━━━━━━━━━━━━━━━━━━━\n\n🔴 A1 高單主力\n1、李玲玲｜追續 29｜續單 $739,535｜總業績 $1,051,935\n2、馬秋香｜追續 40｜續單 $684,380｜總業績 $869,578\n3、王珍珠｜追續 46｜續單 $548,410｜總業績 $825,800\n4、王梅慧｜追續 27｜續單 $420,440｜總業績 $563,148\n\n🟠 A2 續單收割\n5、林沛昕｜追續 13｜續單 $337,195｜總業績 $523,111\n6、林宜靜｜追續 20｜續單 $316,380｜總業績 $465,088\n7、徐華妤｜追續 14｜續單 $270,240｜總業績 $401,330\n8、江麗勉｜追續 7｜續單 $264,812｜總業績 $394,880\n9、高如郁｜追續 15｜續單 $206,355｜總業績 $350,289\n10、廖姿惠｜追續 15｜續單 $98,748｜總業績 $314,714\n\n🟡 B 一般量單\n11、湯玉琦｜追續 16｜續單 $77,680｜總業績 $299,304\n12、高美雲｜追續 11｜續單 $60,718｜總業績 $223,268\n13、蘇淑玲｜追續 11｜續單 $79,550｜總業績 $181,376\n14、陳玲華｜追續 11｜續單 $91,470｜總業績 $176,988\n15、梁依萍｜追續 13｜續單 $74,990｜總業績 $152,660\n16、鄭珮恩｜追續 23｜續單 $67,815｜總業績 $92,275\n17、江沛林｜追續 8｜續單 $29,930｜總業績 $70,150\n\n🟢 C 補位觀察\n18、董昭蘭｜追續 6｜續單 $29,345｜總業績 $29,345\n19、謝啟芳｜追續 3｜續單 $15,144｜總業績 $15,144\n20、陳旭宜｜追續 1｜續單 $3,960｜總業績 $3,960\n21、林佩君｜追續 1｜續單 $2,490｜總業績 $2,490\n\n━━━━━━━━━━━━━━━━━━━━\n執行規則：照順序派、前面全忙才往後、不得指定、不得跳位\n© 兆櫃 AI 數據中樞",
+    "broadcast": "各位夥伴請注意！4/1 最新排名揭曉：第一名 李玲玲，總業績達 1,051,935 元。請全員確認派單順序後回覆加一。",
+    "lineMessages": {
+      "A1": "4/1 業績派單（A1 組）\n━━━━━━━━━━━━━━━━\n1. 李玲玲｜$1,051,935\n2. 馬秋香｜$869,578\n3. 王珍珠｜$825,800\n4. 王梅慧｜$563,148\n━━━━━━━━━━━━━━━━\n共 4 位夥伴｜請確認接單",
+      "A2": "4/1 業績派單（A2 組）\n━━━━━━━━━━━━━━━━\n1. 林沛昕｜$523,111\n2. 林宜靜｜$465,088\n3. 徐華妤｜$401,330\n4. 江麗勉｜$394,880\n5. 高如郁｜$350,289\n6. 廖姿惠｜$314,714\n━━━━━━━━━━━━━━━━\n共 6 位夥伴｜請確認接單",
+      "B": "4/1 業績派單（B 組）\n━━━━━━━━━━━━━━━━\n1. 湯玉琦｜$299,304\n2. 高美雲｜$223,268\n3. 蘇淑玲｜$181,376\n4. 陳玲華｜$176,988\n5. 梁依萍｜$152,660\n6. 鄭珮恩｜$92,275\n7. 江沛林｜$70,150\n━━━━━━━━━━━━━━━━\n共 7 位夥伴｜請確認接單",
+      "C": "4/1 業績派單（C 組）\n━━━━━━━━━━━━━━━━\n1. 董昭蘭｜$29,345\n2. 謝啟芳｜$15,144\n3. 陳旭宜｜$3,960\n4. 林佩君｜$2,490\n━━━━━━━━━━━━━━━━\n共 4 位夥伴｜請確認接單"
+    }
+  },
+  "suggestions": null
+}

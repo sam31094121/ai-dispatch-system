@@ -1,0 +1,8 @@
+{"timestamp":"2026-04-01T12:57:11.659Z","step":"預載","status":"成功","message":"載入 3/22 業績預設資料"}
+{"timestamp":"2026-04-01T12:57:13.863Z","step":"接收","status":"成功","message":"接收到原始業績文字"}
+{"timestamp":"2026-04-01T12:57:13.877Z","step":"解析","status":"成功","message":"解析成功，共 21 筆人員資料"}
+{"timestamp":"2026-04-01T12:57:13.883Z","step":"審計","status":"成功","message":"三盤審計全數通過"}
+{"timestamp":"2026-04-01T12:57:13.888Z","step":"排序","status":"成功","message":"排名完成，共 21 人"}
+{"timestamp":"2026-04-01T12:57:14.469Z","step":"公告","status":"成功","message":"公告、播報稿、LINE 訊息生成完成"}
+{"timestamp":"2026-04-01T12:57:15.492Z","step":"存檔","status":"成功","message":"存檔與備份完成：report_1775048235488.json"}
+{"timestamp":"2026-04-01T12:57:15.746Z","step":"建議","status":"成功","message":"已為 21 位人員生成建議"}
