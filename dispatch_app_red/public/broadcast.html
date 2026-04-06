@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>專業女主播廣播系統</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Oxanium:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="broadcast.css">
+</head>
+<body>
+  <div class="broadcast-shell" id="broadcast-shell">
+    <header class="broadcast-topbar">
+      <div class="title-zone">
+        <p class="eyebrow">首頁同步使用｜會議室刊登｜後端正式播報稿｜前端只做展示與高亮</p>
+        <h1>專業女主播廣播系統</h1>
+        <p id="broadcast-summary" class="broadcast-summary">
+          高學歷、專業、穩重的女主播播報模式。聲音、字幕、重點數字、排名焦點、公告焦點全部同步呼應，
+          適合董事長與幹部在首頁或會議室大螢幕直接觀看。
+        </p>
+        <div id="broadcast-proof" class="proof-row"></div>
+      </div>
+
+      <div class="status-zone">
+        <article class="status-card">
+          <span>播報狀態</span>
+          <strong id="speech-state">待命</strong>
+          <small id="speech-detail">等待載入正式播報稿</small>
+        </article>
+        <article class="status-card">
+          <span>AI 狀態</span>
+          <strong id="ai-state">待確認</strong>
+          <small id="ai-detail">等待後端正式資料</small>
+        </article>
+        <article class="status-card">
+          <span>語音模式</span>
+          <strong id="voice-mode">女聲優先</strong>
+          <small id="voice-name">等待可用語音</small>
+        </article>
+        <article class="status-card">
+          <span>段落進度</span>
+          <strong id="segment-progress">0 / 0</strong>
+          <small id="segment-detail">等待載入播報段落</small>
+        </article>
+      </div>
+    </header>
+
+    <main class="broadcast-layout">
+      <section class="control-panel">
+        <div class="section-head">
+          <h2>播報控制台</h2>
+          <span class="chip" id="broadcast-source">等待資料</span>
+        </div>
+
+        <div class="quick-actions">
+          <button id="btn-load-system" class="ghost-btn" type="button">載入正式播報稿</button>
+          <button id="btn-paste-clipboard" class="ghost-btn" type="button">貼上外部稿件</button>
+          <button id="btn-clear-text" class="ghost-btn danger-btn" type="button">清空稿件</button>
+        </div>
+
+        <label class="field-label" for="broadcast-input">
+          播報稿文字。後端提供正式播報稿時，前端只做展示、放大、高亮與會議室刊登；
+          若手動貼上稿件，畫面會明確標示為手動稿件，不冒充正式結果。
+        </label>
+        <textarea
+          id="broadcast-input"
+          class="broadcast-input"
+          placeholder="貼上任何需要播報的文字，或直接載入後端正式播報稿。"
+        ></textarea>
+
+        <div class="settings-grid">
+          <label class="control-field control-field-wide">
+            <span>播報女聲</span>
+            <select id="voice-select" class="control-select"></select>
+          </label>
+
+          <label class="control-field">
+            <span>語速</span>
+            <input id="rate-range" type="range" min="0.7" max="1.3" step="0.05" value="0.95">
+            <strong id="rate-value">0.95x</strong>
+          </label>
+
+          <label class="control-field">
+            <span>語調</span>
+            <input id="pitch-range" type="range" min="0.8" max="1.4" step="0.05" value="1.05">
+            <strong id="pitch-value">1.05</strong>
+          </label>
+
+          <label class="control-field">
+            <span>音量</span>
+            <input id="volume-range" type="range" min="0.4" max="1" step="0.05" value="1">
+            <strong id="volume-value">100%</strong>
+          </label>
+
+          <label class="control-field">
+            <span>字體比例</span>
+            <input id="font-range" type="range" min="1" max="1.8" step="0.05" value="1.15">
+            <strong id="font-value">115%</strong>
+          </label>
+        </div>
+
+        <div class="playback-row">
+          <button id="btn-start-broadcast" class="primary-btn" type="button">開始播報</button>
+          <button id="btn-pause-broadcast" class="ghost-btn" type="button">暫停</button>
+          <button id="btn-stop-broadcast" class="ghost-btn" type="button">停止</button>
+          <button id="btn-meeting-mode" class="ghost-btn" type="button">關閉會議室模式</button>
+          <button id="btn-copy-text" class="ghost-btn" type="button">複製稿件</button>
+          <button id="btn-fullscreen" class="ghost-btn" type="button">全螢幕</button>
+          <button id="btn-back-home" class="ghost-btn" type="button">返回首頁</button>
+        </div>
+
+        <div class="control-notes">
+          <div class="note-row">`Ctrl + Enter`：立即開始播報</div>
+          <div class="note-row">空白鍵：暫停 / 繼續</div>
+          <div class="note-row">`Esc`：停止播報</div>
+        </div>
+      </section>
+
+      <section class="teleprompter-panel">
+        <div class="section-head">
+          <h2>會議室刊登版</h2>
+          <span class="chip" id="teleprompter-mode">會議室刊登模式</span>
+        </div>
+
+        <article class="hero-line-card">
+          <span id="hero-label" class="hero-label">目前朗讀</span>
+          <div id="hero-line" class="hero-line">等待載入正式播報稿</div>
+        </article>
+
+        <div class="teleprompter-meta">
+          <div class="meta-block">
+            <span>總段落數</span>
+            <strong id="segment-count">0</strong>
+          </div>
+          <div class="meta-block">
+            <span>目前段落</span>
+            <strong id="segment-index">0</strong>
+          </div>
+          <div class="meta-block">
+            <span>稿件字數</span>
+            <strong id="char-count">0</strong>
+          </div>
+          <div class="meta-block">
+            <span>來源序號</span>
+            <strong id="source-execution-id">-</strong>
+          </div>
+        </div>
+
+        <div class="meeting-focus-head">
+          <h3>同步高亮區</h3>
+          <span id="meeting-focus-status" class="chip">專業女主播廣播模式</span>
+        </div>
+
+        <div id="meeting-focus-grid" class="meeting-focus-grid"></div>
+
+        <div id="teleprompter-list" class="teleprompter-list"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="broadcast.js"></script>
+</body>
+</html>

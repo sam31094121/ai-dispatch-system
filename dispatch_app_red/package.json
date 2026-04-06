@@ -1,14 +1,13 @@
 {
-  "name": "dispatch-app-red",
-  "version": "2.0.0",
-  "private": true,
-  "type": "module",
+  "name": "zhaogui-ai-dispatch-all-in-one",
+  "version": "1.0.0",
+  "description": "兆櫃AI派單整合系統｜工程鎖死版",
+  "main": "server.js",
   "scripts": {
-    "start": "node server.mjs",
-    "啟動": "node server.mjs"
+    "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.21.2",
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
   }
 }
