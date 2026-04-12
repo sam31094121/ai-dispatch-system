@@ -787,3 +787,14 @@
 {"executionId":1775711640403,"status":"通過","operator":"SYSTEM","reportDate":"115/04/09","dispatchDate":"115/04/10","time":"2026/04/09 13:14:00","topName":"馬秋香"}
 {"executionId":1775715239508,"status":"通過","operator":"WEB","reportDate":"115/04/08","dispatchDate":"115/04/09","time":"2026/04/09 14:13:59","topName":"馬秋香"}
 {"executionId":1775727111585,"status":"通過","operator":"WEB","reportDate":"115/04/08","dispatchDate":"115/04/09","time":"2026/04/09 17:31:51","topName":"馬秋香"}
+{"executionId":1776000785386,"status":"失敗","operator":"WEB","reportDate":"115/04/12","dispatchDate":"115/04/13","time":"2026/04/12 21:33:05","error":"第 1 行：缺少追續欄位；第 2 行：缺少追續欄位；第 3 行：缺少追續欄位；第 4 行：缺少追續欄位"}
+{"executionId":1776000843970,"status":"失敗","operator":"WEB","reportDate":"115/04/12","dispatchDate":"115/04/13","time":"2026/04/12 21:34:03","error":"第 1 行：缺少追續欄位；第 2 行：缺少追續欄位；第 3 行：缺少追續欄位；第 4 行：缺少追續欄位"}
+{"executionId":1776000876798,"status":"失敗","operator":"WEB","reportDate":"115/04/12","dispatchDate":"115/04/13","time":"2026/04/12 21:34:36","error":"第 1 行：缺少追續欄位；第 2 行：缺少追續欄位；第 3 行：缺少追續欄位；第 4 行：缺少追續欄位"}
+{"executionId":1776000943193,"status":"失敗","operator":"WEB","reportDate":"115/04/12","dispatchDate":"115/04/13","time":"2026/04/12 21:35:43","error":"第 1 行：缺少追續欄位；第 2 行：缺少追續欄位；第 3 行：缺少追續欄位；第 4 行：缺少追續欄位"}
+{"executionId":1776001006065,"status":"失敗","operator":"WEB","reportDate":"115/04/12","dispatchDate":"115/04/13","time":"2026/04/12 21:36:46","error":"第 1 行：缺少追續欄位；第 2 行：缺少追續欄位；第 3 行：缺少追續欄位；第 4 行：缺少追續欄位"}
+{"executionId":1776001501216,"status":"失敗","operator":"WEB","reportDate":"115/04/12","dispatchDate":"115/04/13","time":"2026/04/12 21:45:01","error":"第 1 行：缺少追續欄位；第 2 行：缺少追續欄位；第 3 行：缺少追續欄位；第 4 行：缺少追續欄位"}
+{"executionId":1776001561766,"status":"失敗","operator":"WEB","reportDate":"115/04/12","dispatchDate":"115/04/13","time":"2026/04/12 21:46:01","error":"第 1 行：缺少追續欄位；第 2 行：缺少追續欄位；第 3 行：缺少追續欄位；第 4 行：缺少追續欄位"}
+{"executionId":1776001630943,"status":"失敗","operator":"WEB","reportDate":"115/04/12","dispatchDate":"115/04/13","time":"2026/04/12 21:47:10","error":"第 1 行：缺少追續欄位；第 2 行：缺少追續欄位；第 3 行：缺少追續欄位；第 4 行：缺少追續欄位"}
+{"executionId":1776002245827,"status":"失敗","operator":"WEB","reportDate":"115/04/12","dispatchDate":"115/04/13","time":"2026/04/12 21:57:25","error":"第 1 行：缺少追續欄位；第 2 行：缺少追續欄位；第 3 行：缺少追續欄位；第 4 行：缺少追續欄位"}
+{"executionId":1776004438527,"status":"通過","operator":"SYSTEM","reportDate":"115/04/12","dispatchDate":"115/04/13","time":"2026/04/12 22:33:58","topName":"馬秋香"}
+{"executionId":1776004996911,"status":"通過","operator":"SYSTEM","reportDate":"115/04/12","dispatchDate":"115/04/13","time":"2026/04/12 22:43:16","topName":"馬秋香"}

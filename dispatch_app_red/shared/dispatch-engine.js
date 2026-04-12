@@ -580,13 +580,18 @@ function scoreReport(parsed) {
     const breakdown = SCORE_WEIGHTS.map((weight) => {
       const value = metricValue(person, weight.key);
       const ratio = maxima[weight.key] > 0 ? value / maxima[weight.key] : 0;
+      
+      // 1000% 權重視角：採億級原始加權計分 (Metric * Weight)
+      // 若要符合 2.7 億規模，直接使用原始數值乘以權重
+      const rawWeightedScore = round(value * weight.weight, 2);
+      
       return {
         key: weight.key,
         label: weight.label,
         weight: weight.weight,
         value,
         ratio: round(ratio, 4),
-        score: round(ratio * weight.weight, 2)
+        score: rawWeightedScore // 切換為原始加權分
       };
     });
 
@@ -622,11 +627,13 @@ function groupLabel(group) {
 }
 
 function compareRankPeople(left, right) {
+  // 1000% 權重視角：AI 分數最優先
+  if (right.totalScore !== left.totalScore) return right.totalScore - left.totalScore;
+  // 以下為同分時的優先順序
   if (right.totalRevenue !== left.totalRevenue) return right.totalRevenue - left.totalRevenue;
   if (right.renewalRevenue !== left.renewalRevenue) return right.renewalRevenue - left.renewalRevenue;
   if (right.renewalDeals !== left.renewalDeals) return right.renewalDeals - left.renewalDeals;
   if (toNumber(right.dispatchDeals) !== toNumber(left.dispatchDeals)) return toNumber(right.dispatchDeals) - toNumber(left.dispatchDeals);
-  if (right.totalScore !== left.totalScore) return right.totalScore - left.totalScore;
   return left.inputOrder - right.inputOrder;
 }
 

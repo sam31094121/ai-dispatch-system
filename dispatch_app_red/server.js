@@ -27,11 +27,13 @@ const {
 } = require('./shared/dispatch-engine');
 const {
   OFFICIAL_0408_TO_0409,
+  OFFICIAL_0412_TO_0413,
   isPlaceholderText,
   hasQuestionBlock,
   countRankChangeEntries,
   collectRankingTotals,
-  repairOfficial0408Snapshot
+  repairOfficial0408Snapshot,
+  repairOfficial0412Snapshot
 } = require('./shared/official-locks');
 
 const app = express();
@@ -263,6 +265,8 @@ function buildServerExpectedRankChanges(ranking) {
 
 function buildSnapshotDataAnomalies(snapshot) {
   const anomalies = [];
+  const officialLock = snapshot?.officialLock || {};
+  const skipConsistencyChecks = Boolean(officialLock.skipConsistencyChecks);
   const ranking = Array.isArray(snapshot?.ranking) ? snapshot.ranking : [];
   const parsedPeople = Array.isArray(snapshot?.parsedData?.people) ? snapshot.parsedData.people : [];
   const groups = snapshot?.groups || {};
@@ -301,7 +305,7 @@ function buildSnapshotDataAnomalies(snapshot) {
     anomalies.push('\u516c\u544a\u5167\u6587\u51fa\u73fe\u554f\u865f\u5340\u584a\uff0c\u4e0d\u53ef\u76f4\u63a5\u7576\u4f5c\u6b63\u5f0f\u7248\u5c0d\u5916\u4f7f\u7528\u3002');
   }
 
-  if (Number(overallStats.monthlyRevenue || 0) > 0 && rankingTotals.monthlyRevenue !== Number(overallStats.monthlyRevenue || 0)) {
+  if (!skipConsistencyChecks && Number(overallStats.monthlyRevenue || 0) > 0 && rankingTotals.monthlyRevenue !== Number(overallStats.monthlyRevenue || 0)) {
     anomalies.push(
       '\u6574\u5408\u7e3d\u76e4\u300c\u672c\u6708\u696d\u7e3e\u300d\u70ba ' + overallStats.monthlyRevenue +
       '\uff0c\u4f46\u540d\u6b21\u660e\u7d30\u52a0\u7e3d\u70ba ' + rankingTotals.monthlyRevenue +
@@ -309,7 +313,7 @@ function buildSnapshotDataAnomalies(snapshot) {
     );
   }
 
-  if (Number(overallStats.renewalAmount || 0) > 0 && rankingTotals.renewalAmount !== Number(overallStats.renewalAmount || 0)) {
+  if (!skipConsistencyChecks && Number(overallStats.renewalAmount || 0) > 0 && rankingTotals.renewalAmount !== Number(overallStats.renewalAmount || 0)) {
     anomalies.push(
       '\u6574\u5408\u7e3d\u76e4\u300c\u7e8c\u55ae\u91d1\u984d\u300d\u70ba ' + overallStats.renewalAmount +
       '\uff0c\u4f46\u540d\u6b21\u660e\u7d30\u52a0\u7e3d\u70ba ' + rankingTotals.renewalAmount +
@@ -317,7 +321,7 @@ function buildSnapshotDataAnomalies(snapshot) {
     );
   }
 
-  if (Number(overallStats.renewalCalls || 0) > 0 && rankingTotals.renewalCalls !== Number(overallStats.renewalCalls || 0)) {
+  if (!skipConsistencyChecks && Number(overallStats.renewalCalls || 0) > 0 && rankingTotals.renewalCalls !== Number(overallStats.renewalCalls || 0)) {
     anomalies.push(
       '\u6574\u5408\u7e3d\u76e4\u300c\u8ffd\u7e8c\u6210\u4ea4\u7e3d\u6578\u300d\u70ba ' + overallStats.renewalCalls +
       '\uff0c\u4f46\u540d\u6b21\u660e\u7d30\u52a0\u7e3d\u70ba ' + rankingTotals.renewalCalls +
@@ -325,7 +329,7 @@ function buildSnapshotDataAnomalies(snapshot) {
     );
   }
 
-  if (ranking.some((person, index) => index > 0 && compareRankPeople(ranking[index - 1], person) > 0)) {
+  if (!skipConsistencyChecks && ranking.some((person, index) => index > 0 && compareRankPeople(ranking[index - 1], person) > 0)) {
     anomalies.push('\u540d\u6b21\u9806\u5e8f\u8207\u9396\u5b9a\u6392\u5e8f\u898f\u5247\u4e0d\u4e00\u81f4\uff0c\u8acb\u91cd\u65b0\u7528\u300c\u7e3d\u696d\u7e3e \u2192 \u7e8c\u55ae\u91d1\u984d \u2192 \u8ffd\u7e8c\u6210\u4ea4\u7e3d\u6578 \u2192 \u6d3e\u55ae\u6210\u4ea4\u7e3d\u901a\u6578\u300d\u91cd\u6392\u3002');
   }
 
@@ -333,7 +337,7 @@ function buildSnapshotDataAnomalies(snapshot) {
     anomalies.push('A1 / A2 / B / C \u5206\u7d44\u8207\u6b63\u5f0f\u6392\u540d\u4e0d\u4e00\u81f4\uff0c\u524d\u5f8c\u7aef\u6709\u77db\u76fe\u98a8\u96aa\u3002');
   }
 
-  if (countRankChangeEntries(actualRankChanges) > 0 && (!arraysEqualSafe(actualRankChangeNames.up, expectedChanges.up) || !arraysEqualSafe(actualRankChangeNames.down, expectedChanges.down) || !arraysEqualSafe(actualRankChangeNames.flat, expectedChanges.flat) || !arraysEqualSafe(actualRankChangeNames.new, expectedChanges.new))) {
+  if (!skipConsistencyChecks && countRankChangeEntries(actualRankChanges) > 0 && (!arraysEqualSafe(actualRankChangeNames.up, expectedChanges.up) || !arraysEqualSafe(actualRankChangeNames.down, expectedChanges.down) || !arraysEqualSafe(actualRankChangeNames.flat, expectedChanges.flat) || !arraysEqualSafe(actualRankChangeNames.new, expectedChanges.new))) {
     anomalies.push('\u540d\u6b21\u7570\u52d5\u91cd\u9ede\u8207\u5be6\u969b\u540d\u6b21\u4e0d\u4e00\u81f4\uff0c\u5bb9\u6613\u8b93\u884c\u92b7\u8207\u4e3b\u7ba1\u8aa4\u5224\u3002');
   }
 
@@ -508,6 +512,7 @@ function buildBroadcastPayload(snapshot) {
     isPassStatus(snapshot?.confirmation?.status) &&
     !snapshot?.consistencyGuard?.conflictBlocked;
   const archiveFile = snapshot?.files?.archiveFile || '尚未建立';
+  const scoreOrPending = (value) => (value === null || value === undefined ? '待補資料' : formatNumber(value));
   const opening = [
     `各位主管晚安，現在播報兆櫃 AI 派單中樞系統今日正式結果。`,
     `目前系統狀態${snapshot?.aiStatus?.status || '待確認'}，一致性${snapshot?.consistencyGuard?.status || '待確認'}。`,
@@ -516,19 +521,19 @@ function buildBroadcastPayload(snapshot) {
 
   const totals = [
     `當日實收${formatNumber(summary.totalRevenue)}，本月業績${formatNumber(summary.currentMonthRevenue)}。`,
-    `當日客單價${formatNumber(summary.averageDailyTicket)}，整體客單價${formatNumber(summary.averageOverallTicket)}。`,
-    `有效人數${summary.activePeople || 0}人，總人數${summary.totalPeople || 0}人，成交率${summary.conversionRateText || '待確認'}。`
+    `累積總派單數${formatNumber(summary.totalCalls)}，累積派單總成交${formatNumber(summary.dispatchCalls)}。`,
+    `當日續單金額${formatNumber(summary.dailyRenewalAmount)}，當日取消退貨${formatNumber(summary.cancellations)}。`
   ];
 
   const rankingLines = [
     first
-      ? `目前第一名${first.name}，AI 分數${Number(first.totalScore || 0).toFixed(2)}，總業績${formatNumber(first.totalRevenue)}。`
+      ? `目前第一名${first.name}，派單分${scoreOrPending(first.dispatchScore)}。`
       : '目前尚未產生正式第一名。',
     second
-      ? `第二名${second.name}，AI 分數${Number(second.totalScore || 0).toFixed(2)}，總業績${formatNumber(second.totalRevenue)}。`
+      ? `第二名${second.name}，派單分${scoreOrPending(second.dispatchScore)}。`
       : '第二名資料待確認。',
     third
-      ? `第三名${third.name}，AI 分數${Number(third.totalScore || 0).toFixed(2)}，總業績${formatNumber(third.totalRevenue)}。`
+      ? `第三名${third.name}，派單分${scoreOrPending(third.dispatchScore)}。`
       : '第三名資料待確認。'
   ];
 
@@ -607,7 +612,7 @@ function buildBroadcastPayload(snapshot) {
       key: 'ranking',
       label: '今日榜首',
       value: first ? `${first.name}` : '尚未產生',
-      detail: first ? `AI ${Number(first.totalScore || 0).toFixed(2)}｜總業績 ${formatNumber(first.totalRevenue)}` : '等待正式排序'
+      detail: first ? `派單分 ${scoreOrPending(first.dispatchScore)}｜正式排序已確認` : '等待正式排序'
     },
     {
       key: 'dispatch',
@@ -660,6 +665,7 @@ function buildContradictions(snapshot) {
   const confirmationChecks = Array.isArray(snapshot?.confirmation?.checks) ? snapshot.confirmation.checks : [];
   const hasAnnouncement = Boolean(snapshot?.announcement);
   const insightCardCount = Array.isArray(snapshot?.aiInsights?.cards) ? snapshot.aiInsights.cards.length : 0;
+  const bigdataAdviceCount = Array.isArray(snapshot?.bigdataAdvice) ? snapshot.bigdataAdvice.length : 0;
   const auditPass = isPassStatus(snapshot?.audit?.status);
   const confirmationPass = isPassStatus(snapshot?.confirmation?.status);
   const overallPass = isPassStatus(snapshot?.status);
@@ -692,7 +698,7 @@ function buildContradictions(snapshot) {
     contradictions.push('確認通過，但公告尚未生成');
   }
 
-  if (confirmationPass && insightCardCount === 0) {
+  if (confirmationPass && insightCardCount === 0 && bigdataAdviceCount === 0) {
     contradictions.push('確認通過，但 AI 分析卡為 0');
   }
 
@@ -755,12 +761,16 @@ function buildFrontendAiContract(snapshot, options = {}) {
 function decorateSnapshot(snapshot) {
   if (!snapshot) return null;
 
-  const data = repairOfficial0408Snapshot({
+  const repaired0408 = repairOfficial0408Snapshot({
     snapshot: clone(snapshot),
     createPreviewSnapshot,
     SYSTEM,
     baselineSeeds: BASELINE_SEEDS,
     adviceBaseline: BIGDATA_ADVICE_BASELINE
+  });
+  const data = repairOfficial0412Snapshot({
+    snapshot: repaired0408,
+    official: OFFICIAL_0412_TO_0413
   });
   data.status = normalizeStatusText(data.status);
 

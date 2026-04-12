@@ -1,18 +1,18 @@
 {
   "systemName": "兆櫃 AI 派單中樞系統",
   "systemVersion": "網頁版-2026-04-06",
-  "executionId": 1775727111585,
-  "operator": "WEB",
-  "source": "manual",
+  "executionId": 1776004996911,
+  "operator": "SYSTEM",
+  "source": "bootstrap",
   "status": "通過",
-  "completedAt": "2026/04/09 17:31:51",
-  "reportDate": "115/04/08",
-  "dispatchDate": "115/04/09",
-  "rawText": "報表日期：115/04/08\n派單日期：115/04/09\n1、馬秋香｜【追續】12｜【續單】275300｜【總業績】393290\n2、王梅慧｜【追續】12｜【續單】237180｜【總業績】323760\n3、王珍珠｜【追續】14｜【續單】190380｜【總業績】239588\n4、林沛昕｜【追續】8｜【續單】209576｜【總業績】234644\n5、林宜靜｜【追續】5｜【續單】32200｜【總業績】170070\n6、李玲玲｜【追續】2｜【續單】73860｜【總業績】165250\n7、廖姿惠｜【追續】6｜【續單】26448｜【總業績】121328\n8、湯玉琦｜【追續】9｜【續單】56180｜【總業績】111860\n9、蘇淑玲｜【追續】3｜【續單】61040｜【總業績】101488\n10、徐華妤｜【追續】5｜【續單】69520｜【總業績】90960\n11、江麗勉｜【追續】1｜【續單】2380｜【總業績】73630\n12、梁依萍｜【追續】3｜【續單】15160｜【總業績】64540\n13、高如郁｜【追續】3｜【續單】9320｜【總業績】56860\n14、高美雲｜【追續】2｜【續單】15660｜【總業績】54008\n15、陳玲華｜【追續】1｜【續單】6500｜【總業績】41860\n16、鄭珮恩｜【追續】4｜【續單】7000｜【總業績】40220\n17、許喬恩｜【追續】2｜【續單】20000｜【總業績】27000\n18、陳桂子（新人）｜【追續】1｜【續單】13500｜【總業績】13500\n19、謝啟芳｜【追續】0｜【續單】0｜【總業績】10960\n20、周美蓁｜【追續】1｜【續單】10000｜【總業績】10000\n21、江沛林｜【追續】3｜【續單】9980｜【總業績】9980\n22、林佩君｜【追續】1｜【續單】6528｜【總業績】6528\n23、鄭上官｜【追續】0｜【續單】0｜【總業績】0",
+  "completedAt": "2026/04/12 22:43:16",
+  "reportDate": "115/04/12",
+  "dispatchDate": "115/04/13",
+  "rawText": "報表日期：115/04/12\n派單日期：115/04/13\n1、馬秋香｜【追續】12｜【續單】275300｜【總業績】393290\n2、王梅慧｜【追續】12｜【續單】237180｜【總業績】323760\n3、王珍珠｜【追續】14｜【續單】190380｜【總業績】239588\n4、林沛昕｜【追續】8｜【續單】209576｜【總業績】234644\n5、林宜靜｜【追續】5｜【續單】32200｜【總業績】170070\n6、李玲玲｜【追續】2｜【續單】73860｜【總業績】165250\n7、廖姿惠｜【追續】6｜【續單】26448｜【總業績】121328\n8、湯玉琦｜【追續】9｜【續單】56180｜【總業績】111860\n9、蘇淑玲｜【追續】3｜【續單】61040｜【總業績】101488\n10、徐華妤｜【追續】5｜【續單】69520｜【總業績】90960\n11、江麗勉｜【追續】1｜【續單】2380｜【總業績】73630\n12、梁依萍｜【追續】3｜【續單】15160｜【總業績】64540\n13、高如郁｜【追續】3｜【續單】9320｜【總業績】56860\n14、高美雲｜【追續】2｜【續單】15660｜【總業績】54008\n15、陳玲華｜【追續】1｜【續單】6500｜【總業績】41860\n16、鄭珮恩｜【追續】4｜【續單】7000｜【總業績】40220\n17、許喬恩｜【追續】2｜【續單】20000｜【總業績】27000\n18、陳桂子（新人）｜【追續】1｜【續單】13500｜【總業績】13500\n19、謝啟芳｜【追續】0｜【續單】0｜【總業績】10960\n20、周美蓁｜【追續】1｜【續單】10000｜【總業績】10000\n21、江沛林｜【追續】3｜【續單】9980｜【總業績】9980\n22、林佩君｜【追續】1｜【續單】6528｜【總業績】6528\n23、鄭上官｜【追續】0｜【續單】0｜【總業績】0",
   "parsedData": {
-    "reportDate": "115/04/08",
-    "dispatchDate": "115/04/09",
-    "rawText": "報表日期：115/04/08\n派單日期：115/04/09\n1、馬秋香｜【追續】12｜【續單】275300｜【總業績】393290\n2、王梅慧｜【追續】12｜【續單】237180｜【總業績】323760\n3、王珍珠｜【追續】14｜【續單】190380｜【總業績】239588\n4、林沛昕｜【追續】8｜【續單】209576｜【總業績】234644\n5、林宜靜｜【追續】5｜【續單】32200｜【總業績】170070\n6、李玲玲｜【追續】2｜【續單】73860｜【總業績】165250\n7、廖姿惠｜【追續】6｜【續單】26448｜【總業績】121328\n8、湯玉琦｜【追續】9｜【續單】56180｜【總業績】111860\n9、蘇淑玲｜【追續】3｜【續單】61040｜【總業績】101488\n10、徐華妤｜【追續】5｜【續單】69520｜【總業績】90960\n11、江麗勉｜【追續】1｜【續單】2380｜【總業績】73630\n12、梁依萍｜【追續】3｜【續單】15160｜【總業績】64540\n13、高如郁｜【追續】3｜【續單】9320｜【總業績】56860\n14、高美雲｜【追續】2｜【續單】15660｜【總業績】54008\n15、陳玲華｜【追續】1｜【續單】6500｜【總業績】41860\n16、鄭珮恩｜【追續】4｜【續單】7000｜【總業績】40220\n17、許喬恩｜【追續】2｜【續單】20000｜【總業績】27000\n18、陳桂子（新人）｜【追續】1｜【續單】13500｜【總業績】13500\n19、謝啟芳｜【追續】0｜【續單】0｜【總業績】10960\n20、周美蓁｜【追續】1｜【續單】10000｜【總業績】10000\n21、江沛林｜【追續】3｜【續單】9980｜【總業績】9980\n22、林佩君｜【追續】1｜【續單】6528｜【總業績】6528\n23、鄭上官｜【追續】0｜【續單】0｜【總業績】0",
+    "reportDate": "115/04/12",
+    "dispatchDate": "115/04/13",
+    "rawText": "報表日期：115/04/12\n派單日期：115/04/13\n1、馬秋香｜【追續】12｜【續單】275300｜【總業績】393290\n2、王梅慧｜【追續】12｜【續單】237180｜【總業績】323760\n3、王珍珠｜【追續】14｜【續單】190380｜【總業績】239588\n4、林沛昕｜【追續】8｜【續單】209576｜【總業績】234644\n5、林宜靜｜【追續】5｜【續單】32200｜【總業績】170070\n6、李玲玲｜【追續】2｜【續單】73860｜【總業績】165250\n7、廖姿惠｜【追續】6｜【續單】26448｜【總業績】121328\n8、湯玉琦｜【追續】9｜【續單】56180｜【總業績】111860\n9、蘇淑玲｜【追續】3｜【續單】61040｜【總業績】101488\n10、徐華妤｜【追續】5｜【續單】69520｜【總業績】90960\n11、江麗勉｜【追續】1｜【續單】2380｜【總業績】73630\n12、梁依萍｜【追續】3｜【續單】15160｜【總業績】64540\n13、高如郁｜【追續】3｜【續單】9320｜【總業績】56860\n14、高美雲｜【追續】2｜【續單】15660｜【總業績】54008\n15、陳玲華｜【追續】1｜【續單】6500｜【總業績】41860\n16、鄭珮恩｜【追續】4｜【續單】7000｜【總業績】40220\n17、許喬恩｜【追續】2｜【續單】20000｜【總業績】27000\n18、陳桂子（新人）｜【追續】1｜【續單】13500｜【總業績】13500\n19、謝啟芳｜【追續】0｜【續單】0｜【總業績】10960\n20、周美蓁｜【追續】1｜【續單】10000｜【總業績】10000\n21、江沛林｜【追續】3｜【續單】9980｜【總業績】9980\n22、林佩君｜【追續】1｜【續單】6528｜【總業績】6528\n23、鄭上官｜【追續】0｜【續單】0｜【總業績】0",
     "inputLines": 23,
     "validLines": 23,
     "invalidLines": [],
@@ -77,7 +77,7 @@
         "dailyTicket": 17113.43,
         "lastMonthRevenue": 271483,
         "overallTicket": 32033,
-        "previousRank": 3,
+        "previousRank": 4,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 2,
@@ -98,7 +98,7 @@
         "dailyTicket": 29330.5,
         "lastMonthRevenue": 267636,
         "overallTicket": 50565,
-        "previousRank": 4,
+        "previousRank": 3,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 3,
@@ -119,7 +119,7 @@
         "dailyTicket": 34014,
         "lastMonthRevenue": 187726,
         "overallTicket": 38959,
-        "previousRank": 5,
+        "previousRank": 6,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 4,
@@ -140,7 +140,7 @@
         "dailyTicket": 82625,
         "lastMonthRevenue": 186683,
         "overallTicket": 69182,
-        "previousRank": 6,
+        "previousRank": 5,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 5,
@@ -203,7 +203,7 @@
         "dailyTicket": 33829.33,
         "lastMonthRevenue": 123634,
         "overallTicket": 43588,
-        "previousRank": 9,
+        "previousRank": 14,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 8,
@@ -224,7 +224,7 @@
         "dailyTicket": 18192,
         "lastMonthRevenue": 113587,
         "overallTicket": 32110,
-        "previousRank": 10,
+        "previousRank": 9,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 9,
@@ -245,7 +245,7 @@
         "dailyTicket": 73630,
         "lastMonthRevenue": 88480,
         "overallTicket": 42453,
-        "previousRank": 11,
+        "previousRank": 10,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 10,
@@ -266,7 +266,7 @@
         "dailyTicket": 21513.33,
         "lastMonthRevenue": 80214,
         "overallTicket": 28483,
-        "previousRank": 12,
+        "previousRank": 11,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 11,
@@ -287,7 +287,7 @@
         "dailyTicket": 18953.33,
         "lastMonthRevenue": 70955,
         "overallTicket": 25797,
-        "previousRank": 13,
+        "previousRank": 16,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 12,
@@ -308,7 +308,7 @@
         "dailyTicket": 27004,
         "lastMonthRevenue": 67406,
         "overallTicket": 31134,
-        "previousRank": 14,
+        "previousRank": 17,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 13,
@@ -329,7 +329,7 @@
         "dailyTicket": 41860,
         "lastMonthRevenue": 53817,
         "overallTicket": 32940,
-        "previousRank": 15,
+        "previousRank": 12,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 14,
@@ -350,7 +350,7 @@
         "dailyTicket": 10055,
         "lastMonthRevenue": 50634,
         "overallTicket": 18289,
-        "previousRank": 16,
+        "previousRank": 15,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 15,
@@ -371,7 +371,7 @@
         "dailyTicket": 13500,
         "lastMonthRevenue": 38760,
         "overallTicket": 25040,
-        "previousRank": 17,
+        "previousRank": 13,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 16,
@@ -392,7 +392,7 @@
         "dailyTicket": 13500,
         "lastMonthRevenue": 24300,
         "overallTicket": 25650,
-        "previousRank": 18,
+        "previousRank": 0,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 17,
@@ -413,7 +413,7 @@
         "dailyTicket": 0,
         "lastMonthRevenue": 18645,
         "overallTicket": 27987,
-        "previousRank": 19,
+        "previousRank": 18,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 18,
@@ -434,7 +434,7 @@
         "dailyTicket": 10000,
         "lastMonthRevenue": 17200,
         "overallTicket": 22600,
-        "previousRank": 20,
+        "previousRank": 19,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 19,
@@ -476,7 +476,7 @@
         "dailyTicket": 6528,
         "lastMonthRevenue": 10128,
         "overallTicket": 19564,
-        "previousRank": 22,
+        "previousRank": 20,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 21,
@@ -497,7 +497,7 @@
         "dailyTicket": 0,
         "lastMonthRevenue": 1800,
         "overallTicket": 20867,
-        "previousRank": 23,
+        "previousRank": 22,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 22,
@@ -609,8 +609,8 @@
       "renewalRevenue": 275300,
       "renewalDeals": 14
     },
-    "topScore": 899.09,
-    "averageScore": 275.47,
+    "topScore": 240672367,
+    "averageScore": 63561623.83,
     "people": [
       {
         "lineNumber": 1,
@@ -632,7 +632,7 @@
         "baselineFound": true,
         "baselineIndex": 0,
         "inReport": true,
-        "totalScore": 899.09,
+        "totalScore": 240672367,
         "breakdown": [
           {
             "key": "dailyTicket",
@@ -640,7 +640,7 @@
             "weight": 100,
             "value": 32774.17,
             "ratio": 0.3967,
-            "score": 39.67
+            "score": 3277417
           },
           {
             "key": "dailyReceived",
@@ -648,7 +648,7 @@
             "weight": 250,
             "value": 393290,
             "ratio": 1,
-            "score": 250
+            "score": 98322500
           },
           {
             "key": "currentMonthRevenue",
@@ -656,7 +656,7 @@
             "weight": 100,
             "value": 393290,
             "ratio": 1,
-            "score": 100
+            "score": 39329000
           },
           {
             "key": "lastMonthRevenue",
@@ -664,7 +664,7 @@
             "weight": 100,
             "value": 420531,
             "ratio": 1,
-            "score": 100
+            "score": 42053100
           },
           {
             "key": "overallTicket",
@@ -672,7 +672,7 @@
             "weight": 50,
             "value": 52559,
             "ratio": 0.7597,
-            "score": 37.99
+            "score": 2627950
           },
           {
             "key": "renewalRevenue",
@@ -680,7 +680,7 @@
             "weight": 200,
             "value": 275300,
             "ratio": 1,
-            "score": 200
+            "score": 55060000
           },
           {
             "key": "renewalDeals",
@@ -688,7 +688,7 @@
             "weight": 200,
             "value": 12,
             "ratio": 0.8571,
-            "score": 171.43
+            "score": 2400
           }
         ]
       },
@@ -712,7 +712,7 @@
         "baselineFound": true,
         "baselineIndex": 1,
         "inReport": true,
-        "totalScore": 781.11,
+        "totalScore": 201009850,
         "breakdown": [
           {
             "key": "dailyTicket",
@@ -720,7 +720,7 @@
             "weight": 100,
             "value": 26980,
             "ratio": 0.3265,
-            "score": 32.65
+            "score": 2698000
           },
           {
             "key": "dailyReceived",
@@ -728,7 +728,7 @@
             "weight": 250,
             "value": 323760,
             "ratio": 0.8232,
-            "score": 205.8
+            "score": 80940000
           },
           {
             "key": "currentMonthRevenue",
@@ -736,7 +736,7 @@
             "weight": 100,
             "value": 323760,
             "ratio": 0.8232,
-            "score": 82.32
+            "score": 32376000
           },
           {
             "key": "lastMonthRevenue",
@@ -744,7 +744,7 @@
             "weight": 100,
             "value": 352970,
             "ratio": 0.8393,
-            "score": 83.93
+            "score": 35297000
           },
           {
             "key": "overallTicket",
@@ -752,7 +752,7 @@
             "weight": 50,
             "value": 45209,
             "ratio": 0.6535,
-            "score": 32.67
+            "score": 2260450
           },
           {
             "key": "renewalRevenue",
@@ -760,7 +760,7 @@
             "weight": 200,
             "value": 237180,
             "ratio": 0.8615,
-            "score": 172.31
+            "score": 47436000
           },
           {
             "key": "renewalDeals",
@@ -768,7 +768,7 @@
             "weight": 200,
             "value": 12,
             "ratio": 0.8571,
-            "score": 171.43
+            "score": 2400
           }
         ]
       },
@@ -787,12 +787,12 @@
         "dailyTicket": 17113.43,
         "lastMonthRevenue": 271483,
         "overallTicket": 32033,
-        "previousRank": 3,
+        "previousRank": 4,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 2,
         "inReport": true,
-        "totalScore": 659.95,
+        "totalScore": 152395893,
         "breakdown": [
           {
             "key": "dailyTicket",
@@ -800,7 +800,7 @@
             "weight": 100,
             "value": 17113.43,
             "ratio": 0.2071,
-            "score": 20.71
+            "score": 1711343
           },
           {
             "key": "dailyReceived",
@@ -808,7 +808,7 @@
             "weight": 250,
             "value": 239588,
             "ratio": 0.6092,
-            "score": 152.3
+            "score": 59897000
           },
           {
             "key": "currentMonthRevenue",
@@ -816,7 +816,7 @@
             "weight": 100,
             "value": 239588,
             "ratio": 0.6092,
-            "score": 60.92
+            "score": 23958800
           },
           {
             "key": "lastMonthRevenue",
@@ -824,7 +824,7 @@
             "weight": 100,
             "value": 271483,
             "ratio": 0.6456,
-            "score": 64.56
+            "score": 27148300
           },
           {
             "key": "overallTicket",
@@ -832,7 +832,7 @@
             "weight": 50,
             "value": 32033,
             "ratio": 0.463,
-            "score": 23.15
+            "score": 1601650
           },
           {
             "key": "renewalRevenue",
@@ -840,7 +840,7 @@
             "weight": 200,
             "value": 190380,
             "ratio": 0.6915,
-            "score": 138.31
+            "score": 38076000
           },
           {
             "key": "renewalDeals",
@@ -848,7 +848,7 @@
             "weight": 200,
             "value": 14,
             "ratio": 1,
-            "score": 200
+            "score": 2800
           }
         ]
       },
@@ -867,12 +867,12 @@
         "dailyTicket": 29330.5,
         "lastMonthRevenue": 267636,
         "overallTicket": 50565,
-        "previousRank": 4,
+        "previousRank": 3,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 3,
         "inReport": true,
-        "totalScore": 611.03,
+        "totalScore": 156267100,
         "breakdown": [
           {
             "key": "dailyTicket",
@@ -880,7 +880,7 @@
             "weight": 100,
             "value": 29330.5,
             "ratio": 0.355,
-            "score": 35.5
+            "score": 2933050
           },
           {
             "key": "dailyReceived",
@@ -888,7 +888,7 @@
             "weight": 250,
             "value": 234644,
             "ratio": 0.5966,
-            "score": 149.15
+            "score": 58661000
           },
           {
             "key": "currentMonthRevenue",
@@ -896,7 +896,7 @@
             "weight": 100,
             "value": 234644,
             "ratio": 0.5966,
-            "score": 59.66
+            "score": 23464400
           },
           {
             "key": "lastMonthRevenue",
@@ -904,7 +904,7 @@
             "weight": 100,
             "value": 267636,
             "ratio": 0.6364,
-            "score": 63.64
+            "score": 26763600
           },
           {
             "key": "overallTicket",
@@ -912,7 +912,7 @@
             "weight": 50,
             "value": 50565,
             "ratio": 0.7309,
-            "score": 36.54
+            "score": 2528250
           },
           {
             "key": "renewalRevenue",
@@ -920,7 +920,7 @@
             "weight": 200,
             "value": 209576,
             "ratio": 0.7613,
-            "score": 152.25
+            "score": 41915200
           },
           {
             "key": "renewalDeals",
@@ -928,7 +928,7 @@
             "weight": 200,
             "value": 8,
             "ratio": 0.5714,
-            "score": 114.29
+            "score": 1600
           }
         ]
       },
@@ -947,12 +947,12 @@
         "dailyTicket": 34014,
         "lastMonthRevenue": 187726,
         "overallTicket": 38959,
-        "previousRank": 5,
+        "previousRank": 6,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 4,
         "inReport": true,
-        "totalScore": 360.14,
+        "totalScore": 90087450,
         "breakdown": [
           {
             "key": "dailyTicket",
@@ -960,7 +960,7 @@
             "weight": 100,
             "value": 34014,
             "ratio": 0.4117,
-            "score": 41.17
+            "score": 3401400
           },
           {
             "key": "dailyReceived",
@@ -968,7 +968,7 @@
             "weight": 250,
             "value": 170070,
             "ratio": 0.4324,
-            "score": 108.11
+            "score": 42517500
           },
           {
             "key": "currentMonthRevenue",
@@ -976,7 +976,7 @@
             "weight": 100,
             "value": 170070,
             "ratio": 0.4324,
-            "score": 43.24
+            "score": 17007000
           },
           {
             "key": "lastMonthRevenue",
@@ -984,7 +984,7 @@
             "weight": 100,
             "value": 187726,
             "ratio": 0.4464,
-            "score": 44.64
+            "score": 18772600
           },
           {
             "key": "overallTicket",
@@ -992,7 +992,7 @@
             "weight": 50,
             "value": 38959,
             "ratio": 0.5631,
-            "score": 28.16
+            "score": 1947950
           },
           {
             "key": "renewalRevenue",
@@ -1000,7 +1000,7 @@
             "weight": 200,
             "value": 32200,
             "ratio": 0.117,
-            "score": 23.39
+            "score": 6440000
           },
           {
             "key": "renewalDeals",
@@ -1008,7 +1008,7 @@
             "weight": 200,
             "value": 5,
             "ratio": 0.3571,
-            "score": 71.43
+            "score": 1000
           }
         ]
       },
@@ -1027,12 +1027,12 @@
         "dailyTicket": 82625,
         "lastMonthRevenue": 186683,
         "overallTicket": 69182,
-        "previousRank": 6,
+        "previousRank": 5,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 5,
         "inReport": true,
-        "totalScore": 423.68,
+        "totalScore": 102999800,
         "breakdown": [
           {
             "key": "dailyTicket",
@@ -1040,7 +1040,7 @@
             "weight": 100,
             "value": 82625,
             "ratio": 1,
-            "score": 100
+            "score": 8262500
           },
           {
             "key": "dailyReceived",
@@ -1048,7 +1048,7 @@
             "weight": 250,
             "value": 165250,
             "ratio": 0.4202,
-            "score": 105.04
+            "score": 41312500
           },
           {
             "key": "currentMonthRevenue",
@@ -1056,7 +1056,7 @@
             "weight": 100,
             "value": 165250,
             "ratio": 0.4202,
-            "score": 42.02
+            "score": 16525000
           },
           {
             "key": "lastMonthRevenue",
@@ -1064,7 +1064,7 @@
             "weight": 100,
             "value": 186683,
             "ratio": 0.4439,
-            "score": 44.39
+            "score": 18668300
           },
           {
             "key": "overallTicket",
@@ -1072,7 +1072,7 @@
             "weight": 50,
             "value": 69182,
             "ratio": 1,
-            "score": 50
+            "score": 3459100
           },
           {
             "key": "renewalRevenue",
@@ -1080,7 +1080,7 @@
             "weight": 200,
             "value": 73860,
             "ratio": 0.2683,
-            "score": 53.66
+            "score": 14772000
           },
           {
             "key": "renewalDeals",
@@ -1088,7 +1088,7 @@
             "weight": 200,
             "value": 2,
             "ratio": 0.1429,
-            "score": 28.57
+            "score": 400
           }
         ]
       },
@@ -1112,7 +1112,7 @@
         "baselineFound": true,
         "baselineIndex": 6,
         "inReport": true,
-        "totalScore": 291.01,
+        "totalScore": 65231783,
         "breakdown": [
           {
             "key": "dailyTicket",
@@ -1120,7 +1120,7 @@
             "weight": 100,
             "value": 20221.33,
             "ratio": 0.2447,
-            "score": 24.47
+            "score": 2022133
           },
           {
             "key": "dailyReceived",
@@ -1128,7 +1128,7 @@
             "weight": 250,
             "value": 121328,
             "ratio": 0.3085,
-            "score": 77.12
+            "score": 30332000
           },
           {
             "key": "currentMonthRevenue",
@@ -1136,7 +1136,7 @@
             "weight": 100,
             "value": 121328,
             "ratio": 0.3085,
-            "score": 30.85
+            "score": 12132800
           },
           {
             "key": "lastMonthRevenue",
@@ -1144,7 +1144,7 @@
             "weight": 100,
             "value": 140542,
             "ratio": 0.3342,
-            "score": 33.42
+            "score": 14054200
           },
           {
             "key": "overallTicket",
@@ -1152,7 +1152,7 @@
             "weight": 50,
             "value": 27997,
             "ratio": 0.4047,
-            "score": 20.23
+            "score": 1399850
           },
           {
             "key": "renewalRevenue",
@@ -1160,7 +1160,7 @@
             "weight": 200,
             "value": 26448,
             "ratio": 0.0961,
-            "score": 19.21
+            "score": 5289600
           },
           {
             "key": "renewalDeals",
@@ -1168,7 +1168,7 @@
             "weight": 200,
             "value": 6,
             "ratio": 0.4286,
-            "score": 85.71
+            "score": 1200
           }
         ]
       },
@@ -1192,7 +1192,7 @@
         "baselineFound": true,
         "baselineIndex": 7,
         "inReport": true,
-        "totalScore": 332.07,
+        "totalScore": 66152989,
         "breakdown": [
           {
             "key": "dailyTicket",
@@ -1200,7 +1200,7 @@
             "weight": 100,
             "value": 12428.89,
             "ratio": 0.1504,
-            "score": 15.04
+            "score": 1242889
           },
           {
             "key": "dailyReceived",
@@ -1208,7 +1208,7 @@
             "weight": 250,
             "value": 111860,
             "ratio": 0.2844,
-            "score": 71.11
+            "score": 27965000
           },
           {
             "key": "currentMonthRevenue",
@@ -1216,7 +1216,7 @@
             "weight": 100,
             "value": 111860,
             "ratio": 0.2844,
-            "score": 28.44
+            "score": 11186000
           },
           {
             "key": "lastMonthRevenue",
@@ -1224,7 +1224,7 @@
             "weight": 100,
             "value": 133978,
             "ratio": 0.3186,
-            "score": 31.86
+            "score": 13397800
           },
           {
             "key": "overallTicket",
@@ -1232,7 +1232,7 @@
             "weight": 50,
             "value": 22470,
             "ratio": 0.3248,
-            "score": 16.24
+            "score": 1123500
           },
           {
             "key": "renewalRevenue",
@@ -1240,7 +1240,7 @@
             "weight": 200,
             "value": 56180,
             "ratio": 0.2041,
-            "score": 40.81
+            "score": 11236000
           },
           {
             "key": "renewalDeals",
@@ -1248,7 +1248,7 @@
             "weight": 200,
             "value": 9,
             "ratio": 0.6429,
-            "score": 128.57
+            "score": 1800
           }
         ]
       },
@@ -1267,12 +1267,12 @@
         "dailyTicket": 33829.33,
         "lastMonthRevenue": 123634,
         "overallTicket": 43588,
-        "previousRank": 9,
+        "previousRank": 14,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 8,
         "inReport": true,
-        "totalScore": 279.35,
+        "totalScore": 65655133,
         "breakdown": [
           {
             "key": "dailyTicket",
@@ -1280,7 +1280,7 @@
             "weight": 100,
             "value": 33829.33,
             "ratio": 0.4094,
-            "score": 40.94
+            "score": 3382933
           },
           {
             "key": "dailyReceived",
@@ -1288,7 +1288,7 @@
             "weight": 250,
             "value": 101488,
             "ratio": 0.258,
-            "score": 64.51
+            "score": 25372000
           },
           {
             "key": "currentMonthRevenue",
@@ -1296,7 +1296,7 @@
             "weight": 100,
             "value": 101488,
             "ratio": 0.258,
-            "score": 25.8
+            "score": 10148800
           },
           {
             "key": "lastMonthRevenue",
@@ -1304,7 +1304,7 @@
             "weight": 100,
             "value": 123634,
             "ratio": 0.294,
-            "score": 29.4
+            "score": 12363400
           },
           {
             "key": "overallTicket",
@@ -1312,7 +1312,7 @@
             "weight": 50,
             "value": 43588,
             "ratio": 0.63,
-            "score": 31.5
+            "score": 2179400
           },
           {
             "key": "renewalRevenue",
@@ -1320,7 +1320,7 @@
             "weight": 200,
             "value": 61040,
             "ratio": 0.2217,
-            "score": 44.34
+            "score": 12208000
           },
           {
             "key": "renewalDeals",
@@ -1328,7 +1328,7 @@
             "weight": 200,
             "value": 3,
             "ratio": 0.2143,
-            "score": 42.86
+            "score": 600
           }
         ]
       },
@@ -1347,12 +1347,12 @@
         "dailyTicket": 18192,
         "lastMonthRevenue": 113587,
         "overallTicket": 32110,
-        "previousRank": 10,
+        "previousRank": 9,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 9,
         "inReport": true,
-        "totalScore": 275.12,
+        "totalScore": 60524400,
         "breakdown": [
           {
             "key": "dailyTicket",
@@ -1360,7 +1360,7 @@
             "weight": 100,
             "value": 18192,
             "ratio": 0.2202,
-            "score": 22.02
+            "score": 1819200
           },
           {
             "key": "dailyReceived",
@@ -1368,7 +1368,7 @@
             "weight": 250,
             "value": 90960,
             "ratio": 0.2313,
-            "score": 57.82
+            "score": 22740000
           },
           {
             "key": "currentMonthRevenue",
@@ -1376,7 +1376,7 @@
             "weight": 100,
             "value": 90960,
             "ratio": 0.2313,
-            "score": 23.13
+            "score": 9096000
           },
           {
             "key": "lastMonthRevenue",
@@ -1384,7 +1384,7 @@
             "weight": 100,
             "value": 113587,
             "ratio": 0.2701,
-            "score": 27.01
+            "score": 11358700
           },
           {
             "key": "overallTicket",
@@ -1392,7 +1392,7 @@
             "weight": 50,
             "value": 32110,
             "ratio": 0.4641,
-            "score": 23.21
+            "score": 1605500
           },
           {
             "key": "renewalRevenue",
@@ -1400,7 +1400,7 @@
             "weight": 200,
             "value": 69520,
             "ratio": 0.2525,
-            "score": 50.5
+            "score": 13904000
           },
           {
             "key": "renewalDeals",
@@ -1408,7 +1408,7 @@
             "weight": 200,
             "value": 5,
             "ratio": 0.3571,
-            "score": 71.43
+            "score": 1000
           }
         ]
       },
@@ -1427,12 +1427,12 @@
         "dailyTicket": 73630,
         "lastMonthRevenue": 88480,
         "overallTicket": 42453,
-        "previousRank": 11,
+        "previousRank": 10,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 10,
         "inReport": true,
-        "totalScore": 222.37,
+        "totalScore": 44580350,
         "breakdown": [
           {
             "key": "dailyTicket",
@@ -1440,7 +1440,7 @@
             "weight": 100,
             "value": 73630,
             "ratio": 0.8911,
-            "score": 89.11
+            "score": 7363000
           },
           {
             "key": "dailyReceived",
@@ -1448,7 +1448,7 @@
             "weight": 250,
             "value": 73630,
             "ratio": 0.1872,
-            "score": 46.8
+            "score": 18407500
           },
           {
             "key": "currentMonthRevenue",
@@ -1456,7 +1456,7 @@
             "weight": 100,
             "value": 73630,
             "ratio": 0.1872,
-            "score": 18.72
+            "score": 7363000
           },
           {
             "key": "lastMonthRevenue",
@@ -1464,7 +1464,7 @@
             "weight": 100,
             "value": 88480,
             "ratio": 0.2104,
-            "score": 21.04
+            "score": 8848000
           },
           {
             "key": "overallTicket",
@@ -1472,7 +1472,7 @@
             "weight": 50,
             "value": 42453,
             "ratio": 0.6136,
-            "score": 30.68
+            "score": 2122650
           },
           {
             "key": "renewalRevenue",
@@ -1480,7 +1480,7 @@
             "weight": 200,
             "value": 2380,
             "ratio": 0.0086,
-            "score": 1.73
+            "score": 476000
           },
           {
             "key": "renewalDeals",
@@ -1488,7 +1488,7 @@
             "weight": 200,
             "value": 1,
             "ratio": 0.0714,
-            "score": 14.29
+            "score": 200
           }
         ]
       },
@@ -1507,12 +1507,12 @@
         "dailyTicket": 21513.33,
         "lastMonthRevenue": 80214,
         "overallTicket": 28483,
-        "previousRank": 12,
+        "previousRank": 11,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 11,
         "inReport": true,
-        "totalScore": 177.01,
+        "totalScore": 37218483,
         "breakdown": [
           {
             "key": "dailyTicket",
@@ -1520,7 +1520,7 @@
             "weight": 100,
             "value": 21513.33,
             "ratio": 0.2604,
-            "score": 26.04
+            "score": 2151333
           },
           {
             "key": "dailyReceived",
@@ -1528,7 +1528,7 @@
             "weight": 250,
             "value": 64540,
             "ratio": 0.1641,
-            "score": 41.03
+            "score": 16135000
           },
           {
             "key": "currentMonthRevenue",
@@ -1536,7 +1536,7 @@
             "weight": 100,
             "value": 64540,
             "ratio": 0.1641,
-            "score": 16.41
+            "score": 6454000
           },
           {
             "key": "lastMonthRevenue",
@@ -1544,7 +1544,7 @@
             "weight": 100,
             "value": 80214,
             "ratio": 0.1907,
-            "score": 19.07
+            "score": 8021400
           },
           {
             "key": "overallTicket",
@@ -1552,7 +1552,7 @@
             "weight": 50,
             "value": 28483,
             "ratio": 0.4117,
-            "score": 20.59
+            "score": 1424150
           },
           {
             "key": "renewalRevenue",
@@ -1560,7 +1560,7 @@
             "weight": 200,
             "value": 15160,
             "ratio": 0.0551,
-            "score": 11.01
+            "score": 3032000
           },
           {
             "key": "renewalDeals",
@@ -1568,7 +1568,7 @@
             "weight": 200,
             "value": 3,
             "ratio": 0.2143,
-            "score": 42.86
+            "score": 600
           }
         ]
       },
@@ -1587,12 +1587,12 @@
         "dailyTicket": 18953.33,
         "lastMonthRevenue": 70955,
         "overallTicket": 25797,
-        "previousRank": 13,
+        "previousRank": 16,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 12,
         "inReport": true,
-        "totalScore": 158.68,
+        "totalScore": 32046283,
         "breakdown": [
           {
             "key": "dailyTicket",
@@ -1600,7 +1600,7 @@
             "weight": 100,
             "value": 18953.33,
             "ratio": 0.2294,
-            "score": 22.94
+            "score": 1895333
           },
           {
             "key": "dailyReceived",
@@ -1608,7 +1608,7 @@
             "weight": 250,
             "value": 56860,
             "ratio": 0.1446,
-            "score": 36.14
+            "score": 14215000
           },
           {
             "key": "currentMonthRevenue",
@@ -1616,7 +1616,7 @@
             "weight": 100,
             "value": 56860,
             "ratio": 0.1446,
-            "score": 14.46
+            "score": 5686000
           },
           {
             "key": "lastMonthRevenue",
@@ -1624,7 +1624,7 @@
             "weight": 100,
             "value": 70955,
             "ratio": 0.1687,
-            "score": 16.87
+            "score": 7095500
           },
           {
             "key": "overallTicket",
@@ -1632,7 +1632,7 @@
             "weight": 50,
             "value": 25797,
             "ratio": 0.3729,
-            "score": 18.64
+            "score": 1289850
           },
           {
             "key": "renewalRevenue",
@@ -1640,7 +1640,7 @@
             "weight": 200,
             "value": 9320,
             "ratio": 0.0339,
-            "score": 6.77
+            "score": 1864000
           },
           {
             "key": "renewalDeals",
@@ -1648,7 +1648,7 @@
             "weight": 200,
             "value": 3,
             "ratio": 0.2143,
-            "score": 42.86
+            "score": 600
           }
         ]
       },
@@ -1667,12 +1667,12 @@
         "dailyTicket": 27004,
         "lastMonthRevenue": 67406,
         "overallTicket": 31134,
-        "previousRank": 14,
+        "previousRank": 17,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 13,
         "inReport": true,
-        "totalScore": 159.22,
+        "totalScore": 33032900,
         "breakdown": [
           {
             "key": "dailyTicket",
@@ -1680,7 +1680,7 @@
             "weight": 100,
             "value": 27004,
             "ratio": 0.3268,
-            "score": 32.68
+            "score": 2700400
           },
           {
             "key": "dailyReceived",
@@ -1688,7 +1688,7 @@
             "weight": 250,
             "value": 54008,
             "ratio": 0.1373,
-            "score": 34.33
+            "score": 13502000
           },
           {
             "key": "currentMonthRevenue",
@@ -1696,7 +1696,7 @@
             "weight": 100,
             "value": 54008,
             "ratio": 0.1373,
-            "score": 13.73
+            "score": 5400800
           },
           {
             "key": "lastMonthRevenue",
@@ -1704,7 +1704,7 @@
             "weight": 100,
             "value": 67406,
             "ratio": 0.1603,
-            "score": 16.03
+            "score": 6740600
           },
           {
             "key": "overallTicket",
@@ -1712,7 +1712,7 @@
             "weight": 50,
             "value": 31134,
             "ratio": 0.45,
-            "score": 22.5
+            "score": 1556700
           },
           {
             "key": "renewalRevenue",
@@ -1720,7 +1720,7 @@
             "weight": 200,
             "value": 15660,
             "ratio": 0.0569,
-            "score": 11.38
+            "score": 3132000
           },
           {
             "key": "renewalDeals",
@@ -1728,7 +1728,7 @@
             "weight": 200,
             "value": 2,
             "ratio": 0.1429,
-            "score": 28.57
+            "score": 400
           }
         ]
       },
@@ -1747,12 +1747,12 @@
         "dailyTicket": 41860,
         "lastMonthRevenue": 53817,
         "overallTicket": 32940,
-        "previousRank": 15,
+        "previousRank": 12,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 14,
         "inReport": true,
-        "totalScore": 143.53,
+        "totalScore": 27165900,
         "breakdown": [
           {
             "key": "dailyTicket",
@@ -1760,7 +1760,7 @@
             "weight": 100,
             "value": 41860,
             "ratio": 0.5066,
-            "score": 50.66
+            "score": 4186000
           },
           {
             "key": "dailyReceived",
@@ -1768,7 +1768,7 @@
             "weight": 250,
             "value": 41860,
             "ratio": 0.1064,
-            "score": 26.61
+            "score": 10465000
           },
           {
             "key": "currentMonthRevenue",
@@ -1776,7 +1776,7 @@
             "weight": 100,
             "value": 41860,
             "ratio": 0.1064,
-            "score": 10.64
+            "score": 4186000
           },
           {
             "key": "lastMonthRevenue",
@@ -1784,7 +1784,7 @@
             "weight": 100,
             "value": 53817,
             "ratio": 0.128,
-            "score": 12.8
+            "score": 5381700
           },
           {
             "key": "overallTicket",
@@ -1792,7 +1792,7 @@
             "weight": 50,
             "value": 32940,
             "ratio": 0.4761,
-            "score": 23.81
+            "score": 1647000
           },
           {
             "key": "renewalRevenue",
@@ -1800,7 +1800,7 @@
             "weight": 200,
             "value": 6500,
             "ratio": 0.0236,
-            "score": 4.72
+            "score": 1300000
           },
           {
             "key": "renewalDeals",
@@ -1808,7 +1808,7 @@
             "weight": 200,
             "value": 1,
             "ratio": 0.0714,
-            "score": 14.29
+            "score": 200
           }
         ]
       },
@@ -1827,12 +1827,12 @@
         "dailyTicket": 10055,
         "lastMonthRevenue": 50634,
         "overallTicket": 18289,
-        "previousRank": 16,
+        "previousRank": 15,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 15,
         "inReport": true,
-        "totalScore": 135.46,
+        "totalScore": 22461150,
         "breakdown": [
           {
             "key": "dailyTicket",
@@ -1840,7 +1840,7 @@
             "weight": 100,
             "value": 10055,
             "ratio": 0.1217,
-            "score": 12.17
+            "score": 1005500
           },
           {
             "key": "dailyReceived",
@@ -1848,7 +1848,7 @@
             "weight": 250,
             "value": 40220,
             "ratio": 0.1023,
-            "score": 25.57
+            "score": 10055000
           },
           {
             "key": "currentMonthRevenue",
@@ -1856,7 +1856,7 @@
             "weight": 100,
             "value": 40220,
             "ratio": 0.1023,
-            "score": 10.23
+            "score": 4022000
           },
           {
             "key": "lastMonthRevenue",
@@ -1864,7 +1864,7 @@
             "weight": 100,
             "value": 50634,
             "ratio": 0.1204,
-            "score": 12.04
+            "score": 5063400
           },
           {
             "key": "overallTicket",
@@ -1872,7 +1872,7 @@
             "weight": 50,
             "value": 18289,
             "ratio": 0.2644,
-            "score": 13.22
+            "score": 914450
           },
           {
             "key": "renewalRevenue",
@@ -1880,7 +1880,7 @@
             "weight": 200,
             "value": 7000,
             "ratio": 0.0254,
-            "score": 5.09
+            "score": 1400000
           },
           {
             "key": "renewalDeals",
@@ -1888,7 +1888,7 @@
             "weight": 200,
             "value": 4,
             "ratio": 0.2857,
-            "score": 57.14
+            "score": 800
           }
         ]
       },
@@ -1907,12 +1907,12 @@
         "dailyTicket": 13500,
         "lastMonthRevenue": 38760,
         "overallTicket": 25040,
-        "previousRank": 17,
+        "previousRank": 13,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 16,
         "inReport": true,
-        "totalScore": 110.79,
+        "totalScore": 19928400,
         "breakdown": [
           {
             "key": "dailyTicket",
@@ -1920,7 +1920,7 @@
             "weight": 100,
             "value": 13500,
             "ratio": 0.1634,
-            "score": 16.34
+            "score": 1350000
           },
           {
             "key": "dailyReceived",
@@ -1928,7 +1928,7 @@
             "weight": 250,
             "value": 27000,
             "ratio": 0.0687,
-            "score": 17.16
+            "score": 6750000
           },
           {
             "key": "currentMonthRevenue",
@@ -1936,7 +1936,7 @@
             "weight": 100,
             "value": 27000,
             "ratio": 0.0687,
-            "score": 6.87
+            "score": 2700000
           },
           {
             "key": "lastMonthRevenue",
@@ -1944,7 +1944,7 @@
             "weight": 100,
             "value": 38760,
             "ratio": 0.0922,
-            "score": 9.22
+            "score": 3876000
           },
           {
             "key": "overallTicket",
@@ -1952,7 +1952,7 @@
             "weight": 50,
             "value": 25040,
             "ratio": 0.3619,
-            "score": 18.1
+            "score": 1252000
           },
           {
             "key": "renewalRevenue",
@@ -1960,7 +1960,7 @@
             "weight": 200,
             "value": 20000,
             "ratio": 0.0726,
-            "score": 14.53
+            "score": 4000000
           },
           {
             "key": "renewalDeals",
@@ -1968,7 +1968,7 @@
             "weight": 200,
             "value": 2,
             "ratio": 0.1429,
-            "score": 28.57
+            "score": 400
           }
         ]
       },
@@ -1987,12 +1987,12 @@
         "dailyTicket": 13500,
         "lastMonthRevenue": 24300,
         "overallTicket": 25650,
-        "previousRank": 18,
+        "previousRank": 0,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 17,
         "inReport": true,
-        "totalScore": 76.77,
+        "totalScore": 12487700,
         "breakdown": [
           {
             "key": "dailyTicket",
@@ -2000,7 +2000,7 @@
             "weight": 100,
             "value": 13500,
             "ratio": 0.1634,
-            "score": 16.34
+            "score": 1350000
           },
           {
             "key": "dailyReceived",
@@ -2008,7 +2008,7 @@
             "weight": 250,
             "value": 13500,
             "ratio": 0.0343,
-            "score": 8.58
+            "score": 3375000
           },
           {
             "key": "currentMonthRevenue",
@@ -2016,7 +2016,7 @@
             "weight": 100,
             "value": 13500,
             "ratio": 0.0343,
-            "score": 3.43
+            "score": 1350000
           },
           {
             "key": "lastMonthRevenue",
@@ -2024,7 +2024,7 @@
             "weight": 100,
             "value": 24300,
             "ratio": 0.0578,
-            "score": 5.78
+            "score": 2430000
           },
           {
             "key": "overallTicket",
@@ -2032,7 +2032,7 @@
             "weight": 50,
             "value": 25650,
             "ratio": 0.3708,
-            "score": 18.54
+            "score": 1282500
           },
           {
             "key": "renewalRevenue",
@@ -2040,7 +2040,7 @@
             "weight": 200,
             "value": 13500,
             "ratio": 0.049,
-            "score": 9.81
+            "score": 2700000
           },
           {
             "key": "renewalDeals",
@@ -2048,7 +2048,7 @@
             "weight": 200,
             "value": 1,
             "ratio": 0.0714,
-            "score": 14.29
+            "score": 200
           }
         ]
       },
@@ -2067,12 +2067,12 @@
         "dailyTicket": 0,
         "lastMonthRevenue": 18645,
         "overallTicket": 27987,
-        "previousRank": 19,
+        "previousRank": 18,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 18,
         "inReport": true,
-        "totalScore": 34.42,
+        "totalScore": 7099850,
         "breakdown": [
           {
             "key": "dailyTicket",
@@ -2088,7 +2088,7 @@
             "weight": 250,
             "value": 10960,
             "ratio": 0.0279,
-            "score": 6.97
+            "score": 2740000
           },
           {
             "key": "currentMonthRevenue",
@@ -2096,7 +2096,7 @@
             "weight": 100,
             "value": 10960,
             "ratio": 0.0279,
-            "score": 2.79
+            "score": 1096000
           },
           {
             "key": "lastMonthRevenue",
@@ -2104,7 +2104,7 @@
             "weight": 100,
             "value": 18645,
             "ratio": 0.0443,
-            "score": 4.43
+            "score": 1864500
           },
           {
             "key": "overallTicket",
@@ -2112,7 +2112,7 @@
             "weight": 50,
             "value": 27987,
             "ratio": 0.4045,
-            "score": 20.23
+            "score": 1399350
           },
           {
             "key": "renewalRevenue",
@@ -2147,12 +2147,12 @@
         "dailyTicket": 10000,
         "lastMonthRevenue": 17200,
         "overallTicket": 22600,
-        "previousRank": 20,
+        "previousRank": 19,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 19,
         "inReport": true,
-        "totalScore": 62.97,
+        "totalScore": 9350200,
         "breakdown": [
           {
             "key": "dailyTicket",
@@ -2160,7 +2160,7 @@
             "weight": 100,
             "value": 10000,
             "ratio": 0.121,
-            "score": 12.1
+            "score": 1000000
           },
           {
             "key": "dailyReceived",
@@ -2168,7 +2168,7 @@
             "weight": 250,
             "value": 10000,
             "ratio": 0.0254,
-            "score": 6.36
+            "score": 2500000
           },
           {
             "key": "currentMonthRevenue",
@@ -2176,7 +2176,7 @@
             "weight": 100,
             "value": 10000,
             "ratio": 0.0254,
-            "score": 2.54
+            "score": 1000000
           },
           {
             "key": "lastMonthRevenue",
@@ -2184,7 +2184,7 @@
             "weight": 100,
             "value": 17200,
             "ratio": 0.0409,
-            "score": 4.09
+            "score": 1720000
           },
           {
             "key": "overallTicket",
@@ -2192,7 +2192,7 @@
             "weight": 50,
             "value": 22600,
             "ratio": 0.3267,
-            "score": 16.33
+            "score": 1130000
           },
           {
             "key": "renewalRevenue",
@@ -2200,7 +2200,7 @@
             "weight": 200,
             "value": 10000,
             "ratio": 0.0363,
-            "score": 7.26
+            "score": 2000000
           },
           {
             "key": "renewalDeals",
@@ -2208,7 +2208,7 @@
             "weight": 200,
             "value": 1,
             "ratio": 0.0714,
-            "score": 14.29
+            "score": 200
           }
         ]
       },
@@ -2232,7 +2232,7 @@
         "baselineFound": true,
         "baselineIndex": 20,
         "inReport": true,
-        "totalScore": 77.25,
+        "totalScore": 8091617,
         "breakdown": [
           {
             "key": "dailyTicket",
@@ -2240,7 +2240,7 @@
             "weight": 100,
             "value": 3326.67,
             "ratio": 0.0403,
-            "score": 4.03
+            "score": 332667
           },
           {
             "key": "dailyReceived",
@@ -2248,7 +2248,7 @@
             "weight": 250,
             "value": 9980,
             "ratio": 0.0254,
-            "score": 6.34
+            "score": 2495000
           },
           {
             "key": "currentMonthRevenue",
@@ -2256,7 +2256,7 @@
             "weight": 100,
             "value": 9980,
             "ratio": 0.0254,
-            "score": 2.54
+            "score": 998000
           },
           {
             "key": "lastMonthRevenue",
@@ -2264,7 +2264,7 @@
             "weight": 100,
             "value": 15380,
             "ratio": 0.0366,
-            "score": 3.66
+            "score": 1538000
           },
           {
             "key": "overallTicket",
@@ -2272,7 +2272,7 @@
             "weight": 50,
             "value": 14627,
             "ratio": 0.2114,
-            "score": 10.57
+            "score": 731350
           },
           {
             "key": "renewalRevenue",
@@ -2280,7 +2280,7 @@
             "weight": 200,
             "value": 9980,
             "ratio": 0.0363,
-            "score": 7.25
+            "score": 1996000
           },
           {
             "key": "renewalDeals",
@@ -2288,7 +2288,7 @@
             "weight": 200,
             "value": 3,
             "ratio": 0.2143,
-            "score": 42.86
+            "score": 600
           }
         ]
       },
@@ -2307,12 +2307,12 @@
         "dailyTicket": 6528,
         "lastMonthRevenue": 10128,
         "overallTicket": 19564,
-        "previousRank": 22,
+        "previousRank": 20,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 21,
         "inReport": true,
-        "totalScore": 49.29,
+        "totalScore": 6234400,
         "breakdown": [
           {
             "key": "dailyTicket",
@@ -2320,7 +2320,7 @@
             "weight": 100,
             "value": 6528,
             "ratio": 0.079,
-            "score": 7.9
+            "score": 652800
           },
           {
             "key": "dailyReceived",
@@ -2328,7 +2328,7 @@
             "weight": 250,
             "value": 6528,
             "ratio": 0.0166,
-            "score": 4.15
+            "score": 1632000
           },
           {
             "key": "currentMonthRevenue",
@@ -2336,7 +2336,7 @@
             "weight": 100,
             "value": 6528,
             "ratio": 0.0166,
-            "score": 1.66
+            "score": 652800
           },
           {
             "key": "lastMonthRevenue",
@@ -2344,7 +2344,7 @@
             "weight": 100,
             "value": 10128,
             "ratio": 0.0241,
-            "score": 2.41
+            "score": 1012800
           },
           {
             "key": "overallTicket",
@@ -2352,7 +2352,7 @@
             "weight": 50,
             "value": 19564,
             "ratio": 0.2828,
-            "score": 14.14
+            "score": 978200
           },
           {
             "key": "renewalRevenue",
@@ -2360,7 +2360,7 @@
             "weight": 200,
             "value": 6528,
             "ratio": 0.0237,
-            "score": 4.74
+            "score": 1305600
           },
           {
             "key": "renewalDeals",
@@ -2368,7 +2368,7 @@
             "weight": 200,
             "value": 1,
             "ratio": 0.0714,
-            "score": 14.29
+            "score": 200
           }
         ]
       },
@@ -2387,12 +2387,12 @@
         "dailyTicket": 0,
         "lastMonthRevenue": 1800,
         "overallTicket": 20867,
-        "previousRank": 23,
+        "previousRank": 22,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 22,
         "inReport": true,
-        "totalScore": 15.51,
+        "totalScore": 1223350,
         "breakdown": [
           {
             "key": "dailyTicket",
@@ -2424,7 +2424,7 @@
             "weight": 100,
             "value": 1800,
             "ratio": 0.0043,
-            "score": 0.43
+            "score": 180000
           },
           {
             "key": "overallTicket",
@@ -2432,7 +2432,7 @@
             "weight": 50,
             "value": 20867,
             "ratio": 0.3016,
-            "score": 15.08
+            "score": 1043350
           },
           {
             "key": "renewalRevenue",
@@ -2475,7 +2475,7 @@
       "baselineFound": true,
       "baselineIndex": 0,
       "inReport": true,
-      "totalScore": 899.09,
+      "totalScore": 240672367,
       "breakdown": [
         {
           "key": "dailyTicket",
@@ -2483,7 +2483,7 @@
           "weight": 100,
           "value": 32774.17,
           "ratio": 0.3967,
-          "score": 39.67
+          "score": 3277417
         },
         {
           "key": "dailyReceived",
@@ -2491,7 +2491,7 @@
           "weight": 250,
           "value": 393290,
           "ratio": 1,
-          "score": 250
+          "score": 98322500
         },
         {
           "key": "currentMonthRevenue",
@@ -2499,7 +2499,7 @@
           "weight": 100,
           "value": 393290,
           "ratio": 1,
-          "score": 100
+          "score": 39329000
         },
         {
           "key": "lastMonthRevenue",
@@ -2507,7 +2507,7 @@
           "weight": 100,
           "value": 420531,
           "ratio": 1,
-          "score": 100
+          "score": 42053100
         },
         {
           "key": "overallTicket",
@@ -2515,7 +2515,7 @@
           "weight": 50,
           "value": 52559,
           "ratio": 0.7597,
-          "score": 37.99
+          "score": 2627950
         },
         {
           "key": "renewalRevenue",
@@ -2523,7 +2523,7 @@
           "weight": 200,
           "value": 275300,
           "ratio": 1,
-          "score": 200
+          "score": 55060000
         },
         {
           "key": "renewalDeals",
@@ -2531,7 +2531,7 @@
           "weight": 200,
           "value": 12,
           "ratio": 0.8571,
-          "score": 171.43
+          "score": 2400
         }
       ],
       "rank": 1,
@@ -2560,7 +2560,7 @@
       "baselineFound": true,
       "baselineIndex": 1,
       "inReport": true,
-      "totalScore": 781.11,
+      "totalScore": 201009850,
       "breakdown": [
         {
           "key": "dailyTicket",
@@ -2568,7 +2568,7 @@
           "weight": 100,
           "value": 26980,
           "ratio": 0.3265,
-          "score": 32.65
+          "score": 2698000
         },
         {
           "key": "dailyReceived",
@@ -2576,7 +2576,7 @@
           "weight": 250,
           "value": 323760,
           "ratio": 0.8232,
-          "score": 205.8
+          "score": 80940000
         },
         {
           "key": "currentMonthRevenue",
@@ -2584,7 +2584,7 @@
           "weight": 100,
           "value": 323760,
           "ratio": 0.8232,
-          "score": 82.32
+          "score": 32376000
         },
         {
           "key": "lastMonthRevenue",
@@ -2592,7 +2592,7 @@
           "weight": 100,
           "value": 352970,
           "ratio": 0.8393,
-          "score": 83.93
+          "score": 35297000
         },
         {
           "key": "overallTicket",
@@ -2600,7 +2600,7 @@
           "weight": 50,
           "value": 45209,
           "ratio": 0.6535,
-          "score": 32.67
+          "score": 2260450
         },
         {
           "key": "renewalRevenue",
@@ -2608,7 +2608,7 @@
           "weight": 200,
           "value": 237180,
           "ratio": 0.8615,
-          "score": 172.31
+          "score": 47436000
         },
         {
           "key": "renewalDeals",
@@ -2616,95 +2616,10 @@
           "weight": 200,
           "value": 12,
           "ratio": 0.8571,
-          "score": 171.43
+          "score": 2400
         }
       ],
       "rank": 2,
-      "rankDelta": 0,
-      "movement": "持平",
-      "group": "A1",
-      "groupLabel": "A1 高單主力"
-    },
-    {
-      "lineNumber": 3,
-      "inputOrder": 2,
-      "inputRank": 3,
-      "rawLine": "3、王珍珠｜【追續】14｜【續單】190380｜【總業績】239588",
-      "originalName": "王珍珠",
-      "name": "王珍珠",
-      "renewalDeals": 14,
-      "renewalRevenue": 190380,
-      "totalRevenue": 239588,
-      "currentMonthRevenue": 239588,
-      "dailyReceived": 239588,
-      "dailyTicket": 17113.43,
-      "lastMonthRevenue": 271483,
-      "overallTicket": 32033,
-      "previousRank": 3,
-      "aliasUsed": false,
-      "baselineFound": true,
-      "baselineIndex": 2,
-      "inReport": true,
-      "totalScore": 659.95,
-      "breakdown": [
-        {
-          "key": "dailyTicket",
-          "label": "當日客單價",
-          "weight": 100,
-          "value": 17113.43,
-          "ratio": 0.2071,
-          "score": 20.71
-        },
-        {
-          "key": "dailyReceived",
-          "label": "當日實收金額",
-          "weight": 250,
-          "value": 239588,
-          "ratio": 0.6092,
-          "score": 152.3
-        },
-        {
-          "key": "currentMonthRevenue",
-          "label": "本月業績",
-          "weight": 100,
-          "value": 239588,
-          "ratio": 0.6092,
-          "score": 60.92
-        },
-        {
-          "key": "lastMonthRevenue",
-          "label": "上月業績",
-          "weight": 100,
-          "value": 271483,
-          "ratio": 0.6456,
-          "score": 64.56
-        },
-        {
-          "key": "overallTicket",
-          "label": "整體客單價",
-          "weight": 50,
-          "value": 32033,
-          "ratio": 0.463,
-          "score": 23.15
-        },
-        {
-          "key": "renewalRevenue",
-          "label": "續單金額",
-          "weight": 200,
-          "value": 190380,
-          "ratio": 0.6915,
-          "score": 138.31
-        },
-        {
-          "key": "renewalDeals",
-          "label": "追續成交總數",
-          "weight": 200,
-          "value": 14,
-          "ratio": 1,
-          "score": 200
-        }
-      ],
-      "rank": 3,
       "rankDelta": 0,
       "movement": "持平",
       "group": "A1",
@@ -2725,12 +2640,12 @@
       "dailyTicket": 29330.5,
       "lastMonthRevenue": 267636,
       "overallTicket": 50565,
-      "previousRank": 4,
+      "previousRank": 3,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 3,
       "inReport": true,
-      "totalScore": 611.03,
+      "totalScore": 156267100,
       "breakdown": [
         {
           "key": "dailyTicket",
@@ -2738,7 +2653,7 @@
           "weight": 100,
           "value": 29330.5,
           "ratio": 0.355,
-          "score": 35.5
+          "score": 2933050
         },
         {
           "key": "dailyReceived",
@@ -2746,7 +2661,7 @@
           "weight": 250,
           "value": 234644,
           "ratio": 0.5966,
-          "score": 149.15
+          "score": 58661000
         },
         {
           "key": "currentMonthRevenue",
@@ -2754,7 +2669,7 @@
           "weight": 100,
           "value": 234644,
           "ratio": 0.5966,
-          "score": 59.66
+          "score": 23464400
         },
         {
           "key": "lastMonthRevenue",
@@ -2762,7 +2677,7 @@
           "weight": 100,
           "value": 267636,
           "ratio": 0.6364,
-          "score": 63.64
+          "score": 26763600
         },
         {
           "key": "overallTicket",
@@ -2770,7 +2685,7 @@
           "weight": 50,
           "value": 50565,
           "ratio": 0.7309,
-          "score": 36.54
+          "score": 2528250
         },
         {
           "key": "renewalRevenue",
@@ -2778,7 +2693,7 @@
           "weight": 200,
           "value": 209576,
           "ratio": 0.7613,
-          "score": 152.25
+          "score": 41915200
         },
         {
           "key": "renewalDeals",
@@ -2786,7 +2701,92 @@
           "weight": 200,
           "value": 8,
           "ratio": 0.5714,
-          "score": 114.29
+          "score": 1600
+        }
+      ],
+      "rank": 3,
+      "rankDelta": 0,
+      "movement": "持平",
+      "group": "A1",
+      "groupLabel": "A1 高單主力"
+    },
+    {
+      "lineNumber": 3,
+      "inputOrder": 2,
+      "inputRank": 3,
+      "rawLine": "3、王珍珠｜【追續】14｜【續單】190380｜【總業績】239588",
+      "originalName": "王珍珠",
+      "name": "王珍珠",
+      "renewalDeals": 14,
+      "renewalRevenue": 190380,
+      "totalRevenue": 239588,
+      "currentMonthRevenue": 239588,
+      "dailyReceived": 239588,
+      "dailyTicket": 17113.43,
+      "lastMonthRevenue": 271483,
+      "overallTicket": 32033,
+      "previousRank": 4,
+      "aliasUsed": false,
+      "baselineFound": true,
+      "baselineIndex": 2,
+      "inReport": true,
+      "totalScore": 152395893,
+      "breakdown": [
+        {
+          "key": "dailyTicket",
+          "label": "當日客單價",
+          "weight": 100,
+          "value": 17113.43,
+          "ratio": 0.2071,
+          "score": 1711343
+        },
+        {
+          "key": "dailyReceived",
+          "label": "當日實收金額",
+          "weight": 250,
+          "value": 239588,
+          "ratio": 0.6092,
+          "score": 59897000
+        },
+        {
+          "key": "currentMonthRevenue",
+          "label": "本月業績",
+          "weight": 100,
+          "value": 239588,
+          "ratio": 0.6092,
+          "score": 23958800
+        },
+        {
+          "key": "lastMonthRevenue",
+          "label": "上月業績",
+          "weight": 100,
+          "value": 271483,
+          "ratio": 0.6456,
+          "score": 27148300
+        },
+        {
+          "key": "overallTicket",
+          "label": "整體客單價",
+          "weight": 50,
+          "value": 32033,
+          "ratio": 0.463,
+          "score": 1601650
+        },
+        {
+          "key": "renewalRevenue",
+          "label": "續單金額",
+          "weight": 200,
+          "value": 190380,
+          "ratio": 0.6915,
+          "score": 38076000
+        },
+        {
+          "key": "renewalDeals",
+          "label": "追續成交總數",
+          "weight": 200,
+          "value": 14,
+          "ratio": 1,
+          "score": 2800
         }
       ],
       "rank": 4,
@@ -2794,91 +2794,6 @@
       "movement": "持平",
       "group": "A1",
       "groupLabel": "A1 高單主力"
-    },
-    {
-      "lineNumber": 5,
-      "inputOrder": 4,
-      "inputRank": 5,
-      "rawLine": "5、林宜靜｜【追續】5｜【續單】32200｜【總業績】170070",
-      "originalName": "林宜靜",
-      "name": "林宜靜",
-      "renewalDeals": 5,
-      "renewalRevenue": 32200,
-      "totalRevenue": 170070,
-      "currentMonthRevenue": 170070,
-      "dailyReceived": 170070,
-      "dailyTicket": 34014,
-      "lastMonthRevenue": 187726,
-      "overallTicket": 38959,
-      "previousRank": 5,
-      "aliasUsed": false,
-      "baselineFound": true,
-      "baselineIndex": 4,
-      "inReport": true,
-      "totalScore": 360.14,
-      "breakdown": [
-        {
-          "key": "dailyTicket",
-          "label": "當日客單價",
-          "weight": 100,
-          "value": 34014,
-          "ratio": 0.4117,
-          "score": 41.17
-        },
-        {
-          "key": "dailyReceived",
-          "label": "當日實收金額",
-          "weight": 250,
-          "value": 170070,
-          "ratio": 0.4324,
-          "score": 108.11
-        },
-        {
-          "key": "currentMonthRevenue",
-          "label": "本月業績",
-          "weight": 100,
-          "value": 170070,
-          "ratio": 0.4324,
-          "score": 43.24
-        },
-        {
-          "key": "lastMonthRevenue",
-          "label": "上月業績",
-          "weight": 100,
-          "value": 187726,
-          "ratio": 0.4464,
-          "score": 44.64
-        },
-        {
-          "key": "overallTicket",
-          "label": "整體客單價",
-          "weight": 50,
-          "value": 38959,
-          "ratio": 0.5631,
-          "score": 28.16
-        },
-        {
-          "key": "renewalRevenue",
-          "label": "續單金額",
-          "weight": 200,
-          "value": 32200,
-          "ratio": 0.117,
-          "score": 23.39
-        },
-        {
-          "key": "renewalDeals",
-          "label": "追續成交總數",
-          "weight": 200,
-          "value": 5,
-          "ratio": 0.3571,
-          "score": 71.43
-        }
-      ],
-      "rank": 5,
-      "rankDelta": 0,
-      "movement": "持平",
-      "group": "A2",
-      "groupLabel": "A2 續單收割"
     },
     {
       "lineNumber": 6,
@@ -2895,12 +2810,12 @@
       "dailyTicket": 82625,
       "lastMonthRevenue": 186683,
       "overallTicket": 69182,
-      "previousRank": 6,
+      "previousRank": 5,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 5,
       "inReport": true,
-      "totalScore": 423.68,
+      "totalScore": 102999800,
       "breakdown": [
         {
           "key": "dailyTicket",
@@ -2908,7 +2823,7 @@
           "weight": 100,
           "value": 82625,
           "ratio": 1,
-          "score": 100
+          "score": 8262500
         },
         {
           "key": "dailyReceived",
@@ -2916,7 +2831,7 @@
           "weight": 250,
           "value": 165250,
           "ratio": 0.4202,
-          "score": 105.04
+          "score": 41312500
         },
         {
           "key": "currentMonthRevenue",
@@ -2924,7 +2839,7 @@
           "weight": 100,
           "value": 165250,
           "ratio": 0.4202,
-          "score": 42.02
+          "score": 16525000
         },
         {
           "key": "lastMonthRevenue",
@@ -2932,7 +2847,7 @@
           "weight": 100,
           "value": 186683,
           "ratio": 0.4439,
-          "score": 44.39
+          "score": 18668300
         },
         {
           "key": "overallTicket",
@@ -2940,7 +2855,7 @@
           "weight": 50,
           "value": 69182,
           "ratio": 1,
-          "score": 50
+          "score": 3459100
         },
         {
           "key": "renewalRevenue",
@@ -2948,7 +2863,7 @@
           "weight": 200,
           "value": 73860,
           "ratio": 0.2683,
-          "score": 53.66
+          "score": 14772000
         },
         {
           "key": "renewalDeals",
@@ -2956,95 +2871,95 @@
           "weight": 200,
           "value": 2,
           "ratio": 0.1429,
-          "score": 28.57
+          "score": 400
         }
       ],
-      "rank": 6,
+      "rank": 5,
       "rankDelta": 0,
       "movement": "持平",
       "group": "A2",
       "groupLabel": "A2 續單收割"
     },
     {
-      "lineNumber": 7,
-      "inputOrder": 6,
-      "inputRank": 7,
-      "rawLine": "7、廖姿惠｜【追續】6｜【續單】26448｜【總業績】121328",
-      "originalName": "廖姿惠",
-      "name": "廖姿惠",
-      "renewalDeals": 6,
-      "renewalRevenue": 26448,
-      "totalRevenue": 121328,
-      "currentMonthRevenue": 121328,
-      "dailyReceived": 121328,
-      "dailyTicket": 20221.33,
-      "lastMonthRevenue": 140542,
-      "overallTicket": 27997,
-      "previousRank": 7,
+      "lineNumber": 5,
+      "inputOrder": 4,
+      "inputRank": 5,
+      "rawLine": "5、林宜靜｜【追續】5｜【續單】32200｜【總業績】170070",
+      "originalName": "林宜靜",
+      "name": "林宜靜",
+      "renewalDeals": 5,
+      "renewalRevenue": 32200,
+      "totalRevenue": 170070,
+      "currentMonthRevenue": 170070,
+      "dailyReceived": 170070,
+      "dailyTicket": 34014,
+      "lastMonthRevenue": 187726,
+      "overallTicket": 38959,
+      "previousRank": 6,
       "aliasUsed": false,
       "baselineFound": true,
-      "baselineIndex": 6,
+      "baselineIndex": 4,
       "inReport": true,
-      "totalScore": 291.01,
+      "totalScore": 90087450,
       "breakdown": [
         {
           "key": "dailyTicket",
           "label": "當日客單價",
           "weight": 100,
-          "value": 20221.33,
-          "ratio": 0.2447,
-          "score": 24.47
+          "value": 34014,
+          "ratio": 0.4117,
+          "score": 3401400
         },
         {
           "key": "dailyReceived",
           "label": "當日實收金額",
           "weight": 250,
-          "value": 121328,
-          "ratio": 0.3085,
-          "score": 77.12
+          "value": 170070,
+          "ratio": 0.4324,
+          "score": 42517500
         },
         {
           "key": "currentMonthRevenue",
           "label": "本月業績",
           "weight": 100,
-          "value": 121328,
-          "ratio": 0.3085,
-          "score": 30.85
+          "value": 170070,
+          "ratio": 0.4324,
+          "score": 17007000
         },
         {
           "key": "lastMonthRevenue",
           "label": "上月業績",
           "weight": 100,
-          "value": 140542,
-          "ratio": 0.3342,
-          "score": 33.42
+          "value": 187726,
+          "ratio": 0.4464,
+          "score": 18772600
         },
         {
           "key": "overallTicket",
           "label": "整體客單價",
           "weight": 50,
-          "value": 27997,
-          "ratio": 0.4047,
-          "score": 20.23
+          "value": 38959,
+          "ratio": 0.5631,
+          "score": 1947950
         },
         {
           "key": "renewalRevenue",
           "label": "續單金額",
           "weight": 200,
-          "value": 26448,
-          "ratio": 0.0961,
-          "score": 19.21
+          "value": 32200,
+          "ratio": 0.117,
+          "score": 6440000
         },
         {
           "key": "renewalDeals",
           "label": "追續成交總數",
           "weight": 200,
-          "value": 6,
-          "ratio": 0.4286,
-          "score": 85.71
+          "value": 5,
+          "ratio": 0.3571,
+          "score": 1000
         }
       ],
-      "rank": 7,
+      "rank": 6,
       "rankDelta": 0,
       "movement": "持平",
       "group": "A2",
@@ -3070,7 +2985,7 @@
       "baselineFound": true,
       "baselineIndex": 7,
       "inReport": true,
-      "totalScore": 332.07,
+      "totalScore": 66152989,
       "breakdown": [
         {
           "key": "dailyTicket",
@@ -3078,7 +2993,7 @@
           "weight": 100,
           "value": 12428.89,
           "ratio": 0.1504,
-          "score": 15.04
+          "score": 1242889
         },
         {
           "key": "dailyReceived",
@@ -3086,7 +3001,7 @@
           "weight": 250,
           "value": 111860,
           "ratio": 0.2844,
-          "score": 71.11
+          "score": 27965000
         },
         {
           "key": "currentMonthRevenue",
@@ -3094,7 +3009,7 @@
           "weight": 100,
           "value": 111860,
           "ratio": 0.2844,
-          "score": 28.44
+          "score": 11186000
         },
         {
           "key": "lastMonthRevenue",
@@ -3102,7 +3017,7 @@
           "weight": 100,
           "value": 133978,
           "ratio": 0.3186,
-          "score": 31.86
+          "score": 13397800
         },
         {
           "key": "overallTicket",
@@ -3110,7 +3025,7 @@
           "weight": 50,
           "value": 22470,
           "ratio": 0.3248,
-          "score": 16.24
+          "score": 1123500
         },
         {
           "key": "renewalRevenue",
@@ -3118,7 +3033,7 @@
           "weight": 200,
           "value": 56180,
           "ratio": 0.2041,
-          "score": 40.81
+          "score": 11236000
         },
         {
           "key": "renewalDeals",
@@ -3126,12 +3041,12 @@
           "weight": 200,
           "value": 9,
           "ratio": 0.6429,
-          "score": 128.57
+          "score": 1800
         }
       ],
-      "rank": 8,
-      "rankDelta": 0,
-      "movement": "持平",
+      "rank": 7,
+      "rankDelta": 1,
+      "movement": "上升 1",
       "group": "A2",
       "groupLabel": "A2 續單收割"
     },
@@ -3150,12 +3065,12 @@
       "dailyTicket": 33829.33,
       "lastMonthRevenue": 123634,
       "overallTicket": 43588,
-      "previousRank": 9,
+      "previousRank": 14,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 8,
       "inReport": true,
-      "totalScore": 279.35,
+      "totalScore": 65655133,
       "breakdown": [
         {
           "key": "dailyTicket",
@@ -3163,7 +3078,7 @@
           "weight": 100,
           "value": 33829.33,
           "ratio": 0.4094,
-          "score": 40.94
+          "score": 3382933
         },
         {
           "key": "dailyReceived",
@@ -3171,7 +3086,7 @@
           "weight": 250,
           "value": 101488,
           "ratio": 0.258,
-          "score": 64.51
+          "score": 25372000
         },
         {
           "key": "currentMonthRevenue",
@@ -3179,7 +3094,7 @@
           "weight": 100,
           "value": 101488,
           "ratio": 0.258,
-          "score": 25.8
+          "score": 10148800
         },
         {
           "key": "lastMonthRevenue",
@@ -3187,7 +3102,7 @@
           "weight": 100,
           "value": 123634,
           "ratio": 0.294,
-          "score": 29.4
+          "score": 12363400
         },
         {
           "key": "overallTicket",
@@ -3195,7 +3110,7 @@
           "weight": 50,
           "value": 43588,
           "ratio": 0.63,
-          "score": 31.5
+          "score": 2179400
         },
         {
           "key": "renewalRevenue",
@@ -3203,7 +3118,7 @@
           "weight": 200,
           "value": 61040,
           "ratio": 0.2217,
-          "score": 44.34
+          "score": 12208000
         },
         {
           "key": "renewalDeals",
@@ -3211,12 +3126,97 @@
           "weight": 200,
           "value": 3,
           "ratio": 0.2143,
-          "score": 42.86
+          "score": 600
+        }
+      ],
+      "rank": 8,
+      "rankDelta": 6,
+      "movement": "上升 6",
+      "group": "A2",
+      "groupLabel": "A2 續單收割"
+    },
+    {
+      "lineNumber": 7,
+      "inputOrder": 6,
+      "inputRank": 7,
+      "rawLine": "7、廖姿惠｜【追續】6｜【續單】26448｜【總業績】121328",
+      "originalName": "廖姿惠",
+      "name": "廖姿惠",
+      "renewalDeals": 6,
+      "renewalRevenue": 26448,
+      "totalRevenue": 121328,
+      "currentMonthRevenue": 121328,
+      "dailyReceived": 121328,
+      "dailyTicket": 20221.33,
+      "lastMonthRevenue": 140542,
+      "overallTicket": 27997,
+      "previousRank": 7,
+      "aliasUsed": false,
+      "baselineFound": true,
+      "baselineIndex": 6,
+      "inReport": true,
+      "totalScore": 65231783,
+      "breakdown": [
+        {
+          "key": "dailyTicket",
+          "label": "當日客單價",
+          "weight": 100,
+          "value": 20221.33,
+          "ratio": 0.2447,
+          "score": 2022133
+        },
+        {
+          "key": "dailyReceived",
+          "label": "當日實收金額",
+          "weight": 250,
+          "value": 121328,
+          "ratio": 0.3085,
+          "score": 30332000
+        },
+        {
+          "key": "currentMonthRevenue",
+          "label": "本月業績",
+          "weight": 100,
+          "value": 121328,
+          "ratio": 0.3085,
+          "score": 12132800
+        },
+        {
+          "key": "lastMonthRevenue",
+          "label": "上月業績",
+          "weight": 100,
+          "value": 140542,
+          "ratio": 0.3342,
+          "score": 14054200
+        },
+        {
+          "key": "overallTicket",
+          "label": "整體客單價",
+          "weight": 50,
+          "value": 27997,
+          "ratio": 0.4047,
+          "score": 1399850
+        },
+        {
+          "key": "renewalRevenue",
+          "label": "續單金額",
+          "weight": 200,
+          "value": 26448,
+          "ratio": 0.0961,
+          "score": 5289600
+        },
+        {
+          "key": "renewalDeals",
+          "label": "追續成交總數",
+          "weight": 200,
+          "value": 6,
+          "ratio": 0.4286,
+          "score": 1200
         }
       ],
       "rank": 9,
-      "rankDelta": 0,
-      "movement": "持平",
+      "rankDelta": -2,
+      "movement": "下降 2",
       "group": "A2",
       "groupLabel": "A2 續單收割"
     },
@@ -3235,12 +3235,12 @@
       "dailyTicket": 18192,
       "lastMonthRevenue": 113587,
       "overallTicket": 32110,
-      "previousRank": 10,
+      "previousRank": 9,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 9,
       "inReport": true,
-      "totalScore": 275.12,
+      "totalScore": 60524400,
       "breakdown": [
         {
           "key": "dailyTicket",
@@ -3248,7 +3248,7 @@
           "weight": 100,
           "value": 18192,
           "ratio": 0.2202,
-          "score": 22.02
+          "score": 1819200
         },
         {
           "key": "dailyReceived",
@@ -3256,7 +3256,7 @@
           "weight": 250,
           "value": 90960,
           "ratio": 0.2313,
-          "score": 57.82
+          "score": 22740000
         },
         {
           "key": "currentMonthRevenue",
@@ -3264,7 +3264,7 @@
           "weight": 100,
           "value": 90960,
           "ratio": 0.2313,
-          "score": 23.13
+          "score": 9096000
         },
         {
           "key": "lastMonthRevenue",
@@ -3272,7 +3272,7 @@
           "weight": 100,
           "value": 113587,
           "ratio": 0.2701,
-          "score": 27.01
+          "score": 11358700
         },
         {
           "key": "overallTicket",
@@ -3280,7 +3280,7 @@
           "weight": 50,
           "value": 32110,
           "ratio": 0.4641,
-          "score": 23.21
+          "score": 1605500
         },
         {
           "key": "renewalRevenue",
@@ -3288,7 +3288,7 @@
           "weight": 200,
           "value": 69520,
           "ratio": 0.2525,
-          "score": 50.5
+          "score": 13904000
         },
         {
           "key": "renewalDeals",
@@ -3296,12 +3296,12 @@
           "weight": 200,
           "value": 5,
           "ratio": 0.3571,
-          "score": 71.43
+          "score": 1000
         }
       ],
       "rank": 10,
-      "rankDelta": 0,
-      "movement": "持平",
+      "rankDelta": -1,
+      "movement": "下降 1",
       "group": "A2",
       "groupLabel": "A2 續單收割"
     },
@@ -3320,12 +3320,12 @@
       "dailyTicket": 73630,
       "lastMonthRevenue": 88480,
       "overallTicket": 42453,
-      "previousRank": 11,
+      "previousRank": 10,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 10,
       "inReport": true,
-      "totalScore": 222.37,
+      "totalScore": 44580350,
       "breakdown": [
         {
           "key": "dailyTicket",
@@ -3333,7 +3333,7 @@
           "weight": 100,
           "value": 73630,
           "ratio": 0.8911,
-          "score": 89.11
+          "score": 7363000
         },
         {
           "key": "dailyReceived",
@@ -3341,7 +3341,7 @@
           "weight": 250,
           "value": 73630,
           "ratio": 0.1872,
-          "score": 46.8
+          "score": 18407500
         },
         {
           "key": "currentMonthRevenue",
@@ -3349,7 +3349,7 @@
           "weight": 100,
           "value": 73630,
           "ratio": 0.1872,
-          "score": 18.72
+          "score": 7363000
         },
         {
           "key": "lastMonthRevenue",
@@ -3357,7 +3357,7 @@
           "weight": 100,
           "value": 88480,
           "ratio": 0.2104,
-          "score": 21.04
+          "score": 8848000
         },
         {
           "key": "overallTicket",
@@ -3365,7 +3365,7 @@
           "weight": 50,
           "value": 42453,
           "ratio": 0.6136,
-          "score": 30.68
+          "score": 2122650
         },
         {
           "key": "renewalRevenue",
@@ -3373,7 +3373,7 @@
           "weight": 200,
           "value": 2380,
           "ratio": 0.0086,
-          "score": 1.73
+          "score": 476000
         },
         {
           "key": "renewalDeals",
@@ -3381,12 +3381,12 @@
           "weight": 200,
           "value": 1,
           "ratio": 0.0714,
-          "score": 14.29
+          "score": 200
         }
       ],
       "rank": 11,
-      "rankDelta": 0,
-      "movement": "持平",
+      "rankDelta": -1,
+      "movement": "下降 1",
       "group": "B",
       "groupLabel": "B 一般量單"
     },
@@ -3405,12 +3405,12 @@
       "dailyTicket": 21513.33,
       "lastMonthRevenue": 80214,
       "overallTicket": 28483,
-      "previousRank": 12,
+      "previousRank": 11,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 11,
       "inReport": true,
-      "totalScore": 177.01,
+      "totalScore": 37218483,
       "breakdown": [
         {
           "key": "dailyTicket",
@@ -3418,7 +3418,7 @@
           "weight": 100,
           "value": 21513.33,
           "ratio": 0.2604,
-          "score": 26.04
+          "score": 2151333
         },
         {
           "key": "dailyReceived",
@@ -3426,7 +3426,7 @@
           "weight": 250,
           "value": 64540,
           "ratio": 0.1641,
-          "score": 41.03
+          "score": 16135000
         },
         {
           "key": "currentMonthRevenue",
@@ -3434,7 +3434,7 @@
           "weight": 100,
           "value": 64540,
           "ratio": 0.1641,
-          "score": 16.41
+          "score": 6454000
         },
         {
           "key": "lastMonthRevenue",
@@ -3442,7 +3442,7 @@
           "weight": 100,
           "value": 80214,
           "ratio": 0.1907,
-          "score": 19.07
+          "score": 8021400
         },
         {
           "key": "overallTicket",
@@ -3450,7 +3450,7 @@
           "weight": 50,
           "value": 28483,
           "ratio": 0.4117,
-          "score": 20.59
+          "score": 1424150
         },
         {
           "key": "renewalRevenue",
@@ -3458,7 +3458,7 @@
           "weight": 200,
           "value": 15160,
           "ratio": 0.0551,
-          "score": 11.01
+          "score": 3032000
         },
         {
           "key": "renewalDeals",
@@ -3466,97 +3466,12 @@
           "weight": 200,
           "value": 3,
           "ratio": 0.2143,
-          "score": 42.86
+          "score": 600
         }
       ],
       "rank": 12,
-      "rankDelta": 0,
-      "movement": "持平",
-      "group": "B",
-      "groupLabel": "B 一般量單"
-    },
-    {
-      "lineNumber": 13,
-      "inputOrder": 12,
-      "inputRank": 13,
-      "rawLine": "13、高如郁｜【追續】3｜【續單】9320｜【總業績】56860",
-      "originalName": "高如郁",
-      "name": "高如郁",
-      "renewalDeals": 3,
-      "renewalRevenue": 9320,
-      "totalRevenue": 56860,
-      "currentMonthRevenue": 56860,
-      "dailyReceived": 56860,
-      "dailyTicket": 18953.33,
-      "lastMonthRevenue": 70955,
-      "overallTicket": 25797,
-      "previousRank": 13,
-      "aliasUsed": false,
-      "baselineFound": true,
-      "baselineIndex": 12,
-      "inReport": true,
-      "totalScore": 158.68,
-      "breakdown": [
-        {
-          "key": "dailyTicket",
-          "label": "當日客單價",
-          "weight": 100,
-          "value": 18953.33,
-          "ratio": 0.2294,
-          "score": 22.94
-        },
-        {
-          "key": "dailyReceived",
-          "label": "當日實收金額",
-          "weight": 250,
-          "value": 56860,
-          "ratio": 0.1446,
-          "score": 36.14
-        },
-        {
-          "key": "currentMonthRevenue",
-          "label": "本月業績",
-          "weight": 100,
-          "value": 56860,
-          "ratio": 0.1446,
-          "score": 14.46
-        },
-        {
-          "key": "lastMonthRevenue",
-          "label": "上月業績",
-          "weight": 100,
-          "value": 70955,
-          "ratio": 0.1687,
-          "score": 16.87
-        },
-        {
-          "key": "overallTicket",
-          "label": "整體客單價",
-          "weight": 50,
-          "value": 25797,
-          "ratio": 0.3729,
-          "score": 18.64
-        },
-        {
-          "key": "renewalRevenue",
-          "label": "續單金額",
-          "weight": 200,
-          "value": 9320,
-          "ratio": 0.0339,
-          "score": 6.77
-        },
-        {
-          "key": "renewalDeals",
-          "label": "追續成交總數",
-          "weight": 200,
-          "value": 3,
-          "ratio": 0.2143,
-          "score": 42.86
-        }
-      ],
-      "rank": 13,
-      "rankDelta": 0,
-      "movement": "持平",
+      "rankDelta": -1,
+      "movement": "下降 1",
       "group": "B",
       "groupLabel": "B 一般量單"
     },
@@ -3575,12 +3490,12 @@
       "dailyTicket": 27004,
       "lastMonthRevenue": 67406,
       "overallTicket": 31134,
-      "previousRank": 14,
+      "previousRank": 17,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 13,
       "inReport": true,
-      "totalScore": 159.22,
+      "totalScore": 33032900,
       "breakdown": [
         {
           "key": "dailyTicket",
@@ -3588,7 +3503,7 @@
           "weight": 100,
           "value": 27004,
           "ratio": 0.3268,
-          "score": 32.68
+          "score": 2700400
         },
         {
           "key": "dailyReceived",
@@ -3596,7 +3511,7 @@
           "weight": 250,
           "value": 54008,
           "ratio": 0.1373,
-          "score": 34.33
+          "score": 13502000
         },
         {
           "key": "currentMonthRevenue",
@@ -3604,7 +3519,7 @@
           "weight": 100,
           "value": 54008,
           "ratio": 0.1373,
-          "score": 13.73
+          "score": 5400800
         },
         {
           "key": "lastMonthRevenue",
@@ -3612,7 +3527,7 @@
           "weight": 100,
           "value": 67406,
           "ratio": 0.1603,
-          "score": 16.03
+          "score": 6740600
         },
         {
           "key": "overallTicket",
@@ -3620,7 +3535,7 @@
           "weight": 50,
           "value": 31134,
           "ratio": 0.45,
-          "score": 22.5
+          "score": 1556700
         },
         {
           "key": "renewalRevenue",
@@ -3628,7 +3543,7 @@
           "weight": 200,
           "value": 15660,
           "ratio": 0.0569,
-          "score": 11.38
+          "score": 3132000
         },
         {
           "key": "renewalDeals",
@@ -3636,12 +3551,97 @@
           "weight": 200,
           "value": 2,
           "ratio": 0.1429,
-          "score": 28.57
+          "score": 400
+        }
+      ],
+      "rank": 13,
+      "rankDelta": 4,
+      "movement": "上升 4",
+      "group": "B",
+      "groupLabel": "B 一般量單"
+    },
+    {
+      "lineNumber": 13,
+      "inputOrder": 12,
+      "inputRank": 13,
+      "rawLine": "13、高如郁｜【追續】3｜【續單】9320｜【總業績】56860",
+      "originalName": "高如郁",
+      "name": "高如郁",
+      "renewalDeals": 3,
+      "renewalRevenue": 9320,
+      "totalRevenue": 56860,
+      "currentMonthRevenue": 56860,
+      "dailyReceived": 56860,
+      "dailyTicket": 18953.33,
+      "lastMonthRevenue": 70955,
+      "overallTicket": 25797,
+      "previousRank": 16,
+      "aliasUsed": false,
+      "baselineFound": true,
+      "baselineIndex": 12,
+      "inReport": true,
+      "totalScore": 32046283,
+      "breakdown": [
+        {
+          "key": "dailyTicket",
+          "label": "當日客單價",
+          "weight": 100,
+          "value": 18953.33,
+          "ratio": 0.2294,
+          "score": 1895333
+        },
+        {
+          "key": "dailyReceived",
+          "label": "當日實收金額",
+          "weight": 250,
+          "value": 56860,
+          "ratio": 0.1446,
+          "score": 14215000
+        },
+        {
+          "key": "currentMonthRevenue",
+          "label": "本月業績",
+          "weight": 100,
+          "value": 56860,
+          "ratio": 0.1446,
+          "score": 5686000
+        },
+        {
+          "key": "lastMonthRevenue",
+          "label": "上月業績",
+          "weight": 100,
+          "value": 70955,
+          "ratio": 0.1687,
+          "score": 7095500
+        },
+        {
+          "key": "overallTicket",
+          "label": "整體客單價",
+          "weight": 50,
+          "value": 25797,
+          "ratio": 0.3729,
+          "score": 1289850
+        },
+        {
+          "key": "renewalRevenue",
+          "label": "續單金額",
+          "weight": 200,
+          "value": 9320,
+          "ratio": 0.0339,
+          "score": 1864000
+        },
+        {
+          "key": "renewalDeals",
+          "label": "追續成交總數",
+          "weight": 200,
+          "value": 3,
+          "ratio": 0.2143,
+          "score": 600
         }
       ],
       "rank": 14,
-      "rankDelta": 0,
-      "movement": "持平",
+      "rankDelta": 2,
+      "movement": "上升 2",
       "group": "B",
       "groupLabel": "B 一般量單"
     },
@@ -3660,12 +3660,12 @@
       "dailyTicket": 41860,
       "lastMonthRevenue": 53817,
       "overallTicket": 32940,
-      "previousRank": 15,
+      "previousRank": 12,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 14,
       "inReport": true,
-      "totalScore": 143.53,
+      "totalScore": 27165900,
       "breakdown": [
         {
           "key": "dailyTicket",
@@ -3673,7 +3673,7 @@
           "weight": 100,
           "value": 41860,
           "ratio": 0.5066,
-          "score": 50.66
+          "score": 4186000
         },
         {
           "key": "dailyReceived",
@@ -3681,7 +3681,7 @@
           "weight": 250,
           "value": 41860,
           "ratio": 0.1064,
-          "score": 26.61
+          "score": 10465000
         },
         {
           "key": "currentMonthRevenue",
@@ -3689,7 +3689,7 @@
           "weight": 100,
           "value": 41860,
           "ratio": 0.1064,
-          "score": 10.64
+          "score": 4186000
         },
         {
           "key": "lastMonthRevenue",
@@ -3697,7 +3697,7 @@
           "weight": 100,
           "value": 53817,
           "ratio": 0.128,
-          "score": 12.8
+          "score": 5381700
         },
         {
           "key": "overallTicket",
@@ -3705,7 +3705,7 @@
           "weight": 50,
           "value": 32940,
           "ratio": 0.4761,
-          "score": 23.81
+          "score": 1647000
         },
         {
           "key": "renewalRevenue",
@@ -3713,7 +3713,7 @@
           "weight": 200,
           "value": 6500,
           "ratio": 0.0236,
-          "score": 4.72
+          "score": 1300000
         },
         {
           "key": "renewalDeals",
@@ -3721,12 +3721,12 @@
           "weight": 200,
           "value": 1,
           "ratio": 0.0714,
-          "score": 14.29
+          "score": 200
         }
       ],
       "rank": 15,
-      "rankDelta": 0,
-      "movement": "持平",
+      "rankDelta": -3,
+      "movement": "下降 3",
       "group": "B",
       "groupLabel": "B 一般量單"
     },
@@ -3745,12 +3745,12 @@
       "dailyTicket": 10055,
       "lastMonthRevenue": 50634,
       "overallTicket": 18289,
-      "previousRank": 16,
+      "previousRank": 15,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 15,
       "inReport": true,
-      "totalScore": 135.46,
+      "totalScore": 22461150,
       "breakdown": [
         {
           "key": "dailyTicket",
@@ -3758,7 +3758,7 @@
           "weight": 100,
           "value": 10055,
           "ratio": 0.1217,
-          "score": 12.17
+          "score": 1005500
         },
         {
           "key": "dailyReceived",
@@ -3766,7 +3766,7 @@
           "weight": 250,
           "value": 40220,
           "ratio": 0.1023,
-          "score": 25.57
+          "score": 10055000
         },
         {
           "key": "currentMonthRevenue",
@@ -3774,7 +3774,7 @@
           "weight": 100,
           "value": 40220,
           "ratio": 0.1023,
-          "score": 10.23
+          "score": 4022000
         },
         {
           "key": "lastMonthRevenue",
@@ -3782,7 +3782,7 @@
           "weight": 100,
           "value": 50634,
           "ratio": 0.1204,
-          "score": 12.04
+          "score": 5063400
         },
         {
           "key": "overallTicket",
@@ -3790,7 +3790,7 @@
           "weight": 50,
           "value": 18289,
           "ratio": 0.2644,
-          "score": 13.22
+          "score": 914450
         },
         {
           "key": "renewalRevenue",
@@ -3798,7 +3798,7 @@
           "weight": 200,
           "value": 7000,
           "ratio": 0.0254,
-          "score": 5.09
+          "score": 1400000
         },
         {
           "key": "renewalDeals",
@@ -3806,12 +3806,12 @@
           "weight": 200,
           "value": 4,
           "ratio": 0.2857,
-          "score": 57.14
+          "score": 800
         }
       ],
       "rank": 16,
-      "rankDelta": 0,
-      "movement": "持平",
+      "rankDelta": -1,
+      "movement": "下降 1",
       "group": "B",
       "groupLabel": "B 一般量單"
     },
@@ -3830,12 +3830,12 @@
       "dailyTicket": 13500,
       "lastMonthRevenue": 38760,
       "overallTicket": 25040,
-      "previousRank": 17,
+      "previousRank": 13,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 16,
       "inReport": true,
-      "totalScore": 110.79,
+      "totalScore": 19928400,
       "breakdown": [
         {
           "key": "dailyTicket",
@@ -3843,7 +3843,7 @@
           "weight": 100,
           "value": 13500,
           "ratio": 0.1634,
-          "score": 16.34
+          "score": 1350000
         },
         {
           "key": "dailyReceived",
@@ -3851,7 +3851,7 @@
           "weight": 250,
           "value": 27000,
           "ratio": 0.0687,
-          "score": 17.16
+          "score": 6750000
         },
         {
           "key": "currentMonthRevenue",
@@ -3859,7 +3859,7 @@
           "weight": 100,
           "value": 27000,
           "ratio": 0.0687,
-          "score": 6.87
+          "score": 2700000
         },
         {
           "key": "lastMonthRevenue",
@@ -3867,7 +3867,7 @@
           "weight": 100,
           "value": 38760,
           "ratio": 0.0922,
-          "score": 9.22
+          "score": 3876000
         },
         {
           "key": "overallTicket",
@@ -3875,7 +3875,7 @@
           "weight": 50,
           "value": 25040,
           "ratio": 0.3619,
-          "score": 18.1
+          "score": 1252000
         },
         {
           "key": "renewalRevenue",
@@ -3883,7 +3883,7 @@
           "weight": 200,
           "value": 20000,
           "ratio": 0.0726,
-          "score": 14.53
+          "score": 4000000
         },
         {
           "key": "renewalDeals",
@@ -3891,12 +3891,12 @@
           "weight": 200,
           "value": 2,
           "ratio": 0.1429,
-          "score": 28.57
+          "score": 400
         }
       ],
       "rank": 17,
-      "rankDelta": 0,
-      "movement": "持平",
+      "rankDelta": -4,
+      "movement": "下降 4",
       "group": "B",
       "groupLabel": "B 一般量單"
     },
@@ -3915,12 +3915,12 @@
       "dailyTicket": 13500,
       "lastMonthRevenue": 24300,
       "overallTicket": 25650,
-      "previousRank": 18,
+      "previousRank": 0,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 17,
       "inReport": true,
-      "totalScore": 76.77,
+      "totalScore": 12487700,
       "breakdown": [
         {
           "key": "dailyTicket",
@@ -3928,7 +3928,7 @@
           "weight": 100,
           "value": 13500,
           "ratio": 0.1634,
-          "score": 16.34
+          "score": 1350000
         },
         {
           "key": "dailyReceived",
@@ -3936,7 +3936,7 @@
           "weight": 250,
           "value": 13500,
           "ratio": 0.0343,
-          "score": 8.58
+          "score": 3375000
         },
         {
           "key": "currentMonthRevenue",
@@ -3944,7 +3944,7 @@
           "weight": 100,
           "value": 13500,
           "ratio": 0.0343,
-          "score": 3.43
+          "score": 1350000
         },
         {
           "key": "lastMonthRevenue",
@@ -3952,7 +3952,7 @@
           "weight": 100,
           "value": 24300,
           "ratio": 0.0578,
-          "score": 5.78
+          "score": 2430000
         },
         {
           "key": "overallTicket",
@@ -3960,7 +3960,7 @@
           "weight": 50,
           "value": 25650,
           "ratio": 0.3708,
-          "score": 18.54
+          "score": 1282500
         },
         {
           "key": "renewalRevenue",
@@ -3968,7 +3968,7 @@
           "weight": 200,
           "value": 13500,
           "ratio": 0.049,
-          "score": 9.81
+          "score": 2700000
         },
         {
           "key": "renewalDeals",
@@ -3976,97 +3976,12 @@
           "weight": 200,
           "value": 1,
           "ratio": 0.0714,
-          "score": 14.29
+          "score": 200
         }
       ],
       "rank": 18,
       "rankDelta": 0,
-      "movement": "持平",
-      "group": "C",
-      "groupLabel": "C 補位觀察"
-    },
-    {
-      "lineNumber": 19,
-      "inputOrder": 18,
-      "inputRank": 19,
-      "rawLine": "19、謝啟芳｜【追續】0｜【續單】0｜【總業績】10960",
-      "originalName": "謝啟芳",
-      "name": "謝啟芳",
-      "renewalDeals": 0,
-      "renewalRevenue": 0,
-      "totalRevenue": 10960,
-      "currentMonthRevenue": 10960,
-      "dailyReceived": 10960,
-      "dailyTicket": 0,
-      "lastMonthRevenue": 18645,
-      "overallTicket": 27987,
-      "previousRank": 19,
-      "aliasUsed": false,
-      "baselineFound": true,
-      "baselineIndex": 18,
-      "inReport": true,
-      "totalScore": 34.42,
-      "breakdown": [
-        {
-          "key": "dailyTicket",
-          "label": "當日客單價",
-          "weight": 100,
-          "value": 0,
-          "ratio": 0,
-          "score": 0
-        },
-        {
-          "key": "dailyReceived",
-          "label": "當日實收金額",
-          "weight": 250,
-          "value": 10960,
-          "ratio": 0.0279,
-          "score": 6.97
-        },
-        {
-          "key": "currentMonthRevenue",
-          "label": "本月業績",
-          "weight": 100,
-          "value": 10960,
-          "ratio": 0.0279,
-          "score": 2.79
-        },
-        {
-          "key": "lastMonthRevenue",
-          "label": "上月業績",
-          "weight": 100,
-          "value": 18645,
-          "ratio": 0.0443,
-          "score": 4.43
-        },
-        {
-          "key": "overallTicket",
-          "label": "整體客單價",
-          "weight": 50,
-          "value": 27987,
-          "ratio": 0.4045,
-          "score": 20.23
-        },
-        {
-          "key": "renewalRevenue",
-          "label": "續單金額",
-          "weight": 200,
-          "value": 0,
-          "ratio": 0,
-          "score": 0
-        },
-        {
-          "key": "renewalDeals",
-          "label": "追續成交總數",
-          "weight": 200,
-          "value": 0,
-          "ratio": 0,
-          "score": 0
-        }
-      ],
-      "rank": 19,
-      "rankDelta": 0,
-      "movement": "持平",
+      "movement": "新進",
       "group": "C",
       "groupLabel": "C 補位觀察"
     },
@@ -4085,12 +4000,12 @@
       "dailyTicket": 10000,
       "lastMonthRevenue": 17200,
       "overallTicket": 22600,
-      "previousRank": 20,
+      "previousRank": 19,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 19,
       "inReport": true,
-      "totalScore": 62.97,
+      "totalScore": 9350200,
       "breakdown": [
         {
           "key": "dailyTicket",
@@ -4098,7 +4013,7 @@
           "weight": 100,
           "value": 10000,
           "ratio": 0.121,
-          "score": 12.1
+          "score": 1000000
         },
         {
           "key": "dailyReceived",
@@ -4106,7 +4021,7 @@
           "weight": 250,
           "value": 10000,
           "ratio": 0.0254,
-          "score": 6.36
+          "score": 2500000
         },
         {
           "key": "currentMonthRevenue",
@@ -4114,7 +4029,7 @@
           "weight": 100,
           "value": 10000,
           "ratio": 0.0254,
-          "score": 2.54
+          "score": 1000000
         },
         {
           "key": "lastMonthRevenue",
@@ -4122,7 +4037,7 @@
           "weight": 100,
           "value": 17200,
           "ratio": 0.0409,
-          "score": 4.09
+          "score": 1720000
         },
         {
           "key": "overallTicket",
@@ -4130,7 +4045,7 @@
           "weight": 50,
           "value": 22600,
           "ratio": 0.3267,
-          "score": 16.33
+          "score": 1130000
         },
         {
           "key": "renewalRevenue",
@@ -4138,7 +4053,7 @@
           "weight": 200,
           "value": 10000,
           "ratio": 0.0363,
-          "score": 7.26
+          "score": 2000000
         },
         {
           "key": "renewalDeals",
@@ -4146,10 +4061,10 @@
           "weight": 200,
           "value": 1,
           "ratio": 0.0714,
-          "score": 14.29
+          "score": 200
         }
       ],
-      "rank": 20,
+      "rank": 19,
       "rankDelta": 0,
       "movement": "持平",
       "group": "C",
@@ -4175,7 +4090,7 @@
       "baselineFound": true,
       "baselineIndex": 20,
       "inReport": true,
-      "totalScore": 77.25,
+      "totalScore": 8091617,
       "breakdown": [
         {
           "key": "dailyTicket",
@@ -4183,7 +4098,7 @@
           "weight": 100,
           "value": 3326.67,
           "ratio": 0.0403,
-          "score": 4.03
+          "score": 332667
         },
         {
           "key": "dailyReceived",
@@ -4191,7 +4106,7 @@
           "weight": 250,
           "value": 9980,
           "ratio": 0.0254,
-          "score": 6.34
+          "score": 2495000
         },
         {
           "key": "currentMonthRevenue",
@@ -4199,7 +4114,7 @@
           "weight": 100,
           "value": 9980,
           "ratio": 0.0254,
-          "score": 2.54
+          "score": 998000
         },
         {
           "key": "lastMonthRevenue",
@@ -4207,7 +4122,7 @@
           "weight": 100,
           "value": 15380,
           "ratio": 0.0366,
-          "score": 3.66
+          "score": 1538000
         },
         {
           "key": "overallTicket",
@@ -4215,7 +4130,7 @@
           "weight": 50,
           "value": 14627,
           "ratio": 0.2114,
-          "score": 10.57
+          "score": 731350
         },
         {
           "key": "renewalRevenue",
@@ -4223,7 +4138,7 @@
           "weight": 200,
           "value": 9980,
           "ratio": 0.0363,
-          "score": 7.25
+          "score": 1996000
         },
         {
           "key": "renewalDeals",
@@ -4231,12 +4146,97 @@
           "weight": 200,
           "value": 3,
           "ratio": 0.2143,
-          "score": 42.86
+          "score": 600
+        }
+      ],
+      "rank": 20,
+      "rankDelta": 1,
+      "movement": "上升 1",
+      "group": "C",
+      "groupLabel": "C 補位觀察"
+    },
+    {
+      "lineNumber": 19,
+      "inputOrder": 18,
+      "inputRank": 19,
+      "rawLine": "19、謝啟芳｜【追續】0｜【續單】0｜【總業績】10960",
+      "originalName": "謝啟芳",
+      "name": "謝啟芳",
+      "renewalDeals": 0,
+      "renewalRevenue": 0,
+      "totalRevenue": 10960,
+      "currentMonthRevenue": 10960,
+      "dailyReceived": 10960,
+      "dailyTicket": 0,
+      "lastMonthRevenue": 18645,
+      "overallTicket": 27987,
+      "previousRank": 18,
+      "aliasUsed": false,
+      "baselineFound": true,
+      "baselineIndex": 18,
+      "inReport": true,
+      "totalScore": 7099850,
+      "breakdown": [
+        {
+          "key": "dailyTicket",
+          "label": "當日客單價",
+          "weight": 100,
+          "value": 0,
+          "ratio": 0,
+          "score": 0
+        },
+        {
+          "key": "dailyReceived",
+          "label": "當日實收金額",
+          "weight": 250,
+          "value": 10960,
+          "ratio": 0.0279,
+          "score": 2740000
+        },
+        {
+          "key": "currentMonthRevenue",
+          "label": "本月業績",
+          "weight": 100,
+          "value": 10960,
+          "ratio": 0.0279,
+          "score": 1096000
+        },
+        {
+          "key": "lastMonthRevenue",
+          "label": "上月業績",
+          "weight": 100,
+          "value": 18645,
+          "ratio": 0.0443,
+          "score": 1864500
+        },
+        {
+          "key": "overallTicket",
+          "label": "整體客單價",
+          "weight": 50,
+          "value": 27987,
+          "ratio": 0.4045,
+          "score": 1399350
+        },
+        {
+          "key": "renewalRevenue",
+          "label": "續單金額",
+          "weight": 200,
+          "value": 0,
+          "ratio": 0,
+          "score": 0
+        },
+        {
+          "key": "renewalDeals",
+          "label": "追續成交總數",
+          "weight": 200,
+          "value": 0,
+          "ratio": 0,
+          "score": 0
         }
       ],
       "rank": 21,
-      "rankDelta": 0,
-      "movement": "持平",
+      "rankDelta": -3,
+      "movement": "下降 3",
       "group": "C",
       "groupLabel": "C 補位觀察"
     },
@@ -4255,12 +4255,12 @@
       "dailyTicket": 6528,
       "lastMonthRevenue": 10128,
       "overallTicket": 19564,
-      "previousRank": 22,
+      "previousRank": 20,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 21,
       "inReport": true,
-      "totalScore": 49.29,
+      "totalScore": 6234400,
       "breakdown": [
         {
           "key": "dailyTicket",
@@ -4268,7 +4268,7 @@
           "weight": 100,
           "value": 6528,
           "ratio": 0.079,
-          "score": 7.9
+          "score": 652800
         },
         {
           "key": "dailyReceived",
@@ -4276,7 +4276,7 @@
           "weight": 250,
           "value": 6528,
           "ratio": 0.0166,
-          "score": 4.15
+          "score": 1632000
         },
         {
           "key": "currentMonthRevenue",
@@ -4284,7 +4284,7 @@
           "weight": 100,
           "value": 6528,
           "ratio": 0.0166,
-          "score": 1.66
+          "score": 652800
         },
         {
           "key": "lastMonthRevenue",
@@ -4292,7 +4292,7 @@
           "weight": 100,
           "value": 10128,
           "ratio": 0.0241,
-          "score": 2.41
+          "score": 1012800
         },
         {
           "key": "overallTicket",
@@ -4300,7 +4300,7 @@
           "weight": 50,
           "value": 19564,
           "ratio": 0.2828,
-          "score": 14.14
+          "score": 978200
         },
         {
           "key": "renewalRevenue",
@@ -4308,7 +4308,7 @@
           "weight": 200,
           "value": 6528,
           "ratio": 0.0237,
-          "score": 4.74
+          "score": 1305600
         },
         {
           "key": "renewalDeals",
@@ -4316,12 +4316,12 @@
           "weight": 200,
           "value": 1,
           "ratio": 0.0714,
-          "score": 14.29
+          "score": 200
         }
       ],
       "rank": 22,
-      "rankDelta": 0,
-      "movement": "持平",
+      "rankDelta": -2,
+      "movement": "下降 2",
       "group": "C",
       "groupLabel": "C 補位觀察"
     },
@@ -4340,12 +4340,12 @@
       "dailyTicket": 0,
       "lastMonthRevenue": 1800,
       "overallTicket": 20867,
-      "previousRank": 23,
+      "previousRank": 22,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 22,
       "inReport": true,
-      "totalScore": 15.51,
+      "totalScore": 1223350,
       "breakdown": [
         {
           "key": "dailyTicket",
@@ -4377,7 +4377,7 @@
           "weight": 100,
           "value": 1800,
           "ratio": 0.0043,
-          "score": 0.43
+          "score": 180000
         },
         {
           "key": "overallTicket",
@@ -4385,7 +4385,7 @@
           "weight": 50,
           "value": 20867,
           "ratio": 0.3016,
-          "score": 15.08
+          "score": 1043350
         },
         {
           "key": "renewalRevenue",
@@ -4405,8 +4405,8 @@
         }
       ],
       "rank": 23,
-      "rankDelta": 0,
-      "movement": "持平",
+      "rankDelta": -1,
+      "movement": "下降 1",
       "group": "C",
       "groupLabel": "C 補位觀察"
     }
@@ -4415,63 +4415,66 @@
     "A1": [
       "馬秋香",
       "王梅慧",
-      "王珍珠",
-      "林沛昕"
+      "林沛昕",
+      "王珍珠"
     ],
     "A2": [
-      "林宜靜",
       "李玲玲",
-      "廖姿惠",
+      "林宜靜",
       "湯玉琦",
       "蘇淑玲",
+      "廖姿惠",
       "徐華妤"
     ],
     "B": [
       "江麗勉",
       "梁依萍",
-      "高如郁",
       "高美雲",
+      "高如郁",
       "陳玲華",
       "鄭珮恩",
       "許喬恩"
     ],
     "C": [
       "陳桂子（新人）",
-      "謝啟芳",
       "周美蓁",
       "江沛林",
+      "謝啟芳",
       "林佩君",
       "鄭上官"
     ]
   },
   "changes": {
-    "new": [],
-    "up": [],
-    "down": [],
+    "new": [
+      "陳桂子（新人）：新進第 18 名"
+    ],
+    "up": [
+      "湯玉琦：上升 1",
+      "蘇淑玲：上升 6",
+      "高美雲：上升 4",
+      "高如郁：上升 2",
+      "江沛林：上升 1"
+    ],
+    "down": [
+      "廖姿惠：下降 2",
+      "徐華妤：下降 1",
+      "江麗勉：下降 1",
+      "梁依萍：下降 1",
+      "陳玲華：下降 3",
+      "鄭珮恩：下降 1",
+      "許喬恩：下降 4",
+      "謝啟芳：下降 3",
+      "林佩君：下降 2",
+      "鄭上官：下降 1"
+    ],
     "flat": [
       "馬秋香：持平",
       "王梅慧：持平",
-      "王珍珠：持平",
       "林沛昕：持平",
-      "林宜靜：持平",
+      "王珍珠：持平",
       "李玲玲：持平",
-      "廖姿惠：持平",
-      "湯玉琦：持平",
-      "蘇淑玲：持平",
-      "徐華妤：持平",
-      "江麗勉：持平",
-      "梁依萍：持平",
-      "高如郁：持平",
-      "高美雲：持平",
-      "陳玲華：持平",
-      "鄭珮恩：持平",
-      "許喬恩：持平",
-      "陳桂子（新人）：持平",
-      "謝啟芳：持平",
-      "周美蓁：持平",
-      "江沛林：持平",
-      "林佩君：持平",
-      "鄭上官：持平"
+      "林宜靜：持平",
+      "周美蓁：持平"
     ]
   },
   "summary": {
@@ -4493,7 +4496,7 @@
       "order": 1,
       "status": "done",
       "message": "解析 23 筆",
-      "completedAt": "2026/04/09 17:31:51"
+      "completedAt": "2026/04/12 22:43:16"
     },
     {
       "key": "audit",
@@ -4501,7 +4504,7 @@
       "order": 2,
       "status": "done",
       "message": "審計通過",
-      "completedAt": "2026/04/09 17:31:51"
+      "completedAt": "2026/04/12 22:43:16"
     },
     {
       "key": "score",
@@ -4509,7 +4512,7 @@
       "order": 3,
       "status": "done",
       "message": "1000 權重計分完成",
-      "completedAt": "2026/04/09 17:31:51"
+      "completedAt": "2026/04/12 22:43:16"
     },
     {
       "key": "rank",
@@ -4517,7 +4520,7 @@
       "order": 4,
       "status": "done",
       "message": "排序完成 23 人",
-      "completedAt": "2026/04/09 17:31:51"
+      "completedAt": "2026/04/12 22:43:16"
     },
     {
       "key": "dispatch",
@@ -4525,15 +4528,15 @@
       "order": 5,
       "status": "done",
       "message": "A1 4｜A2 6｜B 7｜C 6",
-      "completedAt": "2026/04/09 17:31:51"
+      "completedAt": "2026/04/12 22:43:16"
     },
     {
       "key": "announcement",
       "label": "公告",
       "order": 6,
       "status": "done",
-      "message": "公告 1679 字",
-      "completedAt": "2026/04/09 17:31:51"
+      "message": "公告 1836 字",
+      "completedAt": "2026/04/12 22:43:16"
     },
     {
       "key": "save",
@@ -4541,7 +4544,7 @@
       "order": 7,
       "status": "done",
       "message": "全部確認無誤並完成正式存檔",
-      "completedAt": "2026/04/09 17:31:51"
+      "completedAt": "2026/04/12 22:43:16"
     }
   ],
   "stageSummary": {
@@ -4566,45 +4569,45 @@
     },
     {
       "rank": 3,
-      "name": "王珍珠",
-      "group": "A1",
-      "text": "你追續厚，今天重點是把厚度變成更扎實的實收。"
-    },
-    {
-      "rank": 4,
       "name": "林沛昕",
       "group": "A1",
       "text": "你總盤很硬，今天缺的是再往前翻位的臨門一腳。"
     },
     {
-      "rank": 5,
-      "name": "林宜靜",
-      "group": "A2",
-      "text": "位置穩，但還能更前，今天先把最準那筆拿下。"
+      "rank": 4,
+      "name": "王珍珠",
+      "group": "A1",
+      "text": "你追續厚，今天重點是把厚度變成更扎實的實收。"
     },
     {
-      "rank": 6,
+      "rank": 5,
       "name": "李玲玲",
       "group": "A2",
       "text": "你還在主力帶，今天不是保位，是往前壓。"
     },
     {
-      "rank": 7,
-      "name": "廖姿惠",
+      "rank": 6,
+      "name": "林宜靜",
       "group": "A2",
-      "text": "你屬於很標準的補位型，今天一補就會更靠前。"
+      "text": "位置穩，但還能更前，今天先把最準那筆拿下。"
     },
     {
-      "rank": 8,
+      "rank": 7,
       "name": "湯玉琦",
       "group": "A2",
       "text": "你追續成交數很強，今天重點是把量收成實績。"
     },
     {
-      "rank": 9,
+      "rank": 8,
       "name": "蘇淑玲",
       "group": "A2",
       "text": "你這輪站得住，今天關鍵是不要停。"
+    },
+    {
+      "rank": 9,
+      "name": "廖姿惠",
+      "group": "A2",
+      "text": "你屬於很標準的補位型，今天一補就會更靠前。"
     },
     {
       "rank": 10,
@@ -4626,15 +4629,15 @@
     },
     {
       "rank": 13,
-      "name": "高如郁",
-      "group": "B",
-      "text": "今天要把可落袋的先收，不要讓位置再鬆。"
-    },
-    {
-      "rank": 14,
       "name": "高美雲",
       "group": "B",
       "text": "你現在有上推空間，今天一補就能再往前。"
+    },
+    {
+      "rank": 14,
+      "name": "高如郁",
+      "group": "B",
+      "text": "今天要把可落袋的先收，不要讓位置再鬆。"
     },
     {
       "rank": 15,
@@ -4662,21 +4665,21 @@
     },
     {
       "rank": 19,
-      "name": "謝啟芳",
-      "group": "C",
-      "text": "先把第一個明確數字做出來，位置就會變。"
-    },
-    {
-      "rank": 20,
       "name": "周美蓁",
       "group": "C",
       "text": "先動起來，比停在原地更重要。"
     },
     {
-      "rank": 21,
+      "rank": 20,
       "name": "江沛林",
       "group": "C",
       "text": "你不是沒底，是差一筆把線重新接上。"
+    },
+    {
+      "rank": 21,
+      "name": "謝啟芳",
+      "group": "C",
+      "text": "先把第一個明確數字做出來，位置就會變。"
     },
     {
       "rank": 22,
@@ -4693,64 +4696,64 @@
   ],
   "logs": [
     {
-      "time": "2026/04/09 17:31:51",
+      "time": "2026/04/12 22:43:16",
       "type": "完成",
       "message": "解析｜解析 23 筆"
     },
     {
-      "time": "2026/04/09 17:31:51",
+      "time": "2026/04/12 22:43:16",
       "type": "完成",
       "message": "審計｜審計通過"
     },
     {
-      "time": "2026/04/09 17:31:51",
+      "time": "2026/04/12 22:43:16",
       "type": "完成",
       "message": "計分｜1000 權重計分完成"
     },
     {
-      "time": "2026/04/09 17:31:51",
+      "time": "2026/04/12 22:43:16",
       "type": "完成",
       "message": "排序｜排序完成 23 人"
     },
     {
-      "time": "2026/04/09 17:31:51",
+      "time": "2026/04/12 22:43:16",
       "type": "完成",
       "message": "派單｜A1 4｜A2 6｜B 7｜C 6"
     },
     {
-      "time": "2026/04/09 17:31:51",
+      "time": "2026/04/12 22:43:16",
       "type": "完成",
-      "message": "公告｜公告 1679 字"
+      "message": "公告｜公告 1836 字"
     },
     {
-      "time": "2026/04/09 17:31:51",
+      "time": "2026/04/12 22:43:16",
       "type": "完成",
       "message": "存檔｜全部確認無誤並完成正式存檔"
     }
   ],
   "files": {
-    "reportFile": "snapshot_1775727111585.json",
-    "backupFile": "backup_1775727111585.json",
-    "archiveFile": "115-04-08_1775727111585.json"
+    "reportFile": "snapshot_1776004996911.json",
+    "backupFile": "backup_1776004996911.json",
+    "archiveFile": "115-04-12_1776004996911.json"
   },
   "aiInsights": {
     "cards": [
       {
         "label": "榜首領先差",
-        "value": "117.98 分",
+        "value": "39662517.00 分",
         "detail": "馬秋香 對 王梅慧",
         "tone": "gold"
       },
       {
         "label": "前三集中度",
-        "value": "40.51%",
+        "value": "40.30%",
         "detail": "前三名總業績占比",
         "tone": "cyan"
       },
       {
         "label": "A1 門檻差",
-        "value": "250.89 分",
-        "detail": "林沛昕 對 林宜靜",
+        "value": "49396093.00 分",
+        "detail": "王珍珠 對 李玲玲",
         "tone": "violet"
       },
       {
@@ -4768,21 +4771,21 @@
       {
         "label": "零業績人數",
         "value": "1 人",
-        "detail": "上升 0｜下降 0",
+        "detail": "上升 5｜下降 10",
         "tone": "red"
       }
     ],
     "lines": [
-      "榜首 馬秋香 目前以 899.09 分領先 王梅慧 117.98 分。",
-      "前三名總業績占全體 40.51%，資源集中度偏高。",
-      "A1 門檻目前由 林沛昕 守住，與第 5 名 林宜靜 差 250.89 分。",
+      "榜首 馬秋香 目前以 240672367.00 分領先 王梅慧 39662517.00 分。",
+      "前三名總業績占全體 40.30%，資源集中度偏高。",
+      "A1 門檻目前由 王珍珠 守住，與第 5 名 李玲玲 差 49396093.00 分。",
       "續單主力為 馬秋香，續單金額 275,300。",
       "追續主力為 王珍珠，追續成交 14 通。",
       "目前仍有 1 位零業績，適合用補位名單優先破蛋。",
-      "名次異動為上升 0 人、下降 0 人，盤面仍在快速變動。"
+      "名次異動為上升 5 人、下降 10 人，盤面仍在快速變動。"
     ]
   },
-  "announcement": "📣【兆櫃 AI 派單公告｜115/04/08 結算 → 115/04/09 派單】\n\n一、審計結論\n審計結果：通過\n說明：審計通過，可進入 1000 權重排序。\n- 無異常\n\n二、1000 權重公式\n當日客單價 100｜當日實收金額 250｜本月業績 100｜上月業績 100｜整體客單價 50｜續單金額 200｜追續成交總數 200\n\n三、今日排序\n1、馬秋香｜AI 899.09｜【追續】12｜【續單】275,300｜【總業績】393,290\n2、王梅慧｜AI 781.11｜【追續】12｜【續單】237,180｜【總業績】323,760\n3、王珍珠｜AI 659.95｜【追續】14｜【續單】190,380｜【總業績】239,588\n4、林沛昕｜AI 611.03｜【追續】8｜【續單】209,576｜【總業績】234,644\n5、林宜靜｜AI 360.14｜【追續】5｜【續單】32,200｜【總業績】170,070\n6、李玲玲｜AI 423.68｜【追續】2｜【續單】73,860｜【總業績】165,250\n7、廖姿惠｜AI 291.01｜【追續】6｜【續單】26,448｜【總業績】121,328\n8、湯玉琦｜AI 332.07｜【追續】9｜【續單】56,180｜【總業績】111,860\n9、蘇淑玲｜AI 279.35｜【追續】3｜【續單】61,040｜【總業績】101,488\n10、徐華妤｜AI 275.12｜【追續】5｜【續單】69,520｜【總業績】90,960\n11、江麗勉｜AI 222.37｜【追續】1｜【續單】2,380｜【總業績】73,630\n12、梁依萍｜AI 177.01｜【追續】3｜【續單】15,160｜【總業績】64,540\n13、高如郁｜AI 158.68｜【追續】3｜【續單】9,320｜【總業績】56,860\n14、高美雲｜AI 159.22｜【追續】2｜【續單】15,660｜【總業績】54,008\n15、陳玲華｜AI 143.53｜【追續】1｜【續單】6,500｜【總業績】41,860\n16、鄭珮恩｜AI 135.46｜【追續】4｜【續單】7,000｜【總業績】40,220\n17、許喬恩｜AI 110.79｜【追續】2｜【續單】20,000｜【總業績】27,000\n18、陳桂子（新人）｜AI 76.77｜【追續】1｜【續單】13,500｜【總業績】13,500\n19、謝啟芳｜AI 34.42｜【追續】0｜【續單】0｜【總業績】10,960\n20、周美蓁｜AI 62.97｜【追續】1｜【續單】10,000｜【總業績】10,000\n21、江沛林｜AI 77.25｜【追續】3｜【續單】9,980｜【總業績】9,980\n22、林佩君｜AI 49.29｜【追續】1｜【續單】6,528｜【總業績】6,528\n23、鄭上官｜AI 15.51｜【追續】0｜【續單】0｜【總業績】0\n\n四、明日派單分組\nA1 高單主力：馬秋香、王梅慧、王珍珠、林沛昕\nA2 續單收割：林宜靜、李玲玲、廖姿惠、湯玉琦、蘇淑玲、徐華妤\nB 一般量單：江麗勉、梁依萍、高如郁、高美雲、陳玲華、鄭珮恩、許喬恩\nC 補位養成：陳桂子（新人）、謝啟芳、周美蓁、江沛林、林佩君、鄭上官\n\n五、名次異動\n持平：馬秋香：持平\n持平：王梅慧：持平\n持平：王珍珠：持平\n持平：林沛昕：持平\n持平：林宜靜：持平\n持平：李玲玲：持平\n持平：廖姿惠：持平\n持平：湯玉琦：持平\n持平：蘇淑玲：持平\n持平：徐華妤：持平\n持平：江麗勉：持平\n持平：梁依萍：持平\n持平：高如郁：持平\n持平：高美雲：持平\n持平：陳玲華：持平\n持平：鄭珮恩：持平\n持平：許喬恩：持平\n持平：陳桂子（新人）：持平\n持平：謝啟芳：持平\n持平：周美蓁：持平\n持平：江沛林：持平\n持平：林佩君：持平\n持平：鄭上官：持平\n\n六、總控摘要\n當日實收：2,361,324\n本月業績：2,361,324\n續單總額：1,347,712\n追續成交：98 通\n有效人數：22/23\n\n七、存檔\n報表：snapshot_1775727111585.json\n備份：backup_1775727111585.json\n歸檔：115-04-08_1775727111585.json",
+  "announcement": "📣【兆櫃 AI 派單公告｜115/04/12 結算 → 115/04/13 派單】\n\n一、審計結論\n審計結果：通過\n說明：審計通過，可進入 1000 權重排序。\n- 無異常\n\n二、1000 權重公式\n當日客單價 100｜當日實收金額 250｜本月業績 100｜上月業績 100｜整體客單價 50｜續單金額 200｜追續成交總數 200\n\n三、今日排序\n1、馬秋香｜AI 240672367.00｜【追續】12｜【續單】275,300｜【總業績】393,290\n2、王梅慧｜AI 201009850.00｜【追續】12｜【續單】237,180｜【總業績】323,760\n3、林沛昕｜AI 156267100.00｜【追續】8｜【續單】209,576｜【總業績】234,644\n4、王珍珠｜AI 152395893.00｜【追續】14｜【續單】190,380｜【總業績】239,588\n5、李玲玲｜AI 102999800.00｜【追續】2｜【續單】73,860｜【總業績】165,250\n6、林宜靜｜AI 90087450.00｜【追續】5｜【續單】32,200｜【總業績】170,070\n7、湯玉琦｜AI 66152989.00｜【追續】9｜【續單】56,180｜【總業績】111,860\n8、蘇淑玲｜AI 65655133.00｜【追續】3｜【續單】61,040｜【總業績】101,488\n9、廖姿惠｜AI 65231783.00｜【追續】6｜【續單】26,448｜【總業績】121,328\n10、徐華妤｜AI 60524400.00｜【追續】5｜【續單】69,520｜【總業績】90,960\n11、江麗勉｜AI 44580350.00｜【追續】1｜【續單】2,380｜【總業績】73,630\n12、梁依萍｜AI 37218483.00｜【追續】3｜【續單】15,160｜【總業績】64,540\n13、高美雲｜AI 33032900.00｜【追續】2｜【續單】15,660｜【總業績】54,008\n14、高如郁｜AI 32046283.00｜【追續】3｜【續單】9,320｜【總業績】56,860\n15、陳玲華｜AI 27165900.00｜【追續】1｜【續單】6,500｜【總業績】41,860\n16、鄭珮恩｜AI 22461150.00｜【追續】4｜【續單】7,000｜【總業績】40,220\n17、許喬恩｜AI 19928400.00｜【追續】2｜【續單】20,000｜【總業績】27,000\n18、陳桂子（新人）｜AI 12487700.00｜【追續】1｜【續單】13,500｜【總業績】13,500\n19、周美蓁｜AI 9350200.00｜【追續】1｜【續單】10,000｜【總業績】10,000\n20、江沛林｜AI 8091617.00｜【追續】3｜【續單】9,980｜【總業績】9,980\n21、謝啟芳｜AI 7099850.00｜【追續】0｜【續單】0｜【總業績】10,960\n22、林佩君｜AI 6234400.00｜【追續】1｜【續單】6,528｜【總業績】6,528\n23、鄭上官｜AI 1223350.00｜【追續】0｜【續單】0｜【總業績】0\n\n四、明日派單分組\nA1 高單主力：馬秋香、王梅慧、林沛昕、王珍珠\nA2 續單收割：李玲玲、林宜靜、湯玉琦、蘇淑玲、廖姿惠、徐華妤\nB 一般量單：江麗勉、梁依萍、高美雲、高如郁、陳玲華、鄭珮恩、許喬恩\nC 補位養成：陳桂子（新人）、周美蓁、江沛林、謝啟芳、林佩君、鄭上官\n\n五、名次異動\n新進：陳桂子（新人）：新進第 18 名\n上升：湯玉琦：上升 1\n上升：蘇淑玲：上升 6\n上升：高美雲：上升 4\n上升：高如郁：上升 2\n上升：江沛林：上升 1\n下降：廖姿惠：下降 2\n下降：徐華妤：下降 1\n下降：江麗勉：下降 1\n下降：梁依萍：下降 1\n下降：陳玲華：下降 3\n下降：鄭珮恩：下降 1\n下降：許喬恩：下降 4\n下降：謝啟芳：下降 3\n下降：林佩君：下降 2\n下降：鄭上官：下降 1\n持平：馬秋香：持平\n持平：王梅慧：持平\n持平：林沛昕：持平\n持平：王珍珠：持平\n持平：李玲玲：持平\n持平：林宜靜：持平\n持平：周美蓁：持平\n\n六、總控摘要\n當日實收：2,361,324\n本月業績：2,361,324\n續單總額：1,347,712\n追續成交：98 通\n有效人數：22/23\n\n七、存檔\n報表：snapshot_1776004996911.json\n備份：backup_1776004996911.json\n歸檔：115-04-12_1776004996911.json",
   "confirmation": {
     "status": "通過",
     "message": "全部確認無誤，可正式存檔",
@@ -4834,12 +4837,12 @@
       },
       {
         "label": "最高 AI 分",
-        "value": "899.09",
+        "value": "240672367.00",
         "tone": "gold"
       },
       {
         "label": "平均 AI 分",
-        "value": "275.47",
+        "value": "63561623.83",
         "tone": "cyan"
       },
       {
@@ -4864,7 +4867,7 @@
       },
       {
         "label": "執行序號",
-        "value": "1775727111585",
+        "value": "1776004996911",
         "tone": "orange"
       },
       {
@@ -4876,26 +4879,16 @@
     "files": [
       {
         "label": "報表檔",
-        "value": "snapshot_1775727111585.json"
+        "value": "snapshot_1776004996911.json"
       },
       {
         "label": "備份檔",
-        "value": "backup_1775727111585.json"
+        "value": "backup_1776004996911.json"
       },
       {
         "label": "歸檔檔",
-        "value": "115-04-08_1775727111585.json"
+        "value": "115-04-12_1776004996911.json"
       }
     ]
-  },
-  "aiProvider": {
-    "provider": "gemini",
-    "configured": true,
-    "model": "gemini-2.0-flash",
-    "apiVersion": "v1beta",
-    "mode": "overlay",
-    "source": "backend",
-    "status": "fallback",
-    "error": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\nPlease retry in 8.685284978s."
   }
 }
