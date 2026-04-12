@@ -2949,14 +2949,16 @@ body::after {
     linear-gradient(135deg, rgba(139, 128, 255, 0.05), rgba(255, 158, 214, 0.03)),
     var(--panel);
   border: 1px solid rgba(139, 128, 255, 0.28);
-  overflow-y: auto;       /* panel 層做滾動，讓卡片完整展開 */
+  /* overflow 在 list 層處理， panel 不設定 */
 }
 
 .bigdata-advice-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  /* max-height 移除：讓卡片自然展開，由 panel 層做 scroll */
+  max-height: clamp(500px, 65vh, 900px);  /* 足夠高可以看到几張，超出再 scroll */
+  overflow-y: auto;
+  padding-right: 4px;  /* 避免 scroll bar 货4内容 */
 }
 
 .bigdata-advice-card {
