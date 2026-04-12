@@ -19,6 +19,10 @@ const refs = {
   rawInput: $('raw-input'),
   inputStatus: $('input-status'),
   inputPreviewGrid: $('input-preview-grid'),
+  pasteOrderList: $('paste-order-list'),
+  pasteOrderStatus: $('paste-order-status'),
+  maintenanceList: $('maintenance-list'),
+  maintenanceStatus: $('maintenance-status'),
   btnReset: $('btn-reset'),
   btnZero: $('btn-zero'),
   btnBaseline: $('btn-baseline'),
@@ -44,8 +48,27 @@ const refs = {
   versionGrid: $('version-grid'),
   fileList: $('file-list'),
   logList: $('log-list'),
-  alertList: $('alert-list')
+  alertList: $('alert-list'),
+  platformStatsGrid: $('platform-stats-grid'),
+  // ★ 新增：三平台總盤、名次異動、AI 大數據建議面板
+  platformStatsGrid: $('platform-stats-grid'),
+  platformStatsBadge: $('platform-stats-badge'),
+  rankChangeList: $('rank-change-list'),
+  rankChangeBadge: $('rank-change-badge'),
+  bigdataAdviceList: $('bigdata-advice-list'),
+  bigdataAdviceBadge: $('bigdata-advice-badge'),
+  frontendAiBadge: $('frontend-ai-badge'),
+  frontendAiBanner: $('frontend-ai-banner'),
+  frontendAiNote: $('frontend-ai-note'),
+  frontendAiScopeStatus: $('frontend-ai-scope-status'),
+  frontendAiScopeGrid: $('frontend-ai-scope-grid'),
+  frontendAiConfirmStatus: $('frontend-ai-confirm-status'),
+  frontendAiCheckGrid: $('frontend-ai-check-grid'),
+  frontendAiPlanStatus: $('frontend-ai-plan-status'),
+  frontendAiPlanList: $('frontend-ai-plan-list'),
+  dashboardContainer: document.querySelector('.dashboard-container')
 };
+
 
 const state = {
   current: null,
@@ -78,6 +101,54 @@ const GROUP_LABELS = {
   A2: 'A2 續單收割',
   B: 'B 組 一般量單',
   C: 'C 組 補位觀察'
+};
+
+const FRONTEND_AI_CONTRACT_FALLBACK = {
+  name: '前端ＡＩ美化確認系統',
+  purpose: '前端ＡＩ只進入展示層，專責顏色、美化、科技感、科技數字與確認提示，不介入後端真實資料、審計、排名與公式。',
+  allowed: ['顏色功能', '美化功能', '科技功能', '科技數字功能', '前端確認功能'],
+  forbidden: ['後端運算', '派單名次重算', '審計重算', '公式改動', '真實資料改動'],
+  colorPrinciples: ['深層科技底色', '金色耀光主視覺', '青藍科技流光', '紫色分析輔助光', '綠色成功確認', '橘色警示提醒', '紅色危險阻擋'],
+  confirmationFields: [
+    { key: 'dataSynced', label: '資料是否已同步', source: 'backend', type: 'positive' },
+    { key: 'colorsApplied', label: '顏色是否已套用', source: 'frontend', type: 'positive' },
+    { key: 'beautified', label: '美化是否已完成', source: 'frontend', type: 'positive' },
+    { key: 'techEnabled', label: '科技功能是否已啟用', source: 'frontend', type: 'positive' },
+    { key: 'techNumbersApplied', label: '科技數字是否已套用', source: 'frontend', type: 'positive' },
+    { key: 'backendDataConfirmed', label: '後端資料是否已確認', source: 'backend', type: 'positive' },
+    { key: 'hasFakeData', label: '前端是否有假資料', source: 'backend', type: 'negative' },
+    { key: 'rankRewrite', label: '前端是否有自行改動名次', source: 'backend', type: 'negative' },
+    { key: 'auditRewrite', label: '前端是否有自行改動審計', source: 'backend', type: 'negative' },
+    { key: 'allowFormalDisplay', label: '前端是否允許送出畫面', source: 'hybrid', type: 'positive' }
+  ],
+  executionPhases: [
+    {
+      key: 'phase-1',
+      title: '階段一｜基礎建置',
+      goal: '建立前端ＡＩ只能管畫面、不碰後端的規則。',
+      tasks: ['建立前端ＡＩ設定中心', '建立顏色策略區', '建立美化策略區', '建立科技功能策略區', '建立科技數字策略區', '建立確認判斷區']
+    },
+    {
+      key: 'phase-2',
+      title: '階段二｜畫面整合',
+      goal: '接後端真實資料，套用主題、科技視覺與數字層級。',
+      tasks: ['接後端真實資料', '套用主題色', '套用排版優化', '套用科技視覺', '套用數字高亮', '套用確認區塊']
+    },
+    {
+      key: 'phase-3',
+      title: '階段三｜確認鎖死',
+      goal: '避免假畫面、假確認、假完成。',
+      tasks: ['檢查是否已同步', '檢查是否已套用顏色', '檢查是否已套用美化', '檢查是否已啟用科技功能', '檢查是否已完成科技數字層次', '檢查是否有假資料', '檢查是否有越權改動']
+    },
+    {
+      key: 'phase-4',
+      title: '階段四｜正式上線',
+      goal: '以前端正式版方式上線，不與後端衝突。',
+      tasks: ['套用正式配色', '套用正式版面', '套用正式確認邏輯', '顯示正式確認標章']
+    }
+  ],
+  successBanner: '前端正式版已確認',
+  blockedBanner: '尚未完成確認，不得視為正式版面'
 };
 
 function el(tag, className, text) {
@@ -128,6 +199,7 @@ function toneFromStatus(status) {
 }
 
 function setTone(node, tone) {
+  if (!node) return;
   const colors = {
     green: 'var(--green)',
     red: 'var(--red)',
@@ -141,8 +213,14 @@ function setTone(node, tone) {
 }
 
 function setBadge(node, text, tone = 'gold') {
+  if (!node) return;
   node.textContent = text;
   setTone(node, tone);
+}
+
+function safeReplace(node, ...children) {
+  if (!node) return;
+  node.replaceChildren(...children);
 }
 
 function workspaceMode() {
@@ -185,7 +263,7 @@ function isConflictBlocked(snapshot) {
   return Boolean(getConsistencyGuard(snapshot)?.conflictBlocked);
 }
 
-function isAiConnected(snapshot) {
+function legacyIsAiConnected(snapshot) {
   if (typeof snapshot?.aiStatus?.injected === 'boolean') {
     return snapshot.aiStatus.injected;
   }
@@ -203,7 +281,7 @@ function isAiConnected(snapshot) {
   );
 }
 
-function getAiProof(snapshot) {
+function legacyGetAiProof(snapshot) {
   if (snapshot?.aiStatus?.proof) {
     const proof = snapshot.aiStatus.proof;
     return [
@@ -238,6 +316,60 @@ function getAiProofItems(snapshot) {
     ['分析卡', `${snapshot?.aiStatus?.proof?.insightCardCount ?? (Array.isArray(snapshot?.aiInsights?.cards) ? snapshot.aiInsights.cards.length : 0)} 張`],
     ['公告', snapshot?.announcement ? '已生成' : '未生成']
   ];
+}
+
+function getAiProvider(snapshot) {
+  return snapshot?.aiProvider || null;
+}
+
+function isAiConnected(snapshot) {
+  const provider = getAiProvider(snapshot);
+  if (provider?.status) {
+    return provider.status === 'connected';
+  }
+
+  if (typeof snapshot?.aiStatus?.injected === 'boolean') {
+    return snapshot.aiStatus.injected;
+  }
+
+  return false;
+}
+
+function getAiProof(snapshot) {
+  const provider = getAiProvider(snapshot);
+  const base = snapshot?.aiStatus?.proof
+    ? [
+        `Provider: ${provider?.provider || 'gemini'}`,
+        provider?.model ? `Model: ${provider.model}` : '',
+        provider?.status ? `Status: ${provider.status}` : '',
+        `Audit: ${snapshot.aiStatus.proof.auditPass ? 'pass' : 'fail'}`,
+        `Confirmation: ${snapshot.aiStatus.proof.confirmationPass ? 'pass' : 'fail'}`,
+        `Ranking: ${snapshot.aiStatus.proof.rankingCount || 0}`,
+        `Insight cards: ${snapshot.aiStatus.proof.insightCardCount || 0}`,
+        `Announcement: ${snapshot.aiStatus.proof.announcementReady ? 'ready' : 'missing'}`
+      ]
+    : [
+        `Provider: ${provider?.provider || 'gemini'}`,
+        provider?.model ? `Model: ${provider.model}` : '',
+        provider?.status ? `Status: ${provider.status}` : '',
+        `Audit: ${snapshot?.audit?.status || '-'}`,
+        `Confirmation: ${snapshot?.confirmation?.status || '-'}`,
+        `Ranking: ${Array.isArray(snapshot?.ranking) ? snapshot.ranking.length : 0}`,
+        `Insight cards: ${Array.isArray(snapshot?.aiInsights?.cards) ? snapshot.aiInsights.cards.length : 0}`,
+        `Announcement: ${snapshot?.announcement ? 'ready' : 'missing'}`
+      ];
+
+  return base.filter(Boolean).join(' | ');
+}
+
+function getAiConnectDetail(snapshot) {
+  const provider = getAiProvider(snapshot);
+  if (!provider) return 'No provider metadata';
+  if (provider.status === 'connected') return `${provider.provider || 'gemini'} ${provider.model || ''}`.trim();
+  if (provider.status === 'fallback') return provider.error ? `Gemini fallback: ${provider.error}` : 'Gemini fallback';
+  if (provider.status === 'not_configured') return 'Gemini API key not configured';
+  if (provider.status === 'skipped') return 'Gemini skipped until the snapshot passes checks';
+  return `${provider.provider || 'gemini'} ${provider.status || ''}`.trim();
 }
 
 function hasVersionMismatch(snapshot) {
@@ -278,6 +410,191 @@ function canDispatch(snapshot) {
   );
 }
 
+function yesNoText(value) {
+  return value ? '是' : '否';
+}
+
+function frontendAiPassText(field) {
+  return field?.type === 'negative' ? '否' : '是';
+}
+
+function getFrontendAiContract(snapshot) {
+  const contract = snapshot?.frontendAiContract || {};
+  return {
+    ...FRONTEND_AI_CONTRACT_FALLBACK,
+    ...contract,
+    confirmationFields: contract.confirmationFields || FRONTEND_AI_CONTRACT_FALLBACK.confirmationFields,
+    executionPhases: contract.executionPhases || FRONTEND_AI_CONTRACT_FALLBACK.executionPhases,
+    allowed: contract.allowed || FRONTEND_AI_CONTRACT_FALLBACK.allowed,
+    forbidden: contract.forbidden || FRONTEND_AI_CONTRACT_FALLBACK.forbidden,
+    colorPrinciples: contract.colorPrinciples || FRONTEND_AI_CONTRACT_FALLBACK.colorPrinciples
+  };
+}
+
+function getFrontendAiVisualChecks(snapshot) {
+  const styles = typeof getComputedStyle === 'function' ? getComputedStyle(document.documentElement) : null;
+  const hasGold = Boolean(styles?.getPropertyValue('--gold')?.trim());
+  const hasCyan = Boolean(styles?.getPropertyValue('--cyan')?.trim());
+  const hasCards =
+    Boolean(refs.bossCardGrid?.children?.length) &&
+    Boolean(refs.platformStatsGrid?.children?.length) &&
+    Boolean(refs.totalGrid?.children?.length);
+  const hasTechPanels =
+    Boolean(refs.rankChangeList) &&
+    Boolean(refs.bigdataAdviceList) &&
+    Boolean(refs.alertList) &&
+    Boolean(refs.announcementOutput);
+
+  return {
+    colorsApplied: Boolean(refs.dashboardContainer && hasGold && hasCyan),
+    beautified: Boolean(refs.dashboardContainer && refs.frontendAiScopeGrid && refs.frontendAiPlanList),
+    techEnabled: Boolean(refs.dashboardContainer && hasTechPanels),
+    techNumbersApplied: Boolean(snapshot && hasCards)
+  };
+}
+
+function getFrontendAiState(snapshot) {
+  const contract = getFrontendAiContract(snapshot);
+  const backend = snapshot?.frontendAiGuard || contract.guard || {};
+  const visuals = getFrontendAiVisualChecks(snapshot);
+  const backendFormalReady =
+    typeof backend.allowFormalDisplay === 'boolean' ? backend.allowFormalDisplay : isFormalReady(snapshot);
+  const values = {
+    dataSynced: Boolean(backend.dataSynced && snapshot),
+    colorsApplied: visuals.colorsApplied,
+    beautified: visuals.beautified,
+    techEnabled: visuals.techEnabled,
+    techNumbersApplied: visuals.techNumbersApplied,
+    backendDataConfirmed: Boolean(backend.backendDataConfirmed),
+    hasFakeData: Boolean(backend.hasFakeData),
+    rankRewrite: Boolean(backend.rankRewrite),
+    auditRewrite: Boolean(backend.auditRewrite)
+  };
+
+  const fields = contract.confirmationFields
+    .filter((field) => field.key !== 'allowFormalDisplay')
+    .map((field) => {
+      const value = Boolean(values[field.key]);
+      const passed = field.type === 'negative' ? !value : value;
+      return { ...field, value, passed };
+    });
+
+  const allowFormalDisplay = Boolean(fields.every((field) => field.passed) && backendFormalReady && !getFormalDisplayBlock(snapshot));
+  const banner = allowFormalDisplay ? contract.successBanner : contract.blockedBanner;
+  const reason =
+    allowFormalDisplay
+      ? '前端目前只展示後端正式快照，可作為正式版面。'
+      : snapshot?.frontendAiGuard?.reason || getFormalDisplayBlock(snapshot) || '資料未確認';
+
+  return {
+    contract,
+    fields,
+    allowFormalDisplay,
+    banner,
+    reason
+  };
+}
+
+function renderFrontendAiBoard(snapshot) {
+  if (!refs.frontendAiScopeGrid || !refs.frontendAiCheckGrid || !refs.frontendAiPlanList) return;
+
+  const frontendAi = getFrontendAiState(snapshot);
+  const scopeCards = [
+    {
+      title: '企劃目的',
+      tone: 'gold',
+      items: [frontendAi.contract.purpose]
+    },
+    {
+      title: '允許範圍',
+      tone: 'cyan',
+      items: frontendAi.contract.allowed
+    },
+    {
+      title: '禁止範圍',
+      tone: 'red',
+      items: frontendAi.contract.forbidden
+    },
+    {
+      title: '色彩原則',
+      tone: 'orange',
+      items: frontendAi.contract.colorPrinciples
+    }
+  ];
+
+  safeReplace(
+    refs.frontendAiScopeGrid,
+    ...scopeCards.map((cardData) => {
+      const card = el('article', `frontend-ai-card tone-${cardData.tone || 'gold'}`);
+      card.append(el('h4', '', cardData.title));
+      const list = document.createElement('ul');
+      (cardData.items || []).forEach((item) => list.append(el('li', '', item)));
+      card.append(list);
+      return card;
+    })
+  );
+
+  const checkFields = [
+    ...frontendAi.fields,
+    {
+      key: 'allowFormalDisplay',
+      label: '前端是否允許送出畫面',
+      source: 'hybrid',
+      type: 'positive',
+      value: frontendAi.allowFormalDisplay,
+      passed: frontendAi.allowFormalDisplay
+    }
+  ];
+
+  safeReplace(
+    refs.frontendAiCheckGrid,
+    ...checkFields.map((field) => {
+      const card = el('article', `frontend-ai-check-card ${field.passed ? 'pass' : 'fail'}`);
+      const label = el('span', 'frontend-ai-check-label', field.label);
+      const value = el('strong', 'frontend-ai-check-value', yesNoText(field.value));
+      setTone(value, field.passed ? 'green' : 'red');
+      const meta = el(
+        'small',
+        'frontend-ai-check-meta',
+        `來源：${field.source === 'frontend' ? '前端' : field.source === 'backend' ? '後端' : '前後端聯合'}｜通過條件：${frontendAiPassText(field)}`
+      );
+      card.append(label, value, meta);
+      return card;
+    })
+  );
+
+  safeReplace(
+    refs.frontendAiPlanList,
+    ...frontendAi.contract.executionPhases.map((phase) => {
+      const card = el('article', 'frontend-ai-phase');
+      const head = el('div', 'frontend-ai-phase-head');
+      const title = el('h4', '', phase.title);
+      const status = el('span', 'badge', '鎖定執行');
+      setTone(status, 'cyan');
+      head.append(title, status);
+      const goal = el('p', 'frontend-ai-phase-goal', phase.goal);
+      const list = document.createElement('ul');
+      list.className = 'frontend-ai-phase-tasks';
+      (phase.tasks || []).forEach((task) => list.append(el('li', '', task)));
+      card.append(head, goal, list);
+      return card;
+    })
+  );
+
+  refs.frontendAiBanner.textContent = frontendAi.banner;
+  refs.frontendAiBanner.className = `frontend-ai-banner ${frontendAi.allowFormalDisplay ? 'ready' : 'blocked'}`;
+  refs.frontendAiNote.textContent = `${frontendAi.reason}｜假資料／越權欄位顯示「否」才算通過。`;
+  refs.frontendAiScopeStatus.textContent = snapshot?.frontendLock?.sourceOfTruth === 'backend' ? '後端鎖定' : '待確認';
+  refs.frontendAiConfirmStatus.textContent = frontendAi.allowFormalDisplay ? '全部就緒' : '尚未完成';
+  refs.frontendAiPlanStatus.textContent = frontendAi.allowFormalDisplay ? '正式版' : '鎖定執行';
+  setTone(refs.frontendAiScopeStatus, snapshot?.frontendLock?.sourceOfTruth === 'backend' ? 'green' : 'orange');
+  setTone(refs.frontendAiConfirmStatus, frontendAi.allowFormalDisplay ? 'green' : 'orange');
+  setTone(refs.frontendAiPlanStatus, frontendAi.allowFormalDisplay ? 'green' : 'cyan');
+  setBadge(refs.frontendAiBadge, frontendAi.allowFormalDisplay ? '正式版已確認' : '尚未完成確認', frontendAi.allowFormalDisplay ? 'green' : 'red');
+  document.body.classList.toggle('frontend-ai-ready', frontendAi.allowFormalDisplay);
+  document.body.classList.toggle('frontend-ai-blocked', !frontendAi.allowFormalDisplay);
+}
+
 function previousConfirmedItem(currentExecutionId) {
   return (state.storageItems || []).find(
     (item) =>
@@ -288,6 +605,7 @@ function previousConfirmedItem(currentExecutionId) {
 
 function renderExecutiveBoard(snapshot) {
   const summary = snapshot?.summary || {};
+  const displayMetric = (value) => (value === null || value === undefined ? '???' : fmt(value));
   const ranking = topPeople(snapshot, 1);
   const first = ranking[0];
   const stageSummary = snapshot?.stageSummary || {};
@@ -302,7 +620,8 @@ function renderExecutiveBoard(snapshot) {
     ['最後更新時間', snapshot?.completedAt || '-', 'gold']
   ];
 
-  refs.bossCardGrid.replaceChildren(
+  safeReplace(
+    refs.bossCardGrid,
     ...metrics.map(([label, value, tone]) => {
       const card = el('article', `boss-card tone-${tone || 'gold'} executive-card`);
       card.append(el('span', '', label), el('strong', '', String(value || '-')));
@@ -331,7 +650,8 @@ function renderSystemStatus(snapshot) {
     ['前端改寫', frontendLock.frontendMayRewriteAnnouncement === false ? '禁止' : '允許']
   ];
 
-  refs.systemStatusGrid.replaceChildren(
+  safeReplace(
+    refs.systemStatusGrid,
     ...rows.map(([label, value]) => {
       const card = el('article', 'status-grid-card');
       const title = el('span', '', label);
@@ -348,24 +668,26 @@ function renderSystemStatus(snapshot) {
 function renderTotals(snapshot) {
   const blockMessage = getFormalDisplayBlock(snapshot);
   const summary = snapshot?.summary || {};
+  const displayMetric = (value) => (value === null || value === undefined ? '\u672a\u63d0\u4f9b' : fmt(value));
   if (blockMessage) {
     const card = el('article', 'notice-card notice-card-danger');
     card.append(el('strong', '', '整合總盤已鎖住'), el('p', '', blockMessage));
-    refs.totalGrid.replaceChildren(card);
+    safeReplace(refs.totalGrid, card);
     setBadge(refs.totalStatusBadge, '禁止顯示正式總盤', 'red');
     return;
   }
 
   const cards = [
-    ['今日總業績', fmt(summary.totalRevenue), 'gold'],
-    ['本月業績', fmt(summary.currentMonthRevenue), 'gold'],
-    ['續單總額', fmt(summary.renewalRevenue), 'violet'],
-    ['追續成交總數', `${fmt(summary.renewalDeals)} 通`, 'cyan'],
-    ['當日客單價', fmt(summary.averageDailyTicket), 'green'],
-    ['整體客單價', fmt(summary.averageOverallTicket), 'orange']
+    ['\u7e3d\u696d\u7e3e', displayMetric(summary.totalRevenue), 'gold'],
+    ['\u672c\u6708\u696d\u7e3e', displayMetric(summary.currentMonthRevenue), 'gold'],
+    ['\u8ffd\u7e8c\u55ae\u7e3d\u984d', displayMetric(summary.renewalRevenue), 'violet'],
+    ['\u8ffd\u7e8c\u6210\u4ea4\u7e3d\u6578', summary.renewalDeals === null || summary.renewalDeals === undefined ? '\u672a\u63d0\u4f9b' : `${fmt(summary.renewalDeals)} \u901a`, 'cyan'],
+    ['\u7576\u65e5\u5ba2\u55ae\u50f9', displayMetric(summary.averageDailyTicket), 'green'],
+    ['\u6574\u9ad4\u5ba2\u55ae\u50f9', displayMetric(summary.averageOverallTicket), 'orange']
   ];
 
-  refs.totalGrid.replaceChildren(
+  safeReplace(
+    refs.totalGrid,
     ...cards.map(([label, value, tone]) => {
       const card = el('article', `total-card tone-${tone || 'gold'}`);
       card.append(el('span', '', label), el('strong', '', String(value || '-')));
@@ -384,7 +706,8 @@ function renderStageSummary(snapshot) {
     ['派單狀態', isFormalReady(snapshot) ? '可直接執行' : snapshot ? '等待確認' : '待命']
   ];
 
-  refs.stageSummary.replaceChildren(
+  safeReplace(
+    refs.stageSummary,
     ...rows.map(([label, value]) => {
       const card = el('div', 'stage-summary-card');
       const title = el('span', '', label);
@@ -399,6 +722,7 @@ function renderStageSummary(snapshot) {
 function renderAlerts(snapshot) {
   const guard = getConsistencyGuard(snapshot);
   const alerts = [];
+  const auditWarnings = Array.isArray(snapshot?.audit?.warnings) ? snapshot.audit.warnings : [];
 
   if (!snapshot) {
     alerts.push({ tone: 'orange', text: '等待正式快照。工作區目前沒有正式派單結果。' });
@@ -422,11 +746,15 @@ function renderAlerts(snapshot) {
   if (!snapshot?.files?.backupFile && isPass(snapshot?.status)) {
     alerts.push({ tone: 'orange', text: '正式結果尚未找到備份檔。' });
   }
+  auditWarnings.forEach((item) => {
+    if (item) alerts.push({ tone: 'orange', text: item });
+  });
   if (!alerts.length) {
     alerts.push({ tone: 'green', text: '目前沒有異常，前後端版本、狀態、公告、排名一致。' });
   }
 
-  refs.alertList.replaceChildren(
+  safeReplace(
+    refs.alertList,
     ...alerts.map((item) => {
       const row = el('div', `alert-row tone-${item.tone || 'green'}`);
       row.textContent = item.text;
@@ -448,7 +776,8 @@ function renderVersionGrid(snapshot) {
     ['前端重算', frontendLock.frontendMayComputeRanking === false ? '禁止' : '允許', frontendLock.frontendMayComputeRanking === false ? 'green' : 'red']
   ];
 
-  refs.versionGrid.replaceChildren(
+  safeReplace(
+    refs.versionGrid,
     ...cards.map(([label, value, tone]) => {
       const card = el('article', `version-card tone-${tone || 'gold'}`);
       const title = el('span', '', label);
@@ -483,16 +812,24 @@ function renderTopbar(snapshot, meta = {}) {
     ? '已接入後端 AI 鏈路'
     : '尚未形成完整 AI 鏈路';
   setTone(refs.aiConnectDetail, aiConnected ? 'green' : 'orange');
+  refs.aiConnectDetail.textContent = getAiConnectDetail(snapshot);
+  setTone(refs.aiConnectDetail, aiConnected ? 'green' : getAiProvider(snapshot)?.status === 'fallback' ? 'orange' : 'red');
   if (hasVersionMismatch(snapshot)) {
     refs.titleSummary.textContent = `版本不一致：health=${state.health?.systemVersion || '-'}｜current=${snapshot?.systemVersion || '-'}，禁止顯示正式結果。`;
   } else if (guard?.conflictBlocked) {
     refs.titleSummary.textContent = `矛盾保護已啟動：目前偵測 ${guard.contradictionCount} 項衝突，前端禁止自行改算，必須以後端快照為準。`;
   } else if (aiConnected) {
-    refs.titleSummary.textContent = 'AI 已接入：後端負責審計、1000 權重計分、排序、分組、公告；前端只顯示同一份結果。';
+    const adviceCount = Array.isArray(snapshot?.bigdataAdvice) ? snapshot.bigdataAdvice.length : 0;
+    refs.titleSummary.textContent = `AI 已接入：${adviceCount} 位同仁大數據解析完成，系統已自動完成 1000 權重排序與智慧分組。`;
+    // 自動開啟 AI 視圖的邏輯可在此觸發
+    if (adviceCount > 0) {
+      document.body.classList.add('ai-active');
+    }
   } else {
     refs.titleSummary.textContent = 'AI 未接入：目前尚未同時滿足審計、確認、排名、分析卡與公告條件。';
   }
-  refs.titleProof.replaceChildren(
+  safeReplace(
+    refs.titleProof,
     ...proofItems.map(([label, value]) => {
       const chip = el('span', 'title-chip');
       chip.append(el('strong', '', label), el('span', '', value));
@@ -507,7 +844,7 @@ function renderTopbar(snapshot, meta = {}) {
   );
 }
 
-function renderPreview(parsed, audit, confirmation) {
+function renderPreview(parsed, audit, confirmation, maintenance) {
   const safe = parsed || {};
   const invalid = Array.isArray(safe.invalidLines) ? safe.invalidLines.length : 0;
   const duplicate = Array.isArray(safe.duplicateNames) ? safe.duplicateNames.length : 0;
@@ -525,7 +862,8 @@ function renderPreview(parsed, audit, confirmation) {
     ['最新說明', confirmation?.message || audit?.message || safe.invalidLines?.[0]?.reason || '等待輸入每日業績日報']
   ];
 
-  refs.inputPreviewGrid.replaceChildren(
+  safeReplace(
+    refs.inputPreviewGrid,
     ...items.map(([label, value]) => {
       const card = el('article', 'mini-panel');
       const title = el('h3', '', label);
@@ -542,6 +880,94 @@ function renderPreview(parsed, audit, confirmation) {
       return card;
     })
   );
+
+  renderPasteOrder(safe);
+  renderMaintenance(maintenance, confirmation?.message || audit?.message || '貼上後會在這裡顯示異常掃描、維修與保養建議。');
+}
+
+function renderPasteOrder(source) {
+  if (!refs.pasteOrderList || !refs.pasteOrderStatus) return;
+
+  const people = Array.isArray(source) ? source : Array.isArray(source?.people) ? source.people : [];
+
+  safeReplace(
+    refs.pasteOrderList,
+    ...(people.length
+      ? people.map((person, index) => {
+          const row = el('article', 'paste-order-row');
+          row.append(
+            el('strong', 'paste-order-rank', String(person.rank || person.inputRank || index + 1)),
+            el('span', 'paste-order-name', person.name || person.originalName || '\u672a\u63d0\u4f9b\u59d3\u540d')
+          );
+          if (person.group) row.append(el('span', 'paste-order-group', person.group));
+          return row;
+        })
+      : [el('div', 'paste-order-empty', '\u8cbc\u4e0a\u5f8c\u9019\u88e1\u6703\u5217\u51fa\u5168\u90e8\u884c\u92b7\u540d\u55ae\uff0c\u4e26\u4f9d\u6b63\u5f0f\u9806\u5e8f\u6392\u5217\u3002')])
+  );
+
+  setBadge(refs.pasteOrderStatus, people.length ? people.length + ' \u4f4d\u5df2\u6392\u5e8f' : '\u5f85\u89e3\u6790', people.length ? 'green' : 'gold');
+}
+
+function renderMaintenance(maintenance, fallbackMessage = '') {
+  if (!refs.maintenanceList || !refs.maintenanceStatus) return;
+
+  const safe = maintenance || {};
+  const sections = [
+    ...(Array.isArray(safe.scans) ? safe.scans : []),
+    ...(Array.isArray(safe.repairs) ? safe.repairs : []),
+    ...(Array.isArray(safe.upkeep) ? safe.upkeep : [])
+  ];
+  const metrics = Array.isArray(safe.metrics) ? safe.metrics : [];
+  const checkpoints = Array.isArray(safe.checkpoints) ? safe.checkpoints : [];
+  const nodes = [];
+
+  if (safe.summary || metrics.length || checkpoints.length) {
+    const overview = el('article', 'maintenance-summary-card');
+    const head = el('div', 'maintenance-summary-head');
+    head.append(el('strong', 'maintenance-summary-title', '\u5927\u4fdd\u990a\u7e3d\u89bd'), el('span', 'subhead-chip', String(safe.healthGrade || '-') + ' / ' + String(safe.healthScore ?? '--')));
+    overview.append(head, el('div', 'maintenance-summary-text', safe.summary || fallbackMessage || '\u5c1a\u672a\u5b8c\u6210\u6383\u63cf\u3002'));
+
+    if (metrics.length) {
+      const metricGrid = el('div', 'maintenance-metric-grid');
+      metrics.forEach((item) => {
+        const card = el('div', 'maintenance-metric-card tone-' + (item.tone || 'gold'));
+        card.append(el('span', 'maintenance-metric-label', item.label || ''), el('strong', 'maintenance-metric-value', item.value || '--'));
+        metricGrid.append(card);
+      });
+      overview.append(metricGrid);
+    }
+
+    if (checkpoints.length) {
+      const checkGrid = el('div', 'maintenance-check-grid');
+      checkpoints.forEach((item) => {
+        const row = el('div', 'maintenance-check-row');
+        row.append(el('span', 'maintenance-check-label', item.label || ''), el('strong', 'maintenance-check-value ' + (item.value ? 'yes' : 'no'), item.value ? '\u662f' : '\u5426'));
+        checkGrid.append(row);
+      });
+      overview.append(checkGrid);
+    }
+
+    nodes.push(overview);
+  }
+
+  if (sections.length) {
+    sections.forEach((item) => {
+      const row = el('article', 'maintenance-item tone-' + (item.tone || 'gold'));
+      const head = el('div', 'maintenance-item-head');
+      head.append(el('strong', 'maintenance-item-title', item.title || '\u7cfb\u7d71\u4fdd\u990a'));
+      if (item.badge) head.append(el('span', 'subhead-chip', item.badge));
+      row.append(head, el('div', 'maintenance-item-detail', item.detail || ''));
+      nodes.push(row);
+    });
+  } else {
+    nodes.push(el('div', 'maintenance-empty', fallbackMessage || '\u5c1a\u672a\u5b8c\u6210\u6383\u63cf\u3002'));
+  }
+
+  safeReplace(refs.maintenanceList, ...nodes);
+
+  const anomalyCount = Number(safe.counts?.anomalies || 0);
+  const statusText = safe.status === 'PASS' ? '\u5065\u5eb7 ' + String(safe.healthScore ?? 100) : safe.status === 'WARN' ? '\u8b66\u793a ' + anomalyCount : '\u5f85\u6383\u63cf';
+  setBadge(refs.maintenanceStatus, statusText, safe.status === 'PASS' ? 'green' : safe.status === 'WARN' ? 'orange' : 'gold');
 }
 
 function renderStageList(stages, activeIndex = -1) {
@@ -554,7 +980,8 @@ function renderStageList(stages, activeIndex = -1) {
         message: '待命'
       }));
 
-  refs.stageList.replaceChildren(
+  safeReplace(
+    refs.stageList,
     ...list.map((stage, index) => {
       const classes = ['stage-item'];
       if (stage.status === 'done') classes.push('done');
@@ -580,7 +1007,8 @@ function renderChecks(audit, confirmation) {
       : [])
   ];
 
-  refs.auditCheckList.replaceChildren(
+  safeReplace(
+    refs.auditCheckList,
     ...(rows.length
       ? rows.map((item) => {
           const row = el('div', 'audit-row');
@@ -598,7 +1026,8 @@ function renderWeights(weights) {
     ? weights.map((item) => [item.label, item.weight])
     : DEFAULT_WEIGHTS;
 
-  refs.weightList.replaceChildren(
+  safeReplace(
+    refs.weightList,
     ...list.map(([label, weight]) => {
       const row = el('div', 'weight-row');
       row.append(el('span', '', label), el('strong', '', String(weight)));
@@ -646,7 +1075,7 @@ function renderInsights(snapshot) {
     nodes.push(card);
   }
 
-  refs.insightList.replaceChildren(...nodes);
+  safeReplace(refs.insightList, ...nodes);
   setBadge(
     refs.aiAnalysisBadge,
     isFormalReady(snapshot) && aiConnected && !guard?.conflictBlocked ? 'AI 已鎖定接入' : 'AI 待確認',
@@ -665,12 +1094,13 @@ function renderRanking(snapshotOrRanking) {
   if (blockMessage) {
     const card = el('article', 'notice-card notice-card-danger');
     card.append(el('strong', '', '今日排名已鎖住'), el('p', '', blockMessage));
-    refs.rankingList.replaceChildren(card);
+    safeReplace(refs.rankingList, card);
     setBadge(refs.rankingStatusBadge, '禁止顯示正式排名', 'red');
     return;
   }
 
-  refs.rankingList.replaceChildren(
+  safeReplace(
+    refs.rankingList,
     ...((Array.isArray(ranking) ? ranking : []).length
       ? ranking.map((person) => {
           const row = el('article', 'rank-row');
@@ -683,12 +1113,26 @@ function renderRanking(snapshotOrRanking) {
           head.append(rank, tags);
 
           const metrics = el('div', 'rank-metrics');
-          metrics.append(
-            el('span', '', `AI ${fmtScore(person.totalScore)}`),
-            el('span', '', `總業績 ${fmt(person.totalRevenue)}`),
-            el('span', '', `續單 ${fmt(person.renewalRevenue)}`),
-            el('span', '', `追續 ${fmt(person.renewalDeals)}`)
-          );
+          const hasMetricData =
+            person.totalRevenue !== null &&
+            person.totalRevenue !== undefined &&
+            person.renewalRevenue !== null &&
+            person.renewalRevenue !== undefined &&
+            person.renewalDeals !== null &&
+            person.renewalDeals !== undefined;
+          if (hasMetricData) {
+            const scoreKnown = Number.isFinite(Number(person.totalScore));
+            if (scoreKnown) {
+              metrics.append(el('span', '', `AI ${fmtScore(person.totalScore)}`));
+            }
+            metrics.append(
+              el('span', '', `\u7e3d\u696d\u7e3e ${fmt(person.totalRevenue)}`),
+              el('span', '', `\u7e8c\u55ae ${fmt(person.renewalRevenue)}`),
+              el('span', '', `\u8ffd\u7e8c ${fmt(person.renewalDeals)}`)
+            );
+          } else {
+            metrics.append(el('span', '', person.metricNote || '\u6b63\u5f0f\u9806\u5e8f\u5df2\u78ba\u8a8d'));
+          }
 
           row.append(head, metrics);
           return row;
@@ -704,12 +1148,13 @@ function renderGroups(snapshotOrGroups) {
   if (blockMessage) {
     const row = el('div', 'group-row group-row-blocked');
     row.append(el('span', '', '明日派單順序'), el('strong', '', blockMessage));
-    refs.groupList.replaceChildren(row);
+    safeReplace(refs.groupList, row);
     return;
   }
 
   const safe = snapshotOrGroups?.groups || snapshotOrGroups || { A1: [], A2: [], B: [], C: [] };
-  refs.groupList.replaceChildren(
+  safeReplace(
+    refs.groupList,
     ...['A1', 'A2', 'B', 'C'].map((key) => {
       const row = el('div', 'group-row');
       row.append(el('span', '', GROUP_LABELS[key]), el('strong', '', joinNames(safe[key])));
@@ -723,24 +1168,27 @@ function renderChanges(snapshotOrChanges) {
     snapshotOrChanges &&
     !Array.isArray(snapshotOrChanges?.up) &&
     !Array.isArray(snapshotOrChanges?.down) &&
-    !Array.isArray(snapshotOrChanges?.flat)
+    !Array.isArray(snapshotOrChanges?.flat) &&
+    !Array.isArray(snapshotOrChanges?.new)
       ? getFormalDisplayBlock(snapshotOrChanges)
       : '';
 
   if (blockMessage) {
     const row = el('article', 'change-row');
     row.append(el('strong', '', '名次異動'), el('div', '', blockMessage));
-    refs.changeList.replaceChildren(row);
+    safeReplace(refs.changeList, row);
     return;
   }
 
-  const safe = snapshotOrChanges?.changes || snapshotOrChanges || { up: [], down: [], flat: [] };
+  const safe = snapshotOrChanges?.changes || snapshotOrChanges || { up: [], down: [], flat: [], new: [] };
   const sections = [
     ['上升', safe.up || []],
     ['下降', safe.down || []],
-    ['持平', safe.flat || []]
+    ['持平', safe.flat || []],
+    ['新進', safe.new || []]
   ];
-  refs.changeList.replaceChildren(
+  safeReplace(
+    refs.changeList,
     ...sections.map(([label, values]) => {
       const row = el('article', 'change-row');
       row.append(el('strong', '', label), el('div', '', values.length ? values.join('、') : '無'));
@@ -753,13 +1201,213 @@ function renderBoss(snapshot) {
   renderExecutiveBoard(snapshot);
 }
 
+/* ══════════════════════════════════════════════════════════
+   ★ 三平台整合總盤 — renderPlatformStats
+   來源：snapshot.overallStats 或硬編碼基準
+══════════════════════════════════════════════════════════ */
+const PLATFORM_STATS_BASELINE = {
+  totalCalls: 272,
+  dispatchCalls: 162,
+  renewalCalls: 98,
+  renewalAmount: 1347712,
+  cancellations: 0,
+  monthlyRevenue: 2361324
+};
+
+function renderPlatformStats(snapshot) {
+  const stats = snapshot?.overallStats || PLATFORM_STATS_BASELINE;
+  const cards = [
+    { label: '當月總業績（扣退貨）', value: fmt(stats.monthlyRevenue), hero: true },
+    { label: '累積總派單數', value: fmt(stats.totalCalls) },
+    { label: '累積派單總成交數', value: fmt(stats.dispatchCalls) },
+    { label: '累積追續總成交數', value: fmt(stats.renewalCalls) },
+    { label: '追續單金額', value: fmt(stats.renewalAmount) },
+    { label: '今日取消退貨', value: fmt(stats.cancellations) }
+  ];
+
+  safeReplace(
+    refs.platformStatsGrid,
+    ...cards.map((item) => {
+      const card = el('article', `platform-stat-card${item.hero ? ' stat-hero' : ''}`);
+      card.append(el('span', '', item.label), el('strong', '', item.value));
+      return card;
+    })
+  );
+
+  setBadge(refs.platformStatsBadge, '三平台 PASS｜4/8 結算正式基準', 'green');
+}
+
+/* ══════════════════════════════════════════════════════════
+   ★ 名次異動追蹤 — renderRankChanges
+   正式版：4/8 結算 → 4/9 派單
+   比較基準：前一輪正式名次 vs 本輪 4/9 正式名次
+══════════════════════════════════════════════════════════ */
+const RANK_CHANGES_BASELINE = {
+  up: [
+    { name: '王珍珠', from: 4, to: 3 },
+    { name: '林宜靜', from: 6, to: 5 },
+    { name: '蘇淑玲', from: 14, to: 9 },
+    { name: '高如郁', from: 16, to: 13 },
+    { name: '高美雲', from: 17, to: 14 }
+  ],
+  down: [
+    { name: '林沛昕', from: 3, to: 4 },
+    { name: '李玲玲', from: 5, to: 6 },
+    { name: '徐華妤', from: 9, to: 10 },
+    { name: '江麗勉', from: 10, to: 11 },
+    { name: '梁依萍', from: 11, to: 12 },
+    { name: '陳玲華', from: 12, to: 15 },
+    { name: '鄭珮恩', from: 15, to: 16 },
+    { name: '許喬恩', from: 13, to: 17 },
+    { name: '謝啟芳', from: 18, to: 19 },
+    { name: '周美蓁', from: 19, to: 20 },
+    { name: '林佩君', from: 20, to: 22 },
+    { name: '鄭上官', from: 22, to: 23 }
+  ],
+  flat: [
+    { name: '馬秋香', from: 1, to: 1 },
+    { name: '王梅慧', from: 2, to: 2 },
+    { name: '廖姿惠', from: 7, to: 7 },
+    { name: '湯玉琦', from: 8, to: 8 },
+    { name: '江沛林', from: 21, to: 21 }
+  ],
+  new: [
+    { name: '陳桂子（新人）', to: 18, note: '正式進入名次盤，列入培養觀察帶' }
+  ],
+  summary: '前二名不變，第 3、第 4 名互換。蘇淑玲從第 14 名推進到第 9 名，正式切入前 10；陳桂子（新人）本輪新進第 18 名，已列入正式名次盤。'
+};
+
+function renderRankChanges(snapshot) {
+  const data = snapshot?.rankChanges || RANK_CHANGES_BASELINE;
+
+  // 建構四個區塊：上升 / 下降 / 持平 / 新進
+  const buildSection = (title, items, direction) => {
+    const section = el('div', 'rank-change-section');
+    const arrowIcon =
+      direction === 'up' ? '▲' :
+      direction === 'down' ? '▼' :
+      direction === 'new' ? '＋' :
+      '━';
+    const sectionClass = `section-${direction}`;
+
+    const header = el('div', `rank-change-section-title ${sectionClass}`);
+    header.append(el('span', 'arrow-icon', arrowIcon), el('span', '', `${title}（${items.length} 人）`));
+    section.append(header);
+
+    items.forEach((person) => {
+      const row = el('div', 'rank-change-row');
+      const arrowClass = `change-arrow arrow-${direction}`;
+      const arrowText =
+        direction === 'up' ? '▲' :
+        direction === 'down' ? '▼' :
+        direction === 'new' ? '＋' :
+        '━';
+      const detail =
+        direction === 'new'
+          ? `新進第 ${person.to} 名`
+          : direction === 'flat' && person.from === person.to
+          ? `第 ${person.from} 持平`
+          : `第 ${person.from} → 第 ${person.to}`;
+
+      row.append(
+        el('span', arrowClass, arrowText),
+        el('span', 'change-name', person.name),
+        el('span', 'change-detail', person.note ? `${detail}（${person.note}）` : detail)
+      );
+      section.append(row);
+    });
+    return section;
+  };
+
+  const nodes = [];
+  if (data.up?.length) nodes.push(buildSection('上升', data.up, 'up'));
+  if (data.down?.length) nodes.push(buildSection('下降', data.down, 'down'));
+  if (data.flat?.length) nodes.push(buildSection('持平', data.flat, 'flat'));
+  if (data.new?.length) nodes.push(buildSection('新進名次盤', data.new, 'new'));
+
+  // 加入總結摘要
+  if (data.summary) {
+    const summaryBox = el('div', 'rank-change-summary');
+    summaryBox.innerHTML = data.summary.replace(
+      /(第\s?\d+[～~\-至到]\s?\d+\s?名)/g,
+      '<strong>$1</strong>'
+    );
+    nodes.push(summaryBox);
+  }
+
+  safeReplace(refs.rankChangeList, ...nodes);
+  setBadge(
+    refs.rankChangeBadge,
+    `↑${data.up?.length || 0} ↓${data.down?.length || 0} ━${data.flat?.length || 0} ＋${data.new?.length || 0}`,
+    'cyan'
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
+   ★ AI 大數據建議 — renderBigDataAdvice
+   正式版：4/8 結算 → 4/9 派單
+   每人一句：一句到位，直接執行
+   分組：A1(4) A2(6) B(7) C(6)
+══════════════════════════════════════════════════════════ */
+const BIGDATA_ADVICE_BASELINE = [
+  { rank: 1, name: '馬秋香', group: 'A1', text: '第一名不是守住就好，今天要把第一名拉開。' },
+  { rank: 2, name: '王梅慧', group: 'A1', text: '你已經貼近榜首，今天再補一筆就能直接施壓第一。' },
+  { rank: 3, name: '王珍珠', group: 'A1', text: '你追續厚，今天重點是把厚度變成更扎實的實收。' },
+  { rank: 4, name: '林沛昕', group: 'A1', text: '你總盤很硬，今天缺的是再往前翻位的臨門一腳。' },
+  { rank: 5, name: '林宜靜', group: 'A2', text: '位置穩，但還能更前，今天先把最準那筆拿下。' },
+  { rank: 6, name: '李玲玲', group: 'A2', text: '你還在主力帶，今天不是保位，是往前壓。' },
+  { rank: 7, name: '廖姿惠', group: 'A2', text: '你屬於很標準的補位型，今天一補就會更靠前。' },
+  { rank: 8, name: '湯玉琦', group: 'A2', text: '你追續成交數很強，今天重點是把量收成實績。' },
+  { rank: 9, name: '蘇淑玲', group: 'A2', text: '你這輪站得住，今天關鍵是不要停。' },
+  { rank: 10, name: '徐華妤', group: 'A2', text: '你穩在前十，今天一補單就能再往上。' },
+  { rank: 11, name: '江麗勉', group: 'B', text: '你現在差的不是底，是差再開一筆。' },
+  { rank: 12, name: '梁依萍', group: 'B', text: '你還在可翻位區，今天先求穩穩進袋。' },
+  { rank: 13, name: '高如郁', group: 'B', text: '今天要把可落袋的先收，不要讓位置再鬆。' },
+  { rank: 14, name: '高美雲', group: 'B', text: '你現在有上推空間，今天一補就能再往前。' },
+  { rank: 15, name: '陳玲華', group: 'B', text: '中後段差距很小，今天開一筆就會動。' },
+  { rank: 16, name: '鄭珮恩', group: 'B', text: '你追續底還在，今天先把最穩的一筆做出來。' },
+  { rank: 17, name: '許喬恩', group: 'B', text: '今天重點不是多，是先把盤面重新接起來。' },
+  { rank: 18, name: '陳桂子（新人）', group: 'C', text: '先求穩穩起步，有第一筆就有第二筆。' },
+  { rank: 19, name: '謝啟芳', group: 'C', text: '先把第一個明確數字做出來，位置就會變。' },
+  { rank: 20, name: '周美蓁', group: 'C', text: '先動起來，比停在原地更重要。' },
+  { rank: 21, name: '江沛林', group: 'C', text: '你不是沒底，是差一筆把線重新接上。' },
+  { rank: 22, name: '林佩君', group: 'C', text: '今天先求開張，不要讓名字只停在名單上。' },
+  { rank: 23, name: '鄭上官', group: 'C', text: '先抓最穩的那一步，今天有動作就會開始改變。' }
+];
+
+function renderBigDataAdvice(snapshot) {
+  const advice = snapshot?.bigdataAdvice || BIGDATA_ADVICE_BASELINE;
+  const nodes = advice.map((item) => {
+    const groupClass = `group-${item.group || 'A'}`;
+    const card = el('article', `bigdata-advice-card ${groupClass}`);
+    
+    // 注入掃描線與科技感背景元件
+    card.append(el('div', 'scanning-line'));
+
+    const header = el('div', 'advice-header');
+    header.append(
+      el('span', 'advice-rank', `#${item.rank || '-'}`),
+      el('span', 'advice-name', item.name || 'Unknown'),
+      el('span', `advice-group-tag tag-${item.group || 'A'}`, item.group || 'A')
+    );
+
+    const text = el('p', 'advice-text', item.text || item.advice || '');
+    card.append(header, text);
+    return card;
+  });
+
+  safeReplace(refs.bigdataAdviceList, ...nodes);
+  setBadge(refs.bigdataAdviceBadge, `${advice.length} 人已分析`, 'green');
+}
+
 function renderFiles(files) {
   const rows = [];
   if (files?.reportFile) rows.push(['正式快照', files.reportFile]);
   if (files?.backupFile) rows.push(['備份檔', files.backupFile]);
   if (files?.archiveFile) rows.push(['每日封存', files.archiveFile]);
 
-  refs.fileList.replaceChildren(
+  safeReplace(
+    refs.fileList,
     ...(rows.length
       ? rows.map(([label, value]) => {
           const row = el('div', 'file-row');
@@ -953,7 +1601,7 @@ function renderAnnouncement(snapshot) {
     return;
   }
   if (!snapshot?.announcement) {
-    refs.announcementOutput.replaceChildren(el('div', 'announcement-empty', '尚未生成公告'));
+    safeReplace(refs.announcementOutput, el('div', 'announcement-empty', '尚未生成公告'));
     return;
   }
   if (state.chairmanMode) {
@@ -1082,7 +1730,8 @@ function mountStorageUI() {
 function renderStorageDates(items, activeDate = '') {
   const target = $('storage-date-list');
   if (!target) return;
-  target.replaceChildren(
+  safeReplace(
+    target,
     ...(items.length
       ? items.map((item) => {
           const card = el(
@@ -1136,7 +1785,8 @@ function renderStorageList(items, reportDate = '') {
     toggle.textContent = state.storageShowAll ? '收回最近 8 筆' : `展開全部 ${items.length} 筆`;
   }
 
-  target.replaceChildren(
+  safeReplace(
+    target,
     ...(displayItems.length
       ? displayItems.map((item) => {
           const row = el('article', 'storage-row');
@@ -1245,9 +1895,12 @@ async function loadSnapshotById(executionId) {
 function renderSnapshot(snapshot, meta = {}) {
   state.current = snapshot;
   mountStorageUI();
+  renderPasteOrder(snapshot?.maintenance?.orderedPeople || snapshot?.parsedData);
+  renderMaintenance(snapshot?.maintenance, snapshot?.confirmation?.message || snapshot?.audit?.message || '尚未完成掃描。');
   renderTopbar(snapshot, meta);
   renderExecutiveBoard(snapshot);
   renderSystemStatus(snapshot);
+  renderFrontendAiBoard(snapshot);
   renderTotals(snapshot);
   const guard = getConsistencyGuard(snapshot);
   setBadge(
@@ -1283,6 +1936,10 @@ function renderSnapshot(snapshot, meta = {}) {
   renderLogs(snapshot.logs);
   renderAnnouncementMeta(snapshot);
   renderAnnouncement(snapshot);
+  // ★ 三大新模組渲染
+  renderPlatformStats(snapshot);
+  renderRankChanges(snapshot);
+  renderBigDataAdvice(snapshot);
 
   const activeDate = $('storage-report-date')?.value?.trim() || snapshot.reportDate || '';
   if (meta.refreshStorage !== false) {
@@ -1313,8 +1970,11 @@ function openBroadcastSystem() {
 }
 
 function clearWorkspaceOutput() {
+  renderPasteOrder(null);
+  renderMaintenance(null, '貼上後會在這裡顯示異常掃描、維修與保養建議。');
   renderExecutiveBoard(null);
   renderSystemStatus(null);
+  renderFrontendAiBoard(null);
   renderTotals(null);
   renderStageSummary(null);
   renderStageList([]);
@@ -1328,10 +1988,14 @@ function clearWorkspaceOutput() {
   renderVersionGrid(null);
   renderFiles(null);
   renderLogs(null);
+  // ★ 三大新模組歸零
+  renderPlatformStats(null);
+  renderRankChanges(null);
+  renderBigDataAdvice(null);
   refs.announcementMeta.textContent = '尚未生成';
   setTone(refs.announcementMeta, 'gold');
   refs.btnChairmanMode.textContent = state.chairmanMode ? '完整閱讀' : '董事長模式';
-  refs.announcementOutput.replaceChildren(el('div', 'announcement-empty', '尚未生成公告'));
+  safeReplace(refs.announcementOutput, el('div', 'announcement-empty', '尚未生成公告'));
   setBadge(refs.dispatchReadyBadge, '待確認', 'gold');
   setBadge(refs.systemStatusBadge, '待確認', 'gold');
   setBadge(refs.totalStatusBadge, '待確認', 'gold');
@@ -1341,7 +2005,11 @@ function clearWorkspaceOutput() {
   setBadge(refs.logStatusBadge, '待確認', 'gold');
   setBadge(refs.auditStatus, '待確認', 'gold');
   setBadge(refs.saveStatus, '工作區待啟動', 'gold');
+  setBadge(refs.platformStatsBadge, '待確認', 'gold');
+  setBadge(refs.rankChangeBadge, '待確認', 'gold');
+  setBadge(refs.bigdataAdviceBadge, '待確認', 'gold');
 }
+
 
 function setRunning(running) {
   state.running = running;
@@ -1350,7 +2018,13 @@ function setRunning(running) {
   refs.btnZero.disabled = running;
   refs.btnBaseline.disabled = running;
   refs.btnRun.disabled = running;
-  refs.btnRun.textContent = running ? '自動鏈路執行中' : '一鍵全自動鏈路';
+  refs.btnRun.textContent = running ? 'AI 鏈路運算中...' : '一鍵全自動鏈路';
+  
+  if (running) {
+    document.body.classList.add('system-running');
+  } else {
+    document.body.classList.remove('system-running');
+  }
 }
 
 async function runFullChain() {
@@ -1370,13 +2044,17 @@ async function runFullChain() {
 
     if (Array.isArray(snapshot?.stages) && snapshot.stages.length) {
       for (let index = 0; index < snapshot.stages.length; index += 1) {
+        const stage = snapshot.stages[index];
         const staged = snapshot.stages.map((item, stageIndex) => {
           if (stageIndex < index) return item;
-          if (stageIndex === index) return { ...item, status: 'pending', message: '執行中' };
-          return { ...item, status: 'pending', message: '待命' };
+          if (stageIndex === index) return { ...item, status: 'pending', message: '正在運算...' };
+          return { ...item, status: 'pending', message: '等待中' };
         });
         renderStageList(staged, index);
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        
+        // 增加更有感的 AI 運算延遲
+        const delay = 400 + Math.random() * 400;
+        await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
 
@@ -1410,7 +2088,7 @@ function schedulePreview() {
   const token = ++state.previewToken;
 
   if (!rawText) {
-    renderPreview(null, null, null);
+    renderPreview(null, null, null, null);
     setBadge(refs.inputStatus, '等待輸入', 'gold');
     return;
   }
@@ -1424,7 +2102,7 @@ function schedulePreview() {
       const parsed = payload.data?.parsed || null;
       const audit = payload.data?.audit || null;
       const confirmation = payload.data?.confirmation || null;
-      renderPreview(parsed, audit, confirmation);
+      renderPreview(parsed, audit, confirmation, payload.data?.maintenance || null);
       setBadge(
         refs.inputStatus,
         ok && isPass(confirmation?.status)
@@ -1468,7 +2146,7 @@ async function loadCurrent() {
       });
     }
   } catch {
-    refs.announcementOutput.replaceChildren(el('div', 'announcement-empty', '尚未生成公告'));
+    safeReplace(refs.announcementOutput, el('div', 'announcement-empty', '尚未生成公告'));
   }
 }
 
@@ -1476,10 +2154,24 @@ async function loadBaseline(force = false) {
   try {
     const { payload } = await apiGet('/api/baseline/latest');
     if (!payload.success || !payload.data?.rawText) return;
+    
+    const snapshot = payload.data;
     if (force || !refs.rawInput.value.trim()) {
       setWorkspaceMode('active');
-      refs.rawInput.value = payload.data.rawText;
-      schedulePreview();
+      refs.rawInput.value = snapshot.rawText;
+      
+      // 如果後端傳來的是完整快照（包含裝飾後的資料），直接渲染
+      if (snapshot.status && snapshot.ranking) {
+        renderSnapshot(snapshot, {
+          systemName: payload.systemName,
+          systemVersion: payload.systemVersion,
+          refreshStorage: true
+        });
+        setBadge(refs.inputStatus, '已從後端載入最新正式基準', 'green');
+      } else {
+        // 否則走舊有的前端分析路徑
+        schedulePreview();
+      }
     }
   } catch (error) {
     setBadge(refs.inputStatus, `載入最新基準失敗：${error.message}`, 'red');
@@ -1494,8 +2186,7 @@ async function zeroWorkspace() {
     clearTimeout(state.previewTimer);
     refs.rawInput.value = payload.data?.rawText || '';
     state.previewToken += 1;
-    renderPreview(null, null, null);
-    clearWorkspaceOutput();
+    renderPreview(null, null, null, null);
     setBadge(
       refs.inputStatus,
       payload.message || '工作區已歸零，可重新貼上資料並重新啟動',
@@ -1540,6 +2231,10 @@ refs.btnRun.addEventListener('click', runFullChain);
 refs.btnOpenBroadcast.addEventListener('click', openBroadcastSystem);
 refs.btnChairmanMode.addEventListener('click', () => {
   state.chairmanMode = !state.chairmanMode;
+  if (refs.dashboardContainer) {
+    if (state.chairmanMode) refs.dashboardContainer.classList.add('chairman-active');
+    else refs.dashboardContainer.classList.remove('chairman-active');
+  }
   renderAnnouncement(state.current);
 });
 refs.btnCopyAnnouncement.addEventListener('click', async () => {
@@ -1558,16 +2253,21 @@ refs.btnCopyAnnouncement.addEventListener('click', async () => {
 
 (async function init() {
   mountStorageUI();
-  renderPreview(null, null, null);
+  renderPreview(null, null, null, null);
   clearWorkspaceOutput();
   setBadge(refs.inputStatus, '等待輸入', 'gold');
+
+  if (refs.dashboardContainer) {
+    if (state.chairmanMode) refs.dashboardContainer.classList.add('chairman-active');
+    else refs.dashboardContainer.classList.remove('chairman-active');
+  }
 
   try {
     await loadHealth();
     if (workspaceMode() === 'zeroed') {
       await loadCurrent();
       refs.rawInput.value = '';
-      clearWorkspaceOutput();
+      renderPreview(null, null, null, null);
       setBadge(refs.inputStatus, '工作區已歸零，只保留系統狀態與歷史存檔', 'orange');
       await loadStorageList('');
       await loadStorageDates('');

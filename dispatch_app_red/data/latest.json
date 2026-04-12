@@ -1,18 +1,18 @@
 {
   "systemName": "兆櫃 AI 派單中樞系統",
   "systemVersion": "網頁版-2026-04-06",
-  "executionId": 1775487377079,
+  "executionId": 1775727111585,
   "operator": "WEB",
   "source": "manual",
   "status": "通過",
-  "completedAt": "2026/04/06 22:56:17",
-  "reportDate": "115/04/06",
-  "dispatchDate": "115/04/07",
-  "rawText": "報表日期：115/04/06\n派單日期：115/04/07\n1、馬秋香｜【追續】6｜【續單】146260｜【總業績】169920\n2、王梅慧｜【追續】6｜【續單】119520｜【總業績】149010\n3、王珍珠｜【追續】7｜【續單】127060｜【總業績】148108\n4、李玲玲｜【追續】2｜【續單】73860｜【總業績】125420\n5、林沛昕｜【追續】2｜【續單】103800｜【總業績】110760\n6、徐華妤｜【追續】4｜【續單】63020｜【總業績】82020\n7、林宜靜｜【追續】4｜【續單】22420｜【總業績】78420\n8、江麗勉｜【追續】0｜【續單】0｜【總業績】63220\n9、廖姿惠｜【追續】4｜【續單】18948｜【總業績】51568\n10、湯玉琦｜【追續】4｜【續單】21900｜【總業績】31240\n11、陳玲華｜【追續】0｜【續單】0｜【總業績】27860\n12、許喬恩｜【追續】2｜【續單】27000｜【總業績】27000\n13、蘇淑玲｜【追續】1｜【續單】5000｜【總業績】19280\n14、梁依萍｜【追續】1｜【續單】6000｜【總業績】18440\n15、高美雲｜【追續】0｜【續單】0｜【總業績】12540\n16、高如郁｜【追續】0｜【續單】0｜【總業績】11560\n17、周美蓁｜【追續】1｜【續單】10000｜【總業績】10000\n18、鄭珮恩｜【追續】2｜【續單】2300｜【總業績】7300\n19、林佩君｜【追續】1｜【續單】6528｜【總業績】6528\n20、江沛林｜【追續】1｜【續單】1000｜【總業績】1000\n21、陳旭宜｜【追續】0｜【續單】0｜【總業績】0\n22、謝啟芳｜【追續】0｜【續單】0｜【總業績】0\n23、鄭上官｜【追續】0｜【續單】0｜【總業績】0",
+  "completedAt": "2026/04/09 17:31:51",
+  "reportDate": "115/04/08",
+  "dispatchDate": "115/04/09",
+  "rawText": "報表日期：115/04/08\n派單日期：115/04/09\n1、馬秋香｜【追續】12｜【續單】275300｜【總業績】393290\n2、王梅慧｜【追續】12｜【續單】237180｜【總業績】323760\n3、王珍珠｜【追續】14｜【續單】190380｜【總業績】239588\n4、林沛昕｜【追續】8｜【續單】209576｜【總業績】234644\n5、林宜靜｜【追續】5｜【續單】32200｜【總業績】170070\n6、李玲玲｜【追續】2｜【續單】73860｜【總業績】165250\n7、廖姿惠｜【追續】6｜【續單】26448｜【總業績】121328\n8、湯玉琦｜【追續】9｜【續單】56180｜【總業績】111860\n9、蘇淑玲｜【追續】3｜【續單】61040｜【總業績】101488\n10、徐華妤｜【追續】5｜【續單】69520｜【總業績】90960\n11、江麗勉｜【追續】1｜【續單】2380｜【總業績】73630\n12、梁依萍｜【追續】3｜【續單】15160｜【總業績】64540\n13、高如郁｜【追續】3｜【續單】9320｜【總業績】56860\n14、高美雲｜【追續】2｜【續單】15660｜【總業績】54008\n15、陳玲華｜【追續】1｜【續單】6500｜【總業績】41860\n16、鄭珮恩｜【追續】4｜【續單】7000｜【總業績】40220\n17、許喬恩｜【追續】2｜【續單】20000｜【總業績】27000\n18、陳桂子（新人）｜【追續】1｜【續單】13500｜【總業績】13500\n19、謝啟芳｜【追續】0｜【續單】0｜【總業績】10960\n20、周美蓁｜【追續】1｜【續單】10000｜【總業績】10000\n21、江沛林｜【追續】3｜【續單】9980｜【總業績】9980\n22、林佩君｜【追續】1｜【續單】6528｜【總業績】6528\n23、鄭上官｜【追續】0｜【續單】0｜【總業績】0",
   "parsedData": {
-    "reportDate": "115/04/06",
-    "dispatchDate": "115/04/07",
-    "rawText": "報表日期：115/04/06\n派單日期：115/04/07\n1、馬秋香｜【追續】6｜【續單】146260｜【總業績】169920\n2、王梅慧｜【追續】6｜【續單】119520｜【總業績】149010\n3、王珍珠｜【追續】7｜【續單】127060｜【總業績】148108\n4、李玲玲｜【追續】2｜【續單】73860｜【總業績】125420\n5、林沛昕｜【追續】2｜【續單】103800｜【總業績】110760\n6、徐華妤｜【追續】4｜【續單】63020｜【總業績】82020\n7、林宜靜｜【追續】4｜【續單】22420｜【總業績】78420\n8、江麗勉｜【追續】0｜【續單】0｜【總業績】63220\n9、廖姿惠｜【追續】4｜【續單】18948｜【總業績】51568\n10、湯玉琦｜【追續】4｜【續單】21900｜【總業績】31240\n11、陳玲華｜【追續】0｜【續單】0｜【總業績】27860\n12、許喬恩｜【追續】2｜【續單】27000｜【總業績】27000\n13、蘇淑玲｜【追續】1｜【續單】5000｜【總業績】19280\n14、梁依萍｜【追續】1｜【續單】6000｜【總業績】18440\n15、高美雲｜【追續】0｜【續單】0｜【總業績】12540\n16、高如郁｜【追續】0｜【續單】0｜【總業績】11560\n17、周美蓁｜【追續】1｜【續單】10000｜【總業績】10000\n18、鄭珮恩｜【追續】2｜【續單】2300｜【總業績】7300\n19、林佩君｜【追續】1｜【續單】6528｜【總業績】6528\n20、江沛林｜【追續】1｜【續單】1000｜【總業績】1000\n21、陳旭宜｜【追續】0｜【續單】0｜【總業績】0\n22、謝啟芳｜【追續】0｜【續單】0｜【總業績】0\n23、鄭上官｜【追續】0｜【續單】0｜【總業績】0",
+    "reportDate": "115/04/08",
+    "dispatchDate": "115/04/09",
+    "rawText": "報表日期：115/04/08\n派單日期：115/04/09\n1、馬秋香｜【追續】12｜【續單】275300｜【總業績】393290\n2、王梅慧｜【追續】12｜【續單】237180｜【總業績】323760\n3、王珍珠｜【追續】14｜【續單】190380｜【總業績】239588\n4、林沛昕｜【追續】8｜【續單】209576｜【總業績】234644\n5、林宜靜｜【追續】5｜【續單】32200｜【總業績】170070\n6、李玲玲｜【追續】2｜【續單】73860｜【總業績】165250\n7、廖姿惠｜【追續】6｜【續單】26448｜【總業績】121328\n8、湯玉琦｜【追續】9｜【續單】56180｜【總業績】111860\n9、蘇淑玲｜【追續】3｜【續單】61040｜【總業績】101488\n10、徐華妤｜【追續】5｜【續單】69520｜【總業績】90960\n11、江麗勉｜【追續】1｜【續單】2380｜【總業績】73630\n12、梁依萍｜【追續】3｜【續單】15160｜【總業績】64540\n13、高如郁｜【追續】3｜【續單】9320｜【總業績】56860\n14、高美雲｜【追續】2｜【續單】15660｜【總業績】54008\n15、陳玲華｜【追續】1｜【續單】6500｜【總業績】41860\n16、鄭珮恩｜【追續】4｜【續單】7000｜【總業績】40220\n17、許喬恩｜【追續】2｜【續單】20000｜【總業績】27000\n18、陳桂子（新人）｜【追續】1｜【續單】13500｜【總業績】13500\n19、謝啟芳｜【追續】0｜【續單】0｜【總業績】10960\n20、周美蓁｜【追續】1｜【續單】10000｜【總業績】10000\n21、江沛林｜【追續】3｜【續單】9980｜【總業績】9980\n22、林佩君｜【追續】1｜【續單】6528｜【總業績】6528\n23、鄭上官｜【追續】0｜【續單】0｜【總業績】0",
     "inputLines": 23,
     "validLines": 23,
     "invalidLines": [],
@@ -24,17 +24,17 @@
         "lineNumber": 1,
         "inputOrder": 0,
         "inputRank": 1,
-        "rawLine": "1、馬秋香｜【追續】6｜【續單】146260｜【總業績】169920",
+        "rawLine": "1、馬秋香｜【追續】12｜【續單】275300｜【總業績】393290",
         "originalName": "馬秋香",
         "name": "馬秋香",
-        "renewalDeals": 6,
-        "renewalRevenue": 146260,
-        "totalRevenue": 169920,
-        "currentMonthRevenue": 169920,
-        "dailyReceived": 169920,
-        "dailyTicket": 28320,
-        "lastMonthRevenue": 208481,
-        "overallTicket": 48442,
+        "renewalDeals": 12,
+        "renewalRevenue": 275300,
+        "totalRevenue": 393290,
+        "currentMonthRevenue": 393290,
+        "dailyReceived": 393290,
+        "dailyTicket": 32774.17,
+        "lastMonthRevenue": 420531,
+        "overallTicket": 52559,
         "previousRank": 1,
         "aliasUsed": false,
         "baselineFound": true,
@@ -45,18 +45,18 @@
         "lineNumber": 2,
         "inputOrder": 1,
         "inputRank": 2,
-        "rawLine": "2、王梅慧｜【追續】6｜【續單】119520｜【總業績】149010",
+        "rawLine": "2、王梅慧｜【追續】12｜【續單】237180｜【總業績】323760",
         "originalName": "王梅慧",
         "name": "王梅慧",
-        "renewalDeals": 6,
-        "renewalRevenue": 119520,
-        "totalRevenue": 149010,
-        "currentMonthRevenue": 149010,
-        "dailyReceived": 149010,
-        "dailyTicket": 24835,
-        "lastMonthRevenue": 185071,
-        "overallTicket": 42859,
-        "previousRank": 3,
+        "renewalDeals": 12,
+        "renewalRevenue": 237180,
+        "totalRevenue": 323760,
+        "currentMonthRevenue": 323760,
+        "dailyReceived": 323760,
+        "dailyTicket": 26980,
+        "lastMonthRevenue": 352970,
+        "overallTicket": 45209,
+        "previousRank": 2,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 1,
@@ -66,18 +66,18 @@
         "lineNumber": 3,
         "inputOrder": 2,
         "inputRank": 3,
-        "rawLine": "3、王珍珠｜【追續】7｜【續單】127060｜【總業績】148108",
+        "rawLine": "3、王珍珠｜【追續】14｜【續單】190380｜【總業績】239588",
         "originalName": "王珍珠",
         "name": "王珍珠",
-        "renewalDeals": 7,
-        "renewalRevenue": 127060,
-        "totalRevenue": 148108,
-        "currentMonthRevenue": 148108,
-        "dailyReceived": 148108,
-        "dailyTicket": 21158.29,
-        "lastMonthRevenue": 183382,
-        "overallTicket": 38977,
-        "previousRank": 2,
+        "renewalDeals": 14,
+        "renewalRevenue": 190380,
+        "totalRevenue": 239588,
+        "currentMonthRevenue": 239588,
+        "dailyReceived": 239588,
+        "dailyTicket": 17113.43,
+        "lastMonthRevenue": 271483,
+        "overallTicket": 32033,
+        "previousRank": 3,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 2,
@@ -87,17 +87,17 @@
         "lineNumber": 4,
         "inputOrder": 3,
         "inputRank": 4,
-        "rawLine": "4、李玲玲｜【追續】2｜【續單】73860｜【總業績】125420",
-        "originalName": "李玲玲",
-        "name": "李玲玲",
-        "renewalDeals": 2,
-        "renewalRevenue": 73860,
-        "totalRevenue": 125420,
-        "currentMonthRevenue": 125420,
-        "dailyReceived": 125420,
-        "dailyTicket": 62710,
-        "lastMonthRevenue": 155233,
-        "overallTicket": 62256,
+        "rawLine": "4、林沛昕｜【追續】8｜【續單】209576｜【總業績】234644",
+        "originalName": "林沛昕",
+        "name": "林沛昕",
+        "renewalDeals": 8,
+        "renewalRevenue": 209576,
+        "totalRevenue": 234644,
+        "currentMonthRevenue": 234644,
+        "dailyReceived": 234644,
+        "dailyTicket": 29330.5,
+        "lastMonthRevenue": 267636,
+        "overallTicket": 50565,
         "previousRank": 4,
         "aliasUsed": false,
         "baselineFound": true,
@@ -108,17 +108,17 @@
         "lineNumber": 5,
         "inputOrder": 4,
         "inputRank": 5,
-        "rawLine": "5、林沛昕｜【追續】2｜【續單】103800｜【總業績】110760",
-        "originalName": "林沛昕",
-        "name": "林沛昕",
-        "renewalDeals": 2,
-        "renewalRevenue": 103800,
-        "totalRevenue": 110760,
-        "currentMonthRevenue": 110760,
-        "dailyReceived": 110760,
-        "dailyTicket": 55380,
-        "lastMonthRevenue": 144125,
-        "overallTicket": 64792,
+        "rawLine": "5、林宜靜｜【追續】5｜【續單】32200｜【總業績】170070",
+        "originalName": "林宜靜",
+        "name": "林宜靜",
+        "renewalDeals": 5,
+        "renewalRevenue": 32200,
+        "totalRevenue": 170070,
+        "currentMonthRevenue": 170070,
+        "dailyReceived": 170070,
+        "dailyTicket": 34014,
+        "lastMonthRevenue": 187726,
+        "overallTicket": 38959,
         "previousRank": 5,
         "aliasUsed": false,
         "baselineFound": true,
@@ -129,17 +129,17 @@
         "lineNumber": 6,
         "inputOrder": 5,
         "inputRank": 6,
-        "rawLine": "6、徐華妤｜【追續】4｜【續單】63020｜【總業績】82020",
-        "originalName": "徐華妤",
-        "name": "徐華妤",
-        "renewalDeals": 4,
-        "renewalRevenue": 63020,
-        "totalRevenue": 82020,
-        "currentMonthRevenue": 82020,
-        "dailyReceived": 82020,
-        "dailyTicket": 20505,
-        "lastMonthRevenue": 112140,
-        "overallTicket": 35977,
+        "rawLine": "6、李玲玲｜【追續】2｜【續單】73860｜【總業績】165250",
+        "originalName": "李玲玲",
+        "name": "李玲玲",
+        "renewalDeals": 2,
+        "renewalRevenue": 73860,
+        "totalRevenue": 165250,
+        "currentMonthRevenue": 165250,
+        "dailyReceived": 165250,
+        "dailyTicket": 82625,
+        "lastMonthRevenue": 186683,
+        "overallTicket": 69182,
         "previousRank": 6,
         "aliasUsed": false,
         "baselineFound": true,
@@ -150,17 +150,17 @@
         "lineNumber": 7,
         "inputOrder": 6,
         "inputRank": 7,
-        "rawLine": "7、林宜靜｜【追續】4｜【續單】22420｜【總業績】78420",
-        "originalName": "林宜靜",
-        "name": "林宜靜",
-        "renewalDeals": 4,
-        "renewalRevenue": 22420,
-        "totalRevenue": 78420,
-        "currentMonthRevenue": 78420,
-        "dailyReceived": 78420,
-        "dailyTicket": 19605,
-        "lastMonthRevenue": 102300,
-        "overallTicket": 29291,
+        "rawLine": "7、廖姿惠｜【追續】6｜【續單】26448｜【總業績】121328",
+        "originalName": "廖姿惠",
+        "name": "廖姿惠",
+        "renewalDeals": 6,
+        "renewalRevenue": 26448,
+        "totalRevenue": 121328,
+        "currentMonthRevenue": 121328,
+        "dailyReceived": 121328,
+        "dailyTicket": 20221.33,
+        "lastMonthRevenue": 140542,
+        "overallTicket": 27997,
         "previousRank": 7,
         "aliasUsed": false,
         "baselineFound": true,
@@ -171,18 +171,18 @@
         "lineNumber": 8,
         "inputOrder": 7,
         "inputRank": 8,
-        "rawLine": "8、江麗勉｜【追續】0｜【續單】0｜【總業績】63220",
-        "originalName": "江麗勉",
-        "name": "江麗勉",
-        "renewalDeals": 0,
-        "renewalRevenue": 0,
-        "totalRevenue": 63220,
-        "currentMonthRevenue": 63220,
-        "dailyReceived": 63220,
-        "dailyTicket": 0,
-        "lastMonthRevenue": 84434,
-        "overallTicket": 54940,
-        "previousRank": 11,
+        "rawLine": "8、湯玉琦｜【追續】9｜【續單】56180｜【總業績】111860",
+        "originalName": "湯玉琦",
+        "name": "湯玉琦",
+        "renewalDeals": 9,
+        "renewalRevenue": 56180,
+        "totalRevenue": 111860,
+        "currentMonthRevenue": 111860,
+        "dailyReceived": 111860,
+        "dailyTicket": 12428.89,
+        "lastMonthRevenue": 133978,
+        "overallTicket": 22470,
+        "previousRank": 8,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 7,
@@ -192,18 +192,18 @@
         "lineNumber": 9,
         "inputOrder": 8,
         "inputRank": 9,
-        "rawLine": "9、廖姿惠｜【追續】4｜【續單】18948｜【總業績】51568",
-        "originalName": "廖姿惠",
-        "name": "廖姿惠",
-        "renewalDeals": 4,
-        "renewalRevenue": 18948,
-        "totalRevenue": 51568,
-        "currentMonthRevenue": 51568,
-        "dailyReceived": 51568,
-        "dailyTicket": 12892,
-        "lastMonthRevenue": 74654,
-        "overallTicket": 24217,
-        "previousRank": 8,
+        "rawLine": "9、蘇淑玲｜【追續】3｜【續單】61040｜【總業績】101488",
+        "originalName": "蘇淑玲",
+        "name": "蘇淑玲",
+        "renewalDeals": 3,
+        "renewalRevenue": 61040,
+        "totalRevenue": 101488,
+        "currentMonthRevenue": 101488,
+        "dailyReceived": 101488,
+        "dailyTicket": 33829.33,
+        "lastMonthRevenue": 123634,
+        "overallTicket": 43588,
+        "previousRank": 9,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 8,
@@ -213,18 +213,18 @@
         "lineNumber": 10,
         "inputOrder": 9,
         "inputRank": 10,
-        "rawLine": "10、湯玉琦｜【追續】4｜【續單】21900｜【總業績】31240",
-        "originalName": "湯玉琦",
-        "name": "湯玉琦",
-        "renewalDeals": 4,
-        "renewalRevenue": 21900,
-        "totalRevenue": 31240,
-        "currentMonthRevenue": 31240,
-        "dailyReceived": 31240,
-        "dailyTicket": 7810,
-        "lastMonthRevenue": 55319,
-        "overallTicket": 21363,
-        "previousRank": 9,
+        "rawLine": "10、徐華妤｜【追續】5｜【續單】69520｜【總業績】90960",
+        "originalName": "徐華妤",
+        "name": "徐華妤",
+        "renewalDeals": 5,
+        "renewalRevenue": 69520,
+        "totalRevenue": 90960,
+        "currentMonthRevenue": 90960,
+        "dailyReceived": 90960,
+        "dailyTicket": 18192,
+        "lastMonthRevenue": 113587,
+        "overallTicket": 32110,
+        "previousRank": 10,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 9,
@@ -234,18 +234,18 @@
         "lineNumber": 11,
         "inputOrder": 10,
         "inputRank": 11,
-        "rawLine": "11、陳玲華｜【追續】0｜【續單】0｜【總業績】27860",
-        "originalName": "陳玲華",
-        "name": "陳玲華",
-        "renewalDeals": 0,
-        "renewalRevenue": 0,
-        "totalRevenue": 27860,
-        "currentMonthRevenue": 27860,
-        "dailyReceived": 27860,
-        "dailyTicket": 0,
-        "lastMonthRevenue": 47917,
-        "overallTicket": 40553,
-        "previousRank": 14,
+        "rawLine": "11、江麗勉｜【追續】1｜【續單】2380｜【總業績】73630",
+        "originalName": "江麗勉",
+        "name": "江麗勉",
+        "renewalDeals": 1,
+        "renewalRevenue": 2380,
+        "totalRevenue": 73630,
+        "currentMonthRevenue": 73630,
+        "dailyReceived": 73630,
+        "dailyTicket": 73630,
+        "lastMonthRevenue": 88480,
+        "overallTicket": 42453,
+        "previousRank": 11,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 10,
@@ -255,18 +255,18 @@
         "lineNumber": 12,
         "inputOrder": 11,
         "inputRank": 12,
-        "rawLine": "12、許喬恩｜【追續】2｜【續單】27000｜【總業績】27000",
-        "originalName": "許喬恩",
-        "name": "許喬恩",
-        "renewalDeals": 2,
-        "renewalRevenue": 27000,
-        "totalRevenue": 27000,
-        "currentMonthRevenue": 27000,
-        "dailyReceived": 27000,
-        "dailyTicket": 13500,
-        "lastMonthRevenue": 48600,
-        "overallTicket": 29040,
-        "previousRank": 10,
+        "rawLine": "12、梁依萍｜【追續】3｜【續單】15160｜【總業績】64540",
+        "originalName": "梁依萍",
+        "name": "梁依萍",
+        "renewalDeals": 3,
+        "renewalRevenue": 15160,
+        "totalRevenue": 64540,
+        "currentMonthRevenue": 64540,
+        "dailyReceived": 64540,
+        "dailyTicket": 21513.33,
+        "lastMonthRevenue": 80214,
+        "overallTicket": 28483,
+        "previousRank": 12,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 11,
@@ -276,18 +276,18 @@
         "lineNumber": 13,
         "inputOrder": 12,
         "inputRank": 13,
-        "rawLine": "13、蘇淑玲｜【追續】1｜【續單】5000｜【總業績】19280",
-        "originalName": "蘇淑玲",
-        "name": "蘇淑玲",
-        "renewalDeals": 1,
-        "renewalRevenue": 5000,
-        "totalRevenue": 19280,
-        "currentMonthRevenue": 19280,
-        "dailyReceived": 19280,
-        "dailyTicket": 19280,
-        "lastMonthRevenue": 37366,
-        "overallTicket": 28220,
-        "previousRank": 12,
+        "rawLine": "13、高如郁｜【追續】3｜【續單】9320｜【總業績】56860",
+        "originalName": "高如郁",
+        "name": "高如郁",
+        "renewalDeals": 3,
+        "renewalRevenue": 9320,
+        "totalRevenue": 56860,
+        "currentMonthRevenue": 56860,
+        "dailyReceived": 56860,
+        "dailyTicket": 18953.33,
+        "lastMonthRevenue": 70955,
+        "overallTicket": 25797,
+        "previousRank": 13,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 12,
@@ -297,18 +297,18 @@
         "lineNumber": 14,
         "inputOrder": 13,
         "inputRank": 14,
-        "rawLine": "14、梁依萍｜【追續】1｜【續單】6000｜【總業績】18440",
-        "originalName": "梁依萍",
-        "name": "梁依萍",
-        "renewalDeals": 1,
-        "renewalRevenue": 6000,
-        "totalRevenue": 18440,
-        "currentMonthRevenue": 18440,
-        "dailyReceived": 18440,
-        "dailyTicket": 18440,
-        "lastMonthRevenue": 34947,
-        "overallTicket": 27610,
-        "previousRank": 13,
+        "rawLine": "14、高美雲｜【追續】2｜【續單】15660｜【總業績】54008",
+        "originalName": "高美雲",
+        "name": "高美雲",
+        "renewalDeals": 2,
+        "renewalRevenue": 15660,
+        "totalRevenue": 54008,
+        "currentMonthRevenue": 54008,
+        "dailyReceived": 54008,
+        "dailyTicket": 27004,
+        "lastMonthRevenue": 67406,
+        "overallTicket": 31134,
+        "previousRank": 14,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 13,
@@ -318,18 +318,18 @@
         "lineNumber": 15,
         "inputOrder": 14,
         "inputRank": 15,
-        "rawLine": "15、高美雲｜【追續】0｜【續單】0｜【總業績】12540",
-        "originalName": "高美雲",
-        "name": "高美雲",
-        "renewalDeals": 0,
-        "renewalRevenue": 0,
-        "totalRevenue": 12540,
-        "currentMonthRevenue": 12540,
-        "dailyReceived": 12540,
-        "dailyTicket": 0,
-        "lastMonthRevenue": 27235,
-        "overallTicket": 31980,
-        "previousRank": 18,
+        "rawLine": "15、陳玲華｜【追續】1｜【續單】6500｜【總業績】41860",
+        "originalName": "陳玲華",
+        "name": "陳玲華",
+        "renewalDeals": 1,
+        "renewalRevenue": 6500,
+        "totalRevenue": 41860,
+        "currentMonthRevenue": 41860,
+        "dailyReceived": 41860,
+        "dailyTicket": 41860,
+        "lastMonthRevenue": 53817,
+        "overallTicket": 32940,
+        "previousRank": 15,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 14,
@@ -339,18 +339,18 @@
         "lineNumber": 16,
         "inputOrder": 15,
         "inputRank": 16,
-        "rawLine": "16、高如郁｜【追續】0｜【續單】0｜【總業績】11560",
-        "originalName": "高如郁",
-        "name": "高如郁",
-        "renewalDeals": 0,
-        "renewalRevenue": 0,
-        "totalRevenue": 11560,
-        "currentMonthRevenue": 11560,
-        "dailyReceived": 11560,
-        "dailyTicket": 0,
-        "lastMonthRevenue": 24573,
-        "overallTicket": 30787,
-        "previousRank": 19,
+        "rawLine": "16、鄭珮恩｜【追續】4｜【續單】7000｜【總業績】40220",
+        "originalName": "鄭珮恩",
+        "name": "鄭珮恩",
+        "renewalDeals": 4,
+        "renewalRevenue": 7000,
+        "totalRevenue": 40220,
+        "currentMonthRevenue": 40220,
+        "dailyReceived": 40220,
+        "dailyTicket": 10055,
+        "lastMonthRevenue": 50634,
+        "overallTicket": 18289,
+        "previousRank": 16,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 15,
@@ -360,18 +360,18 @@
         "lineNumber": 17,
         "inputOrder": 16,
         "inputRank": 17,
-        "rawLine": "17、周美蓁｜【追續】1｜【續單】10000｜【總業績】10000",
-        "originalName": "周美蓁",
-        "name": "周美蓁",
-        "renewalDeals": 1,
-        "renewalRevenue": 10000,
-        "totalRevenue": 10000,
-        "currentMonthRevenue": 10000,
-        "dailyReceived": 10000,
-        "dailyTicket": 10000,
-        "lastMonthRevenue": 22600,
-        "overallTicket": 24550,
-        "previousRank": 15,
+        "rawLine": "17、許喬恩｜【追續】2｜【續單】20000｜【總業績】27000",
+        "originalName": "許喬恩",
+        "name": "許喬恩",
+        "renewalDeals": 2,
+        "renewalRevenue": 20000,
+        "totalRevenue": 27000,
+        "currentMonthRevenue": 27000,
+        "dailyReceived": 27000,
+        "dailyTicket": 13500,
+        "lastMonthRevenue": 38760,
+        "overallTicket": 25040,
+        "previousRank": 17,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 16,
@@ -381,18 +381,18 @@
         "lineNumber": 18,
         "inputOrder": 17,
         "inputRank": 18,
-        "rawLine": "18、鄭珮恩｜【追續】2｜【續單】2300｜【總業績】7300",
-        "originalName": "鄭珮恩",
-        "name": "鄭珮恩",
-        "renewalDeals": 2,
-        "renewalRevenue": 2300,
-        "totalRevenue": 7300,
-        "currentMonthRevenue": 7300,
-        "dailyReceived": 7300,
-        "dailyTicket": 3650,
-        "lastMonthRevenue": 17500,
-        "overallTicket": 17040,
-        "previousRank": 16,
+        "rawLine": "18、陳桂子（新人）｜【追續】1｜【續單】13500｜【總業績】13500",
+        "originalName": "陳桂子（新人）",
+        "name": "陳桂子（新人）",
+        "renewalDeals": 1,
+        "renewalRevenue": 13500,
+        "totalRevenue": 13500,
+        "currentMonthRevenue": 13500,
+        "dailyReceived": 13500,
+        "dailyTicket": 13500,
+        "lastMonthRevenue": 24300,
+        "overallTicket": 25650,
+        "previousRank": 18,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 17,
@@ -402,18 +402,18 @@
         "lineNumber": 19,
         "inputOrder": 18,
         "inputRank": 19,
-        "rawLine": "19、林佩君｜【追續】1｜【續單】6528｜【總業績】6528",
-        "originalName": "林佩君",
-        "name": "林佩君",
-        "renewalDeals": 1,
-        "renewalRevenue": 6528,
-        "totalRevenue": 6528,
-        "currentMonthRevenue": 6528,
-        "dailyReceived": 6528,
-        "dailyTicket": 6528,
-        "lastMonthRevenue": 15528,
-        "overallTicket": 21514,
-        "previousRank": 17,
+        "rawLine": "19、謝啟芳｜【追續】0｜【續單】0｜【總業績】10960",
+        "originalName": "謝啟芳",
+        "name": "謝啟芳",
+        "renewalDeals": 0,
+        "renewalRevenue": 0,
+        "totalRevenue": 10960,
+        "currentMonthRevenue": 10960,
+        "dailyReceived": 10960,
+        "dailyTicket": 0,
+        "lastMonthRevenue": 18645,
+        "overallTicket": 27987,
+        "previousRank": 19,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 18,
@@ -423,17 +423,17 @@
         "lineNumber": 20,
         "inputOrder": 19,
         "inputRank": 20,
-        "rawLine": "20、江沛林｜【追續】1｜【續單】1000｜【總業績】1000",
-        "originalName": "江沛林",
-        "name": "江沛林",
+        "rawLine": "20、周美蓁｜【追續】1｜【續單】10000｜【總業績】10000",
+        "originalName": "周美蓁",
+        "name": "周美蓁",
         "renewalDeals": 1,
-        "renewalRevenue": 1000,
-        "totalRevenue": 1000,
-        "currentMonthRevenue": 1000,
-        "dailyReceived": 1000,
-        "dailyTicket": 1000,
-        "lastMonthRevenue": 8200,
-        "overallTicket": 18100,
+        "renewalRevenue": 10000,
+        "totalRevenue": 10000,
+        "currentMonthRevenue": 10000,
+        "dailyReceived": 10000,
+        "dailyTicket": 10000,
+        "lastMonthRevenue": 17200,
+        "overallTicket": 22600,
         "previousRank": 20,
         "aliasUsed": false,
         "baselineFound": true,
@@ -444,17 +444,17 @@
         "lineNumber": 21,
         "inputOrder": 20,
         "inputRank": 21,
-        "rawLine": "21、陳旭宜｜【追續】0｜【續單】0｜【總業績】0",
-        "originalName": "陳旭宜",
-        "name": "陳旭宜",
-        "renewalDeals": 0,
-        "renewalRevenue": 0,
-        "totalRevenue": 0,
-        "currentMonthRevenue": 0,
-        "dailyReceived": 0,
-        "dailyTicket": 0,
-        "lastMonthRevenue": 5400,
-        "overallTicket": 22600,
+        "rawLine": "21、江沛林｜【追續】3｜【續單】9980｜【總業績】9980",
+        "originalName": "江沛林",
+        "name": "江沛林",
+        "renewalDeals": 3,
+        "renewalRevenue": 9980,
+        "totalRevenue": 9980,
+        "currentMonthRevenue": 9980,
+        "dailyReceived": 9980,
+        "dailyTicket": 3326.67,
+        "lastMonthRevenue": 15380,
+        "overallTicket": 14627,
         "previousRank": 21,
         "aliasUsed": false,
         "baselineFound": true,
@@ -465,17 +465,17 @@
         "lineNumber": 22,
         "inputOrder": 21,
         "inputRank": 22,
-        "rawLine": "22、謝啟芳｜【追續】0｜【續單】0｜【總業績】0",
-        "originalName": "謝啟芳",
-        "name": "謝啟芳",
-        "renewalDeals": 0,
-        "renewalRevenue": 0,
-        "totalRevenue": 0,
-        "currentMonthRevenue": 0,
-        "dailyReceived": 0,
-        "dailyTicket": 0,
-        "lastMonthRevenue": 3600,
-        "overallTicket": 21733,
+        "rawLine": "22、林佩君｜【追續】1｜【續單】6528｜【總業績】6528",
+        "originalName": "林佩君",
+        "name": "林佩君",
+        "renewalDeals": 1,
+        "renewalRevenue": 6528,
+        "totalRevenue": 6528,
+        "currentMonthRevenue": 6528,
+        "dailyReceived": 6528,
+        "dailyTicket": 6528,
+        "lastMonthRevenue": 10128,
+        "overallTicket": 19564,
         "previousRank": 22,
         "aliasUsed": false,
         "baselineFound": true,
@@ -601,52 +601,52 @@
       }
     ],
     "maxima": {
-      "dailyTicket": 62710,
-      "dailyReceived": 169920,
-      "currentMonthRevenue": 169920,
-      "lastMonthRevenue": 208481,
-      "overallTicket": 64792,
-      "renewalRevenue": 146260,
-      "renewalDeals": 7
+      "dailyTicket": 82625,
+      "dailyReceived": 393290,
+      "currentMonthRevenue": 393290,
+      "lastMonthRevenue": 420531,
+      "overallTicket": 69182,
+      "renewalRevenue": 275300,
+      "renewalDeals": 14
     },
-    "topScore": 903.97,
-    "averageScore": 288.96,
+    "topScore": 899.09,
+    "averageScore": 275.47,
     "people": [
       {
         "lineNumber": 1,
         "inputOrder": 0,
         "inputRank": 1,
-        "rawLine": "1、馬秋香｜【追續】6｜【續單】146260｜【總業績】169920",
+        "rawLine": "1、馬秋香｜【追續】12｜【續單】275300｜【總業績】393290",
         "originalName": "馬秋香",
         "name": "馬秋香",
-        "renewalDeals": 6,
-        "renewalRevenue": 146260,
-        "totalRevenue": 169920,
-        "currentMonthRevenue": 169920,
-        "dailyReceived": 169920,
-        "dailyTicket": 28320,
-        "lastMonthRevenue": 208481,
-        "overallTicket": 48442,
+        "renewalDeals": 12,
+        "renewalRevenue": 275300,
+        "totalRevenue": 393290,
+        "currentMonthRevenue": 393290,
+        "dailyReceived": 393290,
+        "dailyTicket": 32774.17,
+        "lastMonthRevenue": 420531,
+        "overallTicket": 52559,
         "previousRank": 1,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 0,
         "inReport": true,
-        "totalScore": 903.97,
+        "totalScore": 899.09,
         "breakdown": [
           {
             "key": "dailyTicket",
             "label": "當日客單價",
             "weight": 100,
-            "value": 28320,
-            "ratio": 0.4516,
-            "score": 45.16
+            "value": 32774.17,
+            "ratio": 0.3967,
+            "score": 39.67
           },
           {
             "key": "dailyReceived",
             "label": "當日實收金額",
             "weight": 250,
-            "value": 169920,
+            "value": 393290,
             "ratio": 1,
             "score": 250
           },
@@ -654,7 +654,7 @@
             "key": "currentMonthRevenue",
             "label": "本月業績",
             "weight": 100,
-            "value": 169920,
+            "value": 393290,
             "ratio": 1,
             "score": 100
           },
@@ -662,7 +662,7 @@
             "key": "lastMonthRevenue",
             "label": "上月業績",
             "weight": 100,
-            "value": 208481,
+            "value": 420531,
             "ratio": 1,
             "score": 100
           },
@@ -670,15 +670,15 @@
             "key": "overallTicket",
             "label": "整體客單價",
             "weight": 50,
-            "value": 48442,
-            "ratio": 0.7477,
-            "score": 37.38
+            "value": 52559,
+            "ratio": 0.7597,
+            "score": 37.99
           },
           {
             "key": "renewalRevenue",
             "label": "續單金額",
             "weight": 200,
-            "value": 146260,
+            "value": 275300,
             "ratio": 1,
             "score": 200
           },
@@ -686,7 +686,7 @@
             "key": "renewalDeals",
             "label": "追續成交總數",
             "weight": 200,
-            "value": 6,
+            "value": 12,
             "ratio": 0.8571,
             "score": 171.43
           }
@@ -696,77 +696,77 @@
         "lineNumber": 2,
         "inputOrder": 1,
         "inputRank": 2,
-        "rawLine": "2、王梅慧｜【追續】6｜【續單】119520｜【總業績】149010",
+        "rawLine": "2、王梅慧｜【追續】12｜【續單】237180｜【總業績】323760",
         "originalName": "王梅慧",
         "name": "王梅慧",
-        "renewalDeals": 6,
-        "renewalRevenue": 119520,
-        "totalRevenue": 149010,
-        "currentMonthRevenue": 149010,
-        "dailyReceived": 149010,
-        "dailyTicket": 24835,
-        "lastMonthRevenue": 185071,
-        "overallTicket": 42859,
-        "previousRank": 3,
+        "renewalDeals": 12,
+        "renewalRevenue": 237180,
+        "totalRevenue": 323760,
+        "currentMonthRevenue": 323760,
+        "dailyReceived": 323760,
+        "dailyTicket": 26980,
+        "lastMonthRevenue": 352970,
+        "overallTicket": 45209,
+        "previousRank": 2,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 1,
         "inReport": true,
-        "totalScore": 803.23,
+        "totalScore": 781.11,
         "breakdown": [
           {
             "key": "dailyTicket",
             "label": "當日客單價",
             "weight": 100,
-            "value": 24835,
-            "ratio": 0.396,
-            "score": 39.6
+            "value": 26980,
+            "ratio": 0.3265,
+            "score": 32.65
           },
           {
             "key": "dailyReceived",
             "label": "當日實收金額",
             "weight": 250,
-            "value": 149010,
-            "ratio": 0.8769,
-            "score": 219.24
+            "value": 323760,
+            "ratio": 0.8232,
+            "score": 205.8
           },
           {
             "key": "currentMonthRevenue",
             "label": "本月業績",
             "weight": 100,
-            "value": 149010,
-            "ratio": 0.8769,
-            "score": 87.69
+            "value": 323760,
+            "ratio": 0.8232,
+            "score": 82.32
           },
           {
             "key": "lastMonthRevenue",
             "label": "上月業績",
             "weight": 100,
-            "value": 185071,
-            "ratio": 0.8877,
-            "score": 88.77
+            "value": 352970,
+            "ratio": 0.8393,
+            "score": 83.93
           },
           {
             "key": "overallTicket",
             "label": "整體客單價",
             "weight": 50,
-            "value": 42859,
-            "ratio": 0.6615,
-            "score": 33.07
+            "value": 45209,
+            "ratio": 0.6535,
+            "score": 32.67
           },
           {
             "key": "renewalRevenue",
             "label": "續單金額",
             "weight": 200,
-            "value": 119520,
-            "ratio": 0.8172,
-            "score": 163.43
+            "value": 237180,
+            "ratio": 0.8615,
+            "score": 172.31
           },
           {
             "key": "renewalDeals",
             "label": "追續成交總數",
             "weight": 200,
-            "value": 6,
+            "value": 12,
             "ratio": 0.8571,
             "score": 171.43
           }
@@ -776,77 +776,77 @@
         "lineNumber": 3,
         "inputOrder": 2,
         "inputRank": 3,
-        "rawLine": "3、王珍珠｜【追續】7｜【續單】127060｜【總業績】148108",
+        "rawLine": "3、王珍珠｜【追續】14｜【續單】190380｜【總業績】239588",
         "originalName": "王珍珠",
         "name": "王珍珠",
-        "renewalDeals": 7,
-        "renewalRevenue": 127060,
-        "totalRevenue": 148108,
-        "currentMonthRevenue": 148108,
-        "dailyReceived": 148108,
-        "dailyTicket": 21158.29,
-        "lastMonthRevenue": 183382,
-        "overallTicket": 38977,
-        "previousRank": 2,
+        "renewalDeals": 14,
+        "renewalRevenue": 190380,
+        "totalRevenue": 239588,
+        "currentMonthRevenue": 239588,
+        "dailyReceived": 239588,
+        "dailyTicket": 17113.43,
+        "lastMonthRevenue": 271483,
+        "overallTicket": 32033,
+        "previousRank": 3,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 2,
         "inReport": true,
-        "totalScore": 830.6,
+        "totalScore": 659.95,
         "breakdown": [
           {
             "key": "dailyTicket",
             "label": "當日客單價",
             "weight": 100,
-            "value": 21158.29,
-            "ratio": 0.3374,
-            "score": 33.74
+            "value": 17113.43,
+            "ratio": 0.2071,
+            "score": 20.71
           },
           {
             "key": "dailyReceived",
             "label": "當日實收金額",
             "weight": 250,
-            "value": 148108,
-            "ratio": 0.8716,
-            "score": 217.91
+            "value": 239588,
+            "ratio": 0.6092,
+            "score": 152.3
           },
           {
             "key": "currentMonthRevenue",
             "label": "本月業績",
             "weight": 100,
-            "value": 148108,
-            "ratio": 0.8716,
-            "score": 87.16
+            "value": 239588,
+            "ratio": 0.6092,
+            "score": 60.92
           },
           {
             "key": "lastMonthRevenue",
             "label": "上月業績",
             "weight": 100,
-            "value": 183382,
-            "ratio": 0.8796,
-            "score": 87.96
+            "value": 271483,
+            "ratio": 0.6456,
+            "score": 64.56
           },
           {
             "key": "overallTicket",
             "label": "整體客單價",
             "weight": 50,
-            "value": 38977,
-            "ratio": 0.6016,
-            "score": 30.08
+            "value": 32033,
+            "ratio": 0.463,
+            "score": 23.15
           },
           {
             "key": "renewalRevenue",
             "label": "續單金額",
             "weight": 200,
-            "value": 127060,
-            "ratio": 0.8687,
-            "score": 173.75
+            "value": 190380,
+            "ratio": 0.6915,
+            "score": 138.31
           },
           {
             "key": "renewalDeals",
             "label": "追續成交總數",
             "weight": 200,
-            "value": 7,
+            "value": 14,
             "ratio": 1,
             "score": 200
           }
@@ -856,79 +856,79 @@
         "lineNumber": 4,
         "inputOrder": 3,
         "inputRank": 4,
-        "rawLine": "4、李玲玲｜【追續】2｜【續單】73860｜【總業績】125420",
-        "originalName": "李玲玲",
-        "name": "李玲玲",
-        "renewalDeals": 2,
-        "renewalRevenue": 73860,
-        "totalRevenue": 125420,
-        "currentMonthRevenue": 125420,
-        "dailyReceived": 125420,
-        "dailyTicket": 62710,
-        "lastMonthRevenue": 155233,
-        "overallTicket": 62256,
+        "rawLine": "4、林沛昕｜【追續】8｜【續單】209576｜【總業績】234644",
+        "originalName": "林沛昕",
+        "name": "林沛昕",
+        "renewalDeals": 8,
+        "renewalRevenue": 209576,
+        "totalRevenue": 234644,
+        "currentMonthRevenue": 234644,
+        "dailyReceived": 234644,
+        "dailyTicket": 29330.5,
+        "lastMonthRevenue": 267636,
+        "overallTicket": 50565,
         "previousRank": 4,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 3,
         "inReport": true,
-        "totalScore": 638.98,
+        "totalScore": 611.03,
         "breakdown": [
           {
             "key": "dailyTicket",
             "label": "當日客單價",
             "weight": 100,
-            "value": 62710,
-            "ratio": 1,
-            "score": 100
+            "value": 29330.5,
+            "ratio": 0.355,
+            "score": 35.5
           },
           {
             "key": "dailyReceived",
             "label": "當日實收金額",
             "weight": 250,
-            "value": 125420,
-            "ratio": 0.7381,
-            "score": 184.53
+            "value": 234644,
+            "ratio": 0.5966,
+            "score": 149.15
           },
           {
             "key": "currentMonthRevenue",
             "label": "本月業績",
             "weight": 100,
-            "value": 125420,
-            "ratio": 0.7381,
-            "score": 73.81
+            "value": 234644,
+            "ratio": 0.5966,
+            "score": 59.66
           },
           {
             "key": "lastMonthRevenue",
             "label": "上月業績",
             "weight": 100,
-            "value": 155233,
-            "ratio": 0.7446,
-            "score": 74.46
+            "value": 267636,
+            "ratio": 0.6364,
+            "score": 63.64
           },
           {
             "key": "overallTicket",
             "label": "整體客單價",
             "weight": 50,
-            "value": 62256,
-            "ratio": 0.9609,
-            "score": 48.04
+            "value": 50565,
+            "ratio": 0.7309,
+            "score": 36.54
           },
           {
             "key": "renewalRevenue",
             "label": "續單金額",
             "weight": 200,
-            "value": 73860,
-            "ratio": 0.505,
-            "score": 101
+            "value": 209576,
+            "ratio": 0.7613,
+            "score": 152.25
           },
           {
             "key": "renewalDeals",
             "label": "追續成交總數",
             "weight": 200,
-            "value": 2,
-            "ratio": 0.2857,
-            "score": 57.14
+            "value": 8,
+            "ratio": 0.5714,
+            "score": 114.29
           }
         ]
       },
@@ -936,79 +936,79 @@
         "lineNumber": 5,
         "inputOrder": 4,
         "inputRank": 5,
-        "rawLine": "5、林沛昕｜【追續】2｜【續單】103800｜【總業績】110760",
-        "originalName": "林沛昕",
-        "name": "林沛昕",
-        "renewalDeals": 2,
-        "renewalRevenue": 103800,
-        "totalRevenue": 110760,
-        "currentMonthRevenue": 110760,
-        "dailyReceived": 110760,
-        "dailyTicket": 55380,
-        "lastMonthRevenue": 144125,
-        "overallTicket": 64792,
+        "rawLine": "5、林宜靜｜【追續】5｜【續單】32200｜【總業績】170070",
+        "originalName": "林宜靜",
+        "name": "林宜靜",
+        "renewalDeals": 5,
+        "renewalRevenue": 32200,
+        "totalRevenue": 170070,
+        "currentMonthRevenue": 170070,
+        "dailyReceived": 170070,
+        "dailyTicket": 34014,
+        "lastMonthRevenue": 187726,
+        "overallTicket": 38959,
         "previousRank": 5,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 4,
         "inReport": true,
-        "totalScore": 634.66,
+        "totalScore": 360.14,
         "breakdown": [
           {
             "key": "dailyTicket",
             "label": "當日客單價",
             "weight": 100,
-            "value": 55380,
-            "ratio": 0.8831,
-            "score": 88.31
+            "value": 34014,
+            "ratio": 0.4117,
+            "score": 41.17
           },
           {
             "key": "dailyReceived",
             "label": "當日實收金額",
             "weight": 250,
-            "value": 110760,
-            "ratio": 0.6518,
-            "score": 162.96
+            "value": 170070,
+            "ratio": 0.4324,
+            "score": 108.11
           },
           {
             "key": "currentMonthRevenue",
             "label": "本月業績",
             "weight": 100,
-            "value": 110760,
-            "ratio": 0.6518,
-            "score": 65.18
+            "value": 170070,
+            "ratio": 0.4324,
+            "score": 43.24
           },
           {
             "key": "lastMonthRevenue",
             "label": "上月業績",
             "weight": 100,
-            "value": 144125,
-            "ratio": 0.6913,
-            "score": 69.13
+            "value": 187726,
+            "ratio": 0.4464,
+            "score": 44.64
           },
           {
             "key": "overallTicket",
             "label": "整體客單價",
             "weight": 50,
-            "value": 64792,
-            "ratio": 1,
-            "score": 50
+            "value": 38959,
+            "ratio": 0.5631,
+            "score": 28.16
           },
           {
             "key": "renewalRevenue",
             "label": "續單金額",
             "weight": 200,
-            "value": 103800,
-            "ratio": 0.7097,
-            "score": 141.94
+            "value": 32200,
+            "ratio": 0.117,
+            "score": 23.39
           },
           {
             "key": "renewalDeals",
             "label": "追續成交總數",
             "weight": 200,
-            "value": 2,
-            "ratio": 0.2857,
-            "score": 57.14
+            "value": 5,
+            "ratio": 0.3571,
+            "score": 71.43
           }
         ]
       },
@@ -1016,79 +1016,79 @@
         "lineNumber": 6,
         "inputOrder": 5,
         "inputRank": 6,
-        "rawLine": "6、徐華妤｜【追續】4｜【續單】63020｜【總業績】82020",
-        "originalName": "徐華妤",
-        "name": "徐華妤",
-        "renewalDeals": 4,
-        "renewalRevenue": 63020,
-        "totalRevenue": 82020,
-        "currentMonthRevenue": 82020,
-        "dailyReceived": 82020,
-        "dailyTicket": 20505,
-        "lastMonthRevenue": 112140,
-        "overallTicket": 35977,
+        "rawLine": "6、李玲玲｜【追續】2｜【續單】73860｜【總業績】165250",
+        "originalName": "李玲玲",
+        "name": "李玲玲",
+        "renewalDeals": 2,
+        "renewalRevenue": 73860,
+        "totalRevenue": 165250,
+        "currentMonthRevenue": 165250,
+        "dailyReceived": 165250,
+        "dailyTicket": 82625,
+        "lastMonthRevenue": 186683,
+        "overallTicket": 69182,
         "previousRank": 6,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 5,
         "inReport": true,
-        "totalScore": 483.66,
+        "totalScore": 423.68,
         "breakdown": [
           {
             "key": "dailyTicket",
             "label": "當日客單價",
             "weight": 100,
-            "value": 20505,
-            "ratio": 0.327,
-            "score": 32.7
+            "value": 82625,
+            "ratio": 1,
+            "score": 100
           },
           {
             "key": "dailyReceived",
             "label": "當日實收金額",
             "weight": 250,
-            "value": 82020,
-            "ratio": 0.4827,
-            "score": 120.67
+            "value": 165250,
+            "ratio": 0.4202,
+            "score": 105.04
           },
           {
             "key": "currentMonthRevenue",
             "label": "本月業績",
             "weight": 100,
-            "value": 82020,
-            "ratio": 0.4827,
-            "score": 48.27
+            "value": 165250,
+            "ratio": 0.4202,
+            "score": 42.02
           },
           {
             "key": "lastMonthRevenue",
             "label": "上月業績",
             "weight": 100,
-            "value": 112140,
-            "ratio": 0.5379,
-            "score": 53.79
+            "value": 186683,
+            "ratio": 0.4439,
+            "score": 44.39
           },
           {
             "key": "overallTicket",
             "label": "整體客單價",
             "weight": 50,
-            "value": 35977,
-            "ratio": 0.5553,
-            "score": 27.76
+            "value": 69182,
+            "ratio": 1,
+            "score": 50
           },
           {
             "key": "renewalRevenue",
             "label": "續單金額",
             "weight": 200,
-            "value": 63020,
-            "ratio": 0.4309,
-            "score": 86.18
+            "value": 73860,
+            "ratio": 0.2683,
+            "score": 53.66
           },
           {
             "key": "renewalDeals",
             "label": "追續成交總數",
             "weight": 200,
-            "value": 4,
-            "ratio": 0.5714,
-            "score": 114.29
+            "value": 2,
+            "ratio": 0.1429,
+            "score": 28.57
           }
         ]
       },
@@ -1096,79 +1096,79 @@
         "lineNumber": 7,
         "inputOrder": 6,
         "inputRank": 7,
-        "rawLine": "7、林宜靜｜【追續】4｜【續單】22420｜【總業績】78420",
-        "originalName": "林宜靜",
-        "name": "林宜靜",
-        "renewalDeals": 4,
-        "renewalRevenue": 22420,
-        "totalRevenue": 78420,
-        "currentMonthRevenue": 78420,
-        "dailyReceived": 78420,
-        "dailyTicket": 19605,
-        "lastMonthRevenue": 102300,
-        "overallTicket": 29291,
+        "rawLine": "7、廖姿惠｜【追續】6｜【續單】26448｜【總業績】121328",
+        "originalName": "廖姿惠",
+        "name": "廖姿惠",
+        "renewalDeals": 6,
+        "renewalRevenue": 26448,
+        "totalRevenue": 121328,
+        "currentMonthRevenue": 121328,
+        "dailyReceived": 121328,
+        "dailyTicket": 20221.33,
+        "lastMonthRevenue": 140542,
+        "overallTicket": 27997,
         "previousRank": 7,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 6,
         "inReport": true,
-        "totalScore": 409.41,
+        "totalScore": 291.01,
         "breakdown": [
           {
             "key": "dailyTicket",
             "label": "當日客單價",
             "weight": 100,
-            "value": 19605,
-            "ratio": 0.3126,
-            "score": 31.26
+            "value": 20221.33,
+            "ratio": 0.2447,
+            "score": 24.47
           },
           {
             "key": "dailyReceived",
             "label": "當日實收金額",
             "weight": 250,
-            "value": 78420,
-            "ratio": 0.4615,
-            "score": 115.38
+            "value": 121328,
+            "ratio": 0.3085,
+            "score": 77.12
           },
           {
             "key": "currentMonthRevenue",
             "label": "本月業績",
             "weight": 100,
-            "value": 78420,
-            "ratio": 0.4615,
-            "score": 46.15
+            "value": 121328,
+            "ratio": 0.3085,
+            "score": 30.85
           },
           {
             "key": "lastMonthRevenue",
             "label": "上月業績",
             "weight": 100,
-            "value": 102300,
-            "ratio": 0.4907,
-            "score": 49.07
+            "value": 140542,
+            "ratio": 0.3342,
+            "score": 33.42
           },
           {
             "key": "overallTicket",
             "label": "整體客單價",
             "weight": 50,
-            "value": 29291,
-            "ratio": 0.4521,
-            "score": 22.6
+            "value": 27997,
+            "ratio": 0.4047,
+            "score": 20.23
           },
           {
             "key": "renewalRevenue",
             "label": "續單金額",
             "weight": 200,
-            "value": 22420,
-            "ratio": 0.1533,
-            "score": 30.66
+            "value": 26448,
+            "ratio": 0.0961,
+            "score": 19.21
           },
           {
             "key": "renewalDeals",
             "label": "追續成交總數",
             "weight": 200,
-            "value": 4,
-            "ratio": 0.5714,
-            "score": 114.29
+            "value": 6,
+            "ratio": 0.4286,
+            "score": 85.71
           }
         ]
       },
@@ -1176,79 +1176,79 @@
         "lineNumber": 8,
         "inputOrder": 7,
         "inputRank": 8,
-        "rawLine": "8、江麗勉｜【追續】0｜【續單】0｜【總業績】63220",
-        "originalName": "江麗勉",
-        "name": "江麗勉",
-        "renewalDeals": 0,
-        "renewalRevenue": 0,
-        "totalRevenue": 63220,
-        "currentMonthRevenue": 63220,
-        "dailyReceived": 63220,
-        "dailyTicket": 0,
-        "lastMonthRevenue": 84434,
-        "overallTicket": 54940,
-        "previousRank": 11,
+        "rawLine": "8、湯玉琦｜【追續】9｜【續單】56180｜【總業績】111860",
+        "originalName": "湯玉琦",
+        "name": "湯玉琦",
+        "renewalDeals": 9,
+        "renewalRevenue": 56180,
+        "totalRevenue": 111860,
+        "currentMonthRevenue": 111860,
+        "dailyReceived": 111860,
+        "dailyTicket": 12428.89,
+        "lastMonthRevenue": 133978,
+        "overallTicket": 22470,
+        "previousRank": 8,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 7,
         "inReport": true,
-        "totalScore": 213.12,
+        "totalScore": 332.07,
         "breakdown": [
           {
             "key": "dailyTicket",
             "label": "當日客單價",
             "weight": 100,
-            "value": 0,
-            "ratio": 0,
-            "score": 0
+            "value": 12428.89,
+            "ratio": 0.1504,
+            "score": 15.04
           },
           {
             "key": "dailyReceived",
             "label": "當日實收金額",
             "weight": 250,
-            "value": 63220,
-            "ratio": 0.3721,
-            "score": 93.01
+            "value": 111860,
+            "ratio": 0.2844,
+            "score": 71.11
           },
           {
             "key": "currentMonthRevenue",
             "label": "本月業績",
             "weight": 100,
-            "value": 63220,
-            "ratio": 0.3721,
-            "score": 37.21
+            "value": 111860,
+            "ratio": 0.2844,
+            "score": 28.44
           },
           {
             "key": "lastMonthRevenue",
             "label": "上月業績",
             "weight": 100,
-            "value": 84434,
-            "ratio": 0.405,
-            "score": 40.5
+            "value": 133978,
+            "ratio": 0.3186,
+            "score": 31.86
           },
           {
             "key": "overallTicket",
             "label": "整體客單價",
             "weight": 50,
-            "value": 54940,
-            "ratio": 0.8479,
-            "score": 42.4
+            "value": 22470,
+            "ratio": 0.3248,
+            "score": 16.24
           },
           {
             "key": "renewalRevenue",
             "label": "續單金額",
             "weight": 200,
-            "value": 0,
-            "ratio": 0,
-            "score": 0
+            "value": 56180,
+            "ratio": 0.2041,
+            "score": 40.81
           },
           {
             "key": "renewalDeals",
             "label": "追續成交總數",
             "weight": 200,
-            "value": 0,
-            "ratio": 0,
-            "score": 0
+            "value": 9,
+            "ratio": 0.6429,
+            "score": 128.57
           }
         ]
       },
@@ -1256,79 +1256,79 @@
         "lineNumber": 9,
         "inputOrder": 8,
         "inputRank": 9,
-        "rawLine": "9、廖姿惠｜【追續】4｜【續單】18948｜【總業績】51568",
-        "originalName": "廖姿惠",
-        "name": "廖姿惠",
-        "renewalDeals": 4,
-        "renewalRevenue": 18948,
-        "totalRevenue": 51568,
-        "currentMonthRevenue": 51568,
-        "dailyReceived": 51568,
-        "dailyTicket": 12892,
-        "lastMonthRevenue": 74654,
-        "overallTicket": 24217,
-        "previousRank": 8,
+        "rawLine": "9、蘇淑玲｜【追續】3｜【續單】61040｜【總業績】101488",
+        "originalName": "蘇淑玲",
+        "name": "蘇淑玲",
+        "renewalDeals": 3,
+        "renewalRevenue": 61040,
+        "totalRevenue": 101488,
+        "currentMonthRevenue": 101488,
+        "dailyReceived": 101488,
+        "dailyTicket": 33829.33,
+        "lastMonthRevenue": 123634,
+        "overallTicket": 43588,
+        "previousRank": 9,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 8,
         "inReport": true,
-        "totalScore": 321.48,
+        "totalScore": 279.35,
         "breakdown": [
           {
             "key": "dailyTicket",
             "label": "當日客單價",
             "weight": 100,
-            "value": 12892,
-            "ratio": 0.2056,
-            "score": 20.56
+            "value": 33829.33,
+            "ratio": 0.4094,
+            "score": 40.94
           },
           {
             "key": "dailyReceived",
             "label": "當日實收金額",
             "weight": 250,
-            "value": 51568,
-            "ratio": 0.3035,
-            "score": 75.87
+            "value": 101488,
+            "ratio": 0.258,
+            "score": 64.51
           },
           {
             "key": "currentMonthRevenue",
             "label": "本月業績",
             "weight": 100,
-            "value": 51568,
-            "ratio": 0.3035,
-            "score": 30.35
+            "value": 101488,
+            "ratio": 0.258,
+            "score": 25.8
           },
           {
             "key": "lastMonthRevenue",
             "label": "上月業績",
             "weight": 100,
-            "value": 74654,
-            "ratio": 0.3581,
-            "score": 35.81
+            "value": 123634,
+            "ratio": 0.294,
+            "score": 29.4
           },
           {
             "key": "overallTicket",
             "label": "整體客單價",
             "weight": 50,
-            "value": 24217,
-            "ratio": 0.3738,
-            "score": 18.69
+            "value": 43588,
+            "ratio": 0.63,
+            "score": 31.5
           },
           {
             "key": "renewalRevenue",
             "label": "續單金額",
             "weight": 200,
-            "value": 18948,
-            "ratio": 0.1296,
-            "score": 25.91
+            "value": 61040,
+            "ratio": 0.2217,
+            "score": 44.34
           },
           {
             "key": "renewalDeals",
             "label": "追續成交總數",
             "weight": 200,
-            "value": 4,
-            "ratio": 0.5714,
-            "score": 114.29
+            "value": 3,
+            "ratio": 0.2143,
+            "score": 42.86
           }
         ]
       },
@@ -1336,79 +1336,79 @@
         "lineNumber": 10,
         "inputOrder": 9,
         "inputRank": 10,
-        "rawLine": "10、湯玉琦｜【追續】4｜【續單】21900｜【總業績】31240",
-        "originalName": "湯玉琦",
-        "name": "湯玉琦",
-        "renewalDeals": 4,
-        "renewalRevenue": 21900,
-        "totalRevenue": 31240,
-        "currentMonthRevenue": 31240,
-        "dailyReceived": 31240,
-        "dailyTicket": 7810,
-        "lastMonthRevenue": 55319,
-        "overallTicket": 21363,
-        "previousRank": 9,
+        "rawLine": "10、徐華妤｜【追續】5｜【續單】69520｜【總業績】90960",
+        "originalName": "徐華妤",
+        "name": "徐華妤",
+        "renewalDeals": 5,
+        "renewalRevenue": 69520,
+        "totalRevenue": 90960,
+        "currentMonthRevenue": 90960,
+        "dailyReceived": 90960,
+        "dailyTicket": 18192,
+        "lastMonthRevenue": 113587,
+        "overallTicket": 32110,
+        "previousRank": 10,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 9,
         "inReport": true,
-        "totalScore": 264.06,
+        "totalScore": 275.12,
         "breakdown": [
           {
             "key": "dailyTicket",
             "label": "當日客單價",
             "weight": 100,
-            "value": 7810,
-            "ratio": 0.1245,
-            "score": 12.45
+            "value": 18192,
+            "ratio": 0.2202,
+            "score": 22.02
           },
           {
             "key": "dailyReceived",
             "label": "當日實收金額",
             "weight": 250,
-            "value": 31240,
-            "ratio": 0.1839,
-            "score": 45.96
+            "value": 90960,
+            "ratio": 0.2313,
+            "score": 57.82
           },
           {
             "key": "currentMonthRevenue",
             "label": "本月業績",
             "weight": 100,
-            "value": 31240,
-            "ratio": 0.1839,
-            "score": 18.39
+            "value": 90960,
+            "ratio": 0.2313,
+            "score": 23.13
           },
           {
             "key": "lastMonthRevenue",
             "label": "上月業績",
             "weight": 100,
-            "value": 55319,
-            "ratio": 0.2653,
-            "score": 26.53
+            "value": 113587,
+            "ratio": 0.2701,
+            "score": 27.01
           },
           {
             "key": "overallTicket",
             "label": "整體客單價",
             "weight": 50,
-            "value": 21363,
-            "ratio": 0.3297,
-            "score": 16.49
+            "value": 32110,
+            "ratio": 0.4641,
+            "score": 23.21
           },
           {
             "key": "renewalRevenue",
             "label": "續單金額",
             "weight": 200,
-            "value": 21900,
-            "ratio": 0.1497,
-            "score": 29.95
+            "value": 69520,
+            "ratio": 0.2525,
+            "score": 50.5
           },
           {
             "key": "renewalDeals",
             "label": "追續成交總數",
             "weight": 200,
-            "value": 4,
-            "ratio": 0.5714,
-            "score": 114.29
+            "value": 5,
+            "ratio": 0.3571,
+            "score": 71.43
           }
         ]
       },
@@ -1416,79 +1416,79 @@
         "lineNumber": 11,
         "inputOrder": 10,
         "inputRank": 11,
-        "rawLine": "11、陳玲華｜【追續】0｜【續單】0｜【總業績】27860",
-        "originalName": "陳玲華",
-        "name": "陳玲華",
-        "renewalDeals": 0,
-        "renewalRevenue": 0,
-        "totalRevenue": 27860,
-        "currentMonthRevenue": 27860,
-        "dailyReceived": 27860,
-        "dailyTicket": 0,
-        "lastMonthRevenue": 47917,
-        "overallTicket": 40553,
-        "previousRank": 14,
+        "rawLine": "11、江麗勉｜【追續】1｜【續單】2380｜【總業績】73630",
+        "originalName": "江麗勉",
+        "name": "江麗勉",
+        "renewalDeals": 1,
+        "renewalRevenue": 2380,
+        "totalRevenue": 73630,
+        "currentMonthRevenue": 73630,
+        "dailyReceived": 73630,
+        "dailyTicket": 73630,
+        "lastMonthRevenue": 88480,
+        "overallTicket": 42453,
+        "previousRank": 11,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 10,
         "inReport": true,
-        "totalScore": 111.66,
+        "totalScore": 222.37,
         "breakdown": [
           {
             "key": "dailyTicket",
             "label": "當日客單價",
             "weight": 100,
-            "value": 0,
-            "ratio": 0,
-            "score": 0
+            "value": 73630,
+            "ratio": 0.8911,
+            "score": 89.11
           },
           {
             "key": "dailyReceived",
             "label": "當日實收金額",
             "weight": 250,
-            "value": 27860,
-            "ratio": 0.164,
-            "score": 40.99
+            "value": 73630,
+            "ratio": 0.1872,
+            "score": 46.8
           },
           {
             "key": "currentMonthRevenue",
             "label": "本月業績",
             "weight": 100,
-            "value": 27860,
-            "ratio": 0.164,
-            "score": 16.4
+            "value": 73630,
+            "ratio": 0.1872,
+            "score": 18.72
           },
           {
             "key": "lastMonthRevenue",
             "label": "上月業績",
             "weight": 100,
-            "value": 47917,
-            "ratio": 0.2298,
-            "score": 22.98
+            "value": 88480,
+            "ratio": 0.2104,
+            "score": 21.04
           },
           {
             "key": "overallTicket",
             "label": "整體客單價",
             "weight": 50,
-            "value": 40553,
-            "ratio": 0.6259,
-            "score": 31.29
+            "value": 42453,
+            "ratio": 0.6136,
+            "score": 30.68
           },
           {
             "key": "renewalRevenue",
             "label": "續單金額",
             "weight": 200,
-            "value": 0,
-            "ratio": 0,
-            "score": 0
+            "value": 2380,
+            "ratio": 0.0086,
+            "score": 1.73
           },
           {
             "key": "renewalDeals",
             "label": "追續成交總數",
             "weight": 200,
-            "value": 0,
-            "ratio": 0,
-            "score": 0
+            "value": 1,
+            "ratio": 0.0714,
+            "score": 14.29
           }
         ]
       },
@@ -1496,79 +1496,79 @@
         "lineNumber": 12,
         "inputOrder": 11,
         "inputRank": 12,
-        "rawLine": "12、許喬恩｜【追續】2｜【續單】27000｜【總業績】27000",
-        "originalName": "許喬恩",
-        "name": "許喬恩",
-        "renewalDeals": 2,
-        "renewalRevenue": 27000,
-        "totalRevenue": 27000,
-        "currentMonthRevenue": 27000,
-        "dailyReceived": 27000,
-        "dailyTicket": 13500,
-        "lastMonthRevenue": 48600,
-        "overallTicket": 29040,
-        "previousRank": 10,
+        "rawLine": "12、梁依萍｜【追續】3｜【續單】15160｜【總業績】64540",
+        "originalName": "梁依萍",
+        "name": "梁依萍",
+        "renewalDeals": 3,
+        "renewalRevenue": 15160,
+        "totalRevenue": 64540,
+        "currentMonthRevenue": 64540,
+        "dailyReceived": 64540,
+        "dailyTicket": 21513.33,
+        "lastMonthRevenue": 80214,
+        "overallTicket": 28483,
+        "previousRank": 12,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 11,
         "inReport": true,
-        "totalScore": 216.92,
+        "totalScore": 177.01,
         "breakdown": [
           {
             "key": "dailyTicket",
             "label": "當日客單價",
             "weight": 100,
-            "value": 13500,
-            "ratio": 0.2153,
-            "score": 21.53
+            "value": 21513.33,
+            "ratio": 0.2604,
+            "score": 26.04
           },
           {
             "key": "dailyReceived",
             "label": "當日實收金額",
             "weight": 250,
-            "value": 27000,
-            "ratio": 0.1589,
-            "score": 39.72
+            "value": 64540,
+            "ratio": 0.1641,
+            "score": 41.03
           },
           {
             "key": "currentMonthRevenue",
             "label": "本月業績",
             "weight": 100,
-            "value": 27000,
-            "ratio": 0.1589,
-            "score": 15.89
+            "value": 64540,
+            "ratio": 0.1641,
+            "score": 16.41
           },
           {
             "key": "lastMonthRevenue",
             "label": "上月業績",
             "weight": 100,
-            "value": 48600,
-            "ratio": 0.2331,
-            "score": 23.31
+            "value": 80214,
+            "ratio": 0.1907,
+            "score": 19.07
           },
           {
             "key": "overallTicket",
             "label": "整體客單價",
             "weight": 50,
-            "value": 29040,
-            "ratio": 0.4482,
-            "score": 22.41
+            "value": 28483,
+            "ratio": 0.4117,
+            "score": 20.59
           },
           {
             "key": "renewalRevenue",
             "label": "續單金額",
             "weight": 200,
-            "value": 27000,
-            "ratio": 0.1846,
-            "score": 36.92
+            "value": 15160,
+            "ratio": 0.0551,
+            "score": 11.01
           },
           {
             "key": "renewalDeals",
             "label": "追續成交總數",
             "weight": 200,
-            "value": 2,
-            "ratio": 0.2857,
-            "score": 57.14
+            "value": 3,
+            "ratio": 0.2143,
+            "score": 42.86
           }
         ]
       },
@@ -1576,79 +1576,79 @@
         "lineNumber": 13,
         "inputOrder": 12,
         "inputRank": 13,
-        "rawLine": "13、蘇淑玲｜【追續】1｜【續單】5000｜【總業績】19280",
-        "originalName": "蘇淑玲",
-        "name": "蘇淑玲",
-        "renewalDeals": 1,
-        "renewalRevenue": 5000,
-        "totalRevenue": 19280,
-        "currentMonthRevenue": 19280,
-        "dailyReceived": 19280,
-        "dailyTicket": 19280,
-        "lastMonthRevenue": 37366,
-        "overallTicket": 28220,
-        "previousRank": 12,
+        "rawLine": "13、高如郁｜【追續】3｜【續單】9320｜【總業績】56860",
+        "originalName": "高如郁",
+        "name": "高如郁",
+        "renewalDeals": 3,
+        "renewalRevenue": 9320,
+        "totalRevenue": 56860,
+        "currentMonthRevenue": 56860,
+        "dailyReceived": 56860,
+        "dailyTicket": 18953.33,
+        "lastMonthRevenue": 70955,
+        "overallTicket": 25797,
+        "previousRank": 13,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 12,
         "inReport": true,
-        "totalScore": 145.57,
+        "totalScore": 158.68,
         "breakdown": [
           {
             "key": "dailyTicket",
             "label": "當日客單價",
             "weight": 100,
-            "value": 19280,
-            "ratio": 0.3074,
-            "score": 30.74
+            "value": 18953.33,
+            "ratio": 0.2294,
+            "score": 22.94
           },
           {
             "key": "dailyReceived",
             "label": "當日實收金額",
             "weight": 250,
-            "value": 19280,
-            "ratio": 0.1135,
-            "score": 28.37
+            "value": 56860,
+            "ratio": 0.1446,
+            "score": 36.14
           },
           {
             "key": "currentMonthRevenue",
             "label": "本月業績",
             "weight": 100,
-            "value": 19280,
-            "ratio": 0.1135,
-            "score": 11.35
+            "value": 56860,
+            "ratio": 0.1446,
+            "score": 14.46
           },
           {
             "key": "lastMonthRevenue",
             "label": "上月業績",
             "weight": 100,
-            "value": 37366,
-            "ratio": 0.1792,
-            "score": 17.92
+            "value": 70955,
+            "ratio": 0.1687,
+            "score": 16.87
           },
           {
             "key": "overallTicket",
             "label": "整體客單價",
             "weight": 50,
-            "value": 28220,
-            "ratio": 0.4355,
-            "score": 21.78
+            "value": 25797,
+            "ratio": 0.3729,
+            "score": 18.64
           },
           {
             "key": "renewalRevenue",
             "label": "續單金額",
             "weight": 200,
-            "value": 5000,
-            "ratio": 0.0342,
-            "score": 6.84
+            "value": 9320,
+            "ratio": 0.0339,
+            "score": 6.77
           },
           {
             "key": "renewalDeals",
             "label": "追續成交總數",
             "weight": 200,
-            "value": 1,
-            "ratio": 0.1429,
-            "score": 28.57
+            "value": 3,
+            "ratio": 0.2143,
+            "score": 42.86
           }
         ]
       },
@@ -1656,77 +1656,77 @@
         "lineNumber": 14,
         "inputOrder": 13,
         "inputRank": 14,
-        "rawLine": "14、梁依萍｜【追續】1｜【續單】6000｜【總業績】18440",
-        "originalName": "梁依萍",
-        "name": "梁依萍",
-        "renewalDeals": 1,
-        "renewalRevenue": 6000,
-        "totalRevenue": 18440,
-        "currentMonthRevenue": 18440,
-        "dailyReceived": 18440,
-        "dailyTicket": 18440,
-        "lastMonthRevenue": 34947,
-        "overallTicket": 27610,
-        "previousRank": 13,
+        "rawLine": "14、高美雲｜【追續】2｜【續單】15660｜【總業績】54008",
+        "originalName": "高美雲",
+        "name": "高美雲",
+        "renewalDeals": 2,
+        "renewalRevenue": 15660,
+        "totalRevenue": 54008,
+        "currentMonthRevenue": 54008,
+        "dailyReceived": 54008,
+        "dailyTicket": 27004,
+        "lastMonthRevenue": 67406,
+        "overallTicket": 31134,
+        "previousRank": 14,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 13,
         "inReport": true,
-        "totalScore": 142.23,
+        "totalScore": 159.22,
         "breakdown": [
           {
             "key": "dailyTicket",
             "label": "當日客單價",
             "weight": 100,
-            "value": 18440,
-            "ratio": 0.2941,
-            "score": 29.41
+            "value": 27004,
+            "ratio": 0.3268,
+            "score": 32.68
           },
           {
             "key": "dailyReceived",
             "label": "當日實收金額",
             "weight": 250,
-            "value": 18440,
-            "ratio": 0.1085,
-            "score": 27.13
+            "value": 54008,
+            "ratio": 0.1373,
+            "score": 34.33
           },
           {
             "key": "currentMonthRevenue",
             "label": "本月業績",
             "weight": 100,
-            "value": 18440,
-            "ratio": 0.1085,
-            "score": 10.85
+            "value": 54008,
+            "ratio": 0.1373,
+            "score": 13.73
           },
           {
             "key": "lastMonthRevenue",
             "label": "上月業績",
             "weight": 100,
-            "value": 34947,
-            "ratio": 0.1676,
-            "score": 16.76
+            "value": 67406,
+            "ratio": 0.1603,
+            "score": 16.03
           },
           {
             "key": "overallTicket",
             "label": "整體客單價",
             "weight": 50,
-            "value": 27610,
-            "ratio": 0.4261,
-            "score": 21.31
+            "value": 31134,
+            "ratio": 0.45,
+            "score": 22.5
           },
           {
             "key": "renewalRevenue",
             "label": "續單金額",
             "weight": 200,
-            "value": 6000,
-            "ratio": 0.041,
-            "score": 8.2
+            "value": 15660,
+            "ratio": 0.0569,
+            "score": 11.38
           },
           {
             "key": "renewalDeals",
             "label": "追續成交總數",
             "weight": 200,
-            "value": 1,
+            "value": 2,
             "ratio": 0.1429,
             "score": 28.57
           }
@@ -1736,79 +1736,79 @@
         "lineNumber": 15,
         "inputOrder": 14,
         "inputRank": 15,
-        "rawLine": "15、高美雲｜【追續】0｜【續單】0｜【總業績】12540",
-        "originalName": "高美雲",
-        "name": "高美雲",
-        "renewalDeals": 0,
-        "renewalRevenue": 0,
-        "totalRevenue": 12540,
-        "currentMonthRevenue": 12540,
-        "dailyReceived": 12540,
-        "dailyTicket": 0,
-        "lastMonthRevenue": 27235,
-        "overallTicket": 31980,
-        "previousRank": 18,
+        "rawLine": "15、陳玲華｜【追續】1｜【續單】6500｜【總業績】41860",
+        "originalName": "陳玲華",
+        "name": "陳玲華",
+        "renewalDeals": 1,
+        "renewalRevenue": 6500,
+        "totalRevenue": 41860,
+        "currentMonthRevenue": 41860,
+        "dailyReceived": 41860,
+        "dailyTicket": 41860,
+        "lastMonthRevenue": 53817,
+        "overallTicket": 32940,
+        "previousRank": 15,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 14,
         "inReport": true,
-        "totalScore": 63.57,
+        "totalScore": 143.53,
         "breakdown": [
           {
             "key": "dailyTicket",
             "label": "當日客單價",
             "weight": 100,
-            "value": 0,
-            "ratio": 0,
-            "score": 0
+            "value": 41860,
+            "ratio": 0.5066,
+            "score": 50.66
           },
           {
             "key": "dailyReceived",
             "label": "當日實收金額",
             "weight": 250,
-            "value": 12540,
-            "ratio": 0.0738,
-            "score": 18.45
+            "value": 41860,
+            "ratio": 0.1064,
+            "score": 26.61
           },
           {
             "key": "currentMonthRevenue",
             "label": "本月業績",
             "weight": 100,
-            "value": 12540,
-            "ratio": 0.0738,
-            "score": 7.38
+            "value": 41860,
+            "ratio": 0.1064,
+            "score": 10.64
           },
           {
             "key": "lastMonthRevenue",
             "label": "上月業績",
             "weight": 100,
-            "value": 27235,
-            "ratio": 0.1306,
-            "score": 13.06
+            "value": 53817,
+            "ratio": 0.128,
+            "score": 12.8
           },
           {
             "key": "overallTicket",
             "label": "整體客單價",
             "weight": 50,
-            "value": 31980,
-            "ratio": 0.4936,
-            "score": 24.68
+            "value": 32940,
+            "ratio": 0.4761,
+            "score": 23.81
           },
           {
             "key": "renewalRevenue",
             "label": "續單金額",
             "weight": 200,
-            "value": 0,
-            "ratio": 0,
-            "score": 0
+            "value": 6500,
+            "ratio": 0.0236,
+            "score": 4.72
           },
           {
             "key": "renewalDeals",
             "label": "追續成交總數",
             "weight": 200,
-            "value": 0,
-            "ratio": 0,
-            "score": 0
+            "value": 1,
+            "ratio": 0.0714,
+            "score": 14.29
           }
         ]
       },
@@ -1816,79 +1816,79 @@
         "lineNumber": 16,
         "inputOrder": 15,
         "inputRank": 16,
-        "rawLine": "16、高如郁｜【追續】0｜【續單】0｜【總業績】11560",
-        "originalName": "高如郁",
-        "name": "高如郁",
-        "renewalDeals": 0,
-        "renewalRevenue": 0,
-        "totalRevenue": 11560,
-        "currentMonthRevenue": 11560,
-        "dailyReceived": 11560,
-        "dailyTicket": 0,
-        "lastMonthRevenue": 24573,
-        "overallTicket": 30787,
-        "previousRank": 19,
+        "rawLine": "16、鄭珮恩｜【追續】4｜【續單】7000｜【總業績】40220",
+        "originalName": "鄭珮恩",
+        "name": "鄭珮恩",
+        "renewalDeals": 4,
+        "renewalRevenue": 7000,
+        "totalRevenue": 40220,
+        "currentMonthRevenue": 40220,
+        "dailyReceived": 40220,
+        "dailyTicket": 10055,
+        "lastMonthRevenue": 50634,
+        "overallTicket": 18289,
+        "previousRank": 16,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 15,
         "inReport": true,
-        "totalScore": 59.36,
+        "totalScore": 135.46,
         "breakdown": [
           {
             "key": "dailyTicket",
             "label": "當日客單價",
             "weight": 100,
-            "value": 0,
-            "ratio": 0,
-            "score": 0
+            "value": 10055,
+            "ratio": 0.1217,
+            "score": 12.17
           },
           {
             "key": "dailyReceived",
             "label": "當日實收金額",
             "weight": 250,
-            "value": 11560,
-            "ratio": 0.068,
-            "score": 17.01
+            "value": 40220,
+            "ratio": 0.1023,
+            "score": 25.57
           },
           {
             "key": "currentMonthRevenue",
             "label": "本月業績",
             "weight": 100,
-            "value": 11560,
-            "ratio": 0.068,
-            "score": 6.8
+            "value": 40220,
+            "ratio": 0.1023,
+            "score": 10.23
           },
           {
             "key": "lastMonthRevenue",
             "label": "上月業績",
             "weight": 100,
-            "value": 24573,
-            "ratio": 0.1179,
-            "score": 11.79
+            "value": 50634,
+            "ratio": 0.1204,
+            "score": 12.04
           },
           {
             "key": "overallTicket",
             "label": "整體客單價",
             "weight": 50,
-            "value": 30787,
-            "ratio": 0.4752,
-            "score": 23.76
+            "value": 18289,
+            "ratio": 0.2644,
+            "score": 13.22
           },
           {
             "key": "renewalRevenue",
             "label": "續單金額",
             "weight": 200,
-            "value": 0,
-            "ratio": 0,
-            "score": 0
+            "value": 7000,
+            "ratio": 0.0254,
+            "score": 5.09
           },
           {
             "key": "renewalDeals",
             "label": "追續成交總數",
             "weight": 200,
-            "value": 0,
-            "ratio": 0,
-            "score": 0
+            "value": 4,
+            "ratio": 0.2857,
+            "score": 57.14
           }
         ]
       },
@@ -1896,77 +1896,77 @@
         "lineNumber": 17,
         "inputOrder": 16,
         "inputRank": 17,
-        "rawLine": "17、周美蓁｜【追續】1｜【續單】10000｜【總業績】10000",
-        "originalName": "周美蓁",
-        "name": "周美蓁",
-        "renewalDeals": 1,
-        "renewalRevenue": 10000,
-        "totalRevenue": 10000,
-        "currentMonthRevenue": 10000,
-        "dailyReceived": 10000,
-        "dailyTicket": 10000,
-        "lastMonthRevenue": 22600,
-        "overallTicket": 24550,
-        "previousRank": 15,
+        "rawLine": "17、許喬恩｜【追續】2｜【續單】20000｜【總業績】27000",
+        "originalName": "許喬恩",
+        "name": "許喬恩",
+        "renewalDeals": 2,
+        "renewalRevenue": 20000,
+        "totalRevenue": 27000,
+        "currentMonthRevenue": 27000,
+        "dailyReceived": 27000,
+        "dailyTicket": 13500,
+        "lastMonthRevenue": 38760,
+        "overallTicket": 25040,
+        "previousRank": 17,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 16,
         "inReport": true,
-        "totalScore": 108.58,
+        "totalScore": 110.79,
         "breakdown": [
           {
             "key": "dailyTicket",
             "label": "當日客單價",
             "weight": 100,
-            "value": 10000,
-            "ratio": 0.1595,
-            "score": 15.95
+            "value": 13500,
+            "ratio": 0.1634,
+            "score": 16.34
           },
           {
             "key": "dailyReceived",
             "label": "當日實收金額",
             "weight": 250,
-            "value": 10000,
-            "ratio": 0.0589,
-            "score": 14.71
+            "value": 27000,
+            "ratio": 0.0687,
+            "score": 17.16
           },
           {
             "key": "currentMonthRevenue",
             "label": "本月業績",
             "weight": 100,
-            "value": 10000,
-            "ratio": 0.0589,
-            "score": 5.89
+            "value": 27000,
+            "ratio": 0.0687,
+            "score": 6.87
           },
           {
             "key": "lastMonthRevenue",
             "label": "上月業績",
             "weight": 100,
-            "value": 22600,
-            "ratio": 0.1084,
-            "score": 10.84
+            "value": 38760,
+            "ratio": 0.0922,
+            "score": 9.22
           },
           {
             "key": "overallTicket",
             "label": "整體客單價",
             "weight": 50,
-            "value": 24550,
-            "ratio": 0.3789,
-            "score": 18.95
+            "value": 25040,
+            "ratio": 0.3619,
+            "score": 18.1
           },
           {
             "key": "renewalRevenue",
             "label": "續單金額",
             "weight": 200,
-            "value": 10000,
-            "ratio": 0.0684,
-            "score": 13.67
+            "value": 20000,
+            "ratio": 0.0726,
+            "score": 14.53
           },
           {
             "key": "renewalDeals",
             "label": "追續成交總數",
             "weight": 200,
-            "value": 1,
+            "value": 2,
             "ratio": 0.1429,
             "score": 28.57
           }
@@ -1976,79 +1976,79 @@
         "lineNumber": 18,
         "inputOrder": 17,
         "inputRank": 18,
-        "rawLine": "18、鄭珮恩｜【追續】2｜【續單】2300｜【總業績】7300",
-        "originalName": "鄭珮恩",
-        "name": "鄭珮恩",
-        "renewalDeals": 2,
-        "renewalRevenue": 2300,
-        "totalRevenue": 7300,
-        "currentMonthRevenue": 7300,
-        "dailyReceived": 7300,
-        "dailyTicket": 3650,
-        "lastMonthRevenue": 17500,
-        "overallTicket": 17040,
-        "previousRank": 16,
+        "rawLine": "18、陳桂子（新人）｜【追續】1｜【續單】13500｜【總業績】13500",
+        "originalName": "陳桂子（新人）",
+        "name": "陳桂子（新人）",
+        "renewalDeals": 1,
+        "renewalRevenue": 13500,
+        "totalRevenue": 13500,
+        "currentMonthRevenue": 13500,
+        "dailyReceived": 13500,
+        "dailyTicket": 13500,
+        "lastMonthRevenue": 24300,
+        "overallTicket": 25650,
+        "previousRank": 18,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 17,
         "inReport": true,
-        "totalScore": 102.69,
+        "totalScore": 76.77,
         "breakdown": [
           {
             "key": "dailyTicket",
             "label": "當日客單價",
             "weight": 100,
-            "value": 3650,
-            "ratio": 0.0582,
-            "score": 5.82
+            "value": 13500,
+            "ratio": 0.1634,
+            "score": 16.34
           },
           {
             "key": "dailyReceived",
             "label": "當日實收金額",
             "weight": 250,
-            "value": 7300,
-            "ratio": 0.043,
-            "score": 10.74
+            "value": 13500,
+            "ratio": 0.0343,
+            "score": 8.58
           },
           {
             "key": "currentMonthRevenue",
             "label": "本月業績",
             "weight": 100,
-            "value": 7300,
-            "ratio": 0.043,
-            "score": 4.3
+            "value": 13500,
+            "ratio": 0.0343,
+            "score": 3.43
           },
           {
             "key": "lastMonthRevenue",
             "label": "上月業績",
             "weight": 100,
-            "value": 17500,
-            "ratio": 0.0839,
-            "score": 8.39
+            "value": 24300,
+            "ratio": 0.0578,
+            "score": 5.78
           },
           {
             "key": "overallTicket",
             "label": "整體客單價",
             "weight": 50,
-            "value": 17040,
-            "ratio": 0.263,
-            "score": 13.15
+            "value": 25650,
+            "ratio": 0.3708,
+            "score": 18.54
           },
           {
             "key": "renewalRevenue",
             "label": "續單金額",
             "weight": 200,
-            "value": 2300,
-            "ratio": 0.0157,
-            "score": 3.15
+            "value": 13500,
+            "ratio": 0.049,
+            "score": 9.81
           },
           {
             "key": "renewalDeals",
             "label": "追續成交總數",
             "weight": 200,
-            "value": 2,
-            "ratio": 0.2857,
-            "score": 57.14
+            "value": 1,
+            "ratio": 0.0714,
+            "score": 14.29
           }
         ]
       },
@@ -2056,7 +2056,247 @@
         "lineNumber": 19,
         "inputOrder": 18,
         "inputRank": 19,
-        "rawLine": "19、林佩君｜【追續】1｜【續單】6528｜【總業績】6528",
+        "rawLine": "19、謝啟芳｜【追續】0｜【續單】0｜【總業績】10960",
+        "originalName": "謝啟芳",
+        "name": "謝啟芳",
+        "renewalDeals": 0,
+        "renewalRevenue": 0,
+        "totalRevenue": 10960,
+        "currentMonthRevenue": 10960,
+        "dailyReceived": 10960,
+        "dailyTicket": 0,
+        "lastMonthRevenue": 18645,
+        "overallTicket": 27987,
+        "previousRank": 19,
+        "aliasUsed": false,
+        "baselineFound": true,
+        "baselineIndex": 18,
+        "inReport": true,
+        "totalScore": 34.42,
+        "breakdown": [
+          {
+            "key": "dailyTicket",
+            "label": "當日客單價",
+            "weight": 100,
+            "value": 0,
+            "ratio": 0,
+            "score": 0
+          },
+          {
+            "key": "dailyReceived",
+            "label": "當日實收金額",
+            "weight": 250,
+            "value": 10960,
+            "ratio": 0.0279,
+            "score": 6.97
+          },
+          {
+            "key": "currentMonthRevenue",
+            "label": "本月業績",
+            "weight": 100,
+            "value": 10960,
+            "ratio": 0.0279,
+            "score": 2.79
+          },
+          {
+            "key": "lastMonthRevenue",
+            "label": "上月業績",
+            "weight": 100,
+            "value": 18645,
+            "ratio": 0.0443,
+            "score": 4.43
+          },
+          {
+            "key": "overallTicket",
+            "label": "整體客單價",
+            "weight": 50,
+            "value": 27987,
+            "ratio": 0.4045,
+            "score": 20.23
+          },
+          {
+            "key": "renewalRevenue",
+            "label": "續單金額",
+            "weight": 200,
+            "value": 0,
+            "ratio": 0,
+            "score": 0
+          },
+          {
+            "key": "renewalDeals",
+            "label": "追續成交總數",
+            "weight": 200,
+            "value": 0,
+            "ratio": 0,
+            "score": 0
+          }
+        ]
+      },
+      {
+        "lineNumber": 20,
+        "inputOrder": 19,
+        "inputRank": 20,
+        "rawLine": "20、周美蓁｜【追續】1｜【續單】10000｜【總業績】10000",
+        "originalName": "周美蓁",
+        "name": "周美蓁",
+        "renewalDeals": 1,
+        "renewalRevenue": 10000,
+        "totalRevenue": 10000,
+        "currentMonthRevenue": 10000,
+        "dailyReceived": 10000,
+        "dailyTicket": 10000,
+        "lastMonthRevenue": 17200,
+        "overallTicket": 22600,
+        "previousRank": 20,
+        "aliasUsed": false,
+        "baselineFound": true,
+        "baselineIndex": 19,
+        "inReport": true,
+        "totalScore": 62.97,
+        "breakdown": [
+          {
+            "key": "dailyTicket",
+            "label": "當日客單價",
+            "weight": 100,
+            "value": 10000,
+            "ratio": 0.121,
+            "score": 12.1
+          },
+          {
+            "key": "dailyReceived",
+            "label": "當日實收金額",
+            "weight": 250,
+            "value": 10000,
+            "ratio": 0.0254,
+            "score": 6.36
+          },
+          {
+            "key": "currentMonthRevenue",
+            "label": "本月業績",
+            "weight": 100,
+            "value": 10000,
+            "ratio": 0.0254,
+            "score": 2.54
+          },
+          {
+            "key": "lastMonthRevenue",
+            "label": "上月業績",
+            "weight": 100,
+            "value": 17200,
+            "ratio": 0.0409,
+            "score": 4.09
+          },
+          {
+            "key": "overallTicket",
+            "label": "整體客單價",
+            "weight": 50,
+            "value": 22600,
+            "ratio": 0.3267,
+            "score": 16.33
+          },
+          {
+            "key": "renewalRevenue",
+            "label": "續單金額",
+            "weight": 200,
+            "value": 10000,
+            "ratio": 0.0363,
+            "score": 7.26
+          },
+          {
+            "key": "renewalDeals",
+            "label": "追續成交總數",
+            "weight": 200,
+            "value": 1,
+            "ratio": 0.0714,
+            "score": 14.29
+          }
+        ]
+      },
+      {
+        "lineNumber": 21,
+        "inputOrder": 20,
+        "inputRank": 21,
+        "rawLine": "21、江沛林｜【追續】3｜【續單】9980｜【總業績】9980",
+        "originalName": "江沛林",
+        "name": "江沛林",
+        "renewalDeals": 3,
+        "renewalRevenue": 9980,
+        "totalRevenue": 9980,
+        "currentMonthRevenue": 9980,
+        "dailyReceived": 9980,
+        "dailyTicket": 3326.67,
+        "lastMonthRevenue": 15380,
+        "overallTicket": 14627,
+        "previousRank": 21,
+        "aliasUsed": false,
+        "baselineFound": true,
+        "baselineIndex": 20,
+        "inReport": true,
+        "totalScore": 77.25,
+        "breakdown": [
+          {
+            "key": "dailyTicket",
+            "label": "當日客單價",
+            "weight": 100,
+            "value": 3326.67,
+            "ratio": 0.0403,
+            "score": 4.03
+          },
+          {
+            "key": "dailyReceived",
+            "label": "當日實收金額",
+            "weight": 250,
+            "value": 9980,
+            "ratio": 0.0254,
+            "score": 6.34
+          },
+          {
+            "key": "currentMonthRevenue",
+            "label": "本月業績",
+            "weight": 100,
+            "value": 9980,
+            "ratio": 0.0254,
+            "score": 2.54
+          },
+          {
+            "key": "lastMonthRevenue",
+            "label": "上月業績",
+            "weight": 100,
+            "value": 15380,
+            "ratio": 0.0366,
+            "score": 3.66
+          },
+          {
+            "key": "overallTicket",
+            "label": "整體客單價",
+            "weight": 50,
+            "value": 14627,
+            "ratio": 0.2114,
+            "score": 10.57
+          },
+          {
+            "key": "renewalRevenue",
+            "label": "續單金額",
+            "weight": 200,
+            "value": 9980,
+            "ratio": 0.0363,
+            "score": 7.25
+          },
+          {
+            "key": "renewalDeals",
+            "label": "追續成交總數",
+            "weight": 200,
+            "value": 3,
+            "ratio": 0.2143,
+            "score": 42.86
+          }
+        ]
+      },
+      {
+        "lineNumber": 22,
+        "inputOrder": 21,
+        "inputRank": 22,
+        "rawLine": "22、林佩君｜【追續】1｜【續單】6528｜【總業績】6528",
         "originalName": "林佩君",
         "name": "林佩君",
         "renewalDeals": 1,
@@ -2065,310 +2305,70 @@
         "currentMonthRevenue": 6528,
         "dailyReceived": 6528,
         "dailyTicket": 6528,
-        "lastMonthRevenue": 15528,
-        "overallTicket": 21514,
-        "previousRank": 17,
-        "aliasUsed": false,
-        "baselineFound": true,
-        "baselineIndex": 18,
-        "inReport": true,
-        "totalScore": 85.4,
-        "breakdown": [
-          {
-            "key": "dailyTicket",
-            "label": "當日客單價",
-            "weight": 100,
-            "value": 6528,
-            "ratio": 0.1041,
-            "score": 10.41
-          },
-          {
-            "key": "dailyReceived",
-            "label": "當日實收金額",
-            "weight": 250,
-            "value": 6528,
-            "ratio": 0.0384,
-            "score": 9.6
-          },
-          {
-            "key": "currentMonthRevenue",
-            "label": "本月業績",
-            "weight": 100,
-            "value": 6528,
-            "ratio": 0.0384,
-            "score": 3.84
-          },
-          {
-            "key": "lastMonthRevenue",
-            "label": "上月業績",
-            "weight": 100,
-            "value": 15528,
-            "ratio": 0.0745,
-            "score": 7.45
-          },
-          {
-            "key": "overallTicket",
-            "label": "整體客單價",
-            "weight": 50,
-            "value": 21514,
-            "ratio": 0.332,
-            "score": 16.6
-          },
-          {
-            "key": "renewalRevenue",
-            "label": "續單金額",
-            "weight": 200,
-            "value": 6528,
-            "ratio": 0.0446,
-            "score": 8.93
-          },
-          {
-            "key": "renewalDeals",
-            "label": "追續成交總數",
-            "weight": 200,
-            "value": 1,
-            "ratio": 0.1429,
-            "score": 28.57
-          }
-        ]
-      },
-      {
-        "lineNumber": 20,
-        "inputOrder": 19,
-        "inputRank": 20,
-        "rawLine": "20、江沛林｜【追續】1｜【續單】1000｜【總業績】1000",
-        "originalName": "江沛林",
-        "name": "江沛林",
-        "renewalDeals": 1,
-        "renewalRevenue": 1000,
-        "totalRevenue": 1000,
-        "currentMonthRevenue": 1000,
-        "dailyReceived": 1000,
-        "dailyTicket": 1000,
-        "lastMonthRevenue": 8200,
-        "overallTicket": 18100,
-        "previousRank": 20,
-        "aliasUsed": false,
-        "baselineFound": true,
-        "baselineIndex": 19,
-        "inReport": true,
-        "totalScore": 51.49,
-        "breakdown": [
-          {
-            "key": "dailyTicket",
-            "label": "當日客單價",
-            "weight": 100,
-            "value": 1000,
-            "ratio": 0.0159,
-            "score": 1.59
-          },
-          {
-            "key": "dailyReceived",
-            "label": "當日實收金額",
-            "weight": 250,
-            "value": 1000,
-            "ratio": 0.0059,
-            "score": 1.47
-          },
-          {
-            "key": "currentMonthRevenue",
-            "label": "本月業績",
-            "weight": 100,
-            "value": 1000,
-            "ratio": 0.0059,
-            "score": 0.59
-          },
-          {
-            "key": "lastMonthRevenue",
-            "label": "上月業績",
-            "weight": 100,
-            "value": 8200,
-            "ratio": 0.0393,
-            "score": 3.93
-          },
-          {
-            "key": "overallTicket",
-            "label": "整體客單價",
-            "weight": 50,
-            "value": 18100,
-            "ratio": 0.2794,
-            "score": 13.97
-          },
-          {
-            "key": "renewalRevenue",
-            "label": "續單金額",
-            "weight": 200,
-            "value": 1000,
-            "ratio": 0.0068,
-            "score": 1.37
-          },
-          {
-            "key": "renewalDeals",
-            "label": "追續成交總數",
-            "weight": 200,
-            "value": 1,
-            "ratio": 0.1429,
-            "score": 28.57
-          }
-        ]
-      },
-      {
-        "lineNumber": 21,
-        "inputOrder": 20,
-        "inputRank": 21,
-        "rawLine": "21、陳旭宜｜【追續】0｜【續單】0｜【總業績】0",
-        "originalName": "陳旭宜",
-        "name": "陳旭宜",
-        "renewalDeals": 0,
-        "renewalRevenue": 0,
-        "totalRevenue": 0,
-        "currentMonthRevenue": 0,
-        "dailyReceived": 0,
-        "dailyTicket": 0,
-        "lastMonthRevenue": 5400,
-        "overallTicket": 22600,
-        "previousRank": 21,
-        "aliasUsed": false,
-        "baselineFound": true,
-        "baselineIndex": 20,
-        "inReport": true,
-        "totalScore": 20.03,
-        "breakdown": [
-          {
-            "key": "dailyTicket",
-            "label": "當日客單價",
-            "weight": 100,
-            "value": 0,
-            "ratio": 0,
-            "score": 0
-          },
-          {
-            "key": "dailyReceived",
-            "label": "當日實收金額",
-            "weight": 250,
-            "value": 0,
-            "ratio": 0,
-            "score": 0
-          },
-          {
-            "key": "currentMonthRevenue",
-            "label": "本月業績",
-            "weight": 100,
-            "value": 0,
-            "ratio": 0,
-            "score": 0
-          },
-          {
-            "key": "lastMonthRevenue",
-            "label": "上月業績",
-            "weight": 100,
-            "value": 5400,
-            "ratio": 0.0259,
-            "score": 2.59
-          },
-          {
-            "key": "overallTicket",
-            "label": "整體客單價",
-            "weight": 50,
-            "value": 22600,
-            "ratio": 0.3488,
-            "score": 17.44
-          },
-          {
-            "key": "renewalRevenue",
-            "label": "續單金額",
-            "weight": 200,
-            "value": 0,
-            "ratio": 0,
-            "score": 0
-          },
-          {
-            "key": "renewalDeals",
-            "label": "追續成交總數",
-            "weight": 200,
-            "value": 0,
-            "ratio": 0,
-            "score": 0
-          }
-        ]
-      },
-      {
-        "lineNumber": 22,
-        "inputOrder": 21,
-        "inputRank": 22,
-        "rawLine": "22、謝啟芳｜【追續】0｜【續單】0｜【總業績】0",
-        "originalName": "謝啟芳",
-        "name": "謝啟芳",
-        "renewalDeals": 0,
-        "renewalRevenue": 0,
-        "totalRevenue": 0,
-        "currentMonthRevenue": 0,
-        "dailyReceived": 0,
-        "dailyTicket": 0,
-        "lastMonthRevenue": 3600,
-        "overallTicket": 21733,
+        "lastMonthRevenue": 10128,
+        "overallTicket": 19564,
         "previousRank": 22,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 21,
         "inReport": true,
-        "totalScore": 18.5,
+        "totalScore": 49.29,
         "breakdown": [
           {
             "key": "dailyTicket",
             "label": "當日客單價",
             "weight": 100,
-            "value": 0,
-            "ratio": 0,
-            "score": 0
+            "value": 6528,
+            "ratio": 0.079,
+            "score": 7.9
           },
           {
             "key": "dailyReceived",
             "label": "當日實收金額",
             "weight": 250,
-            "value": 0,
-            "ratio": 0,
-            "score": 0
+            "value": 6528,
+            "ratio": 0.0166,
+            "score": 4.15
           },
           {
             "key": "currentMonthRevenue",
             "label": "本月業績",
             "weight": 100,
-            "value": 0,
-            "ratio": 0,
-            "score": 0
+            "value": 6528,
+            "ratio": 0.0166,
+            "score": 1.66
           },
           {
             "key": "lastMonthRevenue",
             "label": "上月業績",
             "weight": 100,
-            "value": 3600,
-            "ratio": 0.0173,
-            "score": 1.73
+            "value": 10128,
+            "ratio": 0.0241,
+            "score": 2.41
           },
           {
             "key": "overallTicket",
             "label": "整體客單價",
             "weight": 50,
-            "value": 21733,
-            "ratio": 0.3354,
-            "score": 16.77
+            "value": 19564,
+            "ratio": 0.2828,
+            "score": 14.14
           },
           {
             "key": "renewalRevenue",
             "label": "續單金額",
             "weight": 200,
-            "value": 0,
-            "ratio": 0,
-            "score": 0
+            "value": 6528,
+            "ratio": 0.0237,
+            "score": 4.74
           },
           {
             "key": "renewalDeals",
             "label": "追續成交總數",
             "weight": 200,
-            "value": 0,
-            "ratio": 0,
-            "score": 0
+            "value": 1,
+            "ratio": 0.0714,
+            "score": 14.29
           }
         ]
       },
@@ -2392,7 +2392,7 @@
         "baselineFound": true,
         "baselineIndex": 22,
         "inReport": true,
-        "totalScore": 16.96,
+        "totalScore": 15.51,
         "breakdown": [
           {
             "key": "dailyTicket",
@@ -2423,16 +2423,16 @@
             "label": "上月業績",
             "weight": 100,
             "value": 1800,
-            "ratio": 0.0086,
-            "score": 0.86
+            "ratio": 0.0043,
+            "score": 0.43
           },
           {
             "key": "overallTicket",
             "label": "整體客單價",
             "weight": 50,
             "value": 20867,
-            "ratio": 0.3221,
-            "score": 16.1
+            "ratio": 0.3016,
+            "score": 15.08
           },
           {
             "key": "renewalRevenue",
@@ -2459,37 +2459,37 @@
       "lineNumber": 1,
       "inputOrder": 0,
       "inputRank": 1,
-      "rawLine": "1、馬秋香｜【追續】6｜【續單】146260｜【總業績】169920",
+      "rawLine": "1、馬秋香｜【追續】12｜【續單】275300｜【總業績】393290",
       "originalName": "馬秋香",
       "name": "馬秋香",
-      "renewalDeals": 6,
-      "renewalRevenue": 146260,
-      "totalRevenue": 169920,
-      "currentMonthRevenue": 169920,
-      "dailyReceived": 169920,
-      "dailyTicket": 28320,
-      "lastMonthRevenue": 208481,
-      "overallTicket": 48442,
+      "renewalDeals": 12,
+      "renewalRevenue": 275300,
+      "totalRevenue": 393290,
+      "currentMonthRevenue": 393290,
+      "dailyReceived": 393290,
+      "dailyTicket": 32774.17,
+      "lastMonthRevenue": 420531,
+      "overallTicket": 52559,
       "previousRank": 1,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 0,
       "inReport": true,
-      "totalScore": 903.97,
+      "totalScore": 899.09,
       "breakdown": [
         {
           "key": "dailyTicket",
           "label": "當日客單價",
           "weight": 100,
-          "value": 28320,
-          "ratio": 0.4516,
-          "score": 45.16
+          "value": 32774.17,
+          "ratio": 0.3967,
+          "score": 39.67
         },
         {
           "key": "dailyReceived",
           "label": "當日實收金額",
           "weight": 250,
-          "value": 169920,
+          "value": 393290,
           "ratio": 1,
           "score": 250
         },
@@ -2497,7 +2497,7 @@
           "key": "currentMonthRevenue",
           "label": "本月業績",
           "weight": 100,
-          "value": 169920,
+          "value": 393290,
           "ratio": 1,
           "score": 100
         },
@@ -2505,7 +2505,7 @@
           "key": "lastMonthRevenue",
           "label": "上月業績",
           "weight": 100,
-          "value": 208481,
+          "value": 420531,
           "ratio": 1,
           "score": 100
         },
@@ -2513,15 +2513,15 @@
           "key": "overallTicket",
           "label": "整體客單價",
           "weight": 50,
-          "value": 48442,
-          "ratio": 0.7477,
-          "score": 37.38
+          "value": 52559,
+          "ratio": 0.7597,
+          "score": 37.99
         },
         {
           "key": "renewalRevenue",
           "label": "續單金額",
           "weight": 200,
-          "value": 146260,
+          "value": 275300,
           "ratio": 1,
           "score": 200
         },
@@ -2529,7 +2529,7 @@
           "key": "renewalDeals",
           "label": "追續成交總數",
           "weight": 200,
-          "value": 6,
+          "value": 12,
           "ratio": 0.8571,
           "score": 171.43
         }
@@ -2541,82 +2541,82 @@
       "groupLabel": "A1 高單主力"
     },
     {
-      "lineNumber": 3,
-      "inputOrder": 2,
-      "inputRank": 3,
-      "rawLine": "3、王珍珠｜【追續】7｜【續單】127060｜【總業績】148108",
-      "originalName": "王珍珠",
-      "name": "王珍珠",
-      "renewalDeals": 7,
-      "renewalRevenue": 127060,
-      "totalRevenue": 148108,
-      "currentMonthRevenue": 148108,
-      "dailyReceived": 148108,
-      "dailyTicket": 21158.29,
-      "lastMonthRevenue": 183382,
-      "overallTicket": 38977,
+      "lineNumber": 2,
+      "inputOrder": 1,
+      "inputRank": 2,
+      "rawLine": "2、王梅慧｜【追續】12｜【續單】237180｜【總業績】323760",
+      "originalName": "王梅慧",
+      "name": "王梅慧",
+      "renewalDeals": 12,
+      "renewalRevenue": 237180,
+      "totalRevenue": 323760,
+      "currentMonthRevenue": 323760,
+      "dailyReceived": 323760,
+      "dailyTicket": 26980,
+      "lastMonthRevenue": 352970,
+      "overallTicket": 45209,
       "previousRank": 2,
       "aliasUsed": false,
       "baselineFound": true,
-      "baselineIndex": 2,
+      "baselineIndex": 1,
       "inReport": true,
-      "totalScore": 830.6,
+      "totalScore": 781.11,
       "breakdown": [
         {
           "key": "dailyTicket",
           "label": "當日客單價",
           "weight": 100,
-          "value": 21158.29,
-          "ratio": 0.3374,
-          "score": 33.74
+          "value": 26980,
+          "ratio": 0.3265,
+          "score": 32.65
         },
         {
           "key": "dailyReceived",
           "label": "當日實收金額",
           "weight": 250,
-          "value": 148108,
-          "ratio": 0.8716,
-          "score": 217.91
+          "value": 323760,
+          "ratio": 0.8232,
+          "score": 205.8
         },
         {
           "key": "currentMonthRevenue",
           "label": "本月業績",
           "weight": 100,
-          "value": 148108,
-          "ratio": 0.8716,
-          "score": 87.16
+          "value": 323760,
+          "ratio": 0.8232,
+          "score": 82.32
         },
         {
           "key": "lastMonthRevenue",
           "label": "上月業績",
           "weight": 100,
-          "value": 183382,
-          "ratio": 0.8796,
-          "score": 87.96
+          "value": 352970,
+          "ratio": 0.8393,
+          "score": 83.93
         },
         {
           "key": "overallTicket",
           "label": "整體客單價",
           "weight": 50,
-          "value": 38977,
-          "ratio": 0.6016,
-          "score": 30.08
+          "value": 45209,
+          "ratio": 0.6535,
+          "score": 32.67
         },
         {
           "key": "renewalRevenue",
           "label": "續單金額",
           "weight": 200,
-          "value": 127060,
-          "ratio": 0.8687,
-          "score": 173.75
+          "value": 237180,
+          "ratio": 0.8615,
+          "score": 172.31
         },
         {
           "key": "renewalDeals",
           "label": "追續成交總數",
           "weight": 200,
-          "value": 7,
-          "ratio": 1,
-          "score": 200
+          "value": 12,
+          "ratio": 0.8571,
+          "score": 171.43
         }
       ],
       "rank": 2,
@@ -2626,82 +2626,82 @@
       "groupLabel": "A1 高單主力"
     },
     {
-      "lineNumber": 2,
-      "inputOrder": 1,
-      "inputRank": 2,
-      "rawLine": "2、王梅慧｜【追續】6｜【續單】119520｜【總業績】149010",
-      "originalName": "王梅慧",
-      "name": "王梅慧",
-      "renewalDeals": 6,
-      "renewalRevenue": 119520,
-      "totalRevenue": 149010,
-      "currentMonthRevenue": 149010,
-      "dailyReceived": 149010,
-      "dailyTicket": 24835,
-      "lastMonthRevenue": 185071,
-      "overallTicket": 42859,
+      "lineNumber": 3,
+      "inputOrder": 2,
+      "inputRank": 3,
+      "rawLine": "3、王珍珠｜【追續】14｜【續單】190380｜【總業績】239588",
+      "originalName": "王珍珠",
+      "name": "王珍珠",
+      "renewalDeals": 14,
+      "renewalRevenue": 190380,
+      "totalRevenue": 239588,
+      "currentMonthRevenue": 239588,
+      "dailyReceived": 239588,
+      "dailyTicket": 17113.43,
+      "lastMonthRevenue": 271483,
+      "overallTicket": 32033,
       "previousRank": 3,
       "aliasUsed": false,
       "baselineFound": true,
-      "baselineIndex": 1,
+      "baselineIndex": 2,
       "inReport": true,
-      "totalScore": 803.23,
+      "totalScore": 659.95,
       "breakdown": [
         {
           "key": "dailyTicket",
           "label": "當日客單價",
           "weight": 100,
-          "value": 24835,
-          "ratio": 0.396,
-          "score": 39.6
+          "value": 17113.43,
+          "ratio": 0.2071,
+          "score": 20.71
         },
         {
           "key": "dailyReceived",
           "label": "當日實收金額",
           "weight": 250,
-          "value": 149010,
-          "ratio": 0.8769,
-          "score": 219.24
+          "value": 239588,
+          "ratio": 0.6092,
+          "score": 152.3
         },
         {
           "key": "currentMonthRevenue",
           "label": "本月業績",
           "weight": 100,
-          "value": 149010,
-          "ratio": 0.8769,
-          "score": 87.69
+          "value": 239588,
+          "ratio": 0.6092,
+          "score": 60.92
         },
         {
           "key": "lastMonthRevenue",
           "label": "上月業績",
           "weight": 100,
-          "value": 185071,
-          "ratio": 0.8877,
-          "score": 88.77
+          "value": 271483,
+          "ratio": 0.6456,
+          "score": 64.56
         },
         {
           "key": "overallTicket",
           "label": "整體客單價",
           "weight": 50,
-          "value": 42859,
-          "ratio": 0.6615,
-          "score": 33.07
+          "value": 32033,
+          "ratio": 0.463,
+          "score": 23.15
         },
         {
           "key": "renewalRevenue",
           "label": "續單金額",
           "weight": 200,
-          "value": 119520,
-          "ratio": 0.8172,
-          "score": 163.43
+          "value": 190380,
+          "ratio": 0.6915,
+          "score": 138.31
         },
         {
           "key": "renewalDeals",
           "label": "追續成交總數",
           "weight": 200,
-          "value": 6,
-          "ratio": 0.8571,
-          "score": 171.43
+          "value": 14,
+          "ratio": 1,
+          "score": 200
         }
       ],
       "rank": 3,
@@ -2714,79 +2714,79 @@
       "lineNumber": 4,
       "inputOrder": 3,
       "inputRank": 4,
-      "rawLine": "4、李玲玲｜【追續】2｜【續單】73860｜【總業績】125420",
-      "originalName": "李玲玲",
-      "name": "李玲玲",
-      "renewalDeals": 2,
-      "renewalRevenue": 73860,
-      "totalRevenue": 125420,
-      "currentMonthRevenue": 125420,
-      "dailyReceived": 125420,
-      "dailyTicket": 62710,
-      "lastMonthRevenue": 155233,
-      "overallTicket": 62256,
+      "rawLine": "4、林沛昕｜【追續】8｜【續單】209576｜【總業績】234644",
+      "originalName": "林沛昕",
+      "name": "林沛昕",
+      "renewalDeals": 8,
+      "renewalRevenue": 209576,
+      "totalRevenue": 234644,
+      "currentMonthRevenue": 234644,
+      "dailyReceived": 234644,
+      "dailyTicket": 29330.5,
+      "lastMonthRevenue": 267636,
+      "overallTicket": 50565,
       "previousRank": 4,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 3,
       "inReport": true,
-      "totalScore": 638.98,
+      "totalScore": 611.03,
       "breakdown": [
         {
           "key": "dailyTicket",
           "label": "當日客單價",
           "weight": 100,
-          "value": 62710,
-          "ratio": 1,
-          "score": 100
+          "value": 29330.5,
+          "ratio": 0.355,
+          "score": 35.5
         },
         {
           "key": "dailyReceived",
           "label": "當日實收金額",
           "weight": 250,
-          "value": 125420,
-          "ratio": 0.7381,
-          "score": 184.53
+          "value": 234644,
+          "ratio": 0.5966,
+          "score": 149.15
         },
         {
           "key": "currentMonthRevenue",
           "label": "本月業績",
           "weight": 100,
-          "value": 125420,
-          "ratio": 0.7381,
-          "score": 73.81
+          "value": 234644,
+          "ratio": 0.5966,
+          "score": 59.66
         },
         {
           "key": "lastMonthRevenue",
           "label": "上月業績",
           "weight": 100,
-          "value": 155233,
-          "ratio": 0.7446,
-          "score": 74.46
+          "value": 267636,
+          "ratio": 0.6364,
+          "score": 63.64
         },
         {
           "key": "overallTicket",
           "label": "整體客單價",
           "weight": 50,
-          "value": 62256,
-          "ratio": 0.9609,
-          "score": 48.04
+          "value": 50565,
+          "ratio": 0.7309,
+          "score": 36.54
         },
         {
           "key": "renewalRevenue",
           "label": "續單金額",
           "weight": 200,
-          "value": 73860,
-          "ratio": 0.505,
-          "score": 101
+          "value": 209576,
+          "ratio": 0.7613,
+          "score": 152.25
         },
         {
           "key": "renewalDeals",
           "label": "追續成交總數",
           "weight": 200,
-          "value": 2,
-          "ratio": 0.2857,
-          "score": 57.14
+          "value": 8,
+          "ratio": 0.5714,
+          "score": 114.29
         }
       ],
       "rank": 4,
@@ -2799,79 +2799,79 @@
       "lineNumber": 5,
       "inputOrder": 4,
       "inputRank": 5,
-      "rawLine": "5、林沛昕｜【追續】2｜【續單】103800｜【總業績】110760",
-      "originalName": "林沛昕",
-      "name": "林沛昕",
-      "renewalDeals": 2,
-      "renewalRevenue": 103800,
-      "totalRevenue": 110760,
-      "currentMonthRevenue": 110760,
-      "dailyReceived": 110760,
-      "dailyTicket": 55380,
-      "lastMonthRevenue": 144125,
-      "overallTicket": 64792,
+      "rawLine": "5、林宜靜｜【追續】5｜【續單】32200｜【總業績】170070",
+      "originalName": "林宜靜",
+      "name": "林宜靜",
+      "renewalDeals": 5,
+      "renewalRevenue": 32200,
+      "totalRevenue": 170070,
+      "currentMonthRevenue": 170070,
+      "dailyReceived": 170070,
+      "dailyTicket": 34014,
+      "lastMonthRevenue": 187726,
+      "overallTicket": 38959,
       "previousRank": 5,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 4,
       "inReport": true,
-      "totalScore": 634.66,
+      "totalScore": 360.14,
       "breakdown": [
         {
           "key": "dailyTicket",
           "label": "當日客單價",
           "weight": 100,
-          "value": 55380,
-          "ratio": 0.8831,
-          "score": 88.31
+          "value": 34014,
+          "ratio": 0.4117,
+          "score": 41.17
         },
         {
           "key": "dailyReceived",
           "label": "當日實收金額",
           "weight": 250,
-          "value": 110760,
-          "ratio": 0.6518,
-          "score": 162.96
+          "value": 170070,
+          "ratio": 0.4324,
+          "score": 108.11
         },
         {
           "key": "currentMonthRevenue",
           "label": "本月業績",
           "weight": 100,
-          "value": 110760,
-          "ratio": 0.6518,
-          "score": 65.18
+          "value": 170070,
+          "ratio": 0.4324,
+          "score": 43.24
         },
         {
           "key": "lastMonthRevenue",
           "label": "上月業績",
           "weight": 100,
-          "value": 144125,
-          "ratio": 0.6913,
-          "score": 69.13
+          "value": 187726,
+          "ratio": 0.4464,
+          "score": 44.64
         },
         {
           "key": "overallTicket",
           "label": "整體客單價",
           "weight": 50,
-          "value": 64792,
-          "ratio": 1,
-          "score": 50
+          "value": 38959,
+          "ratio": 0.5631,
+          "score": 28.16
         },
         {
           "key": "renewalRevenue",
           "label": "續單金額",
           "weight": 200,
-          "value": 103800,
-          "ratio": 0.7097,
-          "score": 141.94
+          "value": 32200,
+          "ratio": 0.117,
+          "score": 23.39
         },
         {
           "key": "renewalDeals",
           "label": "追續成交總數",
           "weight": 200,
-          "value": 2,
-          "ratio": 0.2857,
-          "score": 57.14
+          "value": 5,
+          "ratio": 0.3571,
+          "score": 71.43
         }
       ],
       "rank": 5,
@@ -2884,79 +2884,79 @@
       "lineNumber": 6,
       "inputOrder": 5,
       "inputRank": 6,
-      "rawLine": "6、徐華妤｜【追續】4｜【續單】63020｜【總業績】82020",
-      "originalName": "徐華妤",
-      "name": "徐華妤",
-      "renewalDeals": 4,
-      "renewalRevenue": 63020,
-      "totalRevenue": 82020,
-      "currentMonthRevenue": 82020,
-      "dailyReceived": 82020,
-      "dailyTicket": 20505,
-      "lastMonthRevenue": 112140,
-      "overallTicket": 35977,
+      "rawLine": "6、李玲玲｜【追續】2｜【續單】73860｜【總業績】165250",
+      "originalName": "李玲玲",
+      "name": "李玲玲",
+      "renewalDeals": 2,
+      "renewalRevenue": 73860,
+      "totalRevenue": 165250,
+      "currentMonthRevenue": 165250,
+      "dailyReceived": 165250,
+      "dailyTicket": 82625,
+      "lastMonthRevenue": 186683,
+      "overallTicket": 69182,
       "previousRank": 6,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 5,
       "inReport": true,
-      "totalScore": 483.66,
+      "totalScore": 423.68,
       "breakdown": [
         {
           "key": "dailyTicket",
           "label": "當日客單價",
           "weight": 100,
-          "value": 20505,
-          "ratio": 0.327,
-          "score": 32.7
+          "value": 82625,
+          "ratio": 1,
+          "score": 100
         },
         {
           "key": "dailyReceived",
           "label": "當日實收金額",
           "weight": 250,
-          "value": 82020,
-          "ratio": 0.4827,
-          "score": 120.67
+          "value": 165250,
+          "ratio": 0.4202,
+          "score": 105.04
         },
         {
           "key": "currentMonthRevenue",
           "label": "本月業績",
           "weight": 100,
-          "value": 82020,
-          "ratio": 0.4827,
-          "score": 48.27
+          "value": 165250,
+          "ratio": 0.4202,
+          "score": 42.02
         },
         {
           "key": "lastMonthRevenue",
           "label": "上月業績",
           "weight": 100,
-          "value": 112140,
-          "ratio": 0.5379,
-          "score": 53.79
+          "value": 186683,
+          "ratio": 0.4439,
+          "score": 44.39
         },
         {
           "key": "overallTicket",
           "label": "整體客單價",
           "weight": 50,
-          "value": 35977,
-          "ratio": 0.5553,
-          "score": 27.76
+          "value": 69182,
+          "ratio": 1,
+          "score": 50
         },
         {
           "key": "renewalRevenue",
           "label": "續單金額",
           "weight": 200,
-          "value": 63020,
-          "ratio": 0.4309,
-          "score": 86.18
+          "value": 73860,
+          "ratio": 0.2683,
+          "score": 53.66
         },
         {
           "key": "renewalDeals",
           "label": "追續成交總數",
           "weight": 200,
-          "value": 4,
-          "ratio": 0.5714,
-          "score": 114.29
+          "value": 2,
+          "ratio": 0.1429,
+          "score": 28.57
         }
       ],
       "rank": 6,
@@ -2969,79 +2969,79 @@
       "lineNumber": 7,
       "inputOrder": 6,
       "inputRank": 7,
-      "rawLine": "7、林宜靜｜【追續】4｜【續單】22420｜【總業績】78420",
-      "originalName": "林宜靜",
-      "name": "林宜靜",
-      "renewalDeals": 4,
-      "renewalRevenue": 22420,
-      "totalRevenue": 78420,
-      "currentMonthRevenue": 78420,
-      "dailyReceived": 78420,
-      "dailyTicket": 19605,
-      "lastMonthRevenue": 102300,
-      "overallTicket": 29291,
+      "rawLine": "7、廖姿惠｜【追續】6｜【續單】26448｜【總業績】121328",
+      "originalName": "廖姿惠",
+      "name": "廖姿惠",
+      "renewalDeals": 6,
+      "renewalRevenue": 26448,
+      "totalRevenue": 121328,
+      "currentMonthRevenue": 121328,
+      "dailyReceived": 121328,
+      "dailyTicket": 20221.33,
+      "lastMonthRevenue": 140542,
+      "overallTicket": 27997,
       "previousRank": 7,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 6,
       "inReport": true,
-      "totalScore": 409.41,
+      "totalScore": 291.01,
       "breakdown": [
         {
           "key": "dailyTicket",
           "label": "當日客單價",
           "weight": 100,
-          "value": 19605,
-          "ratio": 0.3126,
-          "score": 31.26
+          "value": 20221.33,
+          "ratio": 0.2447,
+          "score": 24.47
         },
         {
           "key": "dailyReceived",
           "label": "當日實收金額",
           "weight": 250,
-          "value": 78420,
-          "ratio": 0.4615,
-          "score": 115.38
+          "value": 121328,
+          "ratio": 0.3085,
+          "score": 77.12
         },
         {
           "key": "currentMonthRevenue",
           "label": "本月業績",
           "weight": 100,
-          "value": 78420,
-          "ratio": 0.4615,
-          "score": 46.15
+          "value": 121328,
+          "ratio": 0.3085,
+          "score": 30.85
         },
         {
           "key": "lastMonthRevenue",
           "label": "上月業績",
           "weight": 100,
-          "value": 102300,
-          "ratio": 0.4907,
-          "score": 49.07
+          "value": 140542,
+          "ratio": 0.3342,
+          "score": 33.42
         },
         {
           "key": "overallTicket",
           "label": "整體客單價",
           "weight": 50,
-          "value": 29291,
-          "ratio": 0.4521,
-          "score": 22.6
+          "value": 27997,
+          "ratio": 0.4047,
+          "score": 20.23
         },
         {
           "key": "renewalRevenue",
           "label": "續單金額",
           "weight": 200,
-          "value": 22420,
-          "ratio": 0.1533,
-          "score": 30.66
+          "value": 26448,
+          "ratio": 0.0961,
+          "score": 19.21
         },
         {
           "key": "renewalDeals",
           "label": "追續成交總數",
           "weight": 200,
-          "value": 4,
-          "ratio": 0.5714,
-          "score": 114.29
+          "value": 6,
+          "ratio": 0.4286,
+          "score": 85.71
         }
       ],
       "rank": 7,
@@ -3051,82 +3051,82 @@
       "groupLabel": "A2 續單收割"
     },
     {
-      "lineNumber": 9,
-      "inputOrder": 8,
-      "inputRank": 9,
-      "rawLine": "9、廖姿惠｜【追續】4｜【續單】18948｜【總業績】51568",
-      "originalName": "廖姿惠",
-      "name": "廖姿惠",
-      "renewalDeals": 4,
-      "renewalRevenue": 18948,
-      "totalRevenue": 51568,
-      "currentMonthRevenue": 51568,
-      "dailyReceived": 51568,
-      "dailyTicket": 12892,
-      "lastMonthRevenue": 74654,
-      "overallTicket": 24217,
+      "lineNumber": 8,
+      "inputOrder": 7,
+      "inputRank": 8,
+      "rawLine": "8、湯玉琦｜【追續】9｜【續單】56180｜【總業績】111860",
+      "originalName": "湯玉琦",
+      "name": "湯玉琦",
+      "renewalDeals": 9,
+      "renewalRevenue": 56180,
+      "totalRevenue": 111860,
+      "currentMonthRevenue": 111860,
+      "dailyReceived": 111860,
+      "dailyTicket": 12428.89,
+      "lastMonthRevenue": 133978,
+      "overallTicket": 22470,
       "previousRank": 8,
       "aliasUsed": false,
       "baselineFound": true,
-      "baselineIndex": 8,
+      "baselineIndex": 7,
       "inReport": true,
-      "totalScore": 321.48,
+      "totalScore": 332.07,
       "breakdown": [
         {
           "key": "dailyTicket",
           "label": "當日客單價",
           "weight": 100,
-          "value": 12892,
-          "ratio": 0.2056,
-          "score": 20.56
+          "value": 12428.89,
+          "ratio": 0.1504,
+          "score": 15.04
         },
         {
           "key": "dailyReceived",
           "label": "當日實收金額",
           "weight": 250,
-          "value": 51568,
-          "ratio": 0.3035,
-          "score": 75.87
+          "value": 111860,
+          "ratio": 0.2844,
+          "score": 71.11
         },
         {
           "key": "currentMonthRevenue",
           "label": "本月業績",
           "weight": 100,
-          "value": 51568,
-          "ratio": 0.3035,
-          "score": 30.35
+          "value": 111860,
+          "ratio": 0.2844,
+          "score": 28.44
         },
         {
           "key": "lastMonthRevenue",
           "label": "上月業績",
           "weight": 100,
-          "value": 74654,
-          "ratio": 0.3581,
-          "score": 35.81
+          "value": 133978,
+          "ratio": 0.3186,
+          "score": 31.86
         },
         {
           "key": "overallTicket",
           "label": "整體客單價",
           "weight": 50,
-          "value": 24217,
-          "ratio": 0.3738,
-          "score": 18.69
+          "value": 22470,
+          "ratio": 0.3248,
+          "score": 16.24
         },
         {
           "key": "renewalRevenue",
           "label": "續單金額",
           "weight": 200,
-          "value": 18948,
-          "ratio": 0.1296,
-          "score": 25.91
+          "value": 56180,
+          "ratio": 0.2041,
+          "score": 40.81
         },
         {
           "key": "renewalDeals",
           "label": "追續成交總數",
           "weight": 200,
-          "value": 4,
-          "ratio": 0.5714,
-          "score": 114.29
+          "value": 9,
+          "ratio": 0.6429,
+          "score": 128.57
         }
       ],
       "rank": 8,
@@ -3136,82 +3136,82 @@
       "groupLabel": "A2 續單收割"
     },
     {
-      "lineNumber": 10,
-      "inputOrder": 9,
-      "inputRank": 10,
-      "rawLine": "10、湯玉琦｜【追續】4｜【續單】21900｜【總業績】31240",
-      "originalName": "湯玉琦",
-      "name": "湯玉琦",
-      "renewalDeals": 4,
-      "renewalRevenue": 21900,
-      "totalRevenue": 31240,
-      "currentMonthRevenue": 31240,
-      "dailyReceived": 31240,
-      "dailyTicket": 7810,
-      "lastMonthRevenue": 55319,
-      "overallTicket": 21363,
+      "lineNumber": 9,
+      "inputOrder": 8,
+      "inputRank": 9,
+      "rawLine": "9、蘇淑玲｜【追續】3｜【續單】61040｜【總業績】101488",
+      "originalName": "蘇淑玲",
+      "name": "蘇淑玲",
+      "renewalDeals": 3,
+      "renewalRevenue": 61040,
+      "totalRevenue": 101488,
+      "currentMonthRevenue": 101488,
+      "dailyReceived": 101488,
+      "dailyTicket": 33829.33,
+      "lastMonthRevenue": 123634,
+      "overallTicket": 43588,
       "previousRank": 9,
       "aliasUsed": false,
       "baselineFound": true,
-      "baselineIndex": 9,
+      "baselineIndex": 8,
       "inReport": true,
-      "totalScore": 264.06,
+      "totalScore": 279.35,
       "breakdown": [
         {
           "key": "dailyTicket",
           "label": "當日客單價",
           "weight": 100,
-          "value": 7810,
-          "ratio": 0.1245,
-          "score": 12.45
+          "value": 33829.33,
+          "ratio": 0.4094,
+          "score": 40.94
         },
         {
           "key": "dailyReceived",
           "label": "當日實收金額",
           "weight": 250,
-          "value": 31240,
-          "ratio": 0.1839,
-          "score": 45.96
+          "value": 101488,
+          "ratio": 0.258,
+          "score": 64.51
         },
         {
           "key": "currentMonthRevenue",
           "label": "本月業績",
           "weight": 100,
-          "value": 31240,
-          "ratio": 0.1839,
-          "score": 18.39
+          "value": 101488,
+          "ratio": 0.258,
+          "score": 25.8
         },
         {
           "key": "lastMonthRevenue",
           "label": "上月業績",
           "weight": 100,
-          "value": 55319,
-          "ratio": 0.2653,
-          "score": 26.53
+          "value": 123634,
+          "ratio": 0.294,
+          "score": 29.4
         },
         {
           "key": "overallTicket",
           "label": "整體客單價",
           "weight": 50,
-          "value": 21363,
-          "ratio": 0.3297,
-          "score": 16.49
+          "value": 43588,
+          "ratio": 0.63,
+          "score": 31.5
         },
         {
           "key": "renewalRevenue",
           "label": "續單金額",
           "weight": 200,
-          "value": 21900,
-          "ratio": 0.1497,
-          "score": 29.95
+          "value": 61040,
+          "ratio": 0.2217,
+          "score": 44.34
         },
         {
           "key": "renewalDeals",
           "label": "追續成交總數",
           "weight": 200,
-          "value": 4,
-          "ratio": 0.5714,
-          "score": 114.29
+          "value": 3,
+          "ratio": 0.2143,
+          "score": 42.86
         }
       ],
       "rank": 9,
@@ -3221,82 +3221,82 @@
       "groupLabel": "A2 續單收割"
     },
     {
-      "lineNumber": 12,
-      "inputOrder": 11,
-      "inputRank": 12,
-      "rawLine": "12、許喬恩｜【追續】2｜【續單】27000｜【總業績】27000",
-      "originalName": "許喬恩",
-      "name": "許喬恩",
-      "renewalDeals": 2,
-      "renewalRevenue": 27000,
-      "totalRevenue": 27000,
-      "currentMonthRevenue": 27000,
-      "dailyReceived": 27000,
-      "dailyTicket": 13500,
-      "lastMonthRevenue": 48600,
-      "overallTicket": 29040,
+      "lineNumber": 10,
+      "inputOrder": 9,
+      "inputRank": 10,
+      "rawLine": "10、徐華妤｜【追續】5｜【續單】69520｜【總業績】90960",
+      "originalName": "徐華妤",
+      "name": "徐華妤",
+      "renewalDeals": 5,
+      "renewalRevenue": 69520,
+      "totalRevenue": 90960,
+      "currentMonthRevenue": 90960,
+      "dailyReceived": 90960,
+      "dailyTicket": 18192,
+      "lastMonthRevenue": 113587,
+      "overallTicket": 32110,
       "previousRank": 10,
       "aliasUsed": false,
       "baselineFound": true,
-      "baselineIndex": 11,
+      "baselineIndex": 9,
       "inReport": true,
-      "totalScore": 216.92,
+      "totalScore": 275.12,
       "breakdown": [
         {
           "key": "dailyTicket",
           "label": "當日客單價",
           "weight": 100,
-          "value": 13500,
-          "ratio": 0.2153,
-          "score": 21.53
+          "value": 18192,
+          "ratio": 0.2202,
+          "score": 22.02
         },
         {
           "key": "dailyReceived",
           "label": "當日實收金額",
           "weight": 250,
-          "value": 27000,
-          "ratio": 0.1589,
-          "score": 39.72
+          "value": 90960,
+          "ratio": 0.2313,
+          "score": 57.82
         },
         {
           "key": "currentMonthRevenue",
           "label": "本月業績",
           "weight": 100,
-          "value": 27000,
-          "ratio": 0.1589,
-          "score": 15.89
+          "value": 90960,
+          "ratio": 0.2313,
+          "score": 23.13
         },
         {
           "key": "lastMonthRevenue",
           "label": "上月業績",
           "weight": 100,
-          "value": 48600,
-          "ratio": 0.2331,
-          "score": 23.31
+          "value": 113587,
+          "ratio": 0.2701,
+          "score": 27.01
         },
         {
           "key": "overallTicket",
           "label": "整體客單價",
           "weight": 50,
-          "value": 29040,
-          "ratio": 0.4482,
-          "score": 22.41
+          "value": 32110,
+          "ratio": 0.4641,
+          "score": 23.21
         },
         {
           "key": "renewalRevenue",
           "label": "續單金額",
           "weight": 200,
-          "value": 27000,
-          "ratio": 0.1846,
-          "score": 36.92
+          "value": 69520,
+          "ratio": 0.2525,
+          "score": 50.5
         },
         {
           "key": "renewalDeals",
           "label": "追續成交總數",
           "weight": 200,
-          "value": 2,
-          "ratio": 0.2857,
-          "score": 57.14
+          "value": 5,
+          "ratio": 0.3571,
+          "score": 71.43
         }
       ],
       "rank": 10,
@@ -3306,82 +3306,82 @@
       "groupLabel": "A2 續單收割"
     },
     {
-      "lineNumber": 8,
-      "inputOrder": 7,
-      "inputRank": 8,
-      "rawLine": "8、江麗勉｜【追續】0｜【續單】0｜【總業績】63220",
+      "lineNumber": 11,
+      "inputOrder": 10,
+      "inputRank": 11,
+      "rawLine": "11、江麗勉｜【追續】1｜【續單】2380｜【總業績】73630",
       "originalName": "江麗勉",
       "name": "江麗勉",
-      "renewalDeals": 0,
-      "renewalRevenue": 0,
-      "totalRevenue": 63220,
-      "currentMonthRevenue": 63220,
-      "dailyReceived": 63220,
-      "dailyTicket": 0,
-      "lastMonthRevenue": 84434,
-      "overallTicket": 54940,
+      "renewalDeals": 1,
+      "renewalRevenue": 2380,
+      "totalRevenue": 73630,
+      "currentMonthRevenue": 73630,
+      "dailyReceived": 73630,
+      "dailyTicket": 73630,
+      "lastMonthRevenue": 88480,
+      "overallTicket": 42453,
       "previousRank": 11,
       "aliasUsed": false,
       "baselineFound": true,
-      "baselineIndex": 7,
+      "baselineIndex": 10,
       "inReport": true,
-      "totalScore": 213.12,
+      "totalScore": 222.37,
       "breakdown": [
         {
           "key": "dailyTicket",
           "label": "當日客單價",
           "weight": 100,
-          "value": 0,
-          "ratio": 0,
-          "score": 0
+          "value": 73630,
+          "ratio": 0.8911,
+          "score": 89.11
         },
         {
           "key": "dailyReceived",
           "label": "當日實收金額",
           "weight": 250,
-          "value": 63220,
-          "ratio": 0.3721,
-          "score": 93.01
+          "value": 73630,
+          "ratio": 0.1872,
+          "score": 46.8
         },
         {
           "key": "currentMonthRevenue",
           "label": "本月業績",
           "weight": 100,
-          "value": 63220,
-          "ratio": 0.3721,
-          "score": 37.21
+          "value": 73630,
+          "ratio": 0.1872,
+          "score": 18.72
         },
         {
           "key": "lastMonthRevenue",
           "label": "上月業績",
           "weight": 100,
-          "value": 84434,
-          "ratio": 0.405,
-          "score": 40.5
+          "value": 88480,
+          "ratio": 0.2104,
+          "score": 21.04
         },
         {
           "key": "overallTicket",
           "label": "整體客單價",
           "weight": 50,
-          "value": 54940,
-          "ratio": 0.8479,
-          "score": 42.4
+          "value": 42453,
+          "ratio": 0.6136,
+          "score": 30.68
         },
         {
           "key": "renewalRevenue",
           "label": "續單金額",
           "weight": 200,
-          "value": 0,
-          "ratio": 0,
-          "score": 0
+          "value": 2380,
+          "ratio": 0.0086,
+          "score": 1.73
         },
         {
           "key": "renewalDeals",
           "label": "追續成交總數",
           "weight": 200,
-          "value": 0,
-          "ratio": 0,
-          "score": 0
+          "value": 1,
+          "ratio": 0.0714,
+          "score": 14.29
         }
       ],
       "rank": 11,
@@ -3391,82 +3391,82 @@
       "groupLabel": "B 一般量單"
     },
     {
-      "lineNumber": 13,
-      "inputOrder": 12,
-      "inputRank": 13,
-      "rawLine": "13、蘇淑玲｜【追續】1｜【續單】5000｜【總業績】19280",
-      "originalName": "蘇淑玲",
-      "name": "蘇淑玲",
-      "renewalDeals": 1,
-      "renewalRevenue": 5000,
-      "totalRevenue": 19280,
-      "currentMonthRevenue": 19280,
-      "dailyReceived": 19280,
-      "dailyTicket": 19280,
-      "lastMonthRevenue": 37366,
-      "overallTicket": 28220,
+      "lineNumber": 12,
+      "inputOrder": 11,
+      "inputRank": 12,
+      "rawLine": "12、梁依萍｜【追續】3｜【續單】15160｜【總業績】64540",
+      "originalName": "梁依萍",
+      "name": "梁依萍",
+      "renewalDeals": 3,
+      "renewalRevenue": 15160,
+      "totalRevenue": 64540,
+      "currentMonthRevenue": 64540,
+      "dailyReceived": 64540,
+      "dailyTicket": 21513.33,
+      "lastMonthRevenue": 80214,
+      "overallTicket": 28483,
       "previousRank": 12,
       "aliasUsed": false,
       "baselineFound": true,
-      "baselineIndex": 12,
+      "baselineIndex": 11,
       "inReport": true,
-      "totalScore": 145.57,
+      "totalScore": 177.01,
       "breakdown": [
         {
           "key": "dailyTicket",
           "label": "當日客單價",
           "weight": 100,
-          "value": 19280,
-          "ratio": 0.3074,
-          "score": 30.74
+          "value": 21513.33,
+          "ratio": 0.2604,
+          "score": 26.04
         },
         {
           "key": "dailyReceived",
           "label": "當日實收金額",
           "weight": 250,
-          "value": 19280,
-          "ratio": 0.1135,
-          "score": 28.37
+          "value": 64540,
+          "ratio": 0.1641,
+          "score": 41.03
         },
         {
           "key": "currentMonthRevenue",
           "label": "本月業績",
           "weight": 100,
-          "value": 19280,
-          "ratio": 0.1135,
-          "score": 11.35
+          "value": 64540,
+          "ratio": 0.1641,
+          "score": 16.41
         },
         {
           "key": "lastMonthRevenue",
           "label": "上月業績",
           "weight": 100,
-          "value": 37366,
-          "ratio": 0.1792,
-          "score": 17.92
+          "value": 80214,
+          "ratio": 0.1907,
+          "score": 19.07
         },
         {
           "key": "overallTicket",
           "label": "整體客單價",
           "weight": 50,
-          "value": 28220,
-          "ratio": 0.4355,
-          "score": 21.78
+          "value": 28483,
+          "ratio": 0.4117,
+          "score": 20.59
         },
         {
           "key": "renewalRevenue",
           "label": "續單金額",
           "weight": 200,
-          "value": 5000,
-          "ratio": 0.0342,
-          "score": 6.84
+          "value": 15160,
+          "ratio": 0.0551,
+          "score": 11.01
         },
         {
           "key": "renewalDeals",
           "label": "追續成交總數",
           "weight": 200,
-          "value": 1,
-          "ratio": 0.1429,
-          "score": 28.57
+          "value": 3,
+          "ratio": 0.2143,
+          "score": 42.86
         }
       ],
       "rank": 12,
@@ -3476,82 +3476,82 @@
       "groupLabel": "B 一般量單"
     },
     {
-      "lineNumber": 14,
-      "inputOrder": 13,
-      "inputRank": 14,
-      "rawLine": "14、梁依萍｜【追續】1｜【續單】6000｜【總業績】18440",
-      "originalName": "梁依萍",
-      "name": "梁依萍",
-      "renewalDeals": 1,
-      "renewalRevenue": 6000,
-      "totalRevenue": 18440,
-      "currentMonthRevenue": 18440,
-      "dailyReceived": 18440,
-      "dailyTicket": 18440,
-      "lastMonthRevenue": 34947,
-      "overallTicket": 27610,
+      "lineNumber": 13,
+      "inputOrder": 12,
+      "inputRank": 13,
+      "rawLine": "13、高如郁｜【追續】3｜【續單】9320｜【總業績】56860",
+      "originalName": "高如郁",
+      "name": "高如郁",
+      "renewalDeals": 3,
+      "renewalRevenue": 9320,
+      "totalRevenue": 56860,
+      "currentMonthRevenue": 56860,
+      "dailyReceived": 56860,
+      "dailyTicket": 18953.33,
+      "lastMonthRevenue": 70955,
+      "overallTicket": 25797,
       "previousRank": 13,
       "aliasUsed": false,
       "baselineFound": true,
-      "baselineIndex": 13,
+      "baselineIndex": 12,
       "inReport": true,
-      "totalScore": 142.23,
+      "totalScore": 158.68,
       "breakdown": [
         {
           "key": "dailyTicket",
           "label": "當日客單價",
           "weight": 100,
-          "value": 18440,
-          "ratio": 0.2941,
-          "score": 29.41
+          "value": 18953.33,
+          "ratio": 0.2294,
+          "score": 22.94
         },
         {
           "key": "dailyReceived",
           "label": "當日實收金額",
           "weight": 250,
-          "value": 18440,
-          "ratio": 0.1085,
-          "score": 27.13
+          "value": 56860,
+          "ratio": 0.1446,
+          "score": 36.14
         },
         {
           "key": "currentMonthRevenue",
           "label": "本月業績",
           "weight": 100,
-          "value": 18440,
-          "ratio": 0.1085,
-          "score": 10.85
+          "value": 56860,
+          "ratio": 0.1446,
+          "score": 14.46
         },
         {
           "key": "lastMonthRevenue",
           "label": "上月業績",
           "weight": 100,
-          "value": 34947,
-          "ratio": 0.1676,
-          "score": 16.76
+          "value": 70955,
+          "ratio": 0.1687,
+          "score": 16.87
         },
         {
           "key": "overallTicket",
           "label": "整體客單價",
           "weight": 50,
-          "value": 27610,
-          "ratio": 0.4261,
-          "score": 21.31
+          "value": 25797,
+          "ratio": 0.3729,
+          "score": 18.64
         },
         {
           "key": "renewalRevenue",
           "label": "續單金額",
           "weight": 200,
-          "value": 6000,
-          "ratio": 0.041,
-          "score": 8.2
+          "value": 9320,
+          "ratio": 0.0339,
+          "score": 6.77
         },
         {
           "key": "renewalDeals",
           "label": "追續成交總數",
           "weight": 200,
-          "value": 1,
-          "ratio": 0.1429,
-          "score": 28.57
+          "value": 3,
+          "ratio": 0.2143,
+          "score": 42.86
         }
       ],
       "rank": 13,
@@ -3561,82 +3561,82 @@
       "groupLabel": "B 一般量單"
     },
     {
-      "lineNumber": 11,
-      "inputOrder": 10,
-      "inputRank": 11,
-      "rawLine": "11、陳玲華｜【追續】0｜【續單】0｜【總業績】27860",
-      "originalName": "陳玲華",
-      "name": "陳玲華",
-      "renewalDeals": 0,
-      "renewalRevenue": 0,
-      "totalRevenue": 27860,
-      "currentMonthRevenue": 27860,
-      "dailyReceived": 27860,
-      "dailyTicket": 0,
-      "lastMonthRevenue": 47917,
-      "overallTicket": 40553,
+      "lineNumber": 14,
+      "inputOrder": 13,
+      "inputRank": 14,
+      "rawLine": "14、高美雲｜【追續】2｜【續單】15660｜【總業績】54008",
+      "originalName": "高美雲",
+      "name": "高美雲",
+      "renewalDeals": 2,
+      "renewalRevenue": 15660,
+      "totalRevenue": 54008,
+      "currentMonthRevenue": 54008,
+      "dailyReceived": 54008,
+      "dailyTicket": 27004,
+      "lastMonthRevenue": 67406,
+      "overallTicket": 31134,
       "previousRank": 14,
       "aliasUsed": false,
       "baselineFound": true,
-      "baselineIndex": 10,
+      "baselineIndex": 13,
       "inReport": true,
-      "totalScore": 111.66,
+      "totalScore": 159.22,
       "breakdown": [
         {
           "key": "dailyTicket",
           "label": "當日客單價",
           "weight": 100,
-          "value": 0,
-          "ratio": 0,
-          "score": 0
+          "value": 27004,
+          "ratio": 0.3268,
+          "score": 32.68
         },
         {
           "key": "dailyReceived",
           "label": "當日實收金額",
           "weight": 250,
-          "value": 27860,
-          "ratio": 0.164,
-          "score": 40.99
+          "value": 54008,
+          "ratio": 0.1373,
+          "score": 34.33
         },
         {
           "key": "currentMonthRevenue",
           "label": "本月業績",
           "weight": 100,
-          "value": 27860,
-          "ratio": 0.164,
-          "score": 16.4
+          "value": 54008,
+          "ratio": 0.1373,
+          "score": 13.73
         },
         {
           "key": "lastMonthRevenue",
           "label": "上月業績",
           "weight": 100,
-          "value": 47917,
-          "ratio": 0.2298,
-          "score": 22.98
+          "value": 67406,
+          "ratio": 0.1603,
+          "score": 16.03
         },
         {
           "key": "overallTicket",
           "label": "整體客單價",
           "weight": 50,
-          "value": 40553,
-          "ratio": 0.6259,
-          "score": 31.29
+          "value": 31134,
+          "ratio": 0.45,
+          "score": 22.5
         },
         {
           "key": "renewalRevenue",
           "label": "續單金額",
           "weight": 200,
-          "value": 0,
-          "ratio": 0,
-          "score": 0
+          "value": 15660,
+          "ratio": 0.0569,
+          "score": 11.38
         },
         {
           "key": "renewalDeals",
           "label": "追續成交總數",
           "weight": 200,
-          "value": 0,
-          "ratio": 0,
-          "score": 0
+          "value": 2,
+          "ratio": 0.1429,
+          "score": 28.57
         }
       ],
       "rank": 14,
@@ -3646,82 +3646,82 @@
       "groupLabel": "B 一般量單"
     },
     {
-      "lineNumber": 17,
-      "inputOrder": 16,
-      "inputRank": 17,
-      "rawLine": "17、周美蓁｜【追續】1｜【續單】10000｜【總業績】10000",
-      "originalName": "周美蓁",
-      "name": "周美蓁",
+      "lineNumber": 15,
+      "inputOrder": 14,
+      "inputRank": 15,
+      "rawLine": "15、陳玲華｜【追續】1｜【續單】6500｜【總業績】41860",
+      "originalName": "陳玲華",
+      "name": "陳玲華",
       "renewalDeals": 1,
-      "renewalRevenue": 10000,
-      "totalRevenue": 10000,
-      "currentMonthRevenue": 10000,
-      "dailyReceived": 10000,
-      "dailyTicket": 10000,
-      "lastMonthRevenue": 22600,
-      "overallTicket": 24550,
+      "renewalRevenue": 6500,
+      "totalRevenue": 41860,
+      "currentMonthRevenue": 41860,
+      "dailyReceived": 41860,
+      "dailyTicket": 41860,
+      "lastMonthRevenue": 53817,
+      "overallTicket": 32940,
       "previousRank": 15,
       "aliasUsed": false,
       "baselineFound": true,
-      "baselineIndex": 16,
+      "baselineIndex": 14,
       "inReport": true,
-      "totalScore": 108.58,
+      "totalScore": 143.53,
       "breakdown": [
         {
           "key": "dailyTicket",
           "label": "當日客單價",
           "weight": 100,
-          "value": 10000,
-          "ratio": 0.1595,
-          "score": 15.95
+          "value": 41860,
+          "ratio": 0.5066,
+          "score": 50.66
         },
         {
           "key": "dailyReceived",
           "label": "當日實收金額",
           "weight": 250,
-          "value": 10000,
-          "ratio": 0.0589,
-          "score": 14.71
+          "value": 41860,
+          "ratio": 0.1064,
+          "score": 26.61
         },
         {
           "key": "currentMonthRevenue",
           "label": "本月業績",
           "weight": 100,
-          "value": 10000,
-          "ratio": 0.0589,
-          "score": 5.89
+          "value": 41860,
+          "ratio": 0.1064,
+          "score": 10.64
         },
         {
           "key": "lastMonthRevenue",
           "label": "上月業績",
           "weight": 100,
-          "value": 22600,
-          "ratio": 0.1084,
-          "score": 10.84
+          "value": 53817,
+          "ratio": 0.128,
+          "score": 12.8
         },
         {
           "key": "overallTicket",
           "label": "整體客單價",
           "weight": 50,
-          "value": 24550,
-          "ratio": 0.3789,
-          "score": 18.95
+          "value": 32940,
+          "ratio": 0.4761,
+          "score": 23.81
         },
         {
           "key": "renewalRevenue",
           "label": "續單金額",
           "weight": 200,
-          "value": 10000,
-          "ratio": 0.0684,
-          "score": 13.67
+          "value": 6500,
+          "ratio": 0.0236,
+          "score": 4.72
         },
         {
           "key": "renewalDeals",
           "label": "追續成交總數",
           "weight": 200,
           "value": 1,
-          "ratio": 0.1429,
-          "score": 28.57
+          "ratio": 0.0714,
+          "score": 14.29
         }
       ],
       "rank": 15,
@@ -3731,80 +3731,80 @@
       "groupLabel": "B 一般量單"
     },
     {
-      "lineNumber": 18,
-      "inputOrder": 17,
-      "inputRank": 18,
-      "rawLine": "18、鄭珮恩｜【追續】2｜【續單】2300｜【總業績】7300",
+      "lineNumber": 16,
+      "inputOrder": 15,
+      "inputRank": 16,
+      "rawLine": "16、鄭珮恩｜【追續】4｜【續單】7000｜【總業績】40220",
       "originalName": "鄭珮恩",
       "name": "鄭珮恩",
-      "renewalDeals": 2,
-      "renewalRevenue": 2300,
-      "totalRevenue": 7300,
-      "currentMonthRevenue": 7300,
-      "dailyReceived": 7300,
-      "dailyTicket": 3650,
-      "lastMonthRevenue": 17500,
-      "overallTicket": 17040,
+      "renewalDeals": 4,
+      "renewalRevenue": 7000,
+      "totalRevenue": 40220,
+      "currentMonthRevenue": 40220,
+      "dailyReceived": 40220,
+      "dailyTicket": 10055,
+      "lastMonthRevenue": 50634,
+      "overallTicket": 18289,
       "previousRank": 16,
       "aliasUsed": false,
       "baselineFound": true,
-      "baselineIndex": 17,
+      "baselineIndex": 15,
       "inReport": true,
-      "totalScore": 102.69,
+      "totalScore": 135.46,
       "breakdown": [
         {
           "key": "dailyTicket",
           "label": "當日客單價",
           "weight": 100,
-          "value": 3650,
-          "ratio": 0.0582,
-          "score": 5.82
+          "value": 10055,
+          "ratio": 0.1217,
+          "score": 12.17
         },
         {
           "key": "dailyReceived",
           "label": "當日實收金額",
           "weight": 250,
-          "value": 7300,
-          "ratio": 0.043,
-          "score": 10.74
+          "value": 40220,
+          "ratio": 0.1023,
+          "score": 25.57
         },
         {
           "key": "currentMonthRevenue",
           "label": "本月業績",
           "weight": 100,
-          "value": 7300,
-          "ratio": 0.043,
-          "score": 4.3
+          "value": 40220,
+          "ratio": 0.1023,
+          "score": 10.23
         },
         {
           "key": "lastMonthRevenue",
           "label": "上月業績",
           "weight": 100,
-          "value": 17500,
-          "ratio": 0.0839,
-          "score": 8.39
+          "value": 50634,
+          "ratio": 0.1204,
+          "score": 12.04
         },
         {
           "key": "overallTicket",
           "label": "整體客單價",
           "weight": 50,
-          "value": 17040,
-          "ratio": 0.263,
-          "score": 13.15
+          "value": 18289,
+          "ratio": 0.2644,
+          "score": 13.22
         },
         {
           "key": "renewalRevenue",
           "label": "續單金額",
           "weight": 200,
-          "value": 2300,
-          "ratio": 0.0157,
-          "score": 3.15
+          "value": 7000,
+          "ratio": 0.0254,
+          "score": 5.09
         },
         {
           "key": "renewalDeals",
           "label": "追續成交總數",
           "weight": 200,
-          "value": 2,
+          "value": 4,
           "ratio": 0.2857,
           "score": 57.14
         }
@@ -3816,80 +3816,80 @@
       "groupLabel": "B 一般量單"
     },
     {
-      "lineNumber": 19,
-      "inputOrder": 18,
-      "inputRank": 19,
-      "rawLine": "19、林佩君｜【追續】1｜【續單】6528｜【總業績】6528",
-      "originalName": "林佩君",
-      "name": "林佩君",
-      "renewalDeals": 1,
-      "renewalRevenue": 6528,
-      "totalRevenue": 6528,
-      "currentMonthRevenue": 6528,
-      "dailyReceived": 6528,
-      "dailyTicket": 6528,
-      "lastMonthRevenue": 15528,
-      "overallTicket": 21514,
+      "lineNumber": 17,
+      "inputOrder": 16,
+      "inputRank": 17,
+      "rawLine": "17、許喬恩｜【追續】2｜【續單】20000｜【總業績】27000",
+      "originalName": "許喬恩",
+      "name": "許喬恩",
+      "renewalDeals": 2,
+      "renewalRevenue": 20000,
+      "totalRevenue": 27000,
+      "currentMonthRevenue": 27000,
+      "dailyReceived": 27000,
+      "dailyTicket": 13500,
+      "lastMonthRevenue": 38760,
+      "overallTicket": 25040,
       "previousRank": 17,
       "aliasUsed": false,
       "baselineFound": true,
-      "baselineIndex": 18,
+      "baselineIndex": 16,
       "inReport": true,
-      "totalScore": 85.4,
+      "totalScore": 110.79,
       "breakdown": [
         {
           "key": "dailyTicket",
           "label": "當日客單價",
           "weight": 100,
-          "value": 6528,
-          "ratio": 0.1041,
-          "score": 10.41
+          "value": 13500,
+          "ratio": 0.1634,
+          "score": 16.34
         },
         {
           "key": "dailyReceived",
           "label": "當日實收金額",
           "weight": 250,
-          "value": 6528,
-          "ratio": 0.0384,
-          "score": 9.6
+          "value": 27000,
+          "ratio": 0.0687,
+          "score": 17.16
         },
         {
           "key": "currentMonthRevenue",
           "label": "本月業績",
           "weight": 100,
-          "value": 6528,
-          "ratio": 0.0384,
-          "score": 3.84
+          "value": 27000,
+          "ratio": 0.0687,
+          "score": 6.87
         },
         {
           "key": "lastMonthRevenue",
           "label": "上月業績",
           "weight": 100,
-          "value": 15528,
-          "ratio": 0.0745,
-          "score": 7.45
+          "value": 38760,
+          "ratio": 0.0922,
+          "score": 9.22
         },
         {
           "key": "overallTicket",
           "label": "整體客單價",
           "weight": 50,
-          "value": 21514,
-          "ratio": 0.332,
-          "score": 16.6
+          "value": 25040,
+          "ratio": 0.3619,
+          "score": 18.1
         },
         {
           "key": "renewalRevenue",
           "label": "續單金額",
           "weight": 200,
-          "value": 6528,
-          "ratio": 0.0446,
-          "score": 8.93
+          "value": 20000,
+          "ratio": 0.0726,
+          "score": 14.53
         },
         {
           "key": "renewalDeals",
           "label": "追續成交總數",
           "weight": 200,
-          "value": 1,
+          "value": 2,
           "ratio": 0.1429,
           "score": 28.57
         }
@@ -3901,111 +3901,111 @@
       "groupLabel": "B 一般量單"
     },
     {
-      "lineNumber": 15,
-      "inputOrder": 14,
-      "inputRank": 15,
-      "rawLine": "15、高美雲｜【追續】0｜【續單】0｜【總業績】12540",
-      "originalName": "高美雲",
-      "name": "高美雲",
-      "renewalDeals": 0,
-      "renewalRevenue": 0,
-      "totalRevenue": 12540,
-      "currentMonthRevenue": 12540,
-      "dailyReceived": 12540,
-      "dailyTicket": 0,
-      "lastMonthRevenue": 27235,
-      "overallTicket": 31980,
+      "lineNumber": 18,
+      "inputOrder": 17,
+      "inputRank": 18,
+      "rawLine": "18、陳桂子（新人）｜【追續】1｜【續單】13500｜【總業績】13500",
+      "originalName": "陳桂子（新人）",
+      "name": "陳桂子（新人）",
+      "renewalDeals": 1,
+      "renewalRevenue": 13500,
+      "totalRevenue": 13500,
+      "currentMonthRevenue": 13500,
+      "dailyReceived": 13500,
+      "dailyTicket": 13500,
+      "lastMonthRevenue": 24300,
+      "overallTicket": 25650,
       "previousRank": 18,
       "aliasUsed": false,
       "baselineFound": true,
-      "baselineIndex": 14,
+      "baselineIndex": 17,
       "inReport": true,
-      "totalScore": 63.57,
+      "totalScore": 76.77,
       "breakdown": [
         {
           "key": "dailyTicket",
           "label": "當日客單價",
           "weight": 100,
-          "value": 0,
-          "ratio": 0,
-          "score": 0
+          "value": 13500,
+          "ratio": 0.1634,
+          "score": 16.34
         },
         {
           "key": "dailyReceived",
           "label": "當日實收金額",
           "weight": 250,
-          "value": 12540,
-          "ratio": 0.0738,
-          "score": 18.45
+          "value": 13500,
+          "ratio": 0.0343,
+          "score": 8.58
         },
         {
           "key": "currentMonthRevenue",
           "label": "本月業績",
           "weight": 100,
-          "value": 12540,
-          "ratio": 0.0738,
-          "score": 7.38
+          "value": 13500,
+          "ratio": 0.0343,
+          "score": 3.43
         },
         {
           "key": "lastMonthRevenue",
           "label": "上月業績",
           "weight": 100,
-          "value": 27235,
-          "ratio": 0.1306,
-          "score": 13.06
+          "value": 24300,
+          "ratio": 0.0578,
+          "score": 5.78
         },
         {
           "key": "overallTicket",
           "label": "整體客單價",
           "weight": 50,
-          "value": 31980,
-          "ratio": 0.4936,
-          "score": 24.68
+          "value": 25650,
+          "ratio": 0.3708,
+          "score": 18.54
         },
         {
           "key": "renewalRevenue",
           "label": "續單金額",
           "weight": 200,
-          "value": 0,
-          "ratio": 0,
-          "score": 0
+          "value": 13500,
+          "ratio": 0.049,
+          "score": 9.81
         },
         {
           "key": "renewalDeals",
           "label": "追續成交總數",
           "weight": 200,
-          "value": 0,
-          "ratio": 0,
-          "score": 0
+          "value": 1,
+          "ratio": 0.0714,
+          "score": 14.29
         }
       ],
       "rank": 18,
       "rankDelta": 0,
       "movement": "持平",
-      "group": "B",
-      "groupLabel": "B 一般量單"
+      "group": "C",
+      "groupLabel": "C 補位觀察"
     },
     {
-      "lineNumber": 16,
-      "inputOrder": 15,
-      "inputRank": 16,
-      "rawLine": "16、高如郁｜【追續】0｜【續單】0｜【總業績】11560",
-      "originalName": "高如郁",
-      "name": "高如郁",
+      "lineNumber": 19,
+      "inputOrder": 18,
+      "inputRank": 19,
+      "rawLine": "19、謝啟芳｜【追續】0｜【續單】0｜【總業績】10960",
+      "originalName": "謝啟芳",
+      "name": "謝啟芳",
       "renewalDeals": 0,
       "renewalRevenue": 0,
-      "totalRevenue": 11560,
-      "currentMonthRevenue": 11560,
-      "dailyReceived": 11560,
+      "totalRevenue": 10960,
+      "currentMonthRevenue": 10960,
+      "dailyReceived": 10960,
       "dailyTicket": 0,
-      "lastMonthRevenue": 24573,
-      "overallTicket": 30787,
+      "lastMonthRevenue": 18645,
+      "overallTicket": 27987,
       "previousRank": 19,
       "aliasUsed": false,
       "baselineFound": true,
-      "baselineIndex": 15,
+      "baselineIndex": 18,
       "inReport": true,
-      "totalScore": 59.36,
+      "totalScore": 34.42,
       "breakdown": [
         {
           "key": "dailyTicket",
@@ -4019,33 +4019,33 @@
           "key": "dailyReceived",
           "label": "當日實收金額",
           "weight": 250,
-          "value": 11560,
-          "ratio": 0.068,
-          "score": 17.01
+          "value": 10960,
+          "ratio": 0.0279,
+          "score": 6.97
         },
         {
           "key": "currentMonthRevenue",
           "label": "本月業績",
           "weight": 100,
-          "value": 11560,
-          "ratio": 0.068,
-          "score": 6.8
+          "value": 10960,
+          "ratio": 0.0279,
+          "score": 2.79
         },
         {
           "key": "lastMonthRevenue",
           "label": "上月業績",
           "weight": 100,
-          "value": 24573,
-          "ratio": 0.1179,
-          "score": 11.79
+          "value": 18645,
+          "ratio": 0.0443,
+          "score": 4.43
         },
         {
           "key": "overallTicket",
           "label": "整體客單價",
           "weight": 50,
-          "value": 30787,
-          "ratio": 0.4752,
-          "score": 23.76
+          "value": 27987,
+          "ratio": 0.4045,
+          "score": 20.23
         },
         {
           "key": "renewalRevenue",
@@ -4067,263 +4067,263 @@
       "rank": 19,
       "rankDelta": 0,
       "movement": "持平",
-      "group": "B",
-      "groupLabel": "B 一般量單"
+      "group": "C",
+      "groupLabel": "C 補位觀察"
     },
     {
       "lineNumber": 20,
       "inputOrder": 19,
       "inputRank": 20,
-      "rawLine": "20、江沛林｜【追續】1｜【續單】1000｜【總業績】1000",
-      "originalName": "江沛林",
-      "name": "江沛林",
+      "rawLine": "20、周美蓁｜【追續】1｜【續單】10000｜【總業績】10000",
+      "originalName": "周美蓁",
+      "name": "周美蓁",
       "renewalDeals": 1,
-      "renewalRevenue": 1000,
-      "totalRevenue": 1000,
-      "currentMonthRevenue": 1000,
-      "dailyReceived": 1000,
-      "dailyTicket": 1000,
-      "lastMonthRevenue": 8200,
-      "overallTicket": 18100,
+      "renewalRevenue": 10000,
+      "totalRevenue": 10000,
+      "currentMonthRevenue": 10000,
+      "dailyReceived": 10000,
+      "dailyTicket": 10000,
+      "lastMonthRevenue": 17200,
+      "overallTicket": 22600,
       "previousRank": 20,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 19,
       "inReport": true,
-      "totalScore": 51.49,
+      "totalScore": 62.97,
       "breakdown": [
         {
           "key": "dailyTicket",
           "label": "當日客單價",
           "weight": 100,
-          "value": 1000,
-          "ratio": 0.0159,
-          "score": 1.59
+          "value": 10000,
+          "ratio": 0.121,
+          "score": 12.1
         },
         {
           "key": "dailyReceived",
           "label": "當日實收金額",
           "weight": 250,
-          "value": 1000,
-          "ratio": 0.0059,
-          "score": 1.47
+          "value": 10000,
+          "ratio": 0.0254,
+          "score": 6.36
         },
         {
           "key": "currentMonthRevenue",
           "label": "本月業績",
           "weight": 100,
-          "value": 1000,
-          "ratio": 0.0059,
-          "score": 0.59
+          "value": 10000,
+          "ratio": 0.0254,
+          "score": 2.54
         },
         {
           "key": "lastMonthRevenue",
           "label": "上月業績",
           "weight": 100,
-          "value": 8200,
-          "ratio": 0.0393,
-          "score": 3.93
-        },
-        {
-          "key": "overallTicket",
-          "label": "整體客單價",
-          "weight": 50,
-          "value": 18100,
-          "ratio": 0.2794,
-          "score": 13.97
-        },
-        {
-          "key": "renewalRevenue",
-          "label": "續單金額",
-          "weight": 200,
-          "value": 1000,
-          "ratio": 0.0068,
-          "score": 1.37
-        },
-        {
-          "key": "renewalDeals",
-          "label": "追續成交總數",
-          "weight": 200,
-          "value": 1,
-          "ratio": 0.1429,
-          "score": 28.57
-        }
-      ],
-      "rank": 20,
-      "rankDelta": 0,
-      "movement": "持平",
-      "group": "C",
-      "groupLabel": "C 補位養成"
-    },
-    {
-      "lineNumber": 21,
-      "inputOrder": 20,
-      "inputRank": 21,
-      "rawLine": "21、陳旭宜｜【追續】0｜【續單】0｜【總業績】0",
-      "originalName": "陳旭宜",
-      "name": "陳旭宜",
-      "renewalDeals": 0,
-      "renewalRevenue": 0,
-      "totalRevenue": 0,
-      "currentMonthRevenue": 0,
-      "dailyReceived": 0,
-      "dailyTicket": 0,
-      "lastMonthRevenue": 5400,
-      "overallTicket": 22600,
-      "previousRank": 21,
-      "aliasUsed": false,
-      "baselineFound": true,
-      "baselineIndex": 20,
-      "inReport": true,
-      "totalScore": 20.03,
-      "breakdown": [
-        {
-          "key": "dailyTicket",
-          "label": "當日客單價",
-          "weight": 100,
-          "value": 0,
-          "ratio": 0,
-          "score": 0
-        },
-        {
-          "key": "dailyReceived",
-          "label": "當日實收金額",
-          "weight": 250,
-          "value": 0,
-          "ratio": 0,
-          "score": 0
-        },
-        {
-          "key": "currentMonthRevenue",
-          "label": "本月業績",
-          "weight": 100,
-          "value": 0,
-          "ratio": 0,
-          "score": 0
-        },
-        {
-          "key": "lastMonthRevenue",
-          "label": "上月業績",
-          "weight": 100,
-          "value": 5400,
-          "ratio": 0.0259,
-          "score": 2.59
+          "value": 17200,
+          "ratio": 0.0409,
+          "score": 4.09
         },
         {
           "key": "overallTicket",
           "label": "整體客單價",
           "weight": 50,
           "value": 22600,
-          "ratio": 0.3488,
-          "score": 17.44
+          "ratio": 0.3267,
+          "score": 16.33
         },
         {
           "key": "renewalRevenue",
           "label": "續單金額",
           "weight": 200,
-          "value": 0,
-          "ratio": 0,
-          "score": 0
+          "value": 10000,
+          "ratio": 0.0363,
+          "score": 7.26
         },
         {
           "key": "renewalDeals",
           "label": "追續成交總數",
           "weight": 200,
-          "value": 0,
-          "ratio": 0,
-          "score": 0
+          "value": 1,
+          "ratio": 0.0714,
+          "score": 14.29
+        }
+      ],
+      "rank": 20,
+      "rankDelta": 0,
+      "movement": "持平",
+      "group": "C",
+      "groupLabel": "C 補位觀察"
+    },
+    {
+      "lineNumber": 21,
+      "inputOrder": 20,
+      "inputRank": 21,
+      "rawLine": "21、江沛林｜【追續】3｜【續單】9980｜【總業績】9980",
+      "originalName": "江沛林",
+      "name": "江沛林",
+      "renewalDeals": 3,
+      "renewalRevenue": 9980,
+      "totalRevenue": 9980,
+      "currentMonthRevenue": 9980,
+      "dailyReceived": 9980,
+      "dailyTicket": 3326.67,
+      "lastMonthRevenue": 15380,
+      "overallTicket": 14627,
+      "previousRank": 21,
+      "aliasUsed": false,
+      "baselineFound": true,
+      "baselineIndex": 20,
+      "inReport": true,
+      "totalScore": 77.25,
+      "breakdown": [
+        {
+          "key": "dailyTicket",
+          "label": "當日客單價",
+          "weight": 100,
+          "value": 3326.67,
+          "ratio": 0.0403,
+          "score": 4.03
+        },
+        {
+          "key": "dailyReceived",
+          "label": "當日實收金額",
+          "weight": 250,
+          "value": 9980,
+          "ratio": 0.0254,
+          "score": 6.34
+        },
+        {
+          "key": "currentMonthRevenue",
+          "label": "本月業績",
+          "weight": 100,
+          "value": 9980,
+          "ratio": 0.0254,
+          "score": 2.54
+        },
+        {
+          "key": "lastMonthRevenue",
+          "label": "上月業績",
+          "weight": 100,
+          "value": 15380,
+          "ratio": 0.0366,
+          "score": 3.66
+        },
+        {
+          "key": "overallTicket",
+          "label": "整體客單價",
+          "weight": 50,
+          "value": 14627,
+          "ratio": 0.2114,
+          "score": 10.57
+        },
+        {
+          "key": "renewalRevenue",
+          "label": "續單金額",
+          "weight": 200,
+          "value": 9980,
+          "ratio": 0.0363,
+          "score": 7.25
+        },
+        {
+          "key": "renewalDeals",
+          "label": "追續成交總數",
+          "weight": 200,
+          "value": 3,
+          "ratio": 0.2143,
+          "score": 42.86
         }
       ],
       "rank": 21,
       "rankDelta": 0,
       "movement": "持平",
       "group": "C",
-      "groupLabel": "C 補位養成"
+      "groupLabel": "C 補位觀察"
     },
     {
       "lineNumber": 22,
       "inputOrder": 21,
       "inputRank": 22,
-      "rawLine": "22、謝啟芳｜【追續】0｜【續單】0｜【總業績】0",
-      "originalName": "謝啟芳",
-      "name": "謝啟芳",
-      "renewalDeals": 0,
-      "renewalRevenue": 0,
-      "totalRevenue": 0,
-      "currentMonthRevenue": 0,
-      "dailyReceived": 0,
-      "dailyTicket": 0,
-      "lastMonthRevenue": 3600,
-      "overallTicket": 21733,
+      "rawLine": "22、林佩君｜【追續】1｜【續單】6528｜【總業績】6528",
+      "originalName": "林佩君",
+      "name": "林佩君",
+      "renewalDeals": 1,
+      "renewalRevenue": 6528,
+      "totalRevenue": 6528,
+      "currentMonthRevenue": 6528,
+      "dailyReceived": 6528,
+      "dailyTicket": 6528,
+      "lastMonthRevenue": 10128,
+      "overallTicket": 19564,
       "previousRank": 22,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 21,
       "inReport": true,
-      "totalScore": 18.5,
+      "totalScore": 49.29,
       "breakdown": [
         {
           "key": "dailyTicket",
           "label": "當日客單價",
           "weight": 100,
-          "value": 0,
-          "ratio": 0,
-          "score": 0
+          "value": 6528,
+          "ratio": 0.079,
+          "score": 7.9
         },
         {
           "key": "dailyReceived",
           "label": "當日實收金額",
           "weight": 250,
-          "value": 0,
-          "ratio": 0,
-          "score": 0
+          "value": 6528,
+          "ratio": 0.0166,
+          "score": 4.15
         },
         {
           "key": "currentMonthRevenue",
           "label": "本月業績",
           "weight": 100,
-          "value": 0,
-          "ratio": 0,
-          "score": 0
+          "value": 6528,
+          "ratio": 0.0166,
+          "score": 1.66
         },
         {
           "key": "lastMonthRevenue",
           "label": "上月業績",
           "weight": 100,
-          "value": 3600,
-          "ratio": 0.0173,
-          "score": 1.73
+          "value": 10128,
+          "ratio": 0.0241,
+          "score": 2.41
         },
         {
           "key": "overallTicket",
           "label": "整體客單價",
           "weight": 50,
-          "value": 21733,
-          "ratio": 0.3354,
-          "score": 16.77
+          "value": 19564,
+          "ratio": 0.2828,
+          "score": 14.14
         },
         {
           "key": "renewalRevenue",
           "label": "續單金額",
           "weight": 200,
-          "value": 0,
-          "ratio": 0,
-          "score": 0
+          "value": 6528,
+          "ratio": 0.0237,
+          "score": 4.74
         },
         {
           "key": "renewalDeals",
           "label": "追續成交總數",
           "weight": 200,
-          "value": 0,
-          "ratio": 0,
-          "score": 0
+          "value": 1,
+          "ratio": 0.0714,
+          "score": 14.29
         }
       ],
       "rank": 22,
       "rankDelta": 0,
       "movement": "持平",
       "group": "C",
-      "groupLabel": "C 補位養成"
+      "groupLabel": "C 補位觀察"
     },
     {
       "lineNumber": 23,
@@ -4345,7 +4345,7 @@
       "baselineFound": true,
       "baselineIndex": 22,
       "inReport": true,
-      "totalScore": 16.96,
+      "totalScore": 15.51,
       "breakdown": [
         {
           "key": "dailyTicket",
@@ -4376,16 +4376,16 @@
           "label": "上月業績",
           "weight": 100,
           "value": 1800,
-          "ratio": 0.0086,
-          "score": 0.86
+          "ratio": 0.0043,
+          "score": 0.43
         },
         {
           "key": "overallTicket",
           "label": "整體客單價",
           "weight": 50,
           "value": 20867,
-          "ratio": 0.3221,
-          "score": 16.1
+          "ratio": 0.3016,
+          "score": 15.08
         },
         {
           "key": "renewalRevenue",
@@ -4408,82 +4408,83 @@
       "rankDelta": 0,
       "movement": "持平",
       "group": "C",
-      "groupLabel": "C 補位養成"
+      "groupLabel": "C 補位觀察"
     }
   ],
   "groups": {
     "A1": [
       "馬秋香",
-      "王珍珠",
       "王梅慧",
-      "李玲玲"
+      "王珍珠",
+      "林沛昕"
     ],
     "A2": [
-      "林沛昕",
-      "徐華妤",
       "林宜靜",
+      "李玲玲",
       "廖姿惠",
       "湯玉琦",
-      "許喬恩"
+      "蘇淑玲",
+      "徐華妤"
     ],
     "B": [
       "江麗勉",
-      "蘇淑玲",
       "梁依萍",
-      "陳玲華",
-      "周美蓁",
-      "鄭珮恩",
-      "林佩君",
+      "高如郁",
       "高美雲",
-      "高如郁"
+      "陳玲華",
+      "鄭珮恩",
+      "許喬恩"
     ],
     "C": [
-      "江沛林",
-      "陳旭宜",
+      "陳桂子（新人）",
       "謝啟芳",
+      "周美蓁",
+      "江沛林",
+      "林佩君",
       "鄭上官"
     ]
   },
   "changes": {
+    "new": [],
     "up": [],
     "down": [],
     "flat": [
       "馬秋香：持平",
-      "王珍珠：持平",
       "王梅慧：持平",
-      "李玲玲：持平",
+      "王珍珠：持平",
       "林沛昕：持平",
-      "徐華妤：持平",
       "林宜靜：持平",
+      "李玲玲：持平",
       "廖姿惠：持平",
       "湯玉琦：持平",
-      "許喬恩：持平",
-      "江麗勉：持平",
       "蘇淑玲：持平",
+      "徐華妤：持平",
+      "江麗勉：持平",
       "梁依萍：持平",
-      "陳玲華：持平",
-      "周美蓁：持平",
-      "鄭珮恩：持平",
-      "林佩君：持平",
-      "高美雲：持平",
       "高如郁：持平",
-      "江沛林：持平",
-      "陳旭宜：持平",
+      "高美雲：持平",
+      "陳玲華：持平",
+      "鄭珮恩：持平",
+      "許喬恩：持平",
+      "陳桂子（新人）：持平",
       "謝啟芳：持平",
+      "周美蓁：持平",
+      "江沛林：持平",
+      "林佩君：持平",
       "鄭上官：持平"
     ]
   },
   "summary": {
-    "dailyReceived": 1151194,
-    "currentMonthRevenue": 1151194,
-    "totalRevenue": 1151194,
-    "renewalRevenue": 754616,
-    "renewalDeals": 48,
+    "dailyReceived": 2361324,
+    "currentMonthRevenue": 2361324,
+    "totalRevenue": 2361324,
+    "renewalRevenue": 1347712,
+    "renewalDeals": 98,
     "totalPeople": 23,
-    "activePeople": 20,
-    "averageDailyTicket": 20350.83,
-    "averageOverallTicket": 32943.83,
-    "conversionRateText": "86.96%"
+    "activePeople": 22,
+    "averageDailyTicket": 26065.67,
+    "averageOverallTicket": 32613.17,
+    "conversionRateText": "95.65%"
   },
   "stages": [
     {
@@ -4492,7 +4493,7 @@
       "order": 1,
       "status": "done",
       "message": "解析 23 筆",
-      "completedAt": "2026/04/06 22:56:17"
+      "completedAt": "2026/04/09 17:31:51"
     },
     {
       "key": "audit",
@@ -4500,7 +4501,7 @@
       "order": 2,
       "status": "done",
       "message": "審計通過",
-      "completedAt": "2026/04/06 22:56:17"
+      "completedAt": "2026/04/09 17:31:51"
     },
     {
       "key": "score",
@@ -4508,7 +4509,7 @@
       "order": 3,
       "status": "done",
       "message": "1000 權重計分完成",
-      "completedAt": "2026/04/06 22:56:17"
+      "completedAt": "2026/04/09 17:31:51"
     },
     {
       "key": "rank",
@@ -4516,23 +4517,23 @@
       "order": 4,
       "status": "done",
       "message": "排序完成 23 人",
-      "completedAt": "2026/04/06 22:56:17"
+      "completedAt": "2026/04/09 17:31:51"
     },
     {
       "key": "dispatch",
       "label": "派單",
       "order": 5,
       "status": "done",
-      "message": "A1 4｜A2 6｜B 9｜C 4",
-      "completedAt": "2026/04/06 22:56:17"
+      "message": "A1 4｜A2 6｜B 7｜C 6",
+      "completedAt": "2026/04/09 17:31:51"
     },
     {
       "key": "announcement",
       "label": "公告",
       "order": 6,
       "status": "done",
-      "message": "公告 1622 字",
-      "completedAt": "2026/04/06 22:56:17"
+      "message": "公告 1679 字",
+      "completedAt": "2026/04/09 17:31:51"
     },
     {
       "key": "save",
@@ -4540,7 +4541,7 @@
       "order": 7,
       "status": "done",
       "message": "全部確認無誤並完成正式存檔",
-      "completedAt": "2026/04/06 22:56:17"
+      "completedAt": "2026/04/09 17:31:51"
     }
   ],
   "stageSummary": {
@@ -4550,98 +4551,238 @@
     "currentLabel": "存檔",
     "failed": false
   },
+  "bigdataAdvice": [
+    {
+      "rank": 1,
+      "name": "馬秋香",
+      "group": "A1",
+      "text": "第一名不是守住就好，今天要把第一名拉開。"
+    },
+    {
+      "rank": 2,
+      "name": "王梅慧",
+      "group": "A1",
+      "text": "你已經貼近榜首，今天再補一筆就能直接施壓第一。"
+    },
+    {
+      "rank": 3,
+      "name": "王珍珠",
+      "group": "A1",
+      "text": "你追續厚，今天重點是把厚度變成更扎實的實收。"
+    },
+    {
+      "rank": 4,
+      "name": "林沛昕",
+      "group": "A1",
+      "text": "你總盤很硬，今天缺的是再往前翻位的臨門一腳。"
+    },
+    {
+      "rank": 5,
+      "name": "林宜靜",
+      "group": "A2",
+      "text": "位置穩，但還能更前，今天先把最準那筆拿下。"
+    },
+    {
+      "rank": 6,
+      "name": "李玲玲",
+      "group": "A2",
+      "text": "你還在主力帶，今天不是保位，是往前壓。"
+    },
+    {
+      "rank": 7,
+      "name": "廖姿惠",
+      "group": "A2",
+      "text": "你屬於很標準的補位型，今天一補就會更靠前。"
+    },
+    {
+      "rank": 8,
+      "name": "湯玉琦",
+      "group": "A2",
+      "text": "你追續成交數很強，今天重點是把量收成實績。"
+    },
+    {
+      "rank": 9,
+      "name": "蘇淑玲",
+      "group": "A2",
+      "text": "你這輪站得住，今天關鍵是不要停。"
+    },
+    {
+      "rank": 10,
+      "name": "徐華妤",
+      "group": "A2",
+      "text": "你穩在前十，今天一補單就能再往上。"
+    },
+    {
+      "rank": 11,
+      "name": "江麗勉",
+      "group": "B",
+      "text": "你現在差的不是底，是差再開一筆。"
+    },
+    {
+      "rank": 12,
+      "name": "梁依萍",
+      "group": "B",
+      "text": "你還在可翻位區，今天先求穩穩進袋。"
+    },
+    {
+      "rank": 13,
+      "name": "高如郁",
+      "group": "B",
+      "text": "今天要把可落袋的先收，不要讓位置再鬆。"
+    },
+    {
+      "rank": 14,
+      "name": "高美雲",
+      "group": "B",
+      "text": "你現在有上推空間，今天一補就能再往前。"
+    },
+    {
+      "rank": 15,
+      "name": "陳玲華",
+      "group": "B",
+      "text": "中後段差距很小，今天開一筆就會動。"
+    },
+    {
+      "rank": 16,
+      "name": "鄭珮恩",
+      "group": "B",
+      "text": "你追續底還在，今天先把最穩的一筆做出來。"
+    },
+    {
+      "rank": 17,
+      "name": "許喬恩",
+      "group": "B",
+      "text": "今天重點不是多，是先把盤面重新接起來。"
+    },
+    {
+      "rank": 18,
+      "name": "陳桂子（新人）",
+      "group": "C",
+      "text": "先求穩穩起步，有第一筆就有第二筆。"
+    },
+    {
+      "rank": 19,
+      "name": "謝啟芳",
+      "group": "C",
+      "text": "先把第一個明確數字做出來，位置就會變。"
+    },
+    {
+      "rank": 20,
+      "name": "周美蓁",
+      "group": "C",
+      "text": "先動起來，比停在原地更重要。"
+    },
+    {
+      "rank": 21,
+      "name": "江沛林",
+      "group": "C",
+      "text": "你不是沒底，是差一筆把線重新接上。"
+    },
+    {
+      "rank": 22,
+      "name": "林佩君",
+      "group": "C",
+      "text": "今天先求開張，不要讓名字只停在名單上。"
+    },
+    {
+      "rank": 23,
+      "name": "鄭上官",
+      "group": "C",
+      "text": "先抓最穩的那一步，今天有動作就會開始改變。"
+    }
+  ],
   "logs": [
     {
-      "time": "2026/04/06 22:56:17",
+      "time": "2026/04/09 17:31:51",
       "type": "完成",
       "message": "解析｜解析 23 筆"
     },
     {
-      "time": "2026/04/06 22:56:17",
+      "time": "2026/04/09 17:31:51",
       "type": "完成",
       "message": "審計｜審計通過"
     },
     {
-      "time": "2026/04/06 22:56:17",
+      "time": "2026/04/09 17:31:51",
       "type": "完成",
       "message": "計分｜1000 權重計分完成"
     },
     {
-      "time": "2026/04/06 22:56:17",
+      "time": "2026/04/09 17:31:51",
       "type": "完成",
       "message": "排序｜排序完成 23 人"
     },
     {
-      "time": "2026/04/06 22:56:17",
+      "time": "2026/04/09 17:31:51",
       "type": "完成",
-      "message": "派單｜A1 4｜A2 6｜B 9｜C 4"
+      "message": "派單｜A1 4｜A2 6｜B 7｜C 6"
     },
     {
-      "time": "2026/04/06 22:56:17",
+      "time": "2026/04/09 17:31:51",
       "type": "完成",
-      "message": "公告｜公告 1622 字"
+      "message": "公告｜公告 1679 字"
     },
     {
-      "time": "2026/04/06 22:56:17",
+      "time": "2026/04/09 17:31:51",
       "type": "完成",
       "message": "存檔｜全部確認無誤並完成正式存檔"
     }
   ],
   "files": {
-    "reportFile": "snapshot_1775487377079.json",
-    "backupFile": "backup_1775487377079.json",
-    "archiveFile": "115-04-06_1775487377079.json"
+    "reportFile": "snapshot_1775727111585.json",
+    "backupFile": "backup_1775727111585.json",
+    "archiveFile": "115-04-08_1775727111585.json"
   },
   "aiInsights": {
     "cards": [
       {
         "label": "榜首領先差",
-        "value": "73.37 分",
-        "detail": "馬秋香 對 王珍珠",
+        "value": "117.98 分",
+        "detail": "馬秋香 對 王梅慧",
         "tone": "gold"
       },
       {
         "label": "前三集中度",
-        "value": "40.57%",
+        "value": "40.51%",
         "detail": "前三名總業績占比",
         "tone": "cyan"
       },
       {
         "label": "A1 門檻差",
-        "value": "4.32 分",
-        "detail": "李玲玲 對 林沛昕",
+        "value": "250.89 分",
+        "detail": "林沛昕 對 林宜靜",
         "tone": "violet"
       },
       {
         "label": "續單主力",
         "value": "馬秋香",
-        "detail": "146,260",
+        "detail": "275,300",
         "tone": "orange"
       },
       {
         "label": "追續主力",
         "value": "王珍珠",
-        "detail": "7 通",
+        "detail": "14 通",
         "tone": "cyan"
       },
       {
         "label": "零業績人數",
-        "value": "3 人",
+        "value": "1 人",
         "detail": "上升 0｜下降 0",
         "tone": "red"
       }
     ],
     "lines": [
-      "榜首 馬秋香 目前以 903.97 分領先 王珍珠 73.37 分。",
-      "前三名總業績占全體 40.57%，資源集中度偏高。",
-      "A1 門檻目前由 李玲玲 守住，與第 5 名 林沛昕 差 4.32 分。",
-      "續單主力為 馬秋香，續單金額 146,260。",
-      "追續主力為 王珍珠，追續成交 7 通。",
-      "目前仍有 3 位零業績，適合用補位名單優先破蛋。",
+      "榜首 馬秋香 目前以 899.09 分領先 王梅慧 117.98 分。",
+      "前三名總業績占全體 40.51%，資源集中度偏高。",
+      "A1 門檻目前由 林沛昕 守住，與第 5 名 林宜靜 差 250.89 分。",
+      "續單主力為 馬秋香，續單金額 275,300。",
+      "追續主力為 王珍珠，追續成交 14 通。",
+      "目前仍有 1 位零業績，適合用補位名單優先破蛋。",
       "名次異動為上升 0 人、下降 0 人，盤面仍在快速變動。"
     ]
   },
-  "announcement": "📣【兆櫃 AI 派單公告｜115/04/06 結算 → 115/04/07 派單】\n\n一、審計結論\n審計結果：通過\n說明：審計通過，可進入 1000 權重排序。\n- 無異常\n\n二、1000 權重公式\n當日客單價 100｜當日實收金額 250｜本月業績 100｜上月業績 100｜整體客單價 50｜續單金額 200｜追續成交總數 200\n\n三、今日排序\n1、馬秋香｜AI 903.97｜【追續】6｜【續單】146,260｜【總業績】169,920\n2、王珍珠｜AI 830.60｜【追續】7｜【續單】127,060｜【總業績】148,108\n3、王梅慧｜AI 803.23｜【追續】6｜【續單】119,520｜【總業績】149,010\n4、李玲玲｜AI 638.98｜【追續】2｜【續單】73,860｜【總業績】125,420\n5、林沛昕｜AI 634.66｜【追續】2｜【續單】103,800｜【總業績】110,760\n6、徐華妤｜AI 483.66｜【追續】4｜【續單】63,020｜【總業績】82,020\n7、林宜靜｜AI 409.41｜【追續】4｜【續單】22,420｜【總業績】78,420\n8、廖姿惠｜AI 321.48｜【追續】4｜【續單】18,948｜【總業績】51,568\n9、湯玉琦｜AI 264.06｜【追續】4｜【續單】21,900｜【總業績】31,240\n10、許喬恩｜AI 216.92｜【追續】2｜【續單】27,000｜【總業績】27,000\n11、江麗勉｜AI 213.12｜【追續】0｜【續單】0｜【總業績】63,220\n12、蘇淑玲｜AI 145.57｜【追續】1｜【續單】5,000｜【總業績】19,280\n13、梁依萍｜AI 142.23｜【追續】1｜【續單】6,000｜【總業績】18,440\n14、陳玲華｜AI 111.66｜【追續】0｜【續單】0｜【總業績】27,860\n15、周美蓁｜AI 108.58｜【追續】1｜【續單】10,000｜【總業績】10,000\n16、鄭珮恩｜AI 102.69｜【追續】2｜【續單】2,300｜【總業績】7,300\n17、林佩君｜AI 85.40｜【追續】1｜【續單】6,528｜【總業績】6,528\n18、高美雲｜AI 63.57｜【追續】0｜【續單】0｜【總業績】12,540\n19、高如郁｜AI 59.36｜【追續】0｜【續單】0｜【總業績】11,560\n20、江沛林｜AI 51.49｜【追續】1｜【續單】1,000｜【總業績】1,000\n21、陳旭宜｜AI 20.03｜【追續】0｜【續單】0｜【總業績】0\n22、謝啟芳｜AI 18.50｜【追續】0｜【續單】0｜【總業績】0\n23、鄭上官｜AI 16.96｜【追續】0｜【續單】0｜【總業績】0\n\n四、明日派單分組\nA1 高單主力：馬秋香、王珍珠、王梅慧、李玲玲\nA2 續單收割：林沛昕、徐華妤、林宜靜、廖姿惠、湯玉琦、許喬恩\nB 一般量單：江麗勉、蘇淑玲、梁依萍、陳玲華、周美蓁、鄭珮恩、林佩君、高美雲、高如郁\nC 補位養成：江沛林、陳旭宜、謝啟芳、鄭上官\n\n五、名次異動\n持平：馬秋香：持平\n持平：王珍珠：持平\n持平：王梅慧：持平\n持平：李玲玲：持平\n持平：林沛昕：持平\n持平：徐華妤：持平\n持平：林宜靜：持平\n持平：廖姿惠：持平\n持平：湯玉琦：持平\n持平：許喬恩：持平\n持平：江麗勉：持平\n持平：蘇淑玲：持平\n持平：梁依萍：持平\n持平：陳玲華：持平\n持平：周美蓁：持平\n持平：鄭珮恩：持平\n持平：林佩君：持平\n持平：高美雲：持平\n持平：高如郁：持平\n持平：江沛林：持平\n持平：陳旭宜：持平\n持平：謝啟芳：持平\n持平：鄭上官：持平\n\n六、總控摘要\n當日實收：1,151,194\n本月業績：1,151,194\n續單總額：754,616\n追續成交：48 通\n有效人數：20/23\n\n七、存檔\n報表：snapshot_1775487377079.json\n備份：backup_1775487377079.json\n歸檔：115-04-06_1775487377079.json",
+  "announcement": "📣【兆櫃 AI 派單公告｜115/04/08 結算 → 115/04/09 派單】\n\n一、審計結論\n審計結果：通過\n說明：審計通過，可進入 1000 權重排序。\n- 無異常\n\n二、1000 權重公式\n當日客單價 100｜當日實收金額 250｜本月業績 100｜上月業績 100｜整體客單價 50｜續單金額 200｜追續成交總數 200\n\n三、今日排序\n1、馬秋香｜AI 899.09｜【追續】12｜【續單】275,300｜【總業績】393,290\n2、王梅慧｜AI 781.11｜【追續】12｜【續單】237,180｜【總業績】323,760\n3、王珍珠｜AI 659.95｜【追續】14｜【續單】190,380｜【總業績】239,588\n4、林沛昕｜AI 611.03｜【追續】8｜【續單】209,576｜【總業績】234,644\n5、林宜靜｜AI 360.14｜【追續】5｜【續單】32,200｜【總業績】170,070\n6、李玲玲｜AI 423.68｜【追續】2｜【續單】73,860｜【總業績】165,250\n7、廖姿惠｜AI 291.01｜【追續】6｜【續單】26,448｜【總業績】121,328\n8、湯玉琦｜AI 332.07｜【追續】9｜【續單】56,180｜【總業績】111,860\n9、蘇淑玲｜AI 279.35｜【追續】3｜【續單】61,040｜【總業績】101,488\n10、徐華妤｜AI 275.12｜【追續】5｜【續單】69,520｜【總業績】90,960\n11、江麗勉｜AI 222.37｜【追續】1｜【續單】2,380｜【總業績】73,630\n12、梁依萍｜AI 177.01｜【追續】3｜【續單】15,160｜【總業績】64,540\n13、高如郁｜AI 158.68｜【追續】3｜【續單】9,320｜【總業績】56,860\n14、高美雲｜AI 159.22｜【追續】2｜【續單】15,660｜【總業績】54,008\n15、陳玲華｜AI 143.53｜【追續】1｜【續單】6,500｜【總業績】41,860\n16、鄭珮恩｜AI 135.46｜【追續】4｜【續單】7,000｜【總業績】40,220\n17、許喬恩｜AI 110.79｜【追續】2｜【續單】20,000｜【總業績】27,000\n18、陳桂子（新人）｜AI 76.77｜【追續】1｜【續單】13,500｜【總業績】13,500\n19、謝啟芳｜AI 34.42｜【追續】0｜【續單】0｜【總業績】10,960\n20、周美蓁｜AI 62.97｜【追續】1｜【續單】10,000｜【總業績】10,000\n21、江沛林｜AI 77.25｜【追續】3｜【續單】9,980｜【總業績】9,980\n22、林佩君｜AI 49.29｜【追續】1｜【續單】6,528｜【總業績】6,528\n23、鄭上官｜AI 15.51｜【追續】0｜【續單】0｜【總業績】0\n\n四、明日派單分組\nA1 高單主力：馬秋香、王梅慧、王珍珠、林沛昕\nA2 續單收割：林宜靜、李玲玲、廖姿惠、湯玉琦、蘇淑玲、徐華妤\nB 一般量單：江麗勉、梁依萍、高如郁、高美雲、陳玲華、鄭珮恩、許喬恩\nC 補位養成：陳桂子（新人）、謝啟芳、周美蓁、江沛林、林佩君、鄭上官\n\n五、名次異動\n持平：馬秋香：持平\n持平：王梅慧：持平\n持平：王珍珠：持平\n持平：林沛昕：持平\n持平：林宜靜：持平\n持平：李玲玲：持平\n持平：廖姿惠：持平\n持平：湯玉琦：持平\n持平：蘇淑玲：持平\n持平：徐華妤：持平\n持平：江麗勉：持平\n持平：梁依萍：持平\n持平：高如郁：持平\n持平：高美雲：持平\n持平：陳玲華：持平\n持平：鄭珮恩：持平\n持平：許喬恩：持平\n持平：陳桂子（新人）：持平\n持平：謝啟芳：持平\n持平：周美蓁：持平\n持平：江沛林：持平\n持平：林佩君：持平\n持平：鄭上官：持平\n\n六、總控摘要\n當日實收：2,361,324\n本月業績：2,361,324\n續單總額：1,347,712\n追續成交：98 通\n有效人數：22/23\n\n七、存檔\n報表：snapshot_1775727111585.json\n備份：backup_1775727111585.json\n歸檔：115-04-08_1775727111585.json",
   "confirmation": {
     "status": "通過",
     "message": "全部確認無誤，可正式存檔",
@@ -4693,58 +4834,68 @@
       },
       {
         "label": "最高 AI 分",
-        "value": "903.97",
+        "value": "899.09",
         "tone": "gold"
       },
       {
         "label": "平均 AI 分",
-        "value": "288.96",
+        "value": "275.47",
         "tone": "cyan"
       },
       {
         "label": "當日實收",
-        "value": "1,151,194",
+        "value": "2,361,324",
         "tone": "gold"
       },
       {
         "label": "本月業績",
-        "value": "1,151,194",
+        "value": "2,361,324",
         "tone": "gold"
       },
       {
         "label": "續單總額",
-        "value": "754,616",
+        "value": "1,347,712",
         "tone": "violet"
       },
       {
         "label": "追續成交",
-        "value": "48 通",
+        "value": "98 通",
         "tone": "cyan"
       },
       {
         "label": "執行序號",
-        "value": "1775487377079",
+        "value": "1775727111585",
         "tone": "orange"
       },
       {
         "label": "有效人數",
-        "value": "20/23",
+        "value": "22/23",
         "tone": "green"
       }
     ],
     "files": [
       {
         "label": "報表檔",
-        "value": "snapshot_1775487377079.json"
+        "value": "snapshot_1775727111585.json"
       },
       {
         "label": "備份檔",
-        "value": "backup_1775487377079.json"
+        "value": "backup_1775727111585.json"
       },
       {
         "label": "歸檔檔",
-        "value": "115-04-06_1775487377079.json"
+        "value": "115-04-08_1775727111585.json"
       }
     ]
+  },
+  "aiProvider": {
+    "provider": "gemini",
+    "configured": true,
+    "model": "gemini-2.0-flash",
+    "apiVersion": "v1beta",
+    "mode": "overlay",
+    "source": "backend",
+    "status": "fallback",
+    "error": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\nPlease retry in 8.685284978s."
   }
 }

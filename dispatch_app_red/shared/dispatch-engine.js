@@ -48,30 +48,69 @@ const METRIC_ALIASES = {
 };
 
 const BASELINE_SEEDS = [
-  { name: '馬秋香', renewalDeals: 6, renewalRevenue: 146260, totalRevenue: 169920, previousRank: 1 },
-  { name: '王梅慧', renewalDeals: 6, renewalRevenue: 119520, totalRevenue: 149010, previousRank: 2 },
-  { name: '王珍珠', renewalDeals: 7, renewalRevenue: 127060, totalRevenue: 148108, previousRank: 3 },
-  { name: '李玲玲', renewalDeals: 2, renewalRevenue: 73860, totalRevenue: 125420, previousRank: 5 },
-  { name: '林沛昕', renewalDeals: 2, renewalRevenue: 103800, totalRevenue: 110760, previousRank: 4 },
-  { name: '徐華妤', renewalDeals: 4, renewalRevenue: 63020, totalRevenue: 82020, previousRank: 6 },
-  { name: '林宜靜', renewalDeals: 4, renewalRevenue: 22420, totalRevenue: 78420, previousRank: 7 },
-  { name: '江麗勉', renewalDeals: 0, renewalRevenue: 0, totalRevenue: 63220, previousRank: 8 },
-  { name: '廖姿惠', renewalDeals: 4, renewalRevenue: 18948, totalRevenue: 51568, previousRank: 9 },
-  { name: '湯玉琦', renewalDeals: 4, renewalRevenue: 21900, totalRevenue: 31240, previousRank: 10 },
-  { name: '陳玲華', renewalDeals: 0, renewalRevenue: 0, totalRevenue: 27860, previousRank: 12 },
-  { name: '許喬恩', renewalDeals: 2, renewalRevenue: 27000, totalRevenue: 27000, previousRank: 11 },
-  { name: '蘇淑玲', renewalDeals: 1, renewalRevenue: 5000, totalRevenue: 19280, previousRank: 13 },
-  { name: '梁依萍', renewalDeals: 1, renewalRevenue: 6000, totalRevenue: 18440, previousRank: 14 },
-  { name: '高美雲', renewalDeals: 0, renewalRevenue: 0, totalRevenue: 12540, previousRank: 15 },
-  { name: '高如郁', renewalDeals: 0, renewalRevenue: 0, totalRevenue: 11560, previousRank: 17 },
-  { name: '周美蓁', renewalDeals: 1, renewalRevenue: 10000, totalRevenue: 10000, previousRank: 16 },
-  { name: '鄭珮恩', renewalDeals: 2, renewalRevenue: 2300, totalRevenue: 7300, previousRank: 18 },
-  { name: '林佩君', renewalDeals: 1, renewalRevenue: 6528, totalRevenue: 6528, previousRank: 19 },
-  { name: '江沛林', renewalDeals: 1, renewalRevenue: 1000, totalRevenue: 1000, previousRank: 20 },
-  { name: '陳旭宜', renewalDeals: 0, renewalRevenue: 0, totalRevenue: 0, previousRank: 21 },
-  { name: '謝啟芳', renewalDeals: 0, renewalRevenue: 0, totalRevenue: 0, previousRank: 22 },
-  { name: '鄭上官', renewalDeals: 0, renewalRevenue: 0, totalRevenue: 0, previousRank: 23 }
+  { name: '馬秋香', renewalDeals: 12, renewalRevenue: 275300, totalRevenue: 393290, previousRank: 1 },
+  { name: '王梅慧', renewalDeals: 12, renewalRevenue: 237180, totalRevenue: 323760, previousRank: 2 },
+  { name: '王珍珠', renewalDeals: 14, renewalRevenue: 190380, totalRevenue: 239588, previousRank: 4 },
+  { name: '林沛昕', renewalDeals: 8, renewalRevenue: 209576, totalRevenue: 234644, previousRank: 3 },
+  { name: '林宜靜', renewalDeals: 5, renewalRevenue: 32200, totalRevenue: 170070, previousRank: 6 },
+  { name: '李玲玲', renewalDeals: 2, renewalRevenue: 73860, totalRevenue: 165250, previousRank: 5 },
+  { name: '廖姿惠', renewalDeals: 6, renewalRevenue: 26448, totalRevenue: 121328, previousRank: 7 },
+  { name: '湯玉琦', renewalDeals: 9, renewalRevenue: 56180, totalRevenue: 111860, previousRank: 8 },
+  { name: '蘇淑玲', renewalDeals: 3, renewalRevenue: 61040, totalRevenue: 101488, previousRank: 14 },
+  { name: '徐華妤', renewalDeals: 5, renewalRevenue: 69520, totalRevenue: 90960, previousRank: 9 },
+  { name: '江麗勉', renewalDeals: 1, renewalRevenue: 2380, totalRevenue: 73630, previousRank: 10 },
+  { name: '梁依萍', renewalDeals: 3, renewalRevenue: 15160, totalRevenue: 64540, previousRank: 11 },
+  { name: '高如郁', renewalDeals: 3, renewalRevenue: 9320, totalRevenue: 56860, previousRank: 16 },
+  { name: '高美雲', renewalDeals: 2, renewalRevenue: 15660, totalRevenue: 54008, previousRank: 17 },
+  { name: '陳玲華', renewalDeals: 1, renewalRevenue: 6500, totalRevenue: 41860, previousRank: 12 },
+  { name: '鄭珮恩', renewalDeals: 4, renewalRevenue: 7000, totalRevenue: 40220, previousRank: 15 },
+  { name: '許喬恩', renewalDeals: 2, renewalRevenue: 20000, totalRevenue: 27000, previousRank: 13 },
+  { name: '陳桂子（新人）', renewalDeals: 1, renewalRevenue: 13500, totalRevenue: 13500, previousRank: 0 },
+  { name: '謝啟芳', renewalDeals: 0, renewalRevenue: 0, totalRevenue: 10960, previousRank: 18 },
+  { name: '周美蓁', renewalDeals: 1, renewalRevenue: 10000, totalRevenue: 10000, previousRank: 19 },
+  { name: '江沛林', renewalDeals: 3, renewalRevenue: 9980, totalRevenue: 9980, previousRank: 21 },
+  { name: '林佩君', renewalDeals: 1, renewalRevenue: 6528, totalRevenue: 6528, previousRank: 20 },
+  { name: '鄭上官', renewalDeals: 0, renewalRevenue: 0, totalRevenue: 0, previousRank: 22 }
 ];
+
+const BIGDATA_ADVICE_BASELINE = [
+  { rank: 1, name: '馬秋香', group: 'A1', text: '第一名不是守住就好，今天要把第一名拉開。' },
+  { rank: 2, name: '王梅慧', group: 'A1', text: '你已經貼近榜首，今天再補一筆就能直接施壓第一。' },
+  { rank: 3, name: '王珍珠', group: 'A1', text: '你追續厚，今天重點是把厚度變成更扎實的實收。' },
+  { rank: 4, name: '林沛昕', group: 'A1', text: '你總盤很硬，今天缺的是再往前翻位的臨門一腳。' },
+  { rank: 5, name: '林宜靜', group: 'A2', text: '位置穩，但還能更前，今天先把最準那筆拿下。' },
+  { rank: 6, name: '李玲玲', group: 'A2', text: '你還在主力帶，今天不是保位，是往前壓。' },
+  { rank: 7, name: '廖姿惠', group: 'A2', text: '你屬於很標準的補位型，今天一補就會更靠前。' },
+  { rank: 8, name: '湯玉琦', group: 'A2', text: '你追續成交數很強，今天重點是把量收成實績。' },
+  { rank: 9, name: '蘇淑玲', group: 'A2', text: '你這輪站得住，今天關鍵是不要停。' },
+  { rank: 10, name: '徐華妤', group: 'A2', text: '你穩在前十，今天一補單就能再往上。' },
+  { rank: 11, name: '江麗勉', group: 'B', text: '你現在差的不是底，是差再開一筆。' },
+  { rank: 12, name: '梁依萍', group: 'B', text: '你還在可翻位區，今天先求穩穩進袋。' },
+  { rank: 13, name: '高如郁', group: 'B', text: '今天要把可落袋的先收，不要讓位置再鬆。' },
+  { rank: 14, name: '高美雲', group: 'B', text: '你現在有上推空間，今天一補就能再往前。' },
+  { rank: 15, name: '陳玲華', group: 'B', text: '中後段差距很小，今天開一筆就會動。' },
+  { rank: 16, name: '鄭珮恩', group: 'B', text: '你追續底還在，今天先把最穩的一筆做出來。' },
+  { rank: 17, name: '許喬恩', group: 'B', text: '今天重點不是多，是先把盤面重新接起來。' },
+  { rank: 18, name: '陳桂子（新人）', group: 'C', text: '先求穩穩起步，有第一筆就有第二筆。' },
+  { rank: 19, name: '謝啟芳', group: 'C', text: '先把第一個明確數字做出來，位置就會變。' },
+  { rank: 20, name: '周美蓁', group: 'C', text: '先動起來，比停在原地更重要。' },
+  { rank: 21, name: '江沛林', group: 'C', text: '你不是沒底，是差一筆把線重新接上。' },
+  { rank: 22, name: '林佩君', group: 'C', text: '今天先求開張，不要讓名字只停在名單上。' },
+  { rank: 23, name: '鄭上官', group: 'C', text: '先抓最穩的那一步，今天有動作就會開始改變。' }
+];
+
+function getBigDataAdvice(snapshots, currentRanking) {
+  return currentRanking.map((person) => {
+    const baseline = BIGDATA_ADVICE_BASELINE.find((b) => b.name === person.name);
+    return {
+      rank: person.rank,
+      name: person.name,
+      group: person.group,
+      text: baseline ? baseline.text : `AI 大數據顯示你目前在第 ${person.rank}，屬於 ${person.group} 組，建議持續保持節奏。`
+    };
+  });
+}
+
 
 class StageError extends Error {
   constructor(stageKey, message, extra = {}) {
@@ -571,7 +610,7 @@ function scoreReport(parsed) {
 function groupKey(rank) {
   if (rank <= 4) return 'A1';
   if (rank <= 10) return 'A2';
-  if (rank <= 19) return 'B';
+  if (rank <= 17) return 'B';
   return 'C';
 }
 
@@ -579,14 +618,15 @@ function groupLabel(group) {
   if (group === 'A1') return 'A1 高單主力';
   if (group === 'A2') return 'A2 續單收割';
   if (group === 'B') return 'B 一般量單';
-  return 'C 補位養成';
+  return 'C 補位觀察';
 }
 
 function compareRankPeople(left, right) {
-  if (right.totalScore !== left.totalScore) return right.totalScore - left.totalScore;
   if (right.totalRevenue !== left.totalRevenue) return right.totalRevenue - left.totalRevenue;
   if (right.renewalRevenue !== left.renewalRevenue) return right.renewalRevenue - left.renewalRevenue;
   if (right.renewalDeals !== left.renewalDeals) return right.renewalDeals - left.renewalDeals;
+  if (toNumber(right.dispatchDeals) !== toNumber(left.dispatchDeals)) return toNumber(right.dispatchDeals) - toNumber(left.dispatchDeals);
+  if (right.totalScore !== left.totalScore) return right.totalScore - left.totalScore;
   return left.inputOrder - right.inputOrder;
 }
 
@@ -617,9 +657,10 @@ function rankReport(scoring) {
       C: ranked.filter((person) => person.group === 'C').map((person) => person.name)
     },
     changes: {
+      new: ranked.filter((person) => person.previousRank === 0).map((person) => `${person.name}：新進第 ${person.rank} 名`),
       up: ranked.filter((person) => person.rankDelta > 0).map((person) => `${person.name}：上升 ${person.rankDelta}`),
       down: ranked.filter((person) => person.rankDelta < 0).map((person) => `${person.name}：下降 ${Math.abs(person.rankDelta)}`),
-      flat: ranked.filter((person) => person.rankDelta === 0).map((person) => `${person.name}：持平`)
+      flat: ranked.filter((person) => person.rankDelta === 0 && person.previousRank > 0).map((person) => `${person.name}：持平`)
     }
   };
 }
@@ -642,9 +683,10 @@ function buildExpectedGroups(ranking) {
 
 function buildExpectedChanges(ranking) {
   return {
+    new: ranking.filter((person) => toNumber(person.previousRank) === 0).map((person) => `${person.name}：新進第 ${person.rank} 名`),
     up: ranking.filter((person) => toNumber(person.rankDelta) > 0).map((person) => `${person.name}：上升 ${person.rankDelta}`),
     down: ranking.filter((person) => toNumber(person.rankDelta) < 0).map((person) => `${person.name}：下降 ${Math.abs(person.rankDelta)}`),
-    flat: ranking.filter((person) => toNumber(person.rankDelta) === 0).map((person) => `${person.name}：持平`)
+    flat: ranking.filter((person) => toNumber(person.rankDelta) === 0 && toNumber(person.previousRank) > 0).map((person) => `${person.name}：持平`)
   };
 }
 
@@ -793,6 +835,7 @@ function buildAnnouncement(snapshot) {
     .join('\n');
 
   const changeLines = [
+    ...(snapshot.changes.new || []).map((row) => `新進：${row}`),
     ...(snapshot.changes.up || []).map((row) => `上升：${row}`),
     ...(snapshot.changes.down || []).map((row) => `下降：${row}`),
     ...(snapshot.changes.flat || []).map((row) => `持平：${row}`)
@@ -921,6 +964,7 @@ function verifySnapshotConsistency(snapshot) {
   );
 
   const changePassed =
+    arraysEqual(snapshot.changes?.new, expectedChanges.new) &&
     arraysEqual(snapshot.changes?.up, expectedChanges.up) &&
     arraysEqual(snapshot.changes?.down, expectedChanges.down) &&
     arraysEqual(snapshot.changes?.flat, expectedChanges.flat);
@@ -993,6 +1037,7 @@ function buildSnapshot({ executionId, operator, source, rawText, parsed, audit, 
     summary,
     stages,
     stageSummary: summarizeStages(stages),
+    bigdataAdvice: getBigDataAdvice(null, rankingResult.ranked),
     logs,
     files
   };
@@ -1514,7 +1559,9 @@ function extractDates(rawText, defaults) {
       continue;
     }
 
-    dataLines.push(line);
+    if (/^\d+/u.test(line)) {
+      dataLines.push(line);
+    }
   }
 
   return { reportDate, dispatchDate, dataLines };
@@ -1833,10 +1880,14 @@ function summarizeStoredSnapshotsByDate(paths, options = {}) {
 
 module.exports = {
   SYSTEM,
+  BASELINE_SEEDS,
+  BIGDATA_ADVICE_BASELINE,
   SCORE_WEIGHTS,
   STAGES,
   analyze,
   buildDefaultRawReport,
+  buildExpectedChanges,
+  buildExpectedGroups,
   createPreviewSnapshot,
   ensureDirs,
   ensureInitialized,
@@ -1847,9 +1898,11 @@ module.exports = {
   money,
   parseReport,
   percent,
+  compareRankPeople,
   rankReport,
   runFullPipeline,
   scoreReport,
   taipeiNow,
+  groupKey,
   auditReport
 };

@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: zhaogui-dispatch
+    runtime: node
+    rootDir: dispatch_app_red
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-2.0-flash
+      - key: GEMINI_API_VERSION
+        value: v1beta
