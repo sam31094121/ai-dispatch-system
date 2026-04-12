@@ -2949,23 +2949,25 @@ body::after {
     linear-gradient(135deg, rgba(139, 128, 255, 0.05), rgba(255, 158, 214, 0.03)),
     var(--panel);
   border: 1px solid rgba(139, 128, 255, 0.28);
+  overflow-y: auto;       /* panel 層做滾動，讓卡片完整展開 */
 }
 
 .bigdata-advice-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  max-height: 580px;
-  overflow-y: auto;
+  gap: 12px;
+  /* max-height 移除：讓卡片自然展開，由 panel 層做 scroll */
 }
 
 .bigdata-advice-card {
   position: relative;
-  padding: 12px 14px 12px 18px;
+  padding: 18px 20px 18px 24px;
   border-radius: var(--r-card);
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--line-soft);
   overflow: hidden;
+  min-height: 90px;       /* 確保建議文字不被壓掉 */
+  flex-shrink: 0;         /* 禁止 flex 壓縮卡片高度 */
   transition: all var(--dur) var(--ease);
   animation: fadeIn 0.4s var(--ease) backwards;
 }
@@ -2995,31 +2997,36 @@ body::after {
 .bigdata-advice-card .advice-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 6px;
+  gap: 10px;
+  margin-bottom: 8px;
 }
 
 .bigdata-advice-card .advice-rank {
   font-family: 'Oxanium', sans-serif;
-  font-size: 16px;
+  font-size: 14px;        /* 輔助資訊：排名號碼，最小 */
   font-weight: 800;
   color: var(--gold);
-  min-width: 28px;
+  min-width: 30px;
+  opacity: 0.75;
 }
 
 .bigdata-advice-card .advice-name {
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 20px;        /* 主角：行銷姓名，最大最清楚 */
+  font-weight: 800;
   color: var(--text);
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  flex: 1;                /* 讓姓名佔滿剩餘空間 */
 }
 
 .bigdata-advice-card .advice-group-tag {
-  font-size: 9px;
-  padding: 2px 7px;
-  border-radius: 6px;
-  font-weight: 600;
+  font-size: 12px;        /* 標記用：分組標籤 */
+  padding: 4px 10px;
+  border-radius: 7px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
+  flex-shrink: 0;         /* 避免被壓縮 */
 }
 
 .advice-group-tag.tag-A1 { background: rgba(255, 100, 136, 0.18); color: var(--red); }
@@ -3028,9 +3035,12 @@ body::after {
 .advice-group-tag.tag-C  { background: rgba(117, 245, 181, 0.18); color: var(--green); }
 
 .bigdata-advice-card .advice-text {
-  font-size: 11.5px;
-  line-height: 1.65;
+  font-size: 15px;        /* 主要閱讀：建議內容，第二層 */
+  line-height: 1.8;
   color: var(--muted);
+  padding-top: 2px;
+  border-top: 1px solid var(--line-soft);
+  margin-top: 2px;
 }
 
 /* AI 大數據建議動態效果 */
