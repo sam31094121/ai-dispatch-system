@@ -3230,3 +3230,47 @@ body.frontend-ai-blocked .frontend-ai-panel {
     grid-template-columns: 1fr;
   }
 }
+
+/* ── 隱私與科技視覺優化 (Privacy & Tech Glow) ── */
+.encrypted-text {
+  font-family: "Oxanium", monospace;
+  color: var(--dim);
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255,255,255,0.03),
+    rgba(255,255,255,0.03) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.1em;
+  font-size: 11px;
+}
+
+.number-tech {
+  font-family: "Oxanium", monospace;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.tech-glow {
+  color: var(--cyan);
+  text-shadow: 0 0 12px rgba(68, 235, 255, 0.5);
+  display: inline-block;
+}
+
+/* 晶片邊角裝飾 */
+.chip-corner {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--cyan);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 10;
+}
+.chip-corner-tl { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+.chip-corner-tr { top: -1px; right: -1px; border-left: none; border-bottom: none; }
+.chip-corner-bl { bottom: -1px; left: -1px; border-right: none; border-top: none; }
+.chip-corner-br { bottom: -1px; right: -1px; border-left: none; border-top: none; }

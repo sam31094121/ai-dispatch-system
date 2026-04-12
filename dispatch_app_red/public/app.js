@@ -1381,20 +1381,24 @@ function renderRanking(snapshotOrRanking) {
             person.renewalDeals !== null &&
             person.renewalDeals !== undefined;
           if (hasDispatchScore) {
-            metrics.append(el('span', '', `派單分 ${fmt(person.dispatchScore)}`));
+            const scoreEl = el('span', 'number-tech tech-glow', `派單分 ${fmt(person.dispatchScore)}`);
+            metrics.append(scoreEl);
           }
           if (hasMetricData) {
             const scoreKnown = Number.isFinite(Number(person.totalScore));
             if (scoreKnown) {
-              metrics.append(el('span', '', `AI ${fmtScore(person.totalScore)}`));
+              metrics.append(el('span', 'number-tech', `AI ${fmtScore(person.totalScore)}`));
             }
             metrics.append(
-              el('span', '', `\u7e3d\u696d\u7e3e ${fmt(person.totalRevenue)}`),
-              el('span', '', `\u7e8c\u55ae ${fmt(person.renewalRevenue)}`),
-              el('span', '', `\u8ffd\u7e8c ${fmt(person.renewalDeals)}`)
+              el('span', '', `總業績 ${fmt(person.totalRevenue)}`),
+              el('span', '', `續單 ${fmt(person.renewalRevenue)}`),
+              el('span', '', `追續 ${fmt(person.renewalDeals)}`)
             );
           } else {
-            metrics.append(el('span', '', person.metricNote || '\u6b63\u5f0f\u9806\u5e8f\u5df2\u78ba\u8a8d'));
+            metrics.append(
+              el('span', 'encrypted-text', '總業績 [ENCRYPTED]'),
+              el('span', 'encrypted-text', '續單 [ENCRYPTED]')
+            );
           }
 
           row.append(head, metrics);

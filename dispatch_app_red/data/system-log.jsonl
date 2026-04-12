@@ -798,3 +798,6 @@
 {"executionId":1776002245827,"status":"失敗","operator":"WEB","reportDate":"115/04/12","dispatchDate":"115/04/13","time":"2026/04/12 21:57:25","error":"第 1 行：缺少追續欄位；第 2 行：缺少追續欄位；第 3 行：缺少追續欄位；第 4 行：缺少追續欄位"}
 {"executionId":1776004438527,"status":"通過","operator":"SYSTEM","reportDate":"115/04/12","dispatchDate":"115/04/13","time":"2026/04/12 22:33:58","topName":"馬秋香"}
 {"executionId":1776004996911,"status":"通過","operator":"SYSTEM","reportDate":"115/04/12","dispatchDate":"115/04/13","time":"2026/04/12 22:43:16","topName":"馬秋香"}
+{"executionId":1776012782435,"status":"通過","operator":"WEB","reportDate":"115/04/12","dispatchDate":"115/04/13","time":"2026/04/13 00:53:02","topName":"馬秋香"}
+{"executionId":1776012861952,"status":"通過","operator":"WEB","reportDate":"115/04/12","dispatchDate":"115/04/13","time":"2026/04/13 00:54:21","topName":"馬秋香"}
+{"executionId":1776013309464,"status":"通過","operator":"WEB","reportDate":"115/04/12","dispatchDate":"115/04/13","time":"2026/04/13 01:01:49","topName":"馬秋香"}

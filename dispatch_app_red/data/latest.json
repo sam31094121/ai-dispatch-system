@@ -1,11 +1,11 @@
 {
   "systemName": "兆櫃 AI 派單中樞系統",
   "systemVersion": "網頁版-2026-04-06",
-  "executionId": 1776004996911,
-  "operator": "SYSTEM",
-  "source": "bootstrap",
+  "executionId": 1776013309464,
+  "operator": "WEB",
+  "source": "manual",
   "status": "通過",
-  "completedAt": "2026/04/12 22:43:16",
+  "completedAt": "2026/04/13 01:01:49",
   "reportDate": "115/04/12",
   "dispatchDate": "115/04/13",
   "rawText": "報表日期：115/04/12\n派單日期：115/04/13\n1、馬秋香｜【追續】12｜【續單】275300｜【總業績】393290\n2、王梅慧｜【追續】12｜【續單】237180｜【總業績】323760\n3、王珍珠｜【追續】14｜【續單】190380｜【總業績】239588\n4、林沛昕｜【追續】8｜【續單】209576｜【總業績】234644\n5、林宜靜｜【追續】5｜【續單】32200｜【總業績】170070\n6、李玲玲｜【追續】2｜【續單】73860｜【總業績】165250\n7、廖姿惠｜【追續】6｜【續單】26448｜【總業績】121328\n8、湯玉琦｜【追續】9｜【續單】56180｜【總業績】111860\n9、蘇淑玲｜【追續】3｜【續單】61040｜【總業績】101488\n10、徐華妤｜【追續】5｜【續單】69520｜【總業績】90960\n11、江麗勉｜【追續】1｜【續單】2380｜【總業績】73630\n12、梁依萍｜【追續】3｜【續單】15160｜【總業績】64540\n13、高如郁｜【追續】3｜【續單】9320｜【總業績】56860\n14、高美雲｜【追續】2｜【續單】15660｜【總業績】54008\n15、陳玲華｜【追續】1｜【續單】6500｜【總業績】41860\n16、鄭珮恩｜【追續】4｜【續單】7000｜【總業績】40220\n17、許喬恩｜【追續】2｜【續單】20000｜【總業績】27000\n18、陳桂子（新人）｜【追續】1｜【續單】13500｜【總業績】13500\n19、謝啟芳｜【追續】0｜【續單】0｜【總業績】10960\n20、周美蓁｜【追續】1｜【續單】10000｜【總業績】10000\n21、江沛林｜【追續】3｜【續單】9980｜【總業績】9980\n22、林佩君｜【追續】1｜【續單】6528｜【總業績】6528\n23、鄭上官｜【追續】0｜【續單】0｜【總業績】0",
@@ -161,7 +161,7 @@
         "dailyTicket": 20221.33,
         "lastMonthRevenue": 140542,
         "overallTicket": 27997,
-        "previousRank": 7,
+        "previousRank": 9,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 6,
@@ -182,7 +182,7 @@
         "dailyTicket": 12428.89,
         "lastMonthRevenue": 133978,
         "overallTicket": 22470,
-        "previousRank": 8,
+        "previousRank": 7,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 7,
@@ -203,7 +203,7 @@
         "dailyTicket": 33829.33,
         "lastMonthRevenue": 123634,
         "overallTicket": 43588,
-        "previousRank": 14,
+        "previousRank": 8,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 8,
@@ -224,7 +224,7 @@
         "dailyTicket": 18192,
         "lastMonthRevenue": 113587,
         "overallTicket": 32110,
-        "previousRank": 9,
+        "previousRank": 10,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 9,
@@ -245,7 +245,7 @@
         "dailyTicket": 73630,
         "lastMonthRevenue": 88480,
         "overallTicket": 42453,
-        "previousRank": 10,
+        "previousRank": 11,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 10,
@@ -266,7 +266,7 @@
         "dailyTicket": 21513.33,
         "lastMonthRevenue": 80214,
         "overallTicket": 28483,
-        "previousRank": 11,
+        "previousRank": 12,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 11,
@@ -287,7 +287,7 @@
         "dailyTicket": 18953.33,
         "lastMonthRevenue": 70955,
         "overallTicket": 25797,
-        "previousRank": 16,
+        "previousRank": 14,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 12,
@@ -308,7 +308,7 @@
         "dailyTicket": 27004,
         "lastMonthRevenue": 67406,
         "overallTicket": 31134,
-        "previousRank": 17,
+        "previousRank": 13,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 13,
@@ -329,7 +329,7 @@
         "dailyTicket": 41860,
         "lastMonthRevenue": 53817,
         "overallTicket": 32940,
-        "previousRank": 12,
+        "previousRank": 15,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 14,
@@ -350,7 +350,7 @@
         "dailyTicket": 10055,
         "lastMonthRevenue": 50634,
         "overallTicket": 18289,
-        "previousRank": 15,
+        "previousRank": 16,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 15,
@@ -371,7 +371,7 @@
         "dailyTicket": 13500,
         "lastMonthRevenue": 38760,
         "overallTicket": 25040,
-        "previousRank": 13,
+        "previousRank": 17,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 16,
@@ -392,7 +392,7 @@
         "dailyTicket": 13500,
         "lastMonthRevenue": 24300,
         "overallTicket": 25650,
-        "previousRank": 0,
+        "previousRank": 18,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 17,
@@ -413,7 +413,7 @@
         "dailyTicket": 0,
         "lastMonthRevenue": 18645,
         "overallTicket": 27987,
-        "previousRank": 18,
+        "previousRank": 21,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 18,
@@ -455,7 +455,7 @@
         "dailyTicket": 3326.67,
         "lastMonthRevenue": 15380,
         "overallTicket": 14627,
-        "previousRank": 21,
+        "previousRank": 20,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 20,
@@ -476,7 +476,7 @@
         "dailyTicket": 6528,
         "lastMonthRevenue": 10128,
         "overallTicket": 19564,
-        "previousRank": 20,
+        "previousRank": 22,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 21,
@@ -497,7 +497,7 @@
         "dailyTicket": 0,
         "lastMonthRevenue": 1800,
         "overallTicket": 20867,
-        "previousRank": 22,
+        "previousRank": 23,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 22,
@@ -1107,7 +1107,7 @@
         "dailyTicket": 20221.33,
         "lastMonthRevenue": 140542,
         "overallTicket": 27997,
-        "previousRank": 7,
+        "previousRank": 9,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 6,
@@ -1187,7 +1187,7 @@
         "dailyTicket": 12428.89,
         "lastMonthRevenue": 133978,
         "overallTicket": 22470,
-        "previousRank": 8,
+        "previousRank": 7,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 7,
@@ -1267,7 +1267,7 @@
         "dailyTicket": 33829.33,
         "lastMonthRevenue": 123634,
         "overallTicket": 43588,
-        "previousRank": 14,
+        "previousRank": 8,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 8,
@@ -1347,7 +1347,7 @@
         "dailyTicket": 18192,
         "lastMonthRevenue": 113587,
         "overallTicket": 32110,
-        "previousRank": 9,
+        "previousRank": 10,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 9,
@@ -1427,7 +1427,7 @@
         "dailyTicket": 73630,
         "lastMonthRevenue": 88480,
         "overallTicket": 42453,
-        "previousRank": 10,
+        "previousRank": 11,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 10,
@@ -1507,7 +1507,7 @@
         "dailyTicket": 21513.33,
         "lastMonthRevenue": 80214,
         "overallTicket": 28483,
-        "previousRank": 11,
+        "previousRank": 12,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 11,
@@ -1587,7 +1587,7 @@
         "dailyTicket": 18953.33,
         "lastMonthRevenue": 70955,
         "overallTicket": 25797,
-        "previousRank": 16,
+        "previousRank": 14,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 12,
@@ -1667,7 +1667,7 @@
         "dailyTicket": 27004,
         "lastMonthRevenue": 67406,
         "overallTicket": 31134,
-        "previousRank": 17,
+        "previousRank": 13,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 13,
@@ -1747,7 +1747,7 @@
         "dailyTicket": 41860,
         "lastMonthRevenue": 53817,
         "overallTicket": 32940,
-        "previousRank": 12,
+        "previousRank": 15,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 14,
@@ -1827,7 +1827,7 @@
         "dailyTicket": 10055,
         "lastMonthRevenue": 50634,
         "overallTicket": 18289,
-        "previousRank": 15,
+        "previousRank": 16,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 15,
@@ -1907,7 +1907,7 @@
         "dailyTicket": 13500,
         "lastMonthRevenue": 38760,
         "overallTicket": 25040,
-        "previousRank": 13,
+        "previousRank": 17,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 16,
@@ -1987,7 +1987,7 @@
         "dailyTicket": 13500,
         "lastMonthRevenue": 24300,
         "overallTicket": 25650,
-        "previousRank": 0,
+        "previousRank": 18,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 17,
@@ -2067,7 +2067,7 @@
         "dailyTicket": 0,
         "lastMonthRevenue": 18645,
         "overallTicket": 27987,
-        "previousRank": 18,
+        "previousRank": 21,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 18,
@@ -2227,7 +2227,7 @@
         "dailyTicket": 3326.67,
         "lastMonthRevenue": 15380,
         "overallTicket": 14627,
-        "previousRank": 21,
+        "previousRank": 20,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 20,
@@ -2307,7 +2307,7 @@
         "dailyTicket": 6528,
         "lastMonthRevenue": 10128,
         "overallTicket": 19564,
-        "previousRank": 20,
+        "previousRank": 22,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 21,
@@ -2387,7 +2387,7 @@
         "dailyTicket": 0,
         "lastMonthRevenue": 1800,
         "overallTicket": 20867,
-        "previousRank": 22,
+        "previousRank": 23,
         "aliasUsed": false,
         "baselineFound": true,
         "baselineIndex": 22,
@@ -2980,7 +2980,7 @@
       "dailyTicket": 12428.89,
       "lastMonthRevenue": 133978,
       "overallTicket": 22470,
-      "previousRank": 8,
+      "previousRank": 7,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 7,
@@ -3045,8 +3045,8 @@
         }
       ],
       "rank": 7,
-      "rankDelta": 1,
-      "movement": "上升 1",
+      "rankDelta": 0,
+      "movement": "持平",
       "group": "A2",
       "groupLabel": "A2 續單收割"
     },
@@ -3065,7 +3065,7 @@
       "dailyTicket": 33829.33,
       "lastMonthRevenue": 123634,
       "overallTicket": 43588,
-      "previousRank": 14,
+      "previousRank": 8,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 8,
@@ -3130,8 +3130,8 @@
         }
       ],
       "rank": 8,
-      "rankDelta": 6,
-      "movement": "上升 6",
+      "rankDelta": 0,
+      "movement": "持平",
       "group": "A2",
       "groupLabel": "A2 續單收割"
     },
@@ -3150,7 +3150,7 @@
       "dailyTicket": 20221.33,
       "lastMonthRevenue": 140542,
       "overallTicket": 27997,
-      "previousRank": 7,
+      "previousRank": 9,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 6,
@@ -3215,8 +3215,8 @@
         }
       ],
       "rank": 9,
-      "rankDelta": -2,
-      "movement": "下降 2",
+      "rankDelta": 0,
+      "movement": "持平",
       "group": "A2",
       "groupLabel": "A2 續單收割"
     },
@@ -3235,7 +3235,7 @@
       "dailyTicket": 18192,
       "lastMonthRevenue": 113587,
       "overallTicket": 32110,
-      "previousRank": 9,
+      "previousRank": 10,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 9,
@@ -3300,8 +3300,8 @@
         }
       ],
       "rank": 10,
-      "rankDelta": -1,
-      "movement": "下降 1",
+      "rankDelta": 0,
+      "movement": "持平",
       "group": "A2",
       "groupLabel": "A2 續單收割"
     },
@@ -3320,7 +3320,7 @@
       "dailyTicket": 73630,
       "lastMonthRevenue": 88480,
       "overallTicket": 42453,
-      "previousRank": 10,
+      "previousRank": 11,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 10,
@@ -3385,8 +3385,8 @@
         }
       ],
       "rank": 11,
-      "rankDelta": -1,
-      "movement": "下降 1",
+      "rankDelta": 0,
+      "movement": "持平",
       "group": "B",
       "groupLabel": "B 一般量單"
     },
@@ -3405,7 +3405,7 @@
       "dailyTicket": 21513.33,
       "lastMonthRevenue": 80214,
       "overallTicket": 28483,
-      "previousRank": 11,
+      "previousRank": 12,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 11,
@@ -3470,8 +3470,8 @@
         }
       ],
       "rank": 12,
-      "rankDelta": -1,
-      "movement": "下降 1",
+      "rankDelta": 0,
+      "movement": "持平",
       "group": "B",
       "groupLabel": "B 一般量單"
     },
@@ -3490,7 +3490,7 @@
       "dailyTicket": 27004,
       "lastMonthRevenue": 67406,
       "overallTicket": 31134,
-      "previousRank": 17,
+      "previousRank": 13,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 13,
@@ -3555,8 +3555,8 @@
         }
       ],
       "rank": 13,
-      "rankDelta": 4,
-      "movement": "上升 4",
+      "rankDelta": 0,
+      "movement": "持平",
       "group": "B",
       "groupLabel": "B 一般量單"
     },
@@ -3575,7 +3575,7 @@
       "dailyTicket": 18953.33,
       "lastMonthRevenue": 70955,
       "overallTicket": 25797,
-      "previousRank": 16,
+      "previousRank": 14,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 12,
@@ -3640,8 +3640,8 @@
         }
       ],
       "rank": 14,
-      "rankDelta": 2,
-      "movement": "上升 2",
+      "rankDelta": 0,
+      "movement": "持平",
       "group": "B",
       "groupLabel": "B 一般量單"
     },
@@ -3660,7 +3660,7 @@
       "dailyTicket": 41860,
       "lastMonthRevenue": 53817,
       "overallTicket": 32940,
-      "previousRank": 12,
+      "previousRank": 15,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 14,
@@ -3725,8 +3725,8 @@
         }
       ],
       "rank": 15,
-      "rankDelta": -3,
-      "movement": "下降 3",
+      "rankDelta": 0,
+      "movement": "持平",
       "group": "B",
       "groupLabel": "B 一般量單"
     },
@@ -3745,7 +3745,7 @@
       "dailyTicket": 10055,
       "lastMonthRevenue": 50634,
       "overallTicket": 18289,
-      "previousRank": 15,
+      "previousRank": 16,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 15,
@@ -3810,8 +3810,8 @@
         }
       ],
       "rank": 16,
-      "rankDelta": -1,
-      "movement": "下降 1",
+      "rankDelta": 0,
+      "movement": "持平",
       "group": "B",
       "groupLabel": "B 一般量單"
     },
@@ -3830,7 +3830,7 @@
       "dailyTicket": 13500,
       "lastMonthRevenue": 38760,
       "overallTicket": 25040,
-      "previousRank": 13,
+      "previousRank": 17,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 16,
@@ -3895,8 +3895,8 @@
         }
       ],
       "rank": 17,
-      "rankDelta": -4,
-      "movement": "下降 4",
+      "rankDelta": 0,
+      "movement": "持平",
       "group": "B",
       "groupLabel": "B 一般量單"
     },
@@ -3915,7 +3915,7 @@
       "dailyTicket": 13500,
       "lastMonthRevenue": 24300,
       "overallTicket": 25650,
-      "previousRank": 0,
+      "previousRank": 18,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 17,
@@ -3981,7 +3981,7 @@
       ],
       "rank": 18,
       "rankDelta": 0,
-      "movement": "新進",
+      "movement": "持平",
       "group": "C",
       "groupLabel": "C 補位觀察"
     },
@@ -4085,7 +4085,7 @@
       "dailyTicket": 3326.67,
       "lastMonthRevenue": 15380,
       "overallTicket": 14627,
-      "previousRank": 21,
+      "previousRank": 20,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 20,
@@ -4150,8 +4150,8 @@
         }
       ],
       "rank": 20,
-      "rankDelta": 1,
-      "movement": "上升 1",
+      "rankDelta": 0,
+      "movement": "持平",
       "group": "C",
       "groupLabel": "C 補位觀察"
     },
@@ -4170,7 +4170,7 @@
       "dailyTicket": 0,
       "lastMonthRevenue": 18645,
       "overallTicket": 27987,
-      "previousRank": 18,
+      "previousRank": 21,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 18,
@@ -4235,8 +4235,8 @@
         }
       ],
       "rank": 21,
-      "rankDelta": -3,
-      "movement": "下降 3",
+      "rankDelta": 0,
+      "movement": "持平",
       "group": "C",
       "groupLabel": "C 補位觀察"
     },
@@ -4255,7 +4255,7 @@
       "dailyTicket": 6528,
       "lastMonthRevenue": 10128,
       "overallTicket": 19564,
-      "previousRank": 20,
+      "previousRank": 22,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 21,
@@ -4320,8 +4320,8 @@
         }
       ],
       "rank": 22,
-      "rankDelta": -2,
-      "movement": "下降 2",
+      "rankDelta": 0,
+      "movement": "持平",
       "group": "C",
       "groupLabel": "C 補位觀察"
     },
@@ -4340,7 +4340,7 @@
       "dailyTicket": 0,
       "lastMonthRevenue": 1800,
       "overallTicket": 20867,
-      "previousRank": 22,
+      "previousRank": 23,
       "aliasUsed": false,
       "baselineFound": true,
       "baselineIndex": 22,
@@ -4405,8 +4405,8 @@
         }
       ],
       "rank": 23,
-      "rankDelta": -1,
-      "movement": "下降 1",
+      "rankDelta": 0,
+      "movement": "持平",
       "group": "C",
       "groupLabel": "C 補位觀察"
     }
@@ -4445,28 +4445,9 @@
     ]
   },
   "changes": {
-    "new": [
-      "陳桂子（新人）：新進第 18 名"
-    ],
-    "up": [
-      "湯玉琦：上升 1",
-      "蘇淑玲：上升 6",
-      "高美雲：上升 4",
-      "高如郁：上升 2",
-      "江沛林：上升 1"
-    ],
-    "down": [
-      "廖姿惠：下降 2",
-      "徐華妤：下降 1",
-      "江麗勉：下降 1",
-      "梁依萍：下降 1",
-      "陳玲華：下降 3",
-      "鄭珮恩：下降 1",
-      "許喬恩：下降 4",
-      "謝啟芳：下降 3",
-      "林佩君：下降 2",
-      "鄭上官：下降 1"
-    ],
+    "new": [],
+    "up": [],
+    "down": [],
     "flat": [
       "馬秋香：持平",
       "王梅慧：持平",
@@ -4474,7 +4455,23 @@
       "王珍珠：持平",
       "李玲玲：持平",
       "林宜靜：持平",
-      "周美蓁：持平"
+      "湯玉琦：持平",
+      "蘇淑玲：持平",
+      "廖姿惠：持平",
+      "徐華妤：持平",
+      "江麗勉：持平",
+      "梁依萍：持平",
+      "高美雲：持平",
+      "高如郁：持平",
+      "陳玲華：持平",
+      "鄭珮恩：持平",
+      "許喬恩：持平",
+      "陳桂子（新人）：持平",
+      "周美蓁：持平",
+      "江沛林：持平",
+      "謝啟芳：持平",
+      "林佩君：持平",
+      "鄭上官：持平"
     ]
   },
   "summary": {
@@ -4496,7 +4493,7 @@
       "order": 1,
       "status": "done",
       "message": "解析 23 筆",
-      "completedAt": "2026/04/12 22:43:16"
+      "completedAt": "2026/04/13 01:01:49"
     },
     {
       "key": "audit",
@@ -4504,7 +4501,7 @@
       "order": 2,
       "status": "done",
       "message": "審計通過",
-      "completedAt": "2026/04/12 22:43:16"
+      "completedAt": "2026/04/13 01:01:49"
     },
     {
       "key": "score",
@@ -4512,7 +4509,7 @@
       "order": 3,
       "status": "done",
       "message": "1000 權重計分完成",
-      "completedAt": "2026/04/12 22:43:16"
+      "completedAt": "2026/04/13 01:01:49"
     },
     {
       "key": "rank",
@@ -4520,7 +4517,7 @@
       "order": 4,
       "status": "done",
       "message": "排序完成 23 人",
-      "completedAt": "2026/04/12 22:43:16"
+      "completedAt": "2026/04/13 01:01:49"
     },
     {
       "key": "dispatch",
@@ -4528,15 +4525,15 @@
       "order": 5,
       "status": "done",
       "message": "A1 4｜A2 6｜B 7｜C 6",
-      "completedAt": "2026/04/12 22:43:16"
+      "completedAt": "2026/04/13 01:01:49"
     },
     {
       "key": "announcement",
       "label": "公告",
       "order": 6,
       "status": "done",
-      "message": "公告 1836 字",
-      "completedAt": "2026/04/12 22:43:16"
+      "message": "公告 1800 字",
+      "completedAt": "2026/04/13 01:01:49"
     },
     {
       "key": "save",
@@ -4544,7 +4541,7 @@
       "order": 7,
       "status": "done",
       "message": "全部確認無誤並完成正式存檔",
-      "completedAt": "2026/04/12 22:43:16"
+      "completedAt": "2026/04/13 01:01:49"
     }
   ],
   "stageSummary": {
@@ -4696,45 +4693,45 @@
   ],
   "logs": [
     {
-      "time": "2026/04/12 22:43:16",
+      "time": "2026/04/13 01:01:49",
       "type": "完成",
       "message": "解析｜解析 23 筆"
     },
     {
-      "time": "2026/04/12 22:43:16",
+      "time": "2026/04/13 01:01:49",
       "type": "完成",
       "message": "審計｜審計通過"
     },
     {
-      "time": "2026/04/12 22:43:16",
+      "time": "2026/04/13 01:01:49",
       "type": "完成",
       "message": "計分｜1000 權重計分完成"
     },
     {
-      "time": "2026/04/12 22:43:16",
+      "time": "2026/04/13 01:01:49",
       "type": "完成",
       "message": "排序｜排序完成 23 人"
     },
     {
-      "time": "2026/04/12 22:43:16",
+      "time": "2026/04/13 01:01:49",
       "type": "完成",
       "message": "派單｜A1 4｜A2 6｜B 7｜C 6"
     },
     {
-      "time": "2026/04/12 22:43:16",
+      "time": "2026/04/13 01:01:49",
       "type": "完成",
-      "message": "公告｜公告 1836 字"
+      "message": "公告｜公告 1800 字"
     },
     {
-      "time": "2026/04/12 22:43:16",
+      "time": "2026/04/13 01:01:49",
       "type": "完成",
       "message": "存檔｜全部確認無誤並完成正式存檔"
     }
   ],
   "files": {
-    "reportFile": "snapshot_1776004996911.json",
-    "backupFile": "backup_1776004996911.json",
-    "archiveFile": "115-04-12_1776004996911.json"
+    "reportFile": "snapshot_1776013309464.json",
+    "backupFile": "backup_1776013309464.json",
+    "archiveFile": "115-04-12_1776013309464.json"
   },
   "aiInsights": {
     "cards": [
@@ -4771,7 +4768,7 @@
       {
         "label": "零業績人數",
         "value": "1 人",
-        "detail": "上升 5｜下降 10",
+        "detail": "上升 0｜下降 0",
         "tone": "red"
       }
     ],
@@ -4782,10 +4779,10 @@
       "續單主力為 馬秋香，續單金額 275,300。",
       "追續主力為 王珍珠，追續成交 14 通。",
       "目前仍有 1 位零業績，適合用補位名單優先破蛋。",
-      "名次異動為上升 5 人、下降 10 人，盤面仍在快速變動。"
+      "名次異動為上升 0 人、下降 0 人，盤面仍在快速變動。"
     ]
   },
-  "announcement": "📣【兆櫃 AI 派單公告｜115/04/12 結算 → 115/04/13 派單】\n\n一、審計結論\n審計結果：通過\n說明：審計通過，可進入 1000 權重排序。\n- 無異常\n\n二、1000 權重公式\n當日客單價 100｜當日實收金額 250｜本月業績 100｜上月業績 100｜整體客單價 50｜續單金額 200｜追續成交總數 200\n\n三、今日排序\n1、馬秋香｜AI 240672367.00｜【追續】12｜【續單】275,300｜【總業績】393,290\n2、王梅慧｜AI 201009850.00｜【追續】12｜【續單】237,180｜【總業績】323,760\n3、林沛昕｜AI 156267100.00｜【追續】8｜【續單】209,576｜【總業績】234,644\n4、王珍珠｜AI 152395893.00｜【追續】14｜【續單】190,380｜【總業績】239,588\n5、李玲玲｜AI 102999800.00｜【追續】2｜【續單】73,860｜【總業績】165,250\n6、林宜靜｜AI 90087450.00｜【追續】5｜【續單】32,200｜【總業績】170,070\n7、湯玉琦｜AI 66152989.00｜【追續】9｜【續單】56,180｜【總業績】111,860\n8、蘇淑玲｜AI 65655133.00｜【追續】3｜【續單】61,040｜【總業績】101,488\n9、廖姿惠｜AI 65231783.00｜【追續】6｜【續單】26,448｜【總業績】121,328\n10、徐華妤｜AI 60524400.00｜【追續】5｜【續單】69,520｜【總業績】90,960\n11、江麗勉｜AI 44580350.00｜【追續】1｜【續單】2,380｜【總業績】73,630\n12、梁依萍｜AI 37218483.00｜【追續】3｜【續單】15,160｜【總業績】64,540\n13、高美雲｜AI 33032900.00｜【追續】2｜【續單】15,660｜【總業績】54,008\n14、高如郁｜AI 32046283.00｜【追續】3｜【續單】9,320｜【總業績】56,860\n15、陳玲華｜AI 27165900.00｜【追續】1｜【續單】6,500｜【總業績】41,860\n16、鄭珮恩｜AI 22461150.00｜【追續】4｜【續單】7,000｜【總業績】40,220\n17、許喬恩｜AI 19928400.00｜【追續】2｜【續單】20,000｜【總業績】27,000\n18、陳桂子（新人）｜AI 12487700.00｜【追續】1｜【續單】13,500｜【總業績】13,500\n19、周美蓁｜AI 9350200.00｜【追續】1｜【續單】10,000｜【總業績】10,000\n20、江沛林｜AI 8091617.00｜【追續】3｜【續單】9,980｜【總業績】9,980\n21、謝啟芳｜AI 7099850.00｜【追續】0｜【續單】0｜【總業績】10,960\n22、林佩君｜AI 6234400.00｜【追續】1｜【續單】6,528｜【總業績】6,528\n23、鄭上官｜AI 1223350.00｜【追續】0｜【續單】0｜【總業績】0\n\n四、明日派單分組\nA1 高單主力：馬秋香、王梅慧、林沛昕、王珍珠\nA2 續單收割：李玲玲、林宜靜、湯玉琦、蘇淑玲、廖姿惠、徐華妤\nB 一般量單：江麗勉、梁依萍、高美雲、高如郁、陳玲華、鄭珮恩、許喬恩\nC 補位養成：陳桂子（新人）、周美蓁、江沛林、謝啟芳、林佩君、鄭上官\n\n五、名次異動\n新進：陳桂子（新人）：新進第 18 名\n上升：湯玉琦：上升 1\n上升：蘇淑玲：上升 6\n上升：高美雲：上升 4\n上升：高如郁：上升 2\n上升：江沛林：上升 1\n下降：廖姿惠：下降 2\n下降：徐華妤：下降 1\n下降：江麗勉：下降 1\n下降：梁依萍：下降 1\n下降：陳玲華：下降 3\n下降：鄭珮恩：下降 1\n下降：許喬恩：下降 4\n下降：謝啟芳：下降 3\n下降：林佩君：下降 2\n下降：鄭上官：下降 1\n持平：馬秋香：持平\n持平：王梅慧：持平\n持平：林沛昕：持平\n持平：王珍珠：持平\n持平：李玲玲：持平\n持平：林宜靜：持平\n持平：周美蓁：持平\n\n六、總控摘要\n當日實收：2,361,324\n本月業績：2,361,324\n續單總額：1,347,712\n追續成交：98 通\n有效人數：22/23\n\n七、存檔\n報表：snapshot_1776004996911.json\n備份：backup_1776004996911.json\n歸檔：115-04-12_1776004996911.json",
+  "announcement": "📣【兆櫃 AI 派單公告｜115/04/12 結算 → 115/04/13 派單】\n\n一、審計結論\n審計結果：通過\n說明：審計通過，可進入 1000 權重排序。\n- 無異常\n\n二、1000 權重公式\n當日客單價 100｜當日實收金額 250｜本月業績 100｜上月業績 100｜整體客單價 50｜續單金額 200｜追續成交總數 200\n\n三、今日排序\n1、馬秋香｜AI 240672367.00｜【追續】12｜【續單】275,300｜【總業績】393,290\n2、王梅慧｜AI 201009850.00｜【追續】12｜【續單】237,180｜【總業績】323,760\n3、林沛昕｜AI 156267100.00｜【追續】8｜【續單】209,576｜【總業績】234,644\n4、王珍珠｜AI 152395893.00｜【追續】14｜【續單】190,380｜【總業績】239,588\n5、李玲玲｜AI 102999800.00｜【追續】2｜【續單】73,860｜【總業績】165,250\n6、林宜靜｜AI 90087450.00｜【追續】5｜【續單】32,200｜【總業績】170,070\n7、湯玉琦｜AI 66152989.00｜【追續】9｜【續單】56,180｜【總業績】111,860\n8、蘇淑玲｜AI 65655133.00｜【追續】3｜【續單】61,040｜【總業績】101,488\n9、廖姿惠｜AI 65231783.00｜【追續】6｜【續單】26,448｜【總業績】121,328\n10、徐華妤｜AI 60524400.00｜【追續】5｜【續單】69,520｜【總業績】90,960\n11、江麗勉｜AI 44580350.00｜【追續】1｜【續單】2,380｜【總業績】73,630\n12、梁依萍｜AI 37218483.00｜【追續】3｜【續單】15,160｜【總業績】64,540\n13、高美雲｜AI 33032900.00｜【追續】2｜【續單】15,660｜【總業績】54,008\n14、高如郁｜AI 32046283.00｜【追續】3｜【續單】9,320｜【總業績】56,860\n15、陳玲華｜AI 27165900.00｜【追續】1｜【續單】6,500｜【總業績】41,860\n16、鄭珮恩｜AI 22461150.00｜【追續】4｜【續單】7,000｜【總業績】40,220\n17、許喬恩｜AI 19928400.00｜【追續】2｜【續單】20,000｜【總業績】27,000\n18、陳桂子（新人）｜AI 12487700.00｜【追續】1｜【續單】13,500｜【總業績】13,500\n19、周美蓁｜AI 9350200.00｜【追續】1｜【續單】10,000｜【總業績】10,000\n20、江沛林｜AI 8091617.00｜【追續】3｜【續單】9,980｜【總業績】9,980\n21、謝啟芳｜AI 7099850.00｜【追續】0｜【續單】0｜【總業績】10,960\n22、林佩君｜AI 6234400.00｜【追續】1｜【續單】6,528｜【總業績】6,528\n23、鄭上官｜AI 1223350.00｜【追續】0｜【續單】0｜【總業績】0\n\n四、明日派單分組\nA1 高單主力：馬秋香、王梅慧、林沛昕、王珍珠\nA2 續單收割：李玲玲、林宜靜、湯玉琦、蘇淑玲、廖姿惠、徐華妤\nB 一般量單：江麗勉、梁依萍、高美雲、高如郁、陳玲華、鄭珮恩、許喬恩\nC 補位養成：陳桂子（新人）、周美蓁、江沛林、謝啟芳、林佩君、鄭上官\n\n五、名次異動\n持平：馬秋香：持平\n持平：王梅慧：持平\n持平：林沛昕：持平\n持平：王珍珠：持平\n持平：李玲玲：持平\n持平：林宜靜：持平\n持平：湯玉琦：持平\n持平：蘇淑玲：持平\n持平：廖姿惠：持平\n持平：徐華妤：持平\n持平：江麗勉：持平\n持平：梁依萍：持平\n持平：高美雲：持平\n持平：高如郁：持平\n持平：陳玲華：持平\n持平：鄭珮恩：持平\n持平：許喬恩：持平\n持平：陳桂子（新人）：持平\n持平：周美蓁：持平\n持平：江沛林：持平\n持平：謝啟芳：持平\n持平：林佩君：持平\n持平：鄭上官：持平\n\n六、總控摘要\n當日實收：2,361,324\n本月業績：2,361,324\n續單總額：1,347,712\n追續成交：98 通\n有效人數：22/23\n\n七、存檔\n報表：snapshot_1776013309464.json\n備份：backup_1776013309464.json\n歸檔：115-04-12_1776013309464.json",
   "confirmation": {
     "status": "通過",
     "message": "全部確認無誤，可正式存檔",
@@ -4867,7 +4864,7 @@
       },
       {
         "label": "執行序號",
-        "value": "1776004996911",
+        "value": "1776013309464",
         "tone": "orange"
       },
       {
@@ -4879,16 +4876,26 @@
     "files": [
       {
         "label": "報表檔",
-        "value": "snapshot_1776004996911.json"
+        "value": "snapshot_1776013309464.json"
       },
       {
         "label": "備份檔",
-        "value": "backup_1776004996911.json"
+        "value": "backup_1776013309464.json"
       },
       {
         "label": "歸檔檔",
-        "value": "115-04-12_1776004996911.json"
+        "value": "115-04-12_1776013309464.json"
       }
     ]
+  },
+  "aiProvider": {
+    "provider": "gemini",
+    "configured": true,
+    "model": "gemini-2.0-flash",
+    "apiVersion": "v1beta",
+    "mode": "overlay",
+    "source": "backend",
+    "status": "fallback",
+    "error": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash\nPlease retry in 9.594771587s."
   }
 }
