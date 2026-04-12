@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { spawn } = require('child_process');
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -35,6 +36,46 @@ const {
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
+
+function openBrowser(url) {
+  if (
+    process.env.AUTO_OPEN_BROWSER === '0' ||
+    process.env.NO_BROWSER === '1' ||
+    process.env.CI === 'true' ||
+    process.env.NODE_ENV === 'test'
+  ) {
+    return;
+  }
+
+  try {
+    if (process.platform === 'win32') {
+      const child = spawn('cmd', ['/c', 'start', '', url], {
+        detached: true,
+        stdio: 'ignore',
+        windowsHide: true
+      });
+      child.unref();
+      return;
+    }
+
+    if (process.platform === 'darwin') {
+      const child = spawn('open', [url], {
+        detached: true,
+        stdio: 'ignore'
+      });
+      child.unref();
+      return;
+    }
+
+    const child = spawn('xdg-open', [url], {
+      detached: true,
+      stdio: 'ignore'
+    });
+    child.unref();
+  } catch (error) {
+    console.log(`無法自動開啟瀏覽器：${error.message}`);
+  }
+}
 
 const dataPaths = {
   dataDir: path.join(__dirname, 'data'),
@@ -1113,3 +1154,4 @@ app.get('*', (_req, res) => {
 app.listen(PORT, () => {
   console.log(`${SYSTEM.name} 已啟動：http://localhost:${PORT}`);
 });
+setTimeout(() => openBrowser(`http://localhost:${PORT}`), 1000);

@@ -50,8 +50,6 @@ const refs = {
   logList: $('log-list'),
   alertList: $('alert-list'),
   platformStatsGrid: $('platform-stats-grid'),
-  // ★ 新增：三平台總盤、名次異動、AI 大數據建議面板
-  platformStatsGrid: $('platform-stats-grid'),
   platformStatsBadge: $('platform-stats-badge'),
   rankChangeList: $('rank-change-list'),
   rankChangeBadge: $('rank-change-badge'),
@@ -166,6 +164,23 @@ function fmtScore(value) {
   return Number(value || 0).toFixed(2);
 }
 
+function animateValue(obj, start, end, duration) {
+  if (!obj) return;
+  let startTimestamp = null;
+  const step = (timestamp) => {
+    if (!startTimestamp) startTimestamp = timestamp;
+    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+    const current = Math.floor(progress * (end - start) + start);
+    obj.textContent = fmt(current);
+    if (progress < 1) {
+      window.requestAnimationFrame(step);
+    } else {
+      obj.textContent = fmt(end);
+    }
+  };
+  window.requestAnimationFrame(step);
+}
+
 function joinNames(list) {
   return Array.isArray(list) && list.length ? list.join('、') : '無';
 }
@@ -210,6 +225,12 @@ function setTone(node, tone) {
   const color = colors[tone] || colors.gold;
   node.style.color = color;
   node.style.textShadow = `0 0 12px ${color}`;
+  
+  if (tone === 'green' && node.textContent === 'ONLINE') {
+    node.style.animation = 'breathing-online 2s infinite ease-in-out';
+  } else {
+    node.style.animation = '';
+  }
 }
 
 function setBadge(node, text, tone = 'gold') {
@@ -601,35 +622,6 @@ function previousConfirmedItem(currentExecutionId) {
       String(item.executionId || '') !== String(currentExecutionId || '') &&
       isPass(item.confirmationStatus || item.status)
   ) || null;
-}
-
-function renderExecutiveBoard(snapshot) {
-  const summary = snapshot?.summary || {};
-  const displayMetric = (value) => (value === null || value === undefined ? '???' : fmt(value));
-  const ranking = topPeople(snapshot, 1);
-  const first = ranking[0];
-  const stageSummary = snapshot?.stageSummary || {};
-  const metrics = [
-    ['系統狀態', state.health?.status || 'ONLINE', toneFromStatus(state.health?.status || 'ONLINE')],
-    ['今日總業績', fmt(summary.totalRevenue), 'gold'],
-    ['今日第一名', first ? first.name : '尚未產生', 'cyan'],
-    ['今日追續總數', `${fmt(summary.renewalDeals)} 通`, 'cyan'],
-    ['今日續單總額', fmt(summary.renewalRevenue), 'violet'],
-    ['功能完成度', `${stageSummary.completed || 0}/${stageSummary.total || 0}`, 'green'],
-    ['目前正式版本', snapshot?.systemVersion || '-', 'orange'],
-    ['最後更新時間', snapshot?.completedAt || '-', 'gold']
-  ];
-
-  safeReplace(
-    refs.bossCardGrid,
-    ...metrics.map(([label, value, tone]) => {
-      const card = el('article', `boss-card tone-${tone || 'gold'} executive-card`);
-      card.append(el('span', '', label), el('strong', '', String(value || '-')));
-      return card;
-      })
-    );
-
-  setBadge(refs.dispatchReadyBadge, isFormalReady(snapshot) ? '可直接執行派單' : '結果保護中', isFormalReady(snapshot) ? 'green' : 'red');
 }
 
 function renderSystemStatus(snapshot) {
@@ -1195,10 +1187,6 @@ function renderChanges(snapshotOrChanges) {
       return row;
     })
   );
-}
-
-function renderBoss(snapshot) {
-  renderExecutiveBoard(snapshot);
 }
 
 /* ══════════════════════════════════════════════════════════

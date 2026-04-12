@@ -13,6 +13,8 @@ npm start
 
 Open `http://localhost:3000`.
 
+The server now opens the browser automatically after startup. If you want to disable that behavior, set `AUTO_OPEN_BROWSER=0` before running `npm start`.
+
 ## Gemini integration
 
 - `GEMINI_API_KEY` is read on the backend only.
