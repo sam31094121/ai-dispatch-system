@@ -1,9 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 
+const BOOT_TIME = new Date();
+const BOOT_DATE_STR = String(BOOT_TIME.getMonth() + 1).padStart(2, '0') + '-' + String(BOOT_TIME.getDate()).padStart(2, '0');
+const BOOT_TIME_STR = String(BOOT_TIME.getHours()).padStart(2, '0') + ':' + String(BOOT_TIME.getMinutes()).padStart(2, '0') + ':' + String(BOOT_TIME.getSeconds()).padStart(2, '0');
+
 const SYSTEM = {
   name: '兆櫃 AI 派單中樞系統',
-  version: '網頁版-2026-04-06',
+  version: `戰情室-${BOOT_DATE_STR} ${BOOT_TIME_STR}`,
   timezone: 'Asia/Taipei',
   defaultOperator: 'USER'
 };
