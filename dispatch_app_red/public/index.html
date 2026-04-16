@@ -3,234 +3,221 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>兆櫃 AI 派單中樞系統｜董事長戰情室</title>
-  <meta name="description" content="兆櫃 AI 大數據派單系統 - 三平台整合戰情中樞，董事長級精準決策介面">
-  <meta name="theme-color" content="#081222">
+  <title>AI 派單公告中樞</title>
+  <meta name="description" content="後端唯一真實來源的 AI 派單公告展示系統">
+  <meta name="theme-color" content="#0d1f23">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Oxanium:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20260412d">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Orbitron:wght@700;800;900&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=20260416b">
 </head>
 <body>
-  <div class="dashboard-container">
-    <!-- 頂部標題與核心狀態 -->
-    <header class="grid-header">
-      <div class="header-content">
-        <div class="logo-area">
-          <p class="eyebrow">世界級企業董事長戰情室｜三平台 AI 大數據精準派單中樞</p>
-          <h1 id="system-name">兆櫃 AI 派單中樞系統</h1>
-          <div id="title-proof" style="display:none"></div>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="hero-kicker">Backend Source of Truth</p>
+        <h1 id="page-title">AI 派單公告中樞</h1>
+        <p id="page-subtitle" class="hero-subtitle">後端唯一真實來源，前端只負責展示、排序呈現、區塊大小與視覺層級。</p>
+      </div>
+      <div class="hero-status">
+        <div class="status-card">
+          <span>系統狀態</span>
+          <strong id="health-status">ONLINE</strong>
         </div>
-        <div class="header-stats">
-          <div class="stat-item"><span class="label">系統狀態</span><strong id="health-status">ONLINE</strong></div>
-          <div class="stat-item"><span class="label">系統版本</span><strong id="system-version">-</strong></div>
-          <div class="stat-item"><span class="label">執行序號</span><strong id="current-execution-id">-</strong></div>
-          <div class="stat-item highlight">
-            <span class="label">AI 大數據</span>
-            <strong id="ai-connect-state">待確認</strong>
-            <small id="ai-connect-detail" class="status-detail" style="display:none"></small>
-          </div>
+        <div class="status-card">
+          <span>最新批次</span>
+          <strong id="execution-id">-</strong>
+        </div>
+        <div class="status-card status-card-accent">
+          <span>正式資料</span>
+          <strong id="persist-status">載入中</strong>
         </div>
       </div>
     </header>
 
-    <!-- 左側：績效與排名 (KPI Sidebar) -->
-    <aside class="grid-sidebar-l">
-      <!-- ★ 三平台整合總盤（新增） -->
-      <section class="panel platform-stats-panel">
+    <section class="workspace">
+      <article class="panel input-panel">
         <div class="panel-head">
-          <h2>📊 三平台整合總盤</h2>
-          <span class="badge" id="platform-stats-badge">待確認</span>
-        </div>
-        <div id="platform-stats-grid" class="platform-stats-grid"></div>
-      </section>
-
-      <section class="panel executive-panel">
-        <div class="panel-head">
-          <h2>核心戰情 KPI</h2>
-          <span class="badge" id="dispatch-ready-badge">待確認</span>
-        </div>
-        <div id="boss-card-grid" class="executive-metric-grid"></div>
-      </section>
-
-      <section class="panel ranking-panel-shell">
-        <div class="panel-head">
-          <h2>🏆 今日績優排名</h2>
-          <span class="badge" id="ranking-status-badge">待確認</span>
-        </div>
-        <div id="ranking-list" class="scroll-list ranking-list"></div>
-      </section>
-
-      <section class="panel totals-panel">
-        <div class="panel-head">
-          <h2>整合總盤數據</h2>
-          <span class="badge" id="total-status-badge">待確認</span>
-        </div>
-        <div id="total-grid" class="total-grid"></div>
-      </section>
-    </aside>
-
-    <!-- 中央：操作與公告 (Main Hub) -->
-    <main class="grid-main">
-      <section id="system-panel" class="panel system-panel" style="display:none">
-        <div id="system-status-grid"></div>
-        <span class="badge" id="system-status-badge"></span>
-      </section>
-
-      <section class="panel frontend-ai-panel">
-        <div class="panel-head">
-          <h2>前端 AI 確認系統</h2>
-          <span class="badge" id="frontend-ai-badge">待確認</span>
-        </div>
-        <div id="frontend-ai-banner" class="frontend-ai-banner">尚未完成確認，不得視為正式版面</div>
-        <div id="frontend-ai-note" class="frontend-ai-note">假資料／越權欄位顯示「否」才算通過。</div>
-
-        <div class="frontend-ai-section">
-          <div class="subhead">
-            <h3>整合企劃書</h3>
-            <span class="subhead-chip" id="frontend-ai-scope-status">後端鎖定</span>
+          <div>
+            <p class="eyebrow">標準輸入</p>
+            <h2>公告文字 / JSON</h2>
           </div>
-          <div id="frontend-ai-scope-grid" class="frontend-ai-scope-grid"></div>
+          <span id="input-status" class="badge badge-neutral">等待輸入</span>
         </div>
-
-        <div class="frontend-ai-section">
-          <div class="subhead">
-            <h3>前端確認矩陣</h3>
-            <span class="subhead-chip" id="frontend-ai-confirm-status">是／否</span>
-          </div>
-          <div id="frontend-ai-check-grid" class="frontend-ai-check-grid"></div>
+        <textarea id="raw-input" placeholder="請貼上完整 AI 派單公告 JSON。後端會先審計，再決定是否可存為正式版。"></textarea>
+        <div class="toolbar">
+          <button id="btn-load" class="btn btn-secondary" type="button">載入正式版</button>
+          <button id="btn-audit" class="btn btn-secondary" type="button">先審計</button>
+          <button id="btn-save" class="btn btn-primary" type="button">存正式版</button>
+          <button id="btn-clear" class="btn btn-ghost" type="button">清空輸入</button>
+          <button id="btn-copy-compact" class="btn btn-ghost" type="button">複製群組精簡版</button>
         </div>
+      </article>
 
-        <div class="frontend-ai-section">
-          <div class="subhead">
-            <h3>執行企劃書</h3>
-            <span class="subhead-chip" id="frontend-ai-plan-status">鎖定執行</span>
-          </div>
-          <div id="frontend-ai-plan-list" class="frontend-ai-plan-list"></div>
-        </div>
-      </section>
-
-      <section class="panel input-panel">
+      <article class="panel rule-panel">
         <div class="panel-head">
-          <h2>每日業績輸入區</h2>
-          <span class="badge" id="input-status">等待輸入</span>
+          <div>
+            <p class="eyebrow">鎖死規則</p>
+            <h2>前後端責任切割</h2>
+          </div>
         </div>
-        <textarea id="raw-input" class="raw-input" placeholder="貼上每日報告資料..."></textarea>
-        <div class="mini-grid preview-grid" id="input-preview-grid"></div>
-        <div class="paste-ops-grid">
-          <article class="mini-panel paste-ops-panel">
-            <div class="subhead">
-              <h3>貼上順序名單</h3>
-              <span class="subhead-chip" id="paste-order-status">待解析</span>
+        <ul id="rules-list" class="rule-list"></ul>
+      </article>
+    </section>
+
+    <section class="feedback-grid">
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">驗證結果</p>
+            <h2>後端審計</h2>
+          </div>
+          <span id="audit-result-badge" class="badge badge-neutral">待檢查</span>
+        </div>
+        <div id="validation-summary" class="validation-summary"></div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">錯誤 / 警示</p>
+            <h2>資料守門</h2>
+          </div>
+        </div>
+        <div id="validation-issues" class="issue-list"></div>
+      </article>
+    </section>
+
+    <section class="screen screen-first">
+      <div class="screen-head">
+        <p class="eyebrow">第一屏</p>
+        <h2>標題、審計結果、整合總盤、正式前四名</h2>
+      </div>
+
+      <article class="panel title-panel">
+        <div class="title-wrap">
+          <div>
+            <p id="announcement-title" class="announcement-title">尚未載入公告</p>
+            <p id="date-range" class="announcement-date">-</p>
+          </div>
+          <div id="audit-result" class="audit-hero audit-pass">PASS</div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">整合總盤</p>
+            <h2>六大數字</h2>
+          </div>
+          <span id="cancellation-chip" class="badge badge-neutral">取消退貨 0</span>
+        </div>
+        <div id="summary-grid" class="summary-grid"></div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">正式前四名</p>
+            <h2>大卡展示</h2>
+          </div>
+        </div>
+        <div id="spotlight-grid" class="spotlight-grid"></div>
+      </article>
+    </section>
+
+    <section class="screen screen-second">
+      <div class="screen-head">
+        <p class="eyebrow">第二屏</p>
+        <h2>前十排行榜、分級卡、離職審計列示</h2>
+      </div>
+
+      <div class="screen-grid">
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">正式前 10 名</p>
+              <h2>排行榜</h2>
             </div>
-            <div id="paste-order-list" class="paste-order-list"></div>
-          </article>
-          <article class="mini-panel paste-ops-panel">
-            <div class="subhead">
-              <h3>異常掃描 / 維修保養</h3>
-              <span class="subhead-chip" id="maintenance-status">待掃描</span>
+          </div>
+          <div id="leaderboard" class="leaderboard"></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">A1 / A2 / B / C</p>
+              <h2>分級卡</h2>
             </div>
-            <div id="maintenance-list" class="maintenance-list"></div>
-          </article>
-        </div>
-        <div class="button-row">
-          <button id="btn-reset" class="ghost-btn">重置</button>
-          <button id="btn-zero" class="ghost-btn">歸零</button>
-          <button id="btn-baseline" class="ghost-btn">載入基準</button>
-          <button id="btn-run" class="primary-btn">一鍵全自動鏈路</button>
-        </div>
-      </section>
-
-      <section class="panel announcement-panel-shell">
-        <div class="panel-head">
-          <h2>全場 AI 派單公告</h2>
-          <span class="badge" id="save-status">待確認</span>
-        </div>
-        <div class="announcement-toolbar">
-          <span id="announcement-meta" class="subhead-chip">等待正式公告</span>
-          <button id="btn-open-broadcast" class="ghost-btn">女主播模式</button>
-          <button id="btn-chairman-mode" class="ghost-btn">董事長模式</button>
-          <button id="btn-copy-announcement" class="ghost-btn">複製公告</button>
-        </div>
-        <div id="announcement-output" class="announcement-reader"></div>
-      </section>
-
-      <section class="panel pipeline-panel">
-        <div class="panel-head">
-          <h2>啟動鏈路序列</h2>
-          <span class="badge" id="audit-status">待確認</span>
-        </div>
-        <div id="stage-summary" class="stage-summary"></div>
-        <div class="stage-list" id="stage-list"></div>
-      </section>
-    </main>
-
-    <!-- 右側：AI 分析與日誌 (Intelligence Sidebar) -->
-    <aside class="grid-sidebar-r">
-      <!-- ★ 名次異動重點（新增） -->
-      <section class="panel rank-change-panel">
-        <div class="panel-head">
-          <h2>📈 名次異動追蹤</h2>
-          <span class="badge" id="rank-change-badge">待確認</span>
-        </div>
-        <div id="rank-change-list" class="rank-change-list"></div>
-      </section>
-
-      <section class="panel ai-panel">
-        <div class="panel-head">
-          <h2>🤖 AI 分析結果區</h2>
-          <span class="badge" id="ai-analysis-badge">待確認</span>
-        </div>
-        <article class="mini-panel insight-panel">
-          <h3>AI 數據洞察</h3>
-          <div id="insight-list" class="insight-grid"></div>
+          </div>
+          <div id="groups-grid" class="groups-grid"></div>
         </article>
-        <article class="mini-panel group-panel">
-          <h3>🎯 明日 AI 派單順序</h3>
-          <div id="group-list" class="group-list"></div>
-        </article>
-        <article class="mini-panel weight-panel">
-          <h3>1000 權重公式</h3>
-          <div id="weight-list" class="weight-list"></div>
-        </article>
-      </section>
 
-      <!-- ★ AI 大數據建議（新增） -->
-      <section class="panel bigdata-advice-panel">
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">審計列示</p>
+              <h2>已離職不入派單</h2>
+            </div>
+          </div>
+          <div id="retired-list" class="retired-list"></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="screen screen-third">
+      <div class="screen-head">
+        <p class="eyebrow">第三屏</p>
+        <h2>全員正式名次、每人一句建議、群組精簡版</h2>
+      </div>
+
+      <article class="panel">
         <div class="panel-head">
-          <h2>💡 AI 大數據｜每人建議</h2>
-          <span class="badge" id="bigdata-advice-badge">待確認</span>
+          <div>
+            <p class="eyebrow">正式名次</p>
+            <h2>全員名次表</h2>
+          </div>
         </div>
-        <div id="bigdata-advice-list" class="bigdata-advice-list scroll-list"></div>
-      </section>
+        <div class="table-wrap">
+          <table class="ranking-table">
+            <thead>
+              <tr>
+                <th>名次</th>
+                <th>姓名</th>
+                <th>分級</th>
+                <th>總業績</th>
+                <th>續單金額</th>
+                <th>追續成交總數</th>
+                <th>派單成交總通數</th>
+              </tr>
+            </thead>
+            <tbody id="ranking-table-body"></tbody>
+          </table>
+        </div>
+      </article>
 
-      <section id="version-panel" class="panel version-panel">
+      <article class="panel">
         <div class="panel-head">
-          <h2>版本與日誌</h2>
-          <span class="badge" id="version-status-badge">待確認</span>
+          <div>
+            <p class="eyebrow">每人一句建議</p>
+            <h2>預設收合</h2>
+          </div>
         </div>
-        <div id="version-grid" class="version-grid"></div>
-        <div id="file-list" class="file-list"></div>
-        <div id="log-list" class="scroll-list log-list"></div>
-        <span class="badge" id="log-status-badge" style="display:none">待確認</span>
-      </section>
-      
-      <section class="panel alert-panel-shell">
-        <article class="mini-panel alert-panel">
-          <h3>異常警示</h3>
-          <div id="alert-list" class="alert-list"></div>
-        </article>
-      </section>
-    </aside>
+        <div id="advice-list" class="advice-list"></div>
+      </article>
 
-    <!-- 底部：系統資訊 -->
-    <footer class="grid-footer">
-      <div id="audit-check-list" style="display:none"></div>
-      <div id="change-list" style="display:none"></div>
-      <p id="title-summary">AI 大數據精準決策系統。三平台整合戰力、1000 權重排序、名次異動追蹤、個人化建議，後端唯一真相來源。</p>
-    </footer>
+      <article class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">可複製區</p>
+            <h2>群組超精簡版</h2>
+          </div>
+        </div>
+        <textarea id="compact-output" class="compact-output" readonly></textarea>
+      </article>
+    </section>
   </div>
 
-  <script src="app.js?v=20260412d"></script>
+  <script src="app.js?v=20260416b"></script>
 </body>
 </html>

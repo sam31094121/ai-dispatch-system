@@ -1,12 +1,15 @@
 @echo off
 chcp 65001 >nul
-title 兆櫃 AI 派單系統
+title 兆櫃 AI 派單系統 - 總啟動器
 set "PROJECT_ROOT=%~dp0"
 
-echo 啟動單一正式版本：dispatch_app_red
-start "兆櫃AI派單" cmd /k "cd /d ""%PROJECT_ROOT%dispatch_app_red"" && npm start"
+echo =======================================================
+echo 正在啟動 兆櫃 AI 派單總系統...
+echo =======================================================
+
+cd /d "%PROJECT_ROOT%dispatch_app_red"
+start "" "啟動系統.bat"
 
 echo.
-echo 服務網址：http://localhost:3000
-echo.
-timeout /t 3 >nul
+echo 總啟動程序已發送。
+exit

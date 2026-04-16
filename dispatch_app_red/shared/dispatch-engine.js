@@ -1,25 +1,38 @@
 const fs = require('fs');
 const path = require('path');
 
-const BOOT_TIME = new Date();
-const BOOT_DATE_STR = String(BOOT_TIME.getMonth() + 1).padStart(2, '0') + '-' + String(BOOT_TIME.getDate()).padStart(2, '0');
-const BOOT_TIME_STR = String(BOOT_TIME.getHours()).padStart(2, '0') + ':' + String(BOOT_TIME.getMinutes()).padStart(2, '0') + ':' + String(BOOT_TIME.getSeconds()).padStart(2, '0');
+const numberFormatter = new Intl.NumberFormat('zh-TW');
+const cloneValue = typeof globalThis.structuredClone === 'function'
+  ? (value) => globalThis.structuredClone(value)
+  : (value) => JSON.parse(JSON.stringify(value));
 
 const SYSTEM = {
   name: '兆櫃 AI 派單中樞系統',
-  version: `戰情室-${BOOT_DATE_STR} ${BOOT_TIME_STR}`,
+  get version() { const d = new Date(); return `網頁版-${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; },
   timezone: 'Asia/Taipei',
   defaultOperator: 'USER'
 };
 
+const taipeiDateTimeFormatter = new Intl.DateTimeFormat('zh-TW', {
+  timeZone: SYSTEM.timezone,
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: false
+});
+
+// 正式 4/13 規格權重：客單價 + 實收金額 + 續單總額 + 續單成交件數
 const SCORE_WEIGHTS = [
-  { key: 'dailyTicket', label: '當日客單價', weight: 100 },
-  { key: 'dailyReceived', label: '當日實收金額', weight: 250 },
-  { key: 'currentMonthRevenue', label: '本月業績', weight: 100 },
-  { key: 'lastMonthRevenue', label: '上月業績', weight: 100 },
-  { key: 'overallTicket', label: '整體客單價', weight: 50 },
-  { key: 'renewalRevenue', label: '續單金額', weight: 200 },
-  { key: 'renewalDeals', label: '追續成交總數', weight: 200 }
+  { key: 'dailyTicket', label: '當日客單價', weight: 150 },
+  { key: 'dailyReceived', label: '當日實收金額', weight: 300 },
+  { key: 'renewalRevenue', label: '續單金額', weight: 250 },
+  { key: 'renewalDeals', label: '追續成交總數', weight: 200 },
+  { key: 'currentMonthRevenue', label: '本月業績', weight: 50 },
+  { key: 'lastMonthRevenue', label: '上月業績', weight: 30 },
+  { key: 'overallTicket', label: '整體客單價', weight: 20 }
 ];
 
 const STAGES = [
@@ -52,55 +65,55 @@ const METRIC_ALIASES = {
 };
 
 const BASELINE_SEEDS = [
-  { name: '馬秋香', renewalDeals: 12, renewalRevenue: 275300, totalRevenue: 393290, previousRank: 1 },
-  { name: '王梅慧', renewalDeals: 12, renewalRevenue: 237180, totalRevenue: 323760, previousRank: 2 },
-  { name: '王珍珠', renewalDeals: 14, renewalRevenue: 190380, totalRevenue: 239588, previousRank: 4 },
-  { name: '林沛昕', renewalDeals: 8, renewalRevenue: 209576, totalRevenue: 234644, previousRank: 3 },
-  { name: '林宜靜', renewalDeals: 5, renewalRevenue: 32200, totalRevenue: 170070, previousRank: 6 },
-  { name: '李玲玲', renewalDeals: 2, renewalRevenue: 73860, totalRevenue: 165250, previousRank: 5 },
-  { name: '廖姿惠', renewalDeals: 6, renewalRevenue: 26448, totalRevenue: 121328, previousRank: 7 },
-  { name: '湯玉琦', renewalDeals: 9, renewalRevenue: 56180, totalRevenue: 111860, previousRank: 8 },
-  { name: '蘇淑玲', renewalDeals: 3, renewalRevenue: 61040, totalRevenue: 101488, previousRank: 14 },
-  { name: '徐華妤', renewalDeals: 5, renewalRevenue: 69520, totalRevenue: 90960, previousRank: 9 },
-  { name: '江麗勉', renewalDeals: 1, renewalRevenue: 2380, totalRevenue: 73630, previousRank: 10 },
-  { name: '梁依萍', renewalDeals: 3, renewalRevenue: 15160, totalRevenue: 64540, previousRank: 11 },
-  { name: '高如郁', renewalDeals: 3, renewalRevenue: 9320, totalRevenue: 56860, previousRank: 16 },
-  { name: '高美雲', renewalDeals: 2, renewalRevenue: 15660, totalRevenue: 54008, previousRank: 17 },
-  { name: '陳玲華', renewalDeals: 1, renewalRevenue: 6500, totalRevenue: 41860, previousRank: 12 },
-  { name: '鄭珮恩', renewalDeals: 4, renewalRevenue: 7000, totalRevenue: 40220, previousRank: 15 },
-  { name: '許喬恩', renewalDeals: 2, renewalRevenue: 20000, totalRevenue: 27000, previousRank: 13 },
-  { name: '陳桂子（新人）', renewalDeals: 1, renewalRevenue: 13500, totalRevenue: 13500, previousRank: 0 },
-  { name: '謝啟芳', renewalDeals: 0, renewalRevenue: 0, totalRevenue: 10960, previousRank: 18 },
-  { name: '周美蓁', renewalDeals: 1, renewalRevenue: 10000, totalRevenue: 10000, previousRank: 19 },
-  { name: '江沛林', renewalDeals: 3, renewalRevenue: 9980, totalRevenue: 9980, previousRank: 21 },
-  { name: '林佩君', renewalDeals: 1, renewalRevenue: 6528, totalRevenue: 6528, previousRank: 20 },
-  { name: '鄭上官', renewalDeals: 0, renewalRevenue: 0, totalRevenue: 0, previousRank: 22 }
+  { name: '王梅慧', renewalDeals: 16, renewalRevenue: 411770, totalRevenue: 547760, previousRank: 1 },
+  { name: '馬秋香', renewalDeals: 17, renewalRevenue: 326120, totalRevenue: 516280, previousRank: 2 },
+  { name: '林沛昕', renewalDeals: 23, renewalRevenue: 374840, totalRevenue: 507868, previousRank: 3 },
+  { name: '徐華妤', renewalDeals: 8, renewalRevenue: 158380, totalRevenue: 322590, previousRank: 4 },
+  { name: '王珍珠', renewalDeals: 6, renewalRevenue: 37560, totalRevenue: 283280, previousRank: 5 },
+  { name: '林宜靜', renewalDeals: 8, renewalRevenue: 209576, totalRevenue: 238624, previousRank: 6 },
+  { name: '李玲玲', renewalDeals: 15, renewalRevenue: 107420, totalRevenue: 194090, previousRank: 7 },
+  { name: '廖姿惠', renewalDeals: 9, renewalRevenue: 40408, totalRevenue: 124008, previousRank: 8 },
+  { name: '湯玉琦', renewalDeals: 3, renewalRevenue: 61040, totalRevenue: 117468, previousRank: 9 },
+  { name: '蘇淑玲', renewalDeals: 6, renewalRevenue: 75820, totalRevenue: 97260, previousRank: 10 },
+  { name: '梁依萍', renewalDeals: 4, renewalRevenue: 19840, totalRevenue: 85830, previousRank: 11 },
+  { name: '高如郁', renewalDeals: 4, renewalRevenue: 14960, totalRevenue: 84360, previousRank: 12 },
+  { name: '高美雲', renewalDeals: 4, renewalRevenue: 22800, totalRevenue: 83208, previousRank: 13 },
+  { name: '陳玲華', renewalDeals: 1, renewalRevenue: 2380, totalRevenue: 82970, previousRank: 14 },
+  { name: '鄭珮恩', renewalDeals: 5, renewalRevenue: 76000, totalRevenue: 76000, previousRank: 15 },
+  { name: '許喬恩', renewalDeals: 1, renewalRevenue: 6500, totalRevenue: 65338, previousRank: 16 },
+  { name: '陳桂子（新人）', renewalDeals: 5, renewalRevenue: 8680, totalRevenue: 60880, previousRank: 17 },
+  { name: '謝啟芳', renewalDeals: 1, renewalRevenue: 18000, totalRevenue: 18000, previousRank: 18 },
+  { name: '周美蓁', renewalDeals: 1, renewalRevenue: 5610, totalRevenue: 16570, previousRank: 19 },
+  { name: '江沛林', renewalDeals: 1, renewalRevenue: 13500, totalRevenue: 13500, previousRank: 20 },
+  { name: '林佩君', renewalDeals: 2, renewalRevenue: 12000, totalRevenue: 12000, previousRank: 21 },
+  { name: '鄭上官', renewalDeals: 3, renewalRevenue: 9980, totalRevenue: 9980, previousRank: 22 },
+  { name: '江麗勉', renewalDeals: 1, renewalRevenue: 6528, totalRevenue: 6528, previousRank: 23 }
 ];
 
 const BIGDATA_ADVICE_BASELINE = [
-  { rank: 1, name: '馬秋香', group: 'A1', text: '第一名不是守住就好，今天要把第一名拉開。' },
-  { rank: 2, name: '王梅慧', group: 'A1', text: '你已經貼近榜首，今天再補一筆就能直接施壓第一。' },
-  { rank: 3, name: '王珍珠', group: 'A1', text: '你追續厚，今天重點是把厚度變成更扎實的實收。' },
-  { rank: 4, name: '林沛昕', group: 'A1', text: '你總盤很硬，今天缺的是再往前翻位的臨門一腳。' },
-  { rank: 5, name: '林宜靜', group: 'A2', text: '位置穩，但還能更前，今天先把最準那筆拿下。' },
-  { rank: 6, name: '李玲玲', group: 'A2', text: '你還在主力帶，今天不是保位，是往前壓。' },
-  { rank: 7, name: '廖姿惠', group: 'A2', text: '你屬於很標準的補位型，今天一補就會更靠前。' },
-  { rank: 8, name: '湯玉琦', group: 'A2', text: '你追續成交數很強，今天重點是把量收成實績。' },
-  { rank: 9, name: '蘇淑玲', group: 'A2', text: '你這輪站得住，今天關鍵是不要停。' },
-  { rank: 10, name: '徐華妤', group: 'A2', text: '你穩在前十，今天一補單就能再往上。' },
-  { rank: 11, name: '江麗勉', group: 'B', text: '你現在差的不是底，是差再開一筆。' },
-  { rank: 12, name: '梁依萍', group: 'B', text: '你還在可翻位區，今天先求穩穩進袋。' },
-  { rank: 13, name: '高如郁', group: 'B', text: '今天要把可落袋的先收，不要讓位置再鬆。' },
-  { rank: 14, name: '高美雲', group: 'B', text: '你現在有上推空間，今天一補就能再往前。' },
-  { rank: 15, name: '陳玲華', group: 'B', text: '中後段差距很小，今天開一筆就會動。' },
-  { rank: 16, name: '鄭珮恩', group: 'B', text: '你追續底還在，今天先把最穩的一筆做出來。' },
-  { rank: 17, name: '許喬恩', group: 'B', text: '今天重點不是多，是先把盤面重新接起來。' },
-  { rank: 18, name: '陳桂子（新人）', group: 'C', text: '先求穩穩起步，有第一筆就有第二筆。' },
-  { rank: 19, name: '謝啟芳', group: 'C', text: '先把第一個明確數字做出來，位置就會變。' },
-  { rank: 20, name: '周美蓁', group: 'C', text: '先動起來，比停在原地更重要。' },
-  { rank: 21, name: '江沛林', group: 'C', text: '你不是沒底，是差一筆把線重新接上。' },
-  { rank: 22, name: '林佩君', group: 'C', text: '今天先求開張，不要讓名字只停在名單上。' },
-  { rank: 23, name: '鄭上官', group: 'C', text: '先抓最穩的那一步，今天有動作就會開始改變。' }
+  { rank: 1, name: '王梅慧', group: 'A1', text: '蟬聯第一，續單表現極佳，今天要把第一名拉開。' },
+  { rank: 2, name: '馬秋香', group: 'A1', text: '穩居第二，總盤實力雄厚，隨時有機會奪回榜首。' },
+  { rank: 3, name: '林沛昕', group: 'A1', text: '本輪成長最快，名次大幅提升，保持突破進攻。' },
+  { rank: 4, name: '徐華妤', group: 'A1', text: '守住 A1 最後一席，後面追得很緊，不可放鬆。' },
+  { rank: 5, name: '王珍珠', group: 'A2', text: '暫居 A2 榜首，今天出一筆大單就能重回 A1。' },
+  { rank: 6, name: '林宜靜', group: 'A2', text: '位居 A2 前段，續單能量強，補上實收即翻盤。' },
+  { rank: 7, name: '李玲玲', group: 'A2', text: '你在主力帶，追續成交穩定，今天要把量收成績。' },
+  { rank: 8, name: '廖姿惠', group: 'A2', text: '標準補位型，一補就會更靠前。' },
+  { rank: 9, name: '湯玉琦', group: 'A2', text: '追續底還在，重點是把盤面重新接起來。' },
+  { rank: 10, name: '蘇淑玲', group: 'A2', text: '穩定在前段視窗，目前關鍵是不要停。' },
+  { rank: 11, name: '梁依萍', group: 'B', text: '你現在差的不是底，是差再開一筆。' },
+  { rank: 12, name: '高如郁', group: 'B', text: '要在可翻位區求穩穩進袋。' },
+  { rank: 13, name: '高美雲', group: 'B', text: '要把可落袋的先收，名次就有上推空間。' },
+  { rank: 14, name: '陳玲華', group: 'B', text: '中段差距極小，開一筆就會動。' },
+  { rank: 15, name: '鄭珮恩', group: 'B', text: '目前在 B 組中段，求連續實收。' },
+  { rank: 16, name: '許喬恩', group: 'B', text: '先把最穩的一筆做出來，位置就會變。' },
+  { rank: 17, name: '陳桂子（新人）', group: 'B', text: '表現優於預期，已站穩 B 組。' },
+  { rank: 18, name: '謝啟芳', group: 'C', text: '先求穩穩起步，有第一筆就有第二筆。' },
+  { rank: 19, name: '周美蓁', group: 'C', text: '先把第一個明確數字做出來。' },
+  { rank: 20, name: '江沛林', group: 'C', text: '先動起來，比停在原地更重要。' },
+  { rank: 21, name: '林佩君', group: 'C', text: '你不是沒底，是差一筆把線接上。' },
+  { rank: 22, name: '鄭上官', group: 'C', text: '今天先求開張。' },
+  { rank: 23, name: '江麗勉', group: 'C', text: '抓最穩的那一步。' }
 ];
 
 function getBigDataAdvice(snapshots, currentRanking) {
@@ -126,7 +139,7 @@ class StageError extends Error {
 }
 
 function deepClone(value) {
-  return JSON.parse(JSON.stringify(value));
+  return cloneValue(value);
 }
 
 function toNumber(value) {
@@ -140,7 +153,7 @@ function round(value, digits = 2) {
 }
 
 function money(value) {
-  return new Intl.NumberFormat('zh-TW').format(toNumber(value));
+  return numberFormatter.format(toNumber(value));
 }
 
 function percent(value) {
@@ -148,16 +161,11 @@ function percent(value) {
 }
 
 function taipeiNow(date = new Date()) {
-  return new Intl.DateTimeFormat('zh-TW', {
-    timeZone: SYSTEM.timezone,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false
-  }).format(date);
+  return taipeiDateTimeFormatter.format(date);
+}
+
+function createExecutionId(date = new Date()) {
+  return Number(taipeiDateTimeFormatter.format(date).replace(/\D/g, ''));
 }
 
 function rocDate(date = new Date()) {
@@ -201,6 +209,13 @@ function ensureDirs(paths) {
 
 function appendJsonLine(filePath, payload) {
   fs.appendFileSync(filePath, `${JSON.stringify(payload)}\n`, 'utf8');
+}
+
+function writeSnapshotJsonFiles(filePaths, snapshot) {
+  const serialized = JSON.stringify(snapshot, null, 2);
+  filePaths.filter(Boolean).forEach((filePath) => {
+    fs.writeFileSync(filePath, serialized, 'utf8');
+  });
 }
 
 function loadLatestSnapshot(paths) {
@@ -617,6 +632,7 @@ function scoreReport(parsed) {
 }
 
 function groupKey(rank) {
+  // 正式分組規則：A1 (1-4), A2 (5-10), B (11-17), C (18+)
   if (rank <= 4) return 'A1';
   if (rank <= 10) return 'A2';
   if (rank <= 17) return 'B';
@@ -631,13 +647,11 @@ function groupLabel(group) {
 }
 
 function compareRankPeople(left, right) {
-  // 1000% 權重視角：AI 分數最優先
-  if (right.totalScore !== left.totalScore) return right.totalScore - left.totalScore;
-  // 以下為同分時的優先順序
+  // 正式規格排序：總業績 > 續單金額 > 追單件數 > AI 評分
   if (right.totalRevenue !== left.totalRevenue) return right.totalRevenue - left.totalRevenue;
   if (right.renewalRevenue !== left.renewalRevenue) return right.renewalRevenue - left.renewalRevenue;
   if (right.renewalDeals !== left.renewalDeals) return right.renewalDeals - left.renewalDeals;
-  if (toNumber(right.dispatchDeals) !== toNumber(left.dispatchDeals)) return toNumber(right.dispatchDeals) - toNumber(left.dispatchDeals);
+  if (right.totalScore !== left.totalScore) return right.totalScore - left.totalScore;
   return left.inputOrder - right.inputOrder;
 }
 
@@ -841,51 +855,51 @@ function buildAnnouncement(snapshot) {
   const rankedLines = (snapshot.ranking || [])
     .map(
       (person) =>
-        `${person.rank}、${person.name}｜AI ${round(person.totalScore, 2).toFixed(2)}｜【追續】${money(person.renewalDeals)}｜【續單】${money(person.renewalRevenue)}｜【總業績】${money(person.totalRevenue)}`
+        `${person.rank}｜${person.name}｜【追單】${money(person.renewalDeals)}｜【續單】${money(person.renewalRevenue)}｜【總業績】${money(person.totalRevenue)}｜【實收】${money(person.dailyReceived)}`
     )
     .join('\n');
 
-  const changeLines = [
-    ...(snapshot.changes.new || []).map((row) => `新進：${row}`),
-    ...(snapshot.changes.up || []).map((row) => `上升：${row}`),
-    ...(snapshot.changes.down || []).map((row) => `下降：${row}`),
-    ...(snapshot.changes.flat || []).map((row) => `持平：${row}`)
-  ].join('\n');
+  const groups = snapshot.groups || { A1: [], A2: [], B: [], C: [] };
 
   return [
-    `📣【兆櫃 AI 派單公告｜${snapshot.reportDate} 結算 → ${snapshot.dispatchDate} 派單】`,
+    `📣【AI 派單公告｜${snapshot.reportDate} 結算 → ${snapshot.dispatchDate} 派單順序】正式版`,
     '',
-    '一、審計結論',
-    `審計結果：${snapshot.audit.status}`,
-    `說明：${snapshot.audit.message}`,
-    ...(snapshot.audit.errors.length ? snapshot.audit.errors.map((item) => `- ${item}`) : ['- 無異常']),
+    '今日三平台資料已完成 AI 審計。',
+    `【審計結果】＝ ${snapshot.audit.status === '通過' ? 'PASS' : 'FAIL'}`,
+    snapshot.audit.message ? `說明：${snapshot.audit.message}` : '數據完整校驗通過，無異常。',
     '',
-    '二、1000 權重公式',
-    SCORE_WEIGHTS.map((item) => `${item.label} ${item.weight}`).join('｜'),
-    '',
-    '三、今日排序',
+    '────────────────────────',
+    '【一、今日整合名次 (正式排序)】',
+    '────────────────────────',
     rankedLines || '無資料',
     '',
-    '四、明日派單分組',
-    `A1 高單主力：${joinNames(snapshot.groups.A1)}`,
-    `A2 續單收割：${joinNames(snapshot.groups.A2)}`,
-    `B 一般量單：${joinNames(snapshot.groups.B)}`,
-    `C 補位養成：${joinNames(snapshot.groups.C)}`,
+    '────────────────────────',
+    '【二、明日 AI 派單順序 (四大梯隊)】',
+    '────────────────────────',
     '',
-    '五、名次異動',
-    changeLines || '無',
+    `🔴 A1｜高單主力：${joinNames(groups.A1)}`,
+    `🟠 A2｜續單收割：${joinNames(groups.A2)}`,
+    `🟡 B 組｜一般量單：${joinNames(groups.B)}`,
+    `🟢 C 組｜補位觀察：${joinNames(groups.C)}`,
     '',
-    '六、總控摘要',
-    `當日實收：${money(snapshot.summary.dailyReceived)}`,
-    `本月業績：${money(snapshot.summary.currentMonthRevenue)}`,
-    `續單總額：${money(snapshot.summary.renewalRevenue)}`,
-    `追續成交：${money(snapshot.summary.renewalDeals)} 通`,
-    `有效人數：${snapshot.summary.activePeople}/${snapshot.summary.totalPeople}`,
+    '────────────────────────',
+    '【三、執行規則（鎖死）】',
+    '────────────────────────',
+    '1. 照順序派，不分組。',
+    '2. 前面全忙，才往後。',
+    '3. 不得指定，不得跳位。',
+    '4. 同客戶回撥，優先回原承接人。',
     '',
-    '七、存檔',
-    snapshot.files
-      ? `報表：${snapshot.files.reportFile}\n備份：${snapshot.files.backupFile}\n歸檔：${snapshot.files.archiveFile}`
-      : '尚未存檔'
+    '────────────────────────',
+    '【四、今日整合總盤摘要】',
+    '────────────────────────',
+    `三平台整合【實收】：${money(snapshot.summary.dailyReceived)}`,
+    `三平台整合【續單】：${money(snapshot.summary.renewalRevenue)}`,
+    `三平台整合【追單】：${money(snapshot.summary.renewalDeals)}`,
+    `有效人力佔比：${snapshot.summary.conversionRateText}`,
+    '',
+    '以上為今日統一派單規則。確認請回 +1。',
+    `執行 ID: ${snapshot.executionId}`
   ].join('\n');
 }
 
@@ -1086,10 +1100,12 @@ function writeSuccessSnapshot(snapshot, paths) {
     status: snapshot.status || '通過'
   });
 
-  fs.writeFileSync(path.join(paths.reportDir, files.reportFile), JSON.stringify(nextSnapshot, null, 2), 'utf8');
-  fs.writeFileSync(path.join(paths.backupDir, files.backupFile), JSON.stringify(nextSnapshot, null, 2), 'utf8');
-  fs.writeFileSync(path.join(paths.archiveDir, files.archiveFile), JSON.stringify(nextSnapshot, null, 2), 'utf8');
-  fs.writeFileSync(paths.latestFile, JSON.stringify(nextSnapshot, null, 2), 'utf8');
+  writeSnapshotJsonFiles([
+    path.join(paths.reportDir, files.reportFile),
+    path.join(paths.backupDir, files.backupFile),
+    path.join(paths.archiveDir, files.archiveFile),
+    paths.latestFile
+  ], nextSnapshot);
 
   appendJsonLine(paths.logFile, {
     executionId: nextSnapshot.executionId,
@@ -1129,8 +1145,10 @@ function writeFailureSnapshot(snapshot, paths) {
     status: snapshot.status || '失敗'
   });
 
-  fs.writeFileSync(path.join(paths.reportDir, files.reportFile), JSON.stringify(nextSnapshot, null, 2), 'utf8');
-  fs.writeFileSync(path.join(paths.archiveDir, files.archiveFile), JSON.stringify(nextSnapshot, null, 2), 'utf8');
+  writeSnapshotJsonFiles([
+    path.join(paths.reportDir, files.reportFile),
+    path.join(paths.archiveDir, files.archiveFile)
+  ], nextSnapshot);
 
   appendJsonLine(paths.logFile, {
     executionId: nextSnapshot.executionId,
@@ -1163,7 +1181,7 @@ function analyze(rawText, options = {}) {
 function runFullPipeline({ rawText, operator = SYSTEM.defaultOperator, dataPaths, source = 'manual', referenceDate = new Date() }) {
   ensureDirs(dataPaths);
 
-  const executionId = Date.now();
+  const executionId = createExecutionId();
   const stages = createStages();
   const previousSnapshot = loadLatestSnapshot(dataPaths);
 
@@ -1276,7 +1294,7 @@ function createPreviewSnapshot(rawText, options = {}) {
   }
 
   return buildSnapshot({
-    executionId: Date.now(),
+    executionId: createExecutionId(),
     operator: options.operator || SYSTEM.defaultOperator,
     source: options.source || 'preview',
     rawText,
@@ -1305,7 +1323,7 @@ function ensureInitialized(paths) {
 function runFullPipeline({ rawText, operator = SYSTEM.defaultOperator, dataPaths, source = 'manual', referenceDate = new Date() }) {
   ensureDirs(dataPaths);
 
-  const executionId = Date.now();
+  const executionId = createExecutionId();
   const stages = createStages();
   const previousSnapshot = loadLatestSnapshot(dataPaths);
 
@@ -1428,7 +1446,7 @@ function createPreviewSnapshot(rawText, options = {}) {
 
   if (analysis.audit.status === '通過') {
     const previewSnapshot = buildSnapshot({
-      executionId: Date.now(),
+      executionId: createExecutionId(),
       operator: options.operator || SYSTEM.defaultOperator,
       source: options.source || 'preview',
       rawText,
@@ -1462,7 +1480,7 @@ function createPreviewSnapshot(rawText, options = {}) {
   }
 
   const preview = buildSnapshot({
-    executionId: Date.now(),
+    executionId: createExecutionId(),
     operator: options.operator || SYSTEM.defaultOperator,
     source: options.source || 'preview',
     rawText,

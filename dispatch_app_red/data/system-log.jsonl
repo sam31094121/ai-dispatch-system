@@ -801,3 +801,23 @@
 {"executionId":1776012782435,"status":"通過","operator":"WEB","reportDate":"115/04/12","dispatchDate":"115/04/13","time":"2026/04/13 00:53:02","topName":"馬秋香"}
 {"executionId":1776012861952,"status":"通過","operator":"WEB","reportDate":"115/04/12","dispatchDate":"115/04/13","time":"2026/04/13 00:54:21","topName":"馬秋香"}
 {"executionId":1776013309464,"status":"通過","operator":"WEB","reportDate":"115/04/12","dispatchDate":"115/04/13","time":"2026/04/13 01:01:49","topName":"馬秋香"}
+{"executionId":20260413022719,"status":"失敗","operator":"WEB","reportDate":"115/04/13","dispatchDate":"115/04/14","time":"2026/04/13 02:27:19","error":"第 1 行：缺少追續欄位；第 2 行：缺少追續欄位；第 3 行：缺少追續欄位；第 4 行：缺少追續欄位；第 5 行：缺少追續欄位"}
+{"executionId":20260413022744,"status":"失敗","operator":"WEB","reportDate":"115/04/13","dispatchDate":"115/04/14","time":"2026/04/13 02:27:44","error":"第 1 行：缺少追續欄位；第 2 行：缺少追續欄位；第 3 行：缺少追續欄位；第 4 行：缺少追續欄位；第 5 行：缺少追續欄位"}
+{"executionId":20260413022808,"status":"失敗","operator":"WEB","reportDate":"115/04/13","dispatchDate":"115/04/14","time":"2026/04/13 02:28:08","error":"第 1 行：缺少追續欄位；第 2 行：缺少追續欄位；第 3 行：缺少追續欄位；第 4 行：缺少追續欄位；第 5 行：缺少追續欄位"}
+{"executionId":20260413022843,"status":"失敗","operator":"WEB","reportDate":"115/04/13","dispatchDate":"115/04/14","time":"2026/04/13 02:28:43","error":"第 1 行：缺少追續欄位；第 2 行：缺少追續欄位；第 3 行：缺少追續欄位；第 4 行：缺少追續欄位；第 5 行：缺少追續欄位"}
+{"executionId":20260413024727,"status":"失敗","operator":"WEB","reportDate":"115/04/13","dispatchDate":"115/04/14","time":"2026/04/13 02:47:27","error":"第 1 行：缺少追續欄位；第 2 行：缺少追續欄位；第 3 行：缺少追續欄位；第 4 行：缺少追續欄位；第 5 行：缺少追續欄位"}
+{"executionId":20260413031618,"status":"失敗","operator":"WEB","reportDate":"115/04/13","dispatchDate":"115/04/14","time":"2026/04/13 03:16:18","error":"第 1 行：缺少追續欄位；第 2 行：缺少追續欄位；第 3 行：缺少追續欄位；第 4 行：缺少追續欄位；第 5 行：缺少追續欄位"}
+{"executionId":20260413032908,"status":"通過","operator":"SYSTEM","reportDate":"115/04/13","dispatchDate":"115/04/14","time":"2026/04/13 03:29:08","topName":"馬秋香"}
+{"executionId":20260413033847,"status":"通過","operator":"SYSTEM","reportDate":"115/04/13","dispatchDate":"115/04/14","time":"2026/04/13 03:38:47","topName":"馬秋香"}
+{"executionId":20260413035215,"status":"通過","operator":"SYSTEM","reportDate":"115/04/13","dispatchDate":"115/04/14","time":"2026/04/13 03:52:15","topName":"馬秋香"}
+{"executionId":20260413041204,"status":"通過","operator":"SYSTEM","reportDate":"115/04/13","dispatchDate":"115/04/14","time":"2026/04/13 04:12:04","topName":"馬秋香"}
+{"executionId":20260413045650,"status":"通過","operator":"WEB","reportDate":"115/04/13","dispatchDate":"115/04/14","time":"2026/04/13 04:56:50","topName":"馬秋香"}
+{"executionId":20260413051037,"status":"通過","operator":"WEB","reportDate":"115/04/13","dispatchDate":"115/04/14","time":"2026/04/13 05:10:37","topName":"馬秋香"}
+{"executionId":20260413051410,"status":"通過","operator":"WEB","reportDate":"115/04/13","dispatchDate":"115/04/14","time":"2026/04/13 05:14:10","topName":"馬秋香"}
+{"executionId":20260413052042,"status":"通過","operator":"WEB","reportDate":"115/04/13","dispatchDate":"115/04/14","time":"2026/04/13 05:20:42","topName":"馬秋香"}
+{"executionId":20260413053924,"status":"通過","operator":"USER","reportDate":"115/04/13","dispatchDate":"115/04/14","time":"2026/04/13 05:39:24","topName":"馬秋香"}
+{"executionId":20260413054037,"status":"通過","operator":"WEB","reportDate":"115/04/13","dispatchDate":"115/04/14","time":"2026/04/13 05:40:37","topName":"馬秋香"}
+{"executionId":20260413054416,"status":"通過","operator":"WEB","reportDate":"115/04/13","dispatchDate":"115/04/14","time":"2026/04/13 05:44:16","topName":"馬秋香"}
+{"executionId":20260413054657,"status":"通過","operator":"WEB","reportDate":"115/04/13","dispatchDate":"115/04/14","time":"2026/04/13 05:46:57","topName":"馬秋香"}
+{"executionId":20260415151754,"status":"通過","operator":"USER","reportDate":"115/04/13","dispatchDate":"115/04/14","time":"2026/04/15 15:17:54","topName":"王珍珠"}
+{"executionId":20260415152117,"status":"通過","operator":"USER","reportDate":"115/04/13","dispatchDate":"115/04/14","time":"2026/04/15 15:21:17","topName":"王珍珠"}

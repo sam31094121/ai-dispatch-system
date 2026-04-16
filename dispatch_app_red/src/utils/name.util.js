@@ -1,0 +1,45 @@
+const { BANNED_NAME_PATTERNS } = require('../constants/dispatchRules');
+
+function cleanText(value) {
+  return String(value ?? '')
+    .replace(/\u3000/g, ' ')
+    .replace(/\r/g, '')
+    .trim();
+}
+
+function toNumber(value) {
+  const numeric = Number(String(value ?? '').replace(/[,，]/g, '').trim());
+  return Number.isFinite(numeric) ? numeric : 0;
+}
+
+function normalizeName(value) {
+  return cleanText(value).replace(/\s+/g, '');
+}
+
+function splitNameTags(value) {
+  const source = normalizeName(value);
+  const isNew = /(?:（新人）|\(新人\)|新人)$/u.test(source);
+  const name = source.replace(/(?:（新人）|\(新人\)|新人)$/u, '');
+  return {
+    name: normalizeName(name),
+    isNew
+  };
+}
+
+function normalizeStringArray(value) {
+  return Array.isArray(value) ? value.map((item) => cleanText(item)).filter(Boolean) : [];
+}
+
+function getBannedNameViolation(value) {
+  const text = String(value ?? '');
+  return BANNED_NAME_PATTERNS.find((rule) => rule.pattern.test(text)) || null;
+}
+
+module.exports = {
+  cleanText,
+  getBannedNameViolation,
+  normalizeName,
+  normalizeStringArray,
+  splitNameTags,
+  toNumber
+};

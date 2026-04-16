@@ -1,4 +1,5 @@
 const $ = (id) => document.getElementById(id);
+const numberFormatter = new Intl.NumberFormat('zh-TW');
 
 const refs = {
   shell: $('broadcast-shell'),
@@ -93,7 +94,7 @@ function safeText(value) {
 }
 
 function formatNumber(value) {
-  return new Intl.NumberFormat('zh-TW').format(Number(value || 0));
+  return numberFormatter.format(Number(value || 0));
 }
 
 function formatScore(value) {

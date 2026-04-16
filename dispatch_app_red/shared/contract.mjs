@@ -12,6 +12,9 @@ export function sortEmployees(rows = []) {
     if ((b.renewDeals || 0) !== (a.renewDeals || 0)) {
       return (b.renewDeals || 0) - (a.renewDeals || 0);
     }
+    if ((b.dispatchDeals || 0) !== (a.dispatchDeals || 0)) {
+      return (b.dispatchDeals || 0) - (a.dispatchDeals || 0);
+    }
     return a.name.localeCompare(b.name, 'zh-Hant');
   }).map((row, index) => ({ ...row, rank: index + 1 }));
 }

@@ -1,6 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 
+const cloneValue = typeof globalThis.structuredClone === 'function'
+  ? (value) => globalThis.structuredClone(value)
+  : (value) => JSON.parse(JSON.stringify(value));
+const envCache = new Map();
+
 const DEFAULT_MODEL = 'gemini-2.0-flash';
 const DEFAULT_API_VERSION = 'v1beta';
 const DEFAULT_BASE_URL = 'https://generativelanguage.googleapis.com';
@@ -8,12 +13,21 @@ const PASS_STATUSES = new Set(['通過', 'PASS', 'done', '??']);
 const VALID_TONES = new Set(['green', 'red', 'cyan', 'orange', 'gold', 'violet']);
 
 function deepClone(value) {
-  return JSON.parse(JSON.stringify(value));
+  return cloneValue(value);
 }
 
 function parseEnvFile(appDir) {
   const envFile = path.join(appDir, '.env');
-  if (!fs.existsSync(envFile)) return {};
+  if (!fs.existsSync(envFile)) {
+    envCache.delete(envFile);
+    return {};
+  }
+
+  const stats = fs.statSync(envFile);
+  const cached = envCache.get(envFile);
+  if (cached && cached.mtimeMs === stats.mtimeMs) {
+    return cached.values;
+  }
 
   const values = {};
   const source = fs.readFileSync(envFile, 'utf8').replace(/^\uFEFF/, '');
@@ -36,6 +50,7 @@ function parseEnvFile(appDir) {
     values[key] = value;
   });
 
+  envCache.set(envFile, { mtimeMs: stats.mtimeMs, values });
   return values;
 }
 
