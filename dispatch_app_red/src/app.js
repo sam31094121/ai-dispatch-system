@@ -31,7 +31,7 @@ function createApp() {
       }
 
       if (/\.(css|js|png|jpg|jpeg|gif|svg|webp|ico|woff2?)$/i.test(filePath)) {
-        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+        res.setHeader('Cache-Control', 'public, max-age=3600'); // Reduced to 1 hour, no immutable
       }
     }
   }));
