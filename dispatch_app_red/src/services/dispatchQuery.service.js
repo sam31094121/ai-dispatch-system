@@ -395,9 +395,11 @@ function getGroups(reportId) {
   return buildGroupsData(report);
 }
 
-function getLegacySnapshot(report, options = {}) {
+function getLegacySnapshot(report, validationOrOptions = {}, options = {}) {
+  const hasOptions = options && Object.keys(options).length > 0;
+  const resolvedOptions = hasOptions ? options : validationOrOptions;
   const validation = validateDispatchReport(report);
-  return buildLegacySnapshot(report, validation, options);
+  return buildLegacySnapshot(report, validation, resolvedOptions);
 }
 
 module.exports = {

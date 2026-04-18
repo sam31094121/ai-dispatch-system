@@ -1,42 +1,50 @@
 /* ╔══════════════════════════════════════════════════════════╗
-   ║   AI 派單公告中樞 — 科技戰情室 UI v3.0                  ║
-   ║   未來感 / AI控制台 / 戰情室 / 霓虹流光 / 呼吸動畫      ║
+   ║   AI 派單公告中樞 — 科技戰情室 UI v4.0                  ║
+   ║   Midnight Tech · Neon Core · Cyber Grid · Pulse Glow   ║
    ╚══════════════════════════════════════════════════════════╝ */
 
+:root {
   /* 背景 */
-  --bg-main:   #02040a;
-  --bg-panel:  rgba(6, 11, 25, 0.72);
-  --bg-strong: rgba(4, 8, 18, 0.94);
+  --bg-main:   #010914;
+  --bg-panel:  rgba(4, 10, 26, 0.76);
+  --bg-strong: rgba(2, 6, 18, 0.95);
   --bg-glass:  rgba(255, 255, 255, 0.03);
 
   /* 文字 */
-  --text:     #F0F9FF;
-  --text-sub: #A5C0D0;
-  --text-dim: #547182;
+  --text:     #E8F6FF;
+  --text-sub: #7EAACB;
+  --text-dim: #3E5A75;
 
-  /* 科技主色 */
-  --cyan:      #00F2FF;
-  --cyan-glow: rgba(0, 242, 255, 0.5);
-  --purple:    #8265FF;
-  --purple-glow: rgba(130, 101, 255, 0.4);
-  --teal:      #00FFD5;
-  --teal-glow: rgba(0, 255, 213, 0.4);
-  --blue:      #52A8FF;
-  
+  /* 科技主色 — Cyan / Violet / Mint / Azure */
+  --cyan:      #00C8FF;
+  --cyan-2:    #33D6FF;
+  --purple:    #A855F7;
+  --purple-2:  #C084FC;
+  --teal:      #10F5B4;
+  --teal-2:    #00DDA0;
+  --blue:      #4B9FFF;
+  --gray-blue: #5C7A99;
+
+  /* 狀態色 */
+  --pass:   #00FF99;
+  --pass-2: #00D977;
+  --fail:   #FF2D6A;
+  --warn:   #FFB800;
+
   /* 分級主色 */
-  --a1-c: #00F2FF;
-  --a2-c: #00FFD5;
-  --b-c:  #52A8FF;
-  --c-c:  #6B84A3;
+  --a1-c: #00C8FF;
+  --a2-c: #10F5B4;
+  --b-c:  #4B9FFF;
+  --c-c:  #5C7A99;
 
   /* 尺寸 */
   --radius:    14px;
   --radius-sm: 8px;
   --radius-lg: 20px;
 
-  /* 陰影 */
-  --shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
-  --glow-soft: 0 0 20px rgba(0, 242, 255, 0.08);
+  /* 陰影/光暈 */
+  --shadow:    0 32px 64px rgba(0, 0, 0, 0.78);
+  --glow-soft: 0 0 28px rgba(0, 200, 255, 0.09);
 }
 
 /* ── 2. Reset ───────────────────────────────────────────── */
@@ -50,9 +58,9 @@ body {
   font-family: "Sora", "Noto Sans TC", sans-serif;
   background-color: var(--bg-main);
   background-image: 
-    radial-gradient(at 0% 0%, rgba(0, 242, 255, 0.08) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(130, 101, 255, 0.08) 0px, transparent 50%),
-    radial-gradient(at 50% 100%, rgba(0, 255, 213, 0.05) 0px, transparent 50%);
+    radial-gradient(at 0% 0%, rgba(0, 200, 255, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.08) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(16, 245, 180, 0.05) 0px, transparent 50%);
   overflow-x: hidden;
 }
 
@@ -68,8 +76,8 @@ body {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(0, 200, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 200, 255, 0.03) 1px, transparent 1px);
   background-size: 50px 50px;
   mask-image: radial-gradient(circle at 50% 30%, black, transparent 80%);
   animation: gridPulse 8s ease-in-out infinite;
@@ -106,7 +114,7 @@ body {
   overflow: hidden;
   border-radius: var(--radius-lg);
   background: var(--bg-panel);
-  border: 1px solid rgba(0, 242, 255, 0.12);
+  border: 1px solid rgba(0, 200, 255, 0.12);
   backdrop-filter: blur(20px);
   box-shadow: var(--shadow), var(--glow-soft);
   transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1), border-color 0.3s ease;
@@ -114,7 +122,7 @@ body {
 
 .panel:hover {
   transform: translateY(-2px);
-  border-color: rgba(0, 242, 255, 0.25);
+  border-color: rgba(0, 200, 255, 0.25);
 }
 
 /* 卡片掃描光線 */
@@ -129,7 +137,7 @@ body {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(0, 229, 255, 0.07),
+    rgba(0, 200, 255, 0.07),
     transparent
   );
   animation: scanLine 8s linear infinite;
@@ -144,7 +152,7 @@ body {
   position: absolute;
   inset: auto 0 0 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.40), transparent);
+  background: linear-gradient(90deg, transparent, rgba(0, 200, 255, 0.40), transparent);
   pointer-events: none;
 }
 
@@ -165,7 +173,7 @@ body {
   font-weight: 700;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  text-shadow: 0 0 12px rgba(0, 229, 255, 0.55);
+  text-shadow: 0 0 12px rgba(0, 200, 255, 0.55);
 }
 
 .hero h1,
@@ -204,9 +212,9 @@ body {
 .status-card {
   padding: 16px;
   border-radius: var(--radius);
-  border: 1px solid rgba(0, 229, 255, 0.22);
-  background: rgba(0, 229, 255, 0.05);
-  box-shadow: 0 0 20px rgba(0, 229, 255, 0.06);
+  border: 1px solid rgba(0, 200, 255, 0.22);
+  background: rgba(0, 200, 255, 0.05);
+  box-shadow: 0 0 20px rgba(0, 200, 255, 0.06);
 }
 
 .status-card span,
@@ -231,7 +239,7 @@ body {
   font-family: "Orbitron", "Sora", monospace;
   font-size: 17px;
   color: var(--cyan);
-  text-shadow: 0 0 10px rgba(0, 229, 255, 0.45);
+  text-shadow: 0 0 10px rgba(0, 200, 255, 0.45);
 }
 
 .status-card-accent {
@@ -321,7 +329,7 @@ textarea,
   width: 100%;
   min-height: 240px;
   resize: vertical;
-  border: 1px solid rgba(0, 229, 255, 0.20);
+  border: 1px solid rgba(0, 200, 255, 0.20);
   border-radius: var(--radius);
   background: rgba(4, 10, 22, 0.88);
   color: var(--text);
@@ -363,8 +371,8 @@ textarea,
 
 .btn-secondary {
   color: var(--text);
-  background: rgba(0, 229, 255, 0.08);
-  border: 1px solid rgba(0, 229, 255, 0.22);
+  background: rgba(0, 200, 255, 0.08);
+  border: 1px solid rgba(0, 200, 255, 0.22);
 }
 
 .btn-ghost {
@@ -409,25 +417,25 @@ textarea,
 .metric-chip,
 .summary-card {
   border-radius: var(--radius);
-  border: 1px solid rgba(0, 229, 255, 0.15);
+  border: 1px solid rgba(0, 200, 255, 0.15);
   background: var(--bg-strong);
   padding: 16px;
   box-shadow:
-    0 0 20px rgba(0, 229, 255, 0.05),
-    inset 0 1px 0 rgba(0, 229, 255, 0.09);
+    0 0 20px rgba(0, 200, 255, 0.05),
+    inset 0 1px 0 rgba(0, 200, 255, 0.09);
   transition: box-shadow 180ms ease;
 }
 
 .metric-chip:hover,
 .summary-card:hover {
-  box-shadow: 0 0 28px rgba(0, 229, 255, 0.14), inset 0 1px 0 rgba(0,229,255,0.12);
+  box-shadow: 0 0 28px rgba(0, 200, 255, 0.14), inset 0 1px 0 rgba(0,229,255,0.12);
 }
 
 .summary-card strong {
   font-family: "Orbitron", monospace;
   font-size: clamp(15px, 1.6vw, 20px);
   color: var(--cyan);
-  text-shadow: 0 0 12px rgba(0, 229, 255, 0.45);
+  text-shadow: 0 0 12px rgba(0, 200, 255, 0.45);
 }
 
 .validation-summary { min-height: 100%; }
@@ -436,7 +444,7 @@ textarea,
 .issue-row {
   padding: 12px 16px;
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(0, 229, 255, 0.10);
+  border: 1px solid rgba(0, 200, 255, 0.10);
   background: var(--bg-strong);
   font-size: 13px;
   line-height: 1.65;
@@ -528,9 +536,9 @@ textarea,
   gap: 14px;
   min-height: 220px;
   border-radius: var(--radius);
-  border: 1px solid rgba(0, 229, 255, 0.16);
+  border: 1px solid rgba(0, 200, 255, 0.16);
   background: var(--bg-strong);
-  box-shadow: 0 0 22px rgba(0, 229, 255, 0.06), inset 0 1px 0 rgba(0,229,255,0.07);
+  box-shadow: 0 0 22px rgba(0, 200, 255, 0.06), inset 0 1px 0 rgba(0,229,255,0.07);
   transition: box-shadow 200ms ease, transform 200ms ease;
   position: relative;
   overflow: hidden;
@@ -548,39 +556,39 @@ textarea,
 
 .spotlight-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 0 40px rgba(0, 229, 255, 0.18), 0 12px 40px rgba(0,0,0,0.5);
+  box-shadow: 0 0 40px rgba(0, 200, 255, 0.18), 0 12px 40px rgba(0,0,0,0.5);
 }
 
 /* #1 名 — 最亮、電光藍+紫 */
 .spotlight-card.rank-1 {
   grid-column: span 2;
   min-height: 280px;
-  border: 2px solid rgba(122, 92, 255, 0.55);
+  border: 2px solid rgba(168, 85, 247, 0.55);
   background: linear-gradient(
     160deg,
-    rgba(0, 229, 255, 0.12) 0%,
-    rgba(122, 92, 255, 0.12) 35%,
-    rgba(6, 12, 28, 0.97) 65%
+    rgba(0, 200, 255, 0.12) 0%,
+    rgba(168, 85, 247, 0.12) 35%,
+    rgba(2, 6, 18, 0.97) 65%
   );
   box-shadow:
-    0 0 60px rgba(0, 229, 255, 0.14),
-    0 0 100px rgba(122, 92, 255, 0.10),
+    0 0 60px rgba(0, 200, 255, 0.14),
+    0 0 100px rgba(168, 85, 247, 0.10),
     inset 0 1px 0 rgba(255,255,255,0.10);
   animation: glowBreathA1 3.5s ease-in-out infinite;
 }
 
 /* #2 名 — 青綠 */
 .spotlight-card.rank-2 {
-  border-color: rgba(0, 255, 198, 0.38);
-  background: linear-gradient(160deg, rgba(0, 255, 198, 0.11) 0%, rgba(6,12,28,0.96) 60%);
-  box-shadow: 0 0 36px rgba(0, 255, 198, 0.10), inset 0 1px 0 rgba(0,255,198,0.09);
+  border-color: rgba(16, 245, 180, 0.38);
+  background: linear-gradient(160deg, rgba(16, 245, 180, 0.11) 0%, rgba(6,12,28,0.96) 60%);
+  box-shadow: 0 0 36px rgba(16, 245, 180, 0.10), inset 0 1px 0 rgba(0,255,198,0.09);
 }
 
 /* #3 名 — 紫藍 */
 .spotlight-card.rank-3 {
-  border-color: rgba(122, 92, 255, 0.32);
-  background: linear-gradient(160deg, rgba(122, 92, 255, 0.10) 0%, rgba(6,12,28,0.96) 60%);
-  box-shadow: 0 0 30px rgba(122, 92, 255, 0.09), inset 0 1px 0 rgba(122,92,255,0.08);
+  border-color: rgba(168, 85, 247, 0.32);
+  background: linear-gradient(160deg, rgba(168, 85, 247, 0.10) 0%, rgba(6,12,28,0.96) 60%);
+  box-shadow: 0 0 30px rgba(168, 85, 247, 0.09), inset 0 1px 0 rgba(168,85,247,0.08);
 }
 
 .spotlight-card h3 {
@@ -609,7 +617,7 @@ textarea,
   font-family: "Orbitron", monospace;
   font-size: 15px;
   color: var(--cyan);
-  text-shadow: 0 0 8px rgba(0, 229, 255, 0.40);
+  text-shadow: 0 0 8px rgba(0, 200, 255, 0.40);
 }
 
 /* ── 18. Rank / Group Tags ─────────────────────────────── */
@@ -628,18 +636,18 @@ textarea,
 }
 
 .rank-no {
-  background: rgba(0, 229, 255, 0.12);
-  border: 1px solid rgba(0, 229, 255, 0.32);
+  background: rgba(0, 200, 255, 0.12);
+  border: 1px solid rgba(0, 200, 255, 0.32);
   color: var(--cyan);
-  text-shadow: 0 0 8px rgba(0, 229, 255, 0.5);
+  text-shadow: 0 0 8px rgba(0, 200, 255, 0.5);
 }
 
 .spotlight-card.rank-1 .rank-no {
-  background: rgba(122, 92, 255, 0.22);
-  border-color: rgba(122, 92, 255, 0.55);
+  background: rgba(168, 85, 247, 0.22);
+  border-color: rgba(168, 85, 247, 0.55);
   color: var(--purple-2);
   font-size: 14px;
-  text-shadow: 0 0 10px rgba(122, 92, 255, 0.6);
+  text-shadow: 0 0 10px rgba(168, 85, 247, 0.6);
 }
 
 .group-tag {
@@ -668,14 +676,14 @@ textarea,
   gap: 12px;
   padding: 12px 16px;
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(0, 229, 255, 0.09);
+  border: 1px solid rgba(0, 200, 255, 0.09);
   background: var(--bg-strong);
   transition: box-shadow 160ms ease, transform 160ms ease;
 }
 
 .leader-row:hover {
   transform: translateX(3px);
-  box-shadow: 0 0 18px rgba(0, 229, 255, 0.14);
+  box-shadow: 0 0 18px rgba(0, 200, 255, 0.14);
 }
 
 .leader-left {
@@ -688,7 +696,7 @@ textarea,
   width: 44px;
   font: 800 18px/1 "Orbitron", monospace;
   color: var(--cyan);
-  text-shadow: 0 0 10px rgba(0, 229, 255, 0.45);
+  text-shadow: 0 0 10px rgba(0, 200, 255, 0.45);
 }
 
 /* 金銀銅 */
@@ -734,17 +742,17 @@ textarea,
 
 /* Tier 左邊框 + 微底色 */
 .leader-row.group-A1 {
-  border-left: 3px solid rgba(0, 229, 255, 0.75);
+  border-left: 3px solid rgba(0, 200, 255, 0.75);
   background: linear-gradient(90deg, rgba(0,229,255,0.06) 0%, var(--bg-strong) 28%);
 }
 
 .leader-row.group-A2 {
-  border-left: 3px solid rgba(0, 255, 198, 0.65);
+  border-left: 3px solid rgba(16, 245, 180, 0.65);
   background: linear-gradient(90deg, rgba(0,255,198,0.06) 0%, var(--bg-strong) 28%);
 }
 
 .leader-row.group-B {
-  border-left: 3px solid rgba(77, 163, 255, 0.55);
+  border-left: 3px solid rgba(75, 159, 255, 0.55);
 }
 
 .leader-row.group-C {
@@ -762,7 +770,7 @@ textarea,
   padding: 18px;
   min-height: 190px;
   border-radius: var(--radius);
-  border: 1px solid rgba(0, 229, 255, 0.10);
+  border: 1px solid rgba(0, 200, 255, 0.10);
   background: var(--bg-strong);
   transition: box-shadow 200ms ease, transform 200ms ease;
   position: relative;
@@ -786,16 +794,16 @@ textarea,
 
 /* A1 — 電光藍 + 紫（最亮，高單主力） */
 .group-A1 {
-  border-color: rgba(122, 92, 255, 0.52);
+  border-color: rgba(168, 85, 247, 0.52);
   background: linear-gradient(
     160deg,
-    rgba(0, 229, 255, 0.12) 0%,
-    rgba(122, 92, 255, 0.11) 38%,
-    rgba(6, 12, 28, 0.97) 68%
+    rgba(0, 200, 255, 0.12) 0%,
+    rgba(168, 85, 247, 0.11) 38%,
+    rgba(2, 6, 18, 0.97) 68%
   );
   box-shadow:
-    0 0 45px rgba(0, 229, 255, 0.11),
-    0 0 75px rgba(122, 92, 255, 0.09),
+    0 0 45px rgba(0, 200, 255, 0.11),
+    0 0 75px rgba(168, 85, 247, 0.09),
     inset 0 1px 0 rgba(0,229,255,0.14);
   animation: glowBreathA1 4s ease-in-out infinite;
 }
@@ -806,11 +814,11 @@ textarea,
 
 /* A2 — 青綠 + 藍綠（續單收割） */
 .group-A2 {
-  border-color: rgba(0, 255, 198, 0.42);
-  background: linear-gradient(160deg, rgba(0, 255, 198, 0.13) 0%, rgba(6, 12, 28, 0.97) 62%);
+  border-color: rgba(16, 245, 180, 0.42);
+  background: linear-gradient(160deg, rgba(16, 245, 180, 0.13) 0%, rgba(2, 6, 18, 0.97) 62%);
   box-shadow:
-    0 0 40px rgba(0, 255, 198, 0.09),
-    0 0 65px rgba(0, 229, 255, 0.06),
+    0 0 40px rgba(16, 245, 180, 0.09),
+    0 0 65px rgba(0, 200, 255, 0.06),
     inset 0 1px 0 rgba(0,255,198,0.12);
   animation: glowBreathA2 4.5s ease-in-out infinite;
 }
@@ -821,9 +829,9 @@ textarea,
 
 /* B — 中藍（一般量單） */
 .group-B {
-  border-color: rgba(77, 163, 255, 0.32);
-  background: linear-gradient(160deg, rgba(77, 163, 255, 0.11) 0%, rgba(6, 12, 28, 0.97) 62%);
-  box-shadow: 0 0 32px rgba(77, 163, 255, 0.08), inset 0 1px 0 rgba(77,163,255,0.08);
+  border-color: rgba(75, 159, 255, 0.32);
+  background: linear-gradient(160deg, rgba(75, 159, 255, 0.11) 0%, rgba(2, 6, 18, 0.97) 62%);
+  box-shadow: 0 0 32px rgba(75, 159, 255, 0.08), inset 0 1px 0 rgba(77,163,255,0.08);
   animation: glowBreathB 5s ease-in-out infinite;
 }
 
@@ -834,7 +842,7 @@ textarea,
 /* C — 灰藍（補位觀察） */
 .group-C {
   border-color: rgba(92, 111, 145, 0.30);
-  background: linear-gradient(160deg, rgba(92, 111, 145, 0.09) 0%, rgba(6, 12, 28, 0.97) 62%);
+  background: linear-gradient(160deg, rgba(92, 111, 145, 0.09) 0%, rgba(2, 6, 18, 0.97) 62%);
   box-shadow: 0 0 22px rgba(92, 111, 145, 0.06), inset 0 1px 0 rgba(92,111,145,0.06);
 }
 
@@ -856,17 +864,17 @@ textarea,
 
 .group-A1 .group-head strong {
   color: var(--cyan);
-  text-shadow: 0 0 12px rgba(0, 229, 255, 0.45);
+  text-shadow: 0 0 12px rgba(0, 200, 255, 0.45);
 }
 
 .group-A2 .group-head strong {
   color: var(--teal);
-  text-shadow: 0 0 12px rgba(0, 255, 198, 0.40);
+  text-shadow: 0 0 12px rgba(16, 245, 180, 0.40);
 }
 
 .group-B .group-head strong {
   color: var(--blue);
-  text-shadow: 0 0 10px rgba(77, 163, 255, 0.35);
+  text-shadow: 0 0 10px rgba(75, 159, 255, 0.35);
 }
 
 .group-C .group-head strong {
@@ -904,22 +912,22 @@ textarea,
 }
 
 .member-chip:hover {
-  box-shadow: 0 0 10px rgba(0, 229, 255, 0.22);
+  box-shadow: 0 0 10px rgba(0, 200, 255, 0.22);
 }
 
 .group-A1 .member-chip {
-  background: rgba(0, 229, 255, 0.07);
-  border-color: rgba(0, 229, 255, 0.22);
+  background: rgba(0, 200, 255, 0.07);
+  border-color: rgba(0, 200, 255, 0.22);
 }
 
 .group-A2 .member-chip {
-  background: rgba(0, 255, 198, 0.07);
-  border-color: rgba(0, 255, 198, 0.20);
+  background: rgba(16, 245, 180, 0.07);
+  border-color: rgba(16, 245, 180, 0.20);
 }
 
 .group-B .member-chip {
-  background: rgba(77, 163, 255, 0.06);
-  border-color: rgba(77, 163, 255, 0.18);
+  background: rgba(75, 159, 255, 0.06);
+  border-color: rgba(75, 159, 255, 0.18);
 }
 
 .group-C .member-chip {
@@ -974,7 +982,7 @@ textarea,
 .ranking-table th,
 .ranking-table td {
   padding: 12px 12px;
-  border-bottom: 1px solid rgba(0, 229, 255, 0.07);
+  border-bottom: 1px solid rgba(0, 200, 255, 0.07);
   text-align: left;
   white-space: nowrap;
   font-size: 13px;
@@ -989,14 +997,14 @@ textarea,
 }
 
 .ranking-table tr:hover {
-  background: rgba(0, 229, 255, 0.04);
+  background: rgba(0, 200, 255, 0.04);
 }
 
 .ranking-table td:first-child {
   font-family: "Orbitron", monospace;
   font-weight: 800;
   color: var(--cyan);
-  text-shadow: 0 0 8px rgba(0, 229, 255, 0.35);
+  text-shadow: 0 0 8px rgba(0, 200, 255, 0.35);
 }
 
 .table-name {
@@ -1007,15 +1015,15 @@ textarea,
 
 /* ── 25b. Ranking Table Tier Row Colors ─────────────────── */
 .ranking-table .row-A1 {
-  border-left: 3px solid rgba(0, 229, 255, 0.70);
+  border-left: 3px solid rgba(0, 200, 255, 0.70);
   background: linear-gradient(90deg, rgba(0,229,255,0.05) 0%, transparent 24%);
 }
 .ranking-table .row-A2 {
-  border-left: 3px solid rgba(0, 255, 198, 0.60);
+  border-left: 3px solid rgba(16, 245, 180, 0.60);
   background: linear-gradient(90deg, rgba(0,255,198,0.04) 0%, transparent 24%);
 }
 .ranking-table .row-B {
-  border-left: 3px solid rgba(77, 163, 255, 0.48);
+  border-left: 3px solid rgba(75, 159, 255, 0.48);
   background: linear-gradient(90deg, rgba(77,163,255,0.04) 0%, transparent 24%);
 }
 .ranking-table .row-C {
@@ -1024,7 +1032,7 @@ textarea,
 
 .ranking-table .row-A2 td:first-child {
   color: var(--teal);
-  text-shadow: 0 0 8px rgba(0, 255, 198, 0.40);
+  text-shadow: 0 0 8px rgba(16, 245, 180, 0.40);
 }
 .ranking-table .row-B td:first-child {
   color: var(--blue);
@@ -1039,18 +1047,18 @@ textarea,
 .advice-card {
   overflow: hidden;
   border-radius: var(--radius);
-  border: 1px solid rgba(0, 229, 255, 0.10);
+  border: 1px solid rgba(0, 200, 255, 0.10);
   background: var(--bg-strong);
   transition: box-shadow 160ms ease;
 }
 
-.advice-card.group-A1 { border-color: rgba(0, 229, 255, 0.22); }
-.advice-card.group-A2 { border-color: rgba(0, 255, 198, 0.18); }
-.advice-card.group-B  { border-color: rgba(77, 163, 255, 0.15); }
+.advice-card.group-A1 { border-color: rgba(0, 200, 255, 0.22); }
+.advice-card.group-A2 { border-color: rgba(16, 245, 180, 0.18); }
+.advice-card.group-B  { border-color: rgba(75, 159, 255, 0.15); }
 .advice-card.group-C  { border-color: rgba(92, 111, 145, 0.12); }
 
 .advice-card:hover {
-  box-shadow: 0 0 18px rgba(0, 229, 255, 0.10);
+  box-shadow: 0 0 18px rgba(0, 200, 255, 0.10);
 }
 
 .advice-card summary {
@@ -1067,7 +1075,7 @@ textarea,
 }
 
 .advice-card summary:hover {
-  background: rgba(0, 229, 255, 0.04);
+  background: rgba(0, 200, 255, 0.04);
 }
 
 .advice-card summary::-webkit-details-marker { display: none; }
@@ -1088,13 +1096,13 @@ textarea,
   0%, 100% {
     box-shadow:
       var(--shadow),
-      0 0 30px rgba(0, 229, 255, 0.05),
+      0 0 30px rgba(0, 200, 255, 0.05),
       inset 0 1px 0 rgba(255,255,255,0.05);
   }
   50% {
     box-shadow:
       var(--shadow),
-      0 0 55px rgba(0, 229, 255, 0.12),
+      0 0 55px rgba(0, 200, 255, 0.12),
       inset 0 1px 0 rgba(255,255,255,0.08);
   }
 }
@@ -1123,14 +1131,14 @@ textarea,
 @keyframes glowBreathA1 {
   0%, 100% {
     box-shadow:
-      0 0 40px rgba(0, 229, 255, 0.10),
-      0 0 70px rgba(122, 92, 255, 0.08),
+      0 0 40px rgba(0, 200, 255, 0.10),
+      0 0 70px rgba(168, 85, 247, 0.08),
       inset 0 1px 0 rgba(0,229,255,0.11);
   }
   50% {
     box-shadow:
-      0 0 65px rgba(0, 229, 255, 0.20),
-      0 0 110px rgba(122, 92, 255, 0.15),
+      0 0 65px rgba(0, 200, 255, 0.20),
+      0 0 110px rgba(168, 85, 247, 0.15),
       inset 0 1px 0 rgba(0,229,255,0.16);
   }
 }
@@ -1138,20 +1146,20 @@ textarea,
 /* A2 青綠呼吸 */
 @keyframes glowBreathA2 {
   0%, 100% {
-    box-shadow: 0 0 35px rgba(0, 255, 198, 0.08), inset 0 1px 0 rgba(0,255,198,0.09);
+    box-shadow: 0 0 35px rgba(16, 245, 180, 0.08), inset 0 1px 0 rgba(0,255,198,0.09);
   }
   50% {
-    box-shadow: 0 0 58px rgba(0, 255, 198, 0.16), inset 0 1px 0 rgba(0,255,198,0.13);
+    box-shadow: 0 0 58px rgba(16, 245, 180, 0.16), inset 0 1px 0 rgba(0,255,198,0.13);
   }
 }
 
 /* B 藍色呼吸 */
 @keyframes glowBreathB {
   0%, 100% {
-    box-shadow: 0 0 26px rgba(77, 163, 255, 0.06), inset 0 1px 0 rgba(77,163,255,0.06);
+    box-shadow: 0 0 26px rgba(75, 159, 255, 0.06), inset 0 1px 0 rgba(77,163,255,0.06);
   }
   50% {
-    box-shadow: 0 0 44px rgba(77, 163, 255, 0.13), inset 0 1px 0 rgba(77,163,255,0.10);
+    box-shadow: 0 0 44px rgba(75, 159, 255, 0.13), inset 0 1px 0 rgba(77,163,255,0.10);
   }
 }
 
