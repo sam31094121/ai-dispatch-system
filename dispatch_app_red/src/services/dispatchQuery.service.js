@@ -12,10 +12,25 @@ const {
 const { validateDispatchReport } = require('./dispatchValidate.service');
 const { formatTaipeiTimestamp } = require('../utils/date.util');
 
+function resolveStorageRoot() {
+  if (process.env.DISPATCH_REPORT_STORAGE_ROOT) {
+    return path.resolve(process.env.DISPATCH_REPORT_STORAGE_ROOT);
+  }
+
+  return path.join(__dirname, '..', '..', 'data', 'dispatch-reports-v1');
+}
+
 const storagePaths = {
-  root: path.join(__dirname, '..', '..', 'data', 'dispatch-reports-v1'),
-  reportsDir: path.join(__dirname, '..', '..', 'data', 'dispatch-reports-v1', 'reports'),
-  latestFile: path.join(__dirname, '..', '..', 'data', 'dispatch-reports-v1', 'latest.json')
+  root: resolveStorageRoot(),
+  reportsDir: path.join(resolveStorageRoot(), 'reports'),
+  latestFile: path.join(resolveStorageRoot(), 'latest.json')
+};
+
+const storageCache = {
+  hydrated: false,
+  records: [],
+  latestById: new Map(),
+  latestRecord: null
 };
 
 function createAppError(code, status, message, errors = []) {
@@ -67,9 +82,48 @@ function wrapStoredRecord(report, meta = {}) {
   };
 }
 
-function listAllStoredRecords() {
-  ensureStorageDirs();
+function sortStoredRecords(records) {
+  return [...records].sort((left, right) => {
+    const timeDelta = String(right.report.updatedAt || '').localeCompare(String(left.report.updatedAt || ''));
+    if (timeDelta !== 0) return timeDelta;
+    return Number(right.report.version || 0) - Number(left.report.version || 0);
+  });
+}
 
+function buildStorageIndex(records, latestRecord = null) {
+  const sortedRecords = sortStoredRecords(records);
+  const latestById = new Map();
+
+  sortedRecords.forEach((record) => {
+    if (!latestById.has(record.report.reportId)) {
+      latestById.set(record.report.reportId, record);
+    }
+  });
+
+  return {
+    hydrated: true,
+    records: sortedRecords,
+    latestById,
+    latestRecord: latestRecord?.report?.reportId ? latestRecord : sortedRecords[0] || null
+  };
+}
+
+function applyStorageIndex(index) {
+  storageCache.hydrated = index.hydrated;
+  storageCache.records = index.records;
+  storageCache.latestById = index.latestById;
+  storageCache.latestRecord = index.latestRecord;
+  return storageCache;
+}
+
+function resetStorageCache() {
+  storageCache.hydrated = false;
+  storageCache.records = [];
+  storageCache.latestById = new Map();
+  storageCache.latestRecord = null;
+}
+
+function scanStoredRecords() {
   return fs
     .readdirSync(storagePaths.reportsDir, { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
@@ -80,12 +134,23 @@ function listAllStoredRecords() {
         .filter((fileName) => /^v\d+\.json$/u.test(fileName))
         .map((fileName) => readJson(path.join(reportDir, fileName)))
         .filter((record) => record?.report?.reportId);
-    })
-    .sort((left, right) => {
-      const timeDelta = String(right.report.updatedAt || '').localeCompare(String(left.report.updatedAt || ''));
-      if (timeDelta !== 0) return timeDelta;
-      return Number(right.report.version || 0) - Number(left.report.version || 0);
     });
+}
+
+function hydrateStorageCache() {
+  if (storageCache.hydrated) return storageCache;
+
+  ensureStorageDirs();
+  const latestRecord = readJson(storagePaths.latestFile);
+  return applyStorageIndex(buildStorageIndex(scanStoredRecords(), latestRecord));
+}
+
+function listAllStoredRecords() {
+  return hydrateStorageCache().records;
+}
+
+function getLatestStoredRecord() {
+  return hydrateStorageCache().latestRecord;
 }
 
 function persistStoredRecord(storedRecord, updateLatest = true) {
@@ -95,22 +160,31 @@ function persistStoredRecord(storedRecord, updateLatest = true) {
   if (updateLatest) {
     writeJson(storagePaths.latestFile, storedRecord);
   }
+
+  const nextRecords = [
+    storedRecord,
+    ...listAllStoredRecords().filter(
+      (record) => !(record.report.reportId === report.reportId && Number(record.report.version) === Number(report.version))
+    )
+  ];
+  const nextLatestRecord = updateLatest ? storedRecord : getLatestStoredRecord();
+  applyStorageIndex(buildStorageIndex(nextRecords, nextLatestRecord));
   return storedRecord.report;
 }
 
 function findLatestRecordById(reportId) {
-  const records = listAllStoredRecords().filter((record) => record.report.reportId === reportId);
-  return records[0] || null;
+  return hydrateStorageCache().latestById.get(reportId) || null;
 }
 
 function ensureSeededLatest() {
   ensureStorageDirs();
-  const latest = readJson(storagePaths.latestFile);
+  const latest = getLatestStoredRecord();
   if (latest?.report?.reportId) return latest;
 
   const records = listAllStoredRecords();
   if (records.length > 0) {
     writeJson(storagePaths.latestFile, records[0]);
+    applyStorageIndex(buildStorageIndex(records, records[0]));
     return records[0];
   }
 
@@ -235,14 +309,7 @@ function listReports(query = {}) {
   const auditResult = String(query.auditResult || '').trim().toUpperCase();
   const keyword = String(query.keyword || '').trim();
 
-  const latestById = new Map();
-  listAllStoredRecords().forEach((record) => {
-    if (!latestById.has(record.report.reportId)) {
-      latestById.set(record.report.reportId, record.report);
-    }
-  });
-
-  const filtered = [...latestById.values()].filter((report) => {
+  const filtered = [...hydrateStorageCache().latestById.values()].map((record) => record.report).filter((report) => {
     if (status && report.status !== status) return false;
     if (settlementDate && report.settlementDate !== settlementDate) return false;
     if (dispatchDate && report.dispatchDate !== dispatchDate) return false;
@@ -345,6 +412,7 @@ module.exports = {
   getTop10,
   getValidationForReport,
   listReports,
+  resetStorageCache,
   rebuildReport,
   saveNewReport,
   saveReportVersion

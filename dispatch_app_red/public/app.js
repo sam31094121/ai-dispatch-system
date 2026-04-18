@@ -51,13 +51,15 @@ function fmt(value) {
   return numberFormatter.format(Number(value || 0));
 }
 
-function countUp(el, target, duration = 650) {
+function countUp(el, target, duration = 800) {
   const numTarget = Number(target || 0);
   if (!numTarget) { el.textContent = numberFormatter.format(0); return; }
   const t0 = performance.now();
+  
   function tick(now) {
     const p = Math.min((now - t0) / duration, 1);
-    const ease = 1 - (1 - p) ** 3;
+    // Quintic out easing for a much smoother feel
+    const ease = 1 - Math.pow(1 - p, 5);
     el.textContent = numberFormatter.format(Math.round(numTarget * ease));
     if (p < 1) requestAnimationFrame(tick);
     else el.textContent = numberFormatter.format(numTarget);
@@ -412,6 +414,7 @@ function clearInputOnly() {
 }
 
 async function init() {
+  console.log("%c Zhaogui AI System %c Optimized Entry Sequence Activated ", "background: #00F2FF; color: #000; font-weight: bold; border-radius: 3px 0 0 3px; padding: 2px 4px;", "background: #111; color: #00F2FF; border-radius: 0 3px 3px 0; padding: 2px 4px; border: 1px solid #00F2FF;");
   renderRules();
   await loadCurrent();
 }

@@ -3,47 +3,40 @@
    ║   未來感 / AI控制台 / 戰情室 / 霓虹流光 / 呼吸動畫      ║
    ╚══════════════════════════════════════════════════════════╝ */
 
-/* ── 1. CSS 變數 ─────────────────────────────────────────── */
-:root {
   /* 背景 */
-  --bg-main:   #050816;
-  --bg-panel:  rgba(8, 17, 34, 0.78);
-  --bg-strong: rgba(6, 12, 28, 0.96);
+  --bg-main:   #02040a;
+  --bg-panel:  rgba(6, 11, 25, 0.72);
+  --bg-strong: rgba(4, 8, 18, 0.94);
+  --bg-glass:  rgba(255, 255, 255, 0.03);
 
   /* 文字 */
-  --text:     #EAFBFF;
-  --text-sub: #9CC3D5;
-  --text-dim: #4A6A7A;
+  --text:     #F0F9FF;
+  --text-sub: #A5C0D0;
+  --text-dim: #547182;
 
   /* 科技主色 */
-  --cyan:      #00E5FF;
-  --cyan-2:    #33F3FF;
-  --purple:    #7A5CFF;
-  --purple-2:  #9A7BFF;
-  --teal:      #00FFC6;
-  --teal-2:    #00FFB3;
-  --blue:      #4DA3FF;
-  --gray-blue: #5C6F91;
-
-  /* 狀態色 */
-  --pass:   #00FF88;
-  --pass-2: #00D96F;
-  --fail:   #FF3B5C;
-  --warn:   #FFD166;
-
+  --cyan:      #00F2FF;
+  --cyan-glow: rgba(0, 242, 255, 0.5);
+  --purple:    #8265FF;
+  --purple-glow: rgba(130, 101, 255, 0.4);
+  --teal:      #00FFD5;
+  --teal-glow: rgba(0, 255, 213, 0.4);
+  --blue:      #52A8FF;
+  
   /* 分級主色 */
-  --a1-c: #00E5FF;
-  --a2-c: #00FFC6;
-  --b-c:  #4DA3FF;
-  --c-c:  #5C6F91;
+  --a1-c: #00F2FF;
+  --a2-c: #00FFD5;
+  --b-c:  #52A8FF;
+  --c-c:  #6B84A3;
 
   /* 尺寸 */
-  --radius:    16px;
-  --radius-sm: 10px;
-  --radius-lg: 24px;
+  --radius:    14px;
+  --radius-sm: 8px;
+  --radius-lg: 20px;
 
   /* 陰影 */
-  --shadow: 0 28px 70px rgba(0, 0, 0, 0.60);
+  --shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
+  --glow-soft: 0 0 20px rgba(0, 242, 255, 0.08);
 }
 
 /* ── 2. Reset ───────────────────────────────────────────── */
@@ -54,26 +47,46 @@ body {
   margin: 0;
   min-height: 100vh;
   color: var(--text);
-  font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
-  background:
-    radial-gradient(ellipse 90% 50% at 10% 0%,   rgba(0, 229, 255, 0.11), transparent),
-    radial-gradient(ellipse 70% 45% at 88% 5%,   rgba(122, 92, 255, 0.10), transparent),
-    radial-gradient(ellipse 60% 55% at 50% 100%, rgba(0, 255, 198, 0.07), transparent),
-    linear-gradient(135deg, #050816 0%, #081122 45%, #0B1020 100%);
+  font-family: "Sora", "Noto Sans TC", sans-serif;
+  background-color: var(--bg-main);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(0, 242, 255, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(130, 101, 255, 0.08) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(0, 255, 213, 0.05) 0px, transparent 50%);
+  overflow-x: hidden;
 }
 
-/* 科技掃描網格 */
-body::before {
-  content: "";
+.vfx-layer {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 0;
+  z-index: -1;
+}
+
+.vfx-layer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
   background-image:
-    linear-gradient(rgba(0, 229, 255, 0.024) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 229, 255, 0.024) 1px, transparent 1px);
-  background-size: 40px 40px;
-  mask-image: linear-gradient(180deg, rgba(0,0,0,0.65) 0%, transparent 65%);
+    linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  mask-image: radial-gradient(circle at 50% 30%, black, transparent 80%);
+  animation: gridPulse 8s ease-in-out infinite;
+}
+
+.vfx-layer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.025;
+  mix-blend-mode: overlay;
+}
+
+@keyframes gridPulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.05); opacity: 0.8; }
 }
 
 /* ── 4. 頁面佈局 ─────────────────────────────────────────── */
@@ -93,13 +106,15 @@ body::before {
   overflow: hidden;
   border-radius: var(--radius-lg);
   background: var(--bg-panel);
-  border: 1px solid rgba(0, 229, 255, 0.20);
-  backdrop-filter: blur(16px);
-  box-shadow:
-    var(--shadow),
-    0 0 40px rgba(0, 229, 255, 0.07),
-    inset 0 1px 0 rgba(255, 255, 255, 0.07);
-  animation: glowBreath 4.5s ease-in-out infinite;
+  border: 1px solid rgba(0, 242, 255, 0.12);
+  backdrop-filter: blur(20px);
+  box-shadow: var(--shadow), var(--glow-soft);
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1), border-color 0.3s ease;
+}
+
+.panel:hover {
+  transform: translateY(-2px);
+  border-color: rgba(0, 242, 255, 0.25);
 }
 
 /* 卡片掃描光線 */
@@ -738,7 +753,9 @@ textarea,
 
 /* ── 21. 分級卡 Grid ───────────────────────────────────── */
 .groups-grid {
-  grid-template-columns: 1.35fr 1.1fr 1fr 0.92fr;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .group-card {
@@ -988,6 +1005,36 @@ textarea,
   gap: 8px;
 }
 
+/* ── 25b. Ranking Table Tier Row Colors ─────────────────── */
+.ranking-table .row-A1 {
+  border-left: 3px solid rgba(0, 229, 255, 0.70);
+  background: linear-gradient(90deg, rgba(0,229,255,0.05) 0%, transparent 24%);
+}
+.ranking-table .row-A2 {
+  border-left: 3px solid rgba(0, 255, 198, 0.60);
+  background: linear-gradient(90deg, rgba(0,255,198,0.04) 0%, transparent 24%);
+}
+.ranking-table .row-B {
+  border-left: 3px solid rgba(77, 163, 255, 0.48);
+  background: linear-gradient(90deg, rgba(77,163,255,0.04) 0%, transparent 24%);
+}
+.ranking-table .row-C {
+  border-left: 3px solid rgba(92, 111, 145, 0.35);
+}
+
+.ranking-table .row-A2 td:first-child {
+  color: var(--teal);
+  text-shadow: 0 0 8px rgba(0, 255, 198, 0.40);
+}
+.ranking-table .row-B td:first-child {
+  color: var(--blue);
+  text-shadow: none;
+}
+.ranking-table .row-C td:first-child {
+  color: var(--gray-blue);
+  text-shadow: none;
+}
+
 /* ── 26. Advice Cards ───────────────────────────────────── */
 .advice-card {
   overflow: hidden;
@@ -1116,9 +1163,24 @@ textarea,
 
 /* 數字進場 */
 @keyframes numFlash {
-  0%   { opacity: 0; transform: translateY(4px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0%   { opacity: 0; transform: scale(0.95); filter: blur(4px); }
+  100% { opacity: 1; transform: scale(1); filter: blur(0); }
 }
+
+/* 區塊進場 */
+.panel {
+  animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.workspace .panel:nth-child(2) { animation-delay: 0.1s; }
+.feedback-grid .panel:nth-child(1) { animation-delay: 0.2s; }
+.feedback-grid .panel:nth-child(2) { animation-delay: 0.3s; }
+.screen-first .panel { animation-delay: 0.4s; }
 
 .summary-card strong,
 .metric-chip strong,
@@ -1149,7 +1211,7 @@ textarea,
   }
 
   .groups-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* 維持 2x2 */
   }
 
   .metric-stack {

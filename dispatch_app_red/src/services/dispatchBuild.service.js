@@ -109,12 +109,17 @@ function normalizePlatform(platformInput = {}, fallbackName = '') {
 }
 
 function normalizeExcludedEmployees(value) {
+  const seen = new Set();
   return safeArray(value)
     .map((item) => ({
       name: splitNameTags(item?.name || item?.姓名).name,
       reason: cleanText(item?.reason || item?.原因 || '已離職')
     }))
-    .filter((item) => item.name);
+    .filter((item) => {
+      if (!item.name || seen.has(item.name)) return false;
+      seen.add(item.name);
+      return true;
+    });
 }
 
 function normalizeAudit(rawAudit = {}, fallbackResult = '') {
@@ -369,7 +374,7 @@ function splitSections(sourceText) {
       const trimmed = cleanText(line);
       if (!trimmed || /^[-─]{4,}$/u.test(trimmed)) return;
 
-      if (/^【[^】]+】$/u.test(trimmed)) {
+      if (/^【[^】]+】$/u.test(trimmed) || /^[一二三四五六七八九十]+、.+$/u.test(trimmed)) {
         currentKey = trimmed;
         if (!sections.has(currentKey)) sections.set(currentKey, []);
         return;
@@ -473,6 +478,11 @@ function parseGroupsSection(lines) {
   let currentGroup = '';
 
   safeArray(lines).forEach((line) => {
+    if (line.includes('審計列示')) {
+      currentGroup = '';
+      return;
+    }
+
     const groupKey = extractGroupKey(line);
     if (groupKey) {
       currentGroup = groupKey;
@@ -518,7 +528,11 @@ function parseAdviceSection(lines) {
     if (match) {
       flush();
       currentRank = Number(match[1]);
-      currentName = splitNameTags(match[2]).name;
+      const inline = cleanText(match[2]).match(/^([^：:]+)[：:](.+)$/u);
+      currentName = splitNameTags(inline?.[1] || match[2]).name;
+      if (inline?.[2]) {
+        buffer.push(cleanText(inline[2]));
+      }
       return;
     }
 
@@ -536,59 +550,62 @@ function parseSummaryBoardFromText(sectionLines, fullText) {
   const collected = {};
 
   for (const [alias, metric] of summaryMetricAliases.entries()) {
-    const match = source.match(new RegExp(`${escapeRegExp(alias)}\\s*[：:=＝]?\\s*(-?[\\d,，]+)`, 'u'));
+    const match = source.match(new RegExp(`${escapeRegExp(alias)}(?:】)?\\s*[：:=＝]?\\s*(-?[\\d,，]+)`, 'u'));
     if (match) collected[metric] = toNumber(match[1]);
   }
 
   return normalizeSummaryBoard(collected);
 }
 
-function parsePlatformsFromText(text) {
-  const lines = String(text || '')
-    .replace(/\r/g, '')
-    .split('\n')
-    .map((line) => cleanText(line))
-    .filter(Boolean);
+function parseAuditPlatformsFromLines(lines) {
+  const platforms = [];
+  let current = null;
 
-  return Object.entries(PLATFORM_NAME_TO_KEY)
-    .map(([platformName, platformKey]) => {
-      const lineIndex = lines.findIndex((line) => line.includes(platformName));
-      if (lineIndex < 0) return null;
+  safeArray(lines).forEach((line) => {
+    const platformName = Object.keys(PLATFORM_NAME_TO_KEY).find((name) => line.includes(name));
+    if (platformName && line.includes('總表')) {
+      current = {
+        platformKey: PLATFORM_NAME_TO_KEY[platformName],
+        platformName,
+        passed: /PASS|通過/u.test(line),
+        metrics: {}
+      };
+      platforms.push(current);
+      return;
+    }
 
-      const block = lines.slice(lineIndex, lineIndex + 8).join('\n');
-      const metrics = {};
-      AUDIT_METRICS.forEach((metric) => {
-        const match = block.match(new RegExp(`${escapeRegExp(metric)}\\s*[：:=＝]?\\s*(-?[\\d,，]+)`, 'u'));
-        if (match) metrics[metric] = toNumber(match[1]);
-      });
+    if (!current) return;
 
-      if (!Object.keys(metrics).length) return null;
+    AUDIT_METRICS.forEach((metric) => {
+      const match = line.match(new RegExp(`${escapeRegExp(metric)}\\s*[：:=＝]?\\s*(-?[\\d,，]+)`, 'u'));
+      if (match) current.metrics[metric] = toNumber(match[1]);
+    });
+  });
 
-      return normalizePlatform(
-        {
-          platformKey,
-          platformName,
-          passed: /PASS|通過/u.test(block),
-          metrics
-        },
-        platformName
-      );
-    })
-    .filter(Boolean);
+  return platforms.map((platform) => normalizePlatform(platform, platform.platformName)).filter(Boolean);
+}
+
+function sanitizeExcludedEmployeeSegment(segment) {
+  return cleanText(segment)
+    .replace(/(?:只列審計|審計列示|僅列審計).*/u, '')
+    .replace(/(?:不入正式派單|不入派單).*/u, '')
+    .replace(/[。；;]+$/u, '')
+    .replace(/[，,]+$/u, '')
+    .trim();
 }
 
 function parseExcludedEmployeesFromText(text) {
   const result = [];
-  const directMatch = cleanText(text).match(/已離職[:：]\s*([^\n。]+)/u);
+  const directMatch = cleanText(text).match(/已離職[:：]\s*([^\n]+)/u);
   if (directMatch) {
-    parseNamesFromText(directMatch[1]).forEach((name) => {
+    parseNamesFromText(sanitizeExcludedEmployeeSegment(directMatch[1])).forEach((name) => {
       result.push({ name, reason: '已離職' });
     });
   }
 
   const inlineMatch = cleanText(text).match(/已離職人員(.+?)只列審計/u);
   if (inlineMatch) {
-    parseNamesFromText(inlineMatch[1]).forEach((name) => {
+    parseNamesFromText(sanitizeExcludedEmployeeSegment(inlineMatch[1])).forEach((name) => {
       result.push({ name, reason: '已離職' });
     });
   }
@@ -596,7 +613,7 @@ function parseExcludedEmployeesFromText(text) {
   return result;
 }
 
-function parseAuditFromText(sourceText) {
+function parseAuditFromText(sourceText, auditLines = []) {
   const resultMatch = String(sourceText || '').match(/審計結果[^A-Z]*(PASS|FAIL)/u);
   const noteMatches = [
     ...String(sourceText || '').matchAll(/無漏算|無多算|無總盤衝突|無衝突|核對完成/gu)
@@ -605,36 +622,49 @@ function parseAuditFromText(sourceText) {
   return {
     result: cleanText(resultMatch?.[1] || '').toUpperCase() || 'FAIL',
     rule: DEFAULT_AUDIT_RULE,
-    platforms: parsePlatformsFromText(sourceText),
-    notes: uniqueTexts(noteMatches.map((match) => match[0])),
+    platforms: parseAuditPlatformsFromLines(auditLines),
+    notes: uniqueTexts([
+      ...noteMatches.map((match) => match[0]),
+      ...safeArray(auditLines).filter((line) => /未發現|格式異常|不影響/u.test(line))
+    ]),
     excludedEmployees: normalizeExcludedEmployees(parseExcludedEmployeesFromText(sourceText))
   };
 }
 
 function parseTextPayload(sourceText, options = {}) {
   const sections = splitSections(sourceText);
-  const sectionTitle = findSectionLines(sections, [['五'], ['派單順序']]);
-  const rankingLines = findSectionLines(sections, [['整合名次'], ['正式名次'], ['排行榜']]);
+  const auditLines = findSectionLines(sections, [['審計結論'], ['審計結果']]);
+  const rankingLines = findSectionLines(sections, [['正式名次'], ['整合名次'], ['排行榜']]);
+  const groupsLines = findSectionLines(sections, [['派單分級'], ['派單順序']]);
   const adviceLines = findSectionLines(sections, [['每人一句'], ['建議']]);
-  const finalConfirmations = findSectionLines(sections, [['最後確認']]);
+  const finalSectionLines = findSectionLines(sections, [['最後確認']]);
   const summaryLines = findSectionLines(sections, [['整合總盤'], ['總盤']]);
   const titleMatch = String(sourceText || '').match(/【([^】]*派單[^】]*)】/u);
 
   const extractedDates = extractDatesFromTitle(options.title || titleMatch?.[1] || '');
   const textSettlement = normalizeDateInput(options.settlementDate || extractedDates.settlementDate);
   const textDispatch = normalizeDateInput(options.dispatchDate || extractedDates.dispatchDate);
+  const shortTextIndex = finalSectionLines.findIndex((line) => line.startsWith('群組超精簡版'));
+  const shortTextLine =
+    shortTextIndex >= 0
+      ? cleanText(finalSectionLines[shortTextIndex].replace(/^群組超精簡版[:：]?\s*/u, '')) ||
+        cleanText(finalSectionLines[shortTextIndex + 1])
+      : '';
+  const finalConfirmations = finalSectionLines.filter(
+    (line) => !line.startsWith('群組超精簡版') && !line.startsWith('📣【')
+  );
 
   return {
     title: cleanText(options.title || titleMatch?.[1]),
     settlementDate: textSettlement,
     dispatchDate: textDispatch,
-    audit: parseAuditFromText(sourceText),
+    audit: parseAuditFromText(sourceText, auditLines),
     summaryBoard: parseSummaryBoardFromText(summaryLines, sourceText),
     rankings: parseRankingSection(rankingLines),
-    groups: parseGroupsSection(sectionTitle),
+    groups: parseGroupsSection(groupsLines),
     adviceList: parseAdviceSection(adviceLines),
     finalConfirmations,
-    groupShortText: '',
+    groupShortText: shortTextLine,
     sourceText
   };
 }

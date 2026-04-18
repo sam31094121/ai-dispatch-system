@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#b63a1b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="AI派單公告">
+  <meta name="format-detection" content="telephone=no">
+  <title>AI 派單公告手機版</title>
+  <meta name="description" content="員工手機專用的 AI 派單公告頁，適合 LINE 內開與儲存到手機查看。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800;900&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/mobile.css?v=20260417a">
+</head>
+<body>
+  <div class="mobile-shell">
+    <header class="hero-card" id="top">
+      <div class="hero-topline">
+        <span class="phone-badge">員工手機版</span>
+        <span class="phone-badge phone-badge-soft">LINE 專用畫面</span>
+      </div>
+      <p class="hero-kicker">AI Dispatch Report</p>
+      <h1 id="report-title">公告載入中</h1>
+      <p id="report-range" class="hero-range">請稍候，系統正在讀取正式公告。</p>
+
+      <div class="hero-status-row">
+        <div class="status-pill">
+          <span>審計結果</span>
+          <strong id="audit-result">-</strong>
+        </div>
+        <div class="status-pill">
+          <span>版本</span>
+          <strong id="report-version">-</strong>
+        </div>
+      </div>
+
+      <div class="hero-note">
+        <p id="hero-note-text">正式派單順序、分級、建議與群組精簡版，全部以後端正式公告為準。</p>
+      </div>
+    </header>
+
+    <nav class="section-nav" aria-label="頁面段落">
+      <a href="#lookup">找我</a>
+      <a href="#overview">總覽</a>
+      <a href="#top10">前 10 名</a>
+      <a href="#groups">分級</a>
+      <a href="#ranking">完整名次</a>
+      <a href="#short-text">群組版</a>
+    </nav>
+
+    <main class="content-stack">
+      <section class="panel-card" id="lookup">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Lookup</p>
+            <h2>我的快速查榜</h2>
+          </div>
+          <span class="panel-chip">手機快速定位</span>
+        </div>
+
+        <div class="lookup-controls">
+          <label class="search-field" for="employee-search">
+            <span>輸入姓名</span>
+            <input id="employee-search" type="text" inputmode="text" autocomplete="name" placeholder="例如：王梅慧">
+          </label>
+
+          <div class="lookup-actions">
+            <button id="save-search-button" class="text-button" type="button">記住姓名</button>
+            <button id="jump-ranking-button" class="text-button" type="button" disabled>定位名次</button>
+            <button id="clear-search-button" class="text-button text-button-muted" type="button">清除</button>
+          </div>
+        </div>
+
+        <div id="lookup-result" class="lookup-result"></div>
+      </section>
+
+      <section class="panel-card" id="overview">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Overview</p>
+            <h2>派單總覽</h2>
+          </div>
+          <span id="updated-at" class="panel-chip">更新中</span>
+        </div>
+        <div id="summary-grid" class="summary-grid"></div>
+      </section>
+
+      <section class="panel-card">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Spotlight</p>
+            <h2>前四名主卡</h2>
+          </div>
+        </div>
+        <div id="podium-grid" class="podium-grid"></div>
+      </section>
+
+      <section class="panel-card" id="top10">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Top 10</p>
+            <h2>正式前 10 名</h2>
+          </div>
+        </div>
+        <div id="top10-list" class="rank-list"></div>
+      </section>
+
+      <section class="panel-card" id="groups">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Groups</p>
+            <h2>A1 / A2 / B / C 分級</h2>
+          </div>
+        </div>
+        <div id="groups-grid" class="groups-grid"></div>
+      </section>
+
+      <section class="panel-card" id="ranking">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Ranking</p>
+            <h2>完整正式派單順序</h2>
+          </div>
+        </div>
+        <div id="ranking-list" class="ranking-list"></div>
+      </section>
+
+      <section class="panel-card" id="audit-section">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Audit</p>
+            <h2>審計列示</h2>
+          </div>
+        </div>
+        <div id="audit-notes" class="note-list"></div>
+        <div id="excluded-employees" class="excluded-list"></div>
+      </section>
+
+      <section class="panel-card" id="short-text">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Short Text</p>
+            <h2>群組超精簡版</h2>
+          </div>
+          <button id="copy-short-button" class="text-button" type="button">複製文字</button>
+        </div>
+        <textarea id="short-text-output" class="short-text-output" readonly></textarea>
+      </section>
+    </main>
+  </div>
+
+  <div class="bottom-actions">
+    <button id="share-button" class="action-button action-button-primary" type="button">分享連結</button>
+    <button id="copy-button" class="action-button" type="button">複製群組版</button>
+    <button id="top-button" class="action-button" type="button">回到頂部</button>
+  </div>
+
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <script src="/mobile.js?v=20260417a"></script>
+</body>
+</html>
