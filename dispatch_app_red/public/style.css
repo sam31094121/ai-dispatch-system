@@ -45,6 +45,13 @@
   /* 陰影/光暈 */
   --shadow:    0 32px 64px rgba(0, 0, 0, 0.78);
   --glow-soft: 0 0 28px rgba(0, 200, 255, 0.09);
+
+  /* 黃金科技 — 四階降梯 */
+  --gold-1:    #FFD060;   /* 冠軍金 */
+  --gold-2:    #E0C878;   /* 白金   */
+  --gold-3:    #C89040;   /* 銅金   */
+  --gold-4:    #A07030;   /* 暗銅   */
+  --gold-dim:  rgba(180, 130, 30, 0.28);
 }
 
 /* ── 2. Reset ───────────────────────────────────────────── */
@@ -531,75 +538,134 @@ textarea,
 }
 
 .spotlight-card {
-  padding: 20px;
+  padding: 22px;
   display: grid;
   gap: 14px;
-  min-height: 220px;
+  min-height: 230px;
   border-radius: var(--radius);
-  border: 1px solid rgba(0, 200, 255, 0.16);
-  background: var(--bg-strong);
-  box-shadow: 0 0 22px rgba(0, 200, 255, 0.06), inset 0 1px 0 rgba(0,229,255,0.07);
-  transition: box-shadow 200ms ease, transform 200ms ease;
+  border: 1px solid var(--gold-dim);
+  background:
+    linear-gradient(160deg, rgba(40, 28, 4, 0.45) 0%, transparent 50%),
+    var(--bg-strong);
+  box-shadow:
+    0 0 20px rgba(160, 110, 20, 0.07),
+    0 14px 36px rgba(0, 0, 0, 0.58),
+    inset 0 1px 0 rgba(255, 210, 80, 0.08);
+  transition: box-shadow 220ms ease, transform 220ms ease;
   position: relative;
   overflow: hidden;
 }
 
+/* 掃描光 — 金色版 */
 .spotlight-card::before {
   content: "";
   position: absolute;
   top: 0; left: -120%;
   width: 40%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(0,229,255,0.05), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 200, 50, 0.07), transparent);
   animation: scanLine 10s linear infinite;
   pointer-events: none;
 }
 
-.spotlight-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 0 40px rgba(0, 200, 255, 0.18), 0 12px 40px rgba(0,0,0,0.5);
+/* 右上角光源點 */
+.spotlight-card::after {
+  content: "";
+  position: absolute;
+  top: 0; right: 0;
+  width: 80px; height: 80px;
+  background: radial-gradient(circle at top right, rgba(255, 200, 50, 0.10) 0%, transparent 70%);
+  border-radius: 0 var(--radius) 0 0;
+  pointer-events: none;
 }
 
-/* #1 名 — 最亮、電光藍+紫 */
+.spotlight-card:hover {
+  transform: translateY(-4px) scale(1.006);
+  box-shadow:
+    0 0 50px rgba(200, 150, 30, 0.22),
+    0 18px 50px rgba(0, 0, 0, 0.65),
+    inset 0 1px 0 rgba(255, 210, 80, 0.18);
+}
+
+/* #1 名 — 冠軍金 */
 .spotlight-card.rank-1 {
   grid-column: span 2;
-  min-height: 280px;
-  border: 2px solid rgba(168, 85, 247, 0.55);
-  background: linear-gradient(
-    160deg,
-    rgba(0, 200, 255, 0.12) 0%,
-    rgba(168, 85, 247, 0.12) 35%,
-    rgba(2, 6, 18, 0.97) 65%
-  );
+  min-height: 295px;
+  border: 2px solid rgba(255, 200, 50, 0.62);
+  background:
+    linear-gradient(155deg,
+      rgba(255, 200, 50, 0.16) 0%,
+      rgba(200, 140, 10, 0.09) 30%,
+      rgba(2, 6, 18, 0.97) 65%
+    );
   box-shadow:
-    0 0 60px rgba(0, 200, 255, 0.14),
-    0 0 100px rgba(168, 85, 247, 0.10),
-    inset 0 1px 0 rgba(255,255,255,0.10);
-  animation: glowBreathA1 3.5s ease-in-out infinite;
+    0 0 70px rgba(255, 200, 50, 0.24),
+    0 0 130px rgba(255, 160, 20, 0.11),
+    0 22px 55px rgba(0, 0, 0, 0.74),
+    inset 0 1px 0 rgba(255, 225, 110, 0.42),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.65);
+  animation: glowBreathGold1 3.5s ease-in-out infinite;
 }
 
-/* #2 名 — 青綠 */
+/* #2 名 — 白金 */
 .spotlight-card.rank-2 {
-  border-color: rgba(16, 245, 180, 0.38);
-  background: linear-gradient(160deg, rgba(16, 245, 180, 0.11) 0%, rgba(6,12,28,0.96) 60%);
-  box-shadow: 0 0 36px rgba(16, 245, 180, 0.10), inset 0 1px 0 rgba(0,255,198,0.09);
+  border-color: rgba(224, 200, 120, 0.44);
+  background:
+    linear-gradient(155deg,
+      rgba(224, 200, 120, 0.11) 0%,
+      rgba(2, 6, 18, 0.97) 62%
+    );
+  box-shadow:
+    0 0 40px rgba(224, 200, 120, 0.15),
+    0 16px 40px rgba(0, 0, 0, 0.62),
+    inset 0 1px 0 rgba(255, 215, 100, 0.20);
+  animation: glowBreathGold2 4s ease-in-out infinite;
 }
 
-/* #3 名 — 紫藍 */
+/* #3 名 — 銅金 */
 .spotlight-card.rank-3 {
-  border-color: rgba(168, 85, 247, 0.32);
-  background: linear-gradient(160deg, rgba(168, 85, 247, 0.10) 0%, rgba(6,12,28,0.96) 60%);
-  box-shadow: 0 0 30px rgba(168, 85, 247, 0.09), inset 0 1px 0 rgba(168,85,247,0.08);
+  border-color: rgba(200, 144, 64, 0.38);
+  background:
+    linear-gradient(155deg,
+      rgba(200, 144, 64, 0.10) 0%,
+      rgba(2, 6, 18, 0.97) 62%
+    );
+  box-shadow:
+    0 0 30px rgba(200, 144, 64, 0.13),
+    0 12px 32px rgba(0, 0, 0, 0.58),
+    inset 0 1px 0 rgba(200, 150, 70, 0.17);
+  animation: glowBreathGold3 4.5s ease-in-out infinite;
 }
 
 .spotlight-card h3 {
   margin: 0;
   font: 800 clamp(20px, 1.8vw, 27px)/1.1 "Sora", "Noto Sans TC", sans-serif;
-  color: var(--text);
+  background: linear-gradient(130deg, #FFF8E8 40%, var(--gold-4) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
+/* 冠軍金名字 */
 .spotlight-card.rank-1 h3 {
   font-size: clamp(24px, 2.6vw, 34px);
-  background: linear-gradient(130deg, #EAFBFF 30%, var(--cyan) 60%, var(--purple-2));
+  background: linear-gradient(130deg, #FFFBE8 15%, var(--gold-1) 45%, var(--gold-3) 85%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 12px rgba(255, 200, 50, 0.38));
+}
+
+/* 白金 */
+.spotlight-card.rank-2 h3 {
+  background: linear-gradient(130deg, #FFFDF0 25%, var(--gold-2) 70%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 銅金 */
+.spotlight-card.rank-3 h3 {
+  background: linear-gradient(130deg, #FFF4DC 30%, var(--gold-3) 80%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -616,8 +682,22 @@ textarea,
   margin-top: 5px;
   font-family: "Orbitron", monospace;
   font-size: 15px;
-  color: var(--cyan);
-  text-shadow: 0 0 8px rgba(0, 200, 255, 0.40);
+  color: var(--gold-4);
+  text-shadow: 0 0 8px rgba(160, 110, 30, 0.35);
+}
+
+/* 各排名的數值金色降梯 */
+.spotlight-card.rank-1 .spotlight-grid-inner strong {
+  color: var(--gold-1);
+  text-shadow: 0 0 12px rgba(255, 200, 50, 0.55);
+}
+.spotlight-card.rank-2 .spotlight-grid-inner strong {
+  color: var(--gold-2);
+  text-shadow: 0 0 10px rgba(224, 200, 120, 0.40);
+}
+.spotlight-card.rank-3 .spotlight-grid-inner strong {
+  color: var(--gold-3);
+  text-shadow: 0 0 9px rgba(200, 144, 64, 0.38);
 }
 
 /* ── 18. Rank / Group Tags ─────────────────────────────── */
@@ -643,11 +723,24 @@ textarea,
 }
 
 .spotlight-card.rank-1 .rank-no {
-  background: rgba(168, 85, 247, 0.22);
-  border-color: rgba(168, 85, 247, 0.55);
-  color: var(--purple-2);
+  background: rgba(255, 200, 50, 0.20);
+  border-color: rgba(255, 200, 50, 0.62);
+  color: var(--gold-1);
   font-size: 14px;
-  text-shadow: 0 0 10px rgba(168, 85, 247, 0.6);
+  text-shadow: 0 0 10px rgba(255, 200, 50, 0.65);
+  box-shadow: 0 0 18px rgba(255, 200, 50, 0.22);
+}
+.spotlight-card.rank-2 .rank-no {
+  background: rgba(224, 200, 120, 0.15);
+  border-color: rgba(224, 200, 120, 0.44);
+  color: var(--gold-2);
+  text-shadow: 0 0 8px rgba(224, 200, 120, 0.50);
+}
+.spotlight-card.rank-3 .rank-no {
+  background: rgba(200, 144, 64, 0.14);
+  border-color: rgba(200, 144, 64, 0.40);
+  color: var(--gold-3);
+  text-shadow: 0 0 8px rgba(200, 144, 64, 0.45);
 }
 
 .group-tag {
@@ -1128,28 +1221,75 @@ textarea,
 }
 
 /* A1 藍紫呼吸 */
+/* 大卡黃金呼吸動畫 — 三階降梯 */
+@keyframes glowBreathGold1 {
+  0%, 100% {
+    box-shadow:
+      0 0 70px rgba(255, 200, 50, 0.24),
+      0 0 130px rgba(255, 160, 20, 0.11),
+      0 22px 55px rgba(0, 0, 0, 0.74),
+      inset 0 1px 0 rgba(255, 225, 110, 0.42),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.65);
+  }
+  50% {
+    box-shadow:
+      0 0 95px rgba(255, 200, 50, 0.38),
+      0 0 180px rgba(255, 160, 20, 0.18),
+      0 22px 55px rgba(0, 0, 0, 0.74),
+      inset 0 1px 0 rgba(255, 225, 110, 0.58),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.65);
+  }
+}
+@keyframes glowBreathGold2 {
+  0%, 100% {
+    box-shadow:
+      0 0 40px rgba(224, 200, 120, 0.15),
+      0 16px 40px rgba(0, 0, 0, 0.62),
+      inset 0 1px 0 rgba(255, 215, 100, 0.20);
+  }
+  50% {
+    box-shadow:
+      0 0 58px rgba(224, 200, 120, 0.26),
+      0 16px 40px rgba(0, 0, 0, 0.62),
+      inset 0 1px 0 rgba(255, 215, 100, 0.32);
+  }
+}
+@keyframes glowBreathGold3 {
+  0%, 100% {
+    box-shadow:
+      0 0 30px rgba(200, 144, 64, 0.13),
+      0 12px 32px rgba(0, 0, 0, 0.58),
+      inset 0 1px 0 rgba(200, 150, 70, 0.17);
+  }
+  50% {
+    box-shadow:
+      0 0 44px rgba(200, 144, 64, 0.22),
+      0 12px 32px rgba(0, 0, 0, 0.58),
+      inset 0 1px 0 rgba(200, 150, 70, 0.26);
+  }
+}
+
+/* 保留組別呼吸（分級卡用） */
 @keyframes glowBreathA1 {
   0%, 100% {
     box-shadow:
       0 0 40px rgba(0, 200, 255, 0.10),
       0 0 70px rgba(168, 85, 247, 0.08),
-      inset 0 1px 0 rgba(0,229,255,0.11);
+      inset 0 1px 0 rgba(0, 200, 255, 0.11);
   }
   50% {
     box-shadow:
       0 0 65px rgba(0, 200, 255, 0.20),
       0 0 110px rgba(168, 85, 247, 0.15),
-      inset 0 1px 0 rgba(0,229,255,0.16);
+      inset 0 1px 0 rgba(0, 200, 255, 0.16);
   }
 }
-
-/* A2 青綠呼吸 */
 @keyframes glowBreathA2 {
   0%, 100% {
-    box-shadow: 0 0 35px rgba(16, 245, 180, 0.08), inset 0 1px 0 rgba(0,255,198,0.09);
+    box-shadow: 0 0 35px rgba(16, 245, 180, 0.08), inset 0 1px 0 rgba(16, 245, 180, 0.09);
   }
   50% {
-    box-shadow: 0 0 58px rgba(16, 245, 180, 0.16), inset 0 1px 0 rgba(0,255,198,0.13);
+    box-shadow: 0 0 58px rgba(16, 245, 180, 0.16), inset 0 1px 0 rgba(16, 245, 180, 0.13);
   }
 }
 
