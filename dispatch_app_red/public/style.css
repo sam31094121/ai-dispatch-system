@@ -121,9 +121,12 @@ body {
   overflow: hidden;
   border-radius: var(--radius-lg);
   background: var(--bg-panel);
-  border: 1px solid rgba(0, 200, 255, 0.12);
-  backdrop-filter: blur(20px);
-  box-shadow: var(--shadow), var(--glow-soft);
+  border: 2.5px solid rgba(0, 200, 255, 0.35);
+  backdrop-filter: blur(25px);
+  box-shadow: 
+    var(--shadow), 
+    0 0 40px rgba(0, 200, 255, 0.15),
+    inset 0 0 15px rgba(0, 200, 255, 0.05);
   transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1), border-color 0.3s ease;
 }
 
@@ -219,9 +222,9 @@ body {
 .status-card {
   padding: 16px;
   border-radius: var(--radius);
-  border: 1px solid rgba(0, 200, 255, 0.22);
-  background: rgba(0, 200, 255, 0.05);
-  box-shadow: 0 0 20px rgba(0, 200, 255, 0.06);
+  border: 2px solid rgba(0, 200, 255, 0.38);
+  background: rgba(0, 200, 255, 0.08);
+  box-shadow: 0 0 25px rgba(0, 200, 255, 0.12);
 }
 
 .status-card span,
@@ -250,9 +253,9 @@ body {
 }
 
 .status-card-accent {
-  border-color: rgba(0, 255, 136, 0.35);
-  background: rgba(0, 255, 136, 0.07);
-  box-shadow: 0 0 22px rgba(0, 255, 136, 0.10);
+  border-color: rgba(0, 255, 136, 0.45);
+  background: rgba(0, 255, 136, 0.10);
+  box-shadow: 0 0 30px rgba(0, 255, 136, 0.15);
 }
 
 .status-card-accent strong {
@@ -424,12 +427,12 @@ textarea,
 .metric-chip,
 .summary-card {
   border-radius: var(--radius);
-  border: 1px solid rgba(0, 200, 255, 0.15);
+  border: 2px solid rgba(0, 200, 255, 0.28);
   background: var(--bg-strong);
   padding: 16px;
   box-shadow:
-    0 0 20px rgba(0, 200, 255, 0.05),
-    inset 0 1px 0 rgba(0, 200, 255, 0.09);
+    0 0 30px rgba(0, 200, 255, 0.12),
+    inset 0 1px 0 rgba(0, 200, 255, 0.15);
   transition: box-shadow 180ms ease;
 }
 
@@ -503,7 +506,7 @@ textarea,
   text-align: center;
   font: 900 clamp(24px, 3.5vw, 44px)/1 "Orbitron", monospace;
   letter-spacing: 0.12em;
-  border: 2px solid;
+  border: 3.5px solid;
   position: relative;
   overflow: hidden;
 }
@@ -543,15 +546,17 @@ textarea,
   gap: 14px;
   min-height: 230px;
   border-radius: var(--radius);
-  border: 1px solid var(--gold-dim);
+  border: 2px solid rgba(160, 110, 20, 0.32);
   background:
+    linear-gradient(43deg, transparent 44%, rgba(255,200,80,0.028) 55%, transparent 66%),
     linear-gradient(160deg, rgba(40, 28, 4, 0.45) 0%, transparent 50%),
     var(--bg-strong);
   box-shadow:
     0 0 20px rgba(160, 110, 20, 0.07),
     0 14px 36px rgba(0, 0, 0, 0.58),
-    inset 0 1px 0 rgba(255, 210, 80, 0.08);
-  transition: box-shadow 220ms ease, transform 220ms ease;
+    inset 0 1px 0 rgba(255, 210, 80, 0.10),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.42);
+  transition: box-shadow 260ms ease, transform 260ms ease;
   position: relative;
   overflow: hidden;
 }
@@ -578,20 +583,51 @@ textarea,
   pointer-events: none;
 }
 
+/* 右上角 — 各排名增強版 */
+.spotlight-card.rank-1::after {
+  width: 160px; height: 160px;
+  background:
+    linear-gradient(225deg, rgba(255,235,100,0.10) 0%, transparent 52%),
+    radial-gradient(circle at top right, rgba(255,215,60,0.22) 0%, transparent 62%);
+}
+.spotlight-card.rank-2::after {
+  width: 110px; height: 110px;
+  background: radial-gradient(circle at top right, rgba(224,200,120,0.17) 0%, transparent 65%);
+}
+.spotlight-card.rank-3::after {
+  width: 90px; height: 90px;
+  background: radial-gradient(circle at top right, rgba(200,150,70,0.14) 0%, transparent 65%);
+}
+
 .spotlight-card:hover {
-  transform: translateY(-4px) scale(1.006);
+  transform: perspective(900px) translateY(-6px) rotateX(1.5deg) scale(1.008);
   box-shadow:
-    0 0 50px rgba(200, 150, 30, 0.22),
-    0 18px 50px rgba(0, 0, 0, 0.65),
-    inset 0 1px 0 rgba(255, 210, 80, 0.18);
+    0 0 60px rgba(200, 150, 30, 0.28),
+    0 22px 56px rgba(0, 0, 0, 0.70),
+    inset 0 2px 0 rgba(255, 215, 90, 0.28),
+    inset 0 -1px 4px rgba(0, 0, 0, 0.50);
+}
+
+.spotlight-card.rank-1:hover {
+  transform: perspective(900px) translateY(-9px) rotateX(2deg) scale(1.01);
+  box-shadow:
+    0 0 115px rgba(255, 200, 50, 0.46),
+    0 0 210px rgba(255, 160, 20, 0.20),
+    0 32px 70px rgba(0, 0, 0, 0.82),
+    inset 0 2px 0 rgba(255, 242, 140, 0.80),
+    inset 2px 0 18px rgba(255, 200, 50, 0.09),
+    inset 0 -2px 8px rgba(0, 0, 0, 0.66);
 }
 
 /* #1 名 — 冠軍金 */
 .spotlight-card.rank-1 {
   grid-column: span 2;
   min-height: 295px;
-  border: 2px solid rgba(255, 200, 50, 0.62);
+  border: 3.5px solid rgba(255, 200, 50, 0.75);
   background:
+    linear-gradient(43deg, transparent 28%, rgba(255,235,100,0.065) 50%, transparent 68%),
+    linear-gradient(71deg, transparent 48%, rgba(255,210,55,0.038) 62%, transparent 78%),
+    radial-gradient(ellipse 72% 50% at 17% 13%, rgba(255,218,72,0.20) 0%, transparent 100%),
     linear-gradient(155deg,
       rgba(255, 200, 50, 0.16) 0%,
       rgba(200, 140, 10, 0.09) 30%,
@@ -601,8 +637,9 @@ textarea,
     0 0 70px rgba(255, 200, 50, 0.24),
     0 0 130px rgba(255, 160, 20, 0.11),
     0 22px 55px rgba(0, 0, 0, 0.74),
-    inset 0 1px 0 rgba(255, 225, 110, 0.42),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.65);
+    inset 0 2px 0 rgba(255, 242, 130, 0.58),
+    inset 2px 0 14px rgba(255, 200, 50, 0.05),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.60);
   animation: glowBreathGold1 3.5s ease-in-out infinite;
 }
 
@@ -610,6 +647,8 @@ textarea,
 .spotlight-card.rank-2 {
   border-color: rgba(224, 200, 120, 0.44);
   background:
+    linear-gradient(52deg, transparent 36%, rgba(224,200,120,0.052) 54%, transparent 70%),
+    radial-gradient(ellipse 62% 44% at 16% 12%, rgba(224,200,120,0.14) 0%, transparent 100%),
     linear-gradient(155deg,
       rgba(224, 200, 120, 0.11) 0%,
       rgba(2, 6, 18, 0.97) 62%
@@ -617,7 +656,8 @@ textarea,
   box-shadow:
     0 0 40px rgba(224, 200, 120, 0.15),
     0 16px 40px rgba(0, 0, 0, 0.62),
-    inset 0 1px 0 rgba(255, 215, 100, 0.20);
+    inset 0 2px 0 rgba(255, 220, 110, 0.34),
+    inset 0 -1px 4px rgba(0, 0, 0, 0.46);
   animation: glowBreathGold2 4s ease-in-out infinite;
 }
 
@@ -625,6 +665,8 @@ textarea,
 .spotlight-card.rank-3 {
   border-color: rgba(200, 144, 64, 0.38);
   background:
+    linear-gradient(57deg, transparent 40%, rgba(200,150,68,0.046) 56%, transparent 72%),
+    radial-gradient(ellipse 56% 40% at 14% 10%, rgba(200,150,70,0.12) 0%, transparent 100%),
     linear-gradient(155deg,
       rgba(200, 144, 64, 0.10) 0%,
       rgba(2, 6, 18, 0.97) 62%
@@ -632,7 +674,8 @@ textarea,
   box-shadow:
     0 0 30px rgba(200, 144, 64, 0.13),
     0 12px 32px rgba(0, 0, 0, 0.58),
-    inset 0 1px 0 rgba(200, 150, 70, 0.17);
+    inset 0 2px 0 rgba(210, 158, 78, 0.28),
+    inset 0 -1px 3px rgba(0, 0, 0, 0.42);
   animation: glowBreathGold3 4.5s ease-in-out infinite;
 }
 
@@ -1228,16 +1271,18 @@ textarea,
       0 0 70px rgba(255, 200, 50, 0.24),
       0 0 130px rgba(255, 160, 20, 0.11),
       0 22px 55px rgba(0, 0, 0, 0.74),
-      inset 0 1px 0 rgba(255, 225, 110, 0.42),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.65);
+      inset 0 2px 0 rgba(255, 242, 130, 0.58),
+      inset 2px 0 14px rgba(255, 200, 50, 0.05),
+      inset 0 -2px 6px rgba(0, 0, 0, 0.60);
   }
   50% {
     box-shadow:
       0 0 95px rgba(255, 200, 50, 0.38),
       0 0 180px rgba(255, 160, 20, 0.18),
       0 22px 55px rgba(0, 0, 0, 0.74),
-      inset 0 1px 0 rgba(255, 225, 110, 0.58),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.65);
+      inset 0 2px 0 rgba(255, 242, 130, 0.74),
+      inset 2px 0 18px rgba(255, 200, 50, 0.08),
+      inset 0 -2px 6px rgba(0, 0, 0, 0.64);
   }
 }
 @keyframes glowBreathGold2 {
@@ -1245,13 +1290,15 @@ textarea,
     box-shadow:
       0 0 40px rgba(224, 200, 120, 0.15),
       0 16px 40px rgba(0, 0, 0, 0.62),
-      inset 0 1px 0 rgba(255, 215, 100, 0.20);
+      inset 0 2px 0 rgba(255, 220, 110, 0.34),
+      inset 0 -1px 4px rgba(0, 0, 0, 0.46);
   }
   50% {
     box-shadow:
       0 0 58px rgba(224, 200, 120, 0.26),
       0 16px 40px rgba(0, 0, 0, 0.62),
-      inset 0 1px 0 rgba(255, 215, 100, 0.32);
+      inset 0 2px 0 rgba(255, 220, 110, 0.46),
+      inset 0 -1px 4px rgba(0, 0, 0, 0.50);
   }
 }
 @keyframes glowBreathGold3 {
@@ -1259,13 +1306,15 @@ textarea,
     box-shadow:
       0 0 30px rgba(200, 144, 64, 0.13),
       0 12px 32px rgba(0, 0, 0, 0.58),
-      inset 0 1px 0 rgba(200, 150, 70, 0.17);
+      inset 0 2px 0 rgba(210, 158, 78, 0.28),
+      inset 0 -1px 3px rgba(0, 0, 0, 0.42);
   }
   50% {
     box-shadow:
       0 0 44px rgba(200, 144, 64, 0.22),
       0 12px 32px rgba(0, 0, 0, 0.58),
-      inset 0 1px 0 rgba(200, 150, 70, 0.26);
+      inset 0 2px 0 rgba(210, 158, 78, 0.38),
+      inset 0 -1px 3px rgba(0, 0, 0, 0.46);
   }
 }
 
