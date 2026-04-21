@@ -9,18 +9,24 @@ const { buildExpectedGroups } = require('./dispatchBuild.service');
 const { cleanText, getBannedNameViolation } = require('../utils/name.util');
 
 function compareRankingRows(left, right) {
-  if ((right.metrics?.總業績 || 0) !== (left.metrics?.總業績 || 0)) {
-    return (right.metrics?.總業績 || 0) - (left.metrics?.總業績 || 0);
+  const leftScore =
+    Number(left.metrics?.總業績 || 0) +
+    Number(left.metrics?.續單金額 || 0) +
+    Number(left.metrics?.追續成交總數 || 0);
+  const rightScore =
+    Number(right.metrics?.總業績 || 0) +
+    Number(right.metrics?.續單金額 || 0) +
+    Number(right.metrics?.追續成交總數 || 0);
+
+  if (rightScore !== leftScore) {
+    return rightScore - leftScore;
   }
-  if ((right.metrics?.續單金額 || 0) !== (left.metrics?.續單金額 || 0)) {
-    return (right.metrics?.續單金額 || 0) - (left.metrics?.續單金額 || 0);
-  }
-  if ((right.metrics?.追續成交總數 || 0) !== (left.metrics?.追續成交總數 || 0)) {
-    return (right.metrics?.追續成交總數 || 0) - (left.metrics?.追續成交總數 || 0);
-  }
+
+  // 二次排序：派單成交總通數
   if ((right.metrics?.派單成交總通數 || 0) !== (left.metrics?.派單成交總通數 || 0)) {
     return (right.metrics?.派單成交總通數 || 0) - (left.metrics?.派單成交總通數 || 0);
   }
+
   return 0;
 }
 

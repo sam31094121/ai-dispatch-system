@@ -34,7 +34,7 @@ const SERVICE_NAME = 'AI 派單公告系統 API';
 const API_VERSION = 'v1';
 const TIMEZONE = 'Asia/Taipei';
 const DEFAULT_AUDIT_RULE = '先審計，後排序，再派單';
-const SORT_RULE_TEXT = '總業績 → 續單金額 → 追續成交總數 → 派單成交總通數';
+const SORT_RULE_TEXT = '總業績 + 續單金額 + 追續成交總數 (同權重版)';
 const FRONTEND_LOCK_RULES = Object.freeze([
   '後端唯一真實來源。',
   '前端只做畫面呈現，不做業務邏輯。',
