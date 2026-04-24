@@ -10,6 +10,7 @@ const refs = {
   btnLoad: $('btn-load'),
   btnAudit: $('btn-audit'),
   btnSave: $('btn-save'),
+  btnFix: $('btn-fix'),
   btnClear: $('btn-clear'),
   btnCopyCompact: $('btn-copy-compact'),
   rulesList: $('rules-list'),
@@ -36,7 +37,7 @@ refs.adviceList = $('advice-list');
 const LOCKED_RULES = [
   '後端唯一真實來源。',
   '前端只做顯示，不做運算。',
-  '排序固定：總業績 + 續單金額 + 追續成交總數 (同權重版)。',
+  '排序固定：總業績 → 續單金額 → 追續成交總數 → 派單成交總通數。',
   '已離職只列審計，不入正式派單。',
   'A1 / A2 / B / C 必須與正式名次完全一致。',
   '姓名必須完全正確，尤其禁止錯寫「徐華妤」。',
@@ -51,18 +52,28 @@ function fmt(value) {
   return numberFormatter.format(Number(value || 0));
 }
 
-function countUp(el, target, duration = 800) {
+function countUp(el, target, duration = 1200) {
   const numTarget = Number(target || 0);
   if (!numTarget) { el.textContent = numberFormatter.format(0); return; }
   const t0 = performance.now();
   
+  // 加入數值跳動感 VFX
+  el.style.textShadow = '0 0 15px var(--cyan)';
+  el.style.transition = 'transform 0.1s ease';
+
   function tick(now) {
     const p = Math.min((now - t0) / duration, 1);
-    // Quintic out easing for a much smoother feel
-    const ease = 1 - Math.pow(1 - p, 5);
+    // Exponential out easing
+    const ease = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
+    
     el.textContent = numberFormatter.format(Math.round(numTarget * ease));
-    if (p < 1) requestAnimationFrame(tick);
-    else el.textContent = numberFormatter.format(numTarget);
+    
+    if (p < 1) {
+      requestAnimationFrame(tick);
+    } else {
+      el.textContent = numberFormatter.format(numTarget);
+      el.style.textShadow = 'none';
+    }
   }
   requestAnimationFrame(tick);
 }
@@ -84,6 +95,72 @@ function safeHtml(value) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+// 進階優化：音效管理器 (專為 Cyber Command Center 設計)
+const AudioManager = {
+  ctx: null,
+  init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
+  play(freq, type = 'sine', duration = 0.1, vol = 0.1) {
+    this.init();
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+    gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start();
+    osc.stop(this.ctx.currentTime + duration);
+  },
+  click() { this.play(800, 'sine', 0.05, 0.05); },
+  success() { this.play(1200, 'triangle', 0.2, 0.08); },
+  error() { this.play(200, 'square', 0.3, 0.05); },
+  sweep() {
+    this.init();
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.frequency.setValueAtTime(100, this.ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(1000, this.ctx.currentTime + 0.5);
+    gain.gain.setValueAtTime(0.05, this.ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.5);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.5);
+  }
+};
+
+// 進階優化：即時監聽與 Debounce 機制
+let auditTimeout = null;
+function setupLiveAudit() {
+  refs.rawInput.addEventListener('input', () => {
+    refs.inputStatus.textContent = '掃描中...';
+    refs.inputStatus.className = 'badge badge-neutral ai-scanning-text';
+    
+    clearTimeout(auditTimeout);
+    auditTimeout = setTimeout(async () => {
+      const content = refs.rawInput.value.trim();
+      if (!content) {
+        refs.inputStatus.textContent = '等待輸入';
+        refs.inputStatus.className = 'badge badge-neutral';
+        return;
+      }
+      
+      AudioManager.click();
+      const { ok, payload } = await request('/api/smart-audit', {
+        method: 'POST',
+        body: JSON.stringify({ raw: content })
+      });
+      
+      if (ok && payload.data) {
+        renderValidation(payload.data);
+        refs.inputStatus.textContent = payload.data.validation.status === 'PASS' ? '掃描通過' : '結構異常';
+        refs.inputStatus.className = badgeClass(payload.data.validation.status);
+      }
+    }, 800);
+  });
 }
 
 async function request(url, options = {}) {
@@ -118,13 +195,15 @@ function renderRules() {
 function renderValidation(snapshot) {
   const validation = snapshot?.validation || {};
   const summary = validation.summary || {};
-  setBadge(refs.auditResultBadge, validation.status || 'PENDING', validation.status || '待檢查');
+  const status = validation.status || 'PENDING';
+  
+  setBadge(refs.auditResultBadge, status, status === 'PASS' ? '審計通過' : (status === 'FAIL' ? '檢查失敗' : '待檢查'));
 
   refs.validationSummary.innerHTML = `
     <div class="metric-stack">
       <div class="metric-chip">
         <span>審計結果</span>
-        <strong>${safeHtml(summary.審計結果 || validation.status || '-')}</strong>
+        <strong style="color: var(--${status === 'PASS' ? 'pass' : (status === 'FAIL' ? 'fail' : 'cyan')})">${safeHtml(summary.審計結果 || status)}</strong>
       </div>
       <div class="metric-chip">
         <span>正式人數</span>
@@ -142,8 +221,8 @@ function renderValidation(snapshot) {
   `;
 
   const issues = [
-    ...(validation.errors || []).map((text) => ({ tone: 'fail', text })),
-    ...(validation.warnings || []).map((text) => ({ tone: 'warn', text }))
+    ...(validation.errors || []).map((text) => ({ tone: 'fail', text, label: 'ERROR' })),
+    ...(validation.warnings || []).map((text) => ({ tone: 'warn', text, label: 'WARN' }))
   ];
 
   refs.validationIssues.replaceChildren(
@@ -151,18 +230,18 @@ function renderValidation(snapshot) {
       ? issues.map((item) => {
           const row = document.createElement('div');
           row.className = `issue-row ${item.tone}`;
-          row.textContent = item.text;
+          row.innerHTML = `<span class="issue-label">${item.label}</span> <span class="issue-text">${safeHtml(item.text)}</span>`;
           return row;
         })
       : [Object.assign(document.createElement('div'), {
           className: 'issue-row pass',
-          textContent: '後端審計通過，未發現矛盾。'
+          innerHTML: '<span class="issue-label">INFO</span> <span class="issue-text">後端審計通過，未發現矛盾。</span>'
         })])
   );
 }
 
 function renderHero(data, snapshot) {
-  const result = data?.審計結論?.結果 || 'FAIL';
+  const result = snapshot?.validation?.status || 'FAIL';
   const dates = data?.日期資訊 || {};
 
   refs.announcementTitle.textContent = data?.公告標題 || '尚未載入公告';
@@ -212,6 +291,7 @@ function renderSpotlight(rows) {
           <div><span>追續成交</span><strong>${safeHtml(fmt(row.追續成交總數))}</strong></div>
           <div><span>派單成交</span><strong>${safeHtml(fmt(row.派單成交總通數))}</strong></div>
         </div>
+        ${row.正式權重分數 ? `<div class="score-banner"><span class="score-label">正式權重分數</span><strong class="score-value">${safeHtml(fmt(row.正式權重分數))}</strong></div>` : ''}
       `;
       return card;
     })
@@ -305,6 +385,7 @@ function renderRankingTable(rows) {
         </div>
       </td>
       <td>${safeHtml(row.分級)}</td>
+      <td class="col-score">${row.正式權重分數 ? safeHtml(fmt(row.正式權重分數)) : '—'}</td>
       <td>${safeHtml(fmt(row.總業績))}</td>
       <td>${safeHtml(fmt(row.續單金額))}</td>
       <td>${safeHtml(fmt(row.追續成交總數))}</td>
@@ -360,24 +441,38 @@ async function loadCurrent() {
   }
 
   const snapshot = payload.data;
-  refs.rawInput.value = snapshot?.rawText || '';
+  refs.rawInput.value = '';
   render(snapshot);
   setBadge(refs.inputStatus, 'PASS', '已載入正式版');
 }
 
-async function auditCurrentInput() {
-  setBadge(refs.inputStatus, 'PENDING', '後端審計中');
+async function auditCurrentInput(options = {}) {
+  if (!options.suppressPending) {
+    setBadge(refs.inputStatus, 'PENDING', '後端審計中');
+  }
   const { ok, payload } = await request('/api/audit', {
     method: 'POST',
     body: JSON.stringify({ rawText: refs.rawInput.value })
   });
 
   if (!payload.data) {
-    setBadge(refs.inputStatus, 'FAIL', payload.message || '審計失敗');
+    if (options.overrideBadge) {
+      setBadge(refs.inputStatus, options.overrideBadge.status, options.overrideBadge.text);
+    } else {
+      setBadge(refs.inputStatus, 'FAIL', payload.message || '審計失敗');
+    }
     return;
   }
 
   render(payload.data);
+  if (options.fixData) {
+    renderFixReport(options.fixData);
+  }
+  if (options.overrideBadge) {
+    setBadge(refs.inputStatus, options.overrideBadge.status, options.overrideBadge.text);
+    return;
+  }
+
   setBadge(refs.inputStatus, ok ? 'PASS' : 'FAIL', payload.message || (ok ? '審計通過' : '審計失敗'));
 }
 
@@ -419,9 +514,134 @@ async function init() {
   await loadCurrent();
 }
 
+async function smartFixInput() {
+  const rawText = refs.rawInput.value.trim();
+  if (!rawText) {
+    setBadge(refs.inputStatus, 'FAIL', '輸入區為空，無法執行修復');
+    return;
+  }
+
+  setBadge(refs.inputStatus, 'PENDING', '智慧修復中...');
+  
+  // 視覺效果：加入掃描動效
+  refs.rawInput.classList.add('ai-scanning', 'ai-glow');
+
+  try {
+    const { ok, payload } = await request('/api/smart-fix', {
+      method: 'POST',
+      body: JSON.stringify({ rawText })
+    });
+    
+    // 移除動效
+    refs.rawInput.classList.remove('ai-scanning', 'ai-glow');
+
+    const fixData = payload.data;
+    if (!fixData) {
+      setBadge(refs.inputStatus, 'FAIL', payload.message || '修復失敗');
+      return;
+    }
+
+    // 回填正規化後的 JSON 到輸入區
+    if (fixData.fixedJson) {
+      refs.rawInput.value = fixData.fixedJson;
+    }
+
+    // 設定狀態燈號
+    const fixCount = fixData.fixCount || 0;
+    const remaining = fixData.remainingErrors || 0;
+    let badgeStatus = 'FAIL';
+    let badgeText = `未能自動修復，尚餘 ${remaining} 個錯誤`;
+    if (remaining === 0 && fixCount > 0) {
+      badgeStatus = 'PASS';
+      badgeText = `已修復 ${fixCount} 項，審計通過`;
+    } else if (remaining === 0) {
+      badgeStatus = 'PASS';
+      badgeText = '資料結構正常，無需修復';
+    } else if (fixCount > 0) {
+      badgeText = `已修復 ${fixCount} 項，尚餘 ${remaining} 個錯誤`;
+    }
+
+    // 自動觸發審計預覽
+    await auditCurrentInput({
+      suppressPending: true,
+      fixData,
+      overrideBadge: {
+        status: badgeStatus,
+        text: badgeText
+      }
+    });
+  } catch (error) {
+    console.error('[SmartFix] 前端呼叫異常:', error);
+    refs.rawInput.classList.remove('ai-scanning', 'ai-glow');
+    setBadge(refs.inputStatus, 'FAIL', '智慧修復過程發生錯誤');
+  }
+}
+
+/** 渲染修復報告面板到驗證區域 */
+function renderFixReport(fixData) {
+  const fixes = fixData.fixes || [];
+  const validation = fixData.validation || {};
+  const beforeValidation = fixData.beforeValidation || {};
+  const resolvedErrors = fixData.resolvedErrors || [];
+  const manualActions = fixData.manualActions || [];
+
+  // 修復摘要
+  const summaryHtml = `
+    <div class="fix-report-header">
+      <span class="fix-report-title">🔧 智慧修復報告</span>
+      <span class="badge ${fixes.length > 0 ? 'badge-pass' : 'badge-neutral'}">${fixes.length} 項修復</span>
+      <span class="badge ${resolvedErrors.length > 0 ? 'badge-pass' : 'badge-neutral'}">${resolvedErrors.length} 項矛盾解除</span>
+    </div>
+    <div class="fix-item">
+      <span class="fix-field">修復前</span>
+      <span class="fix-action">${safeHtml(beforeValidation.status || 'PENDING')}</span>
+      <span class="fix-detail">${safeHtml(String((beforeValidation.errors || []).length))} 個錯誤 / ${safeHtml(String((beforeValidation.warnings || []).length))} 個警告</span>
+    </div>
+    <div class="fix-item">
+      <span class="fix-field">修復後</span>
+      <span class="fix-action">${safeHtml(validation.status || 'PENDING')}</span>
+      <span class="fix-detail">${safeHtml(String((validation.errors || []).length))} 個錯誤 / ${safeHtml(String((validation.warnings || []).length))} 個警告</span>
+    </div>
+  `;
+
+  // 修復明細清單
+  const fixListHtml = fixes.length > 0
+    ? fixes.map(fix => `
+        <div class="fix-item">
+          <span class="fix-field">${safeHtml(fix.field)}</span>
+          <span class="fix-action">${safeHtml(fix.action)}</span>
+          <span class="fix-detail">${safeHtml(fix.detail)}</span>
+        </div>
+      `).join('')
+    : '<div class="fix-item fix-empty">所有欄位均已通過結構驗證，無需修復。</div>';
+
+  // 剩餘問題
+  const remainingHtml = (validation.errors || []).length > 0
+    ? `<div class="fix-remaining">
+        <span class="fix-remaining-label">⚠ 剩餘 ${validation.errors.length} 個錯誤需手動處理：</span>
+        ${(validation.errors || []).map(err =>
+          `<div class="issue-row fail"><span class="issue-label">MANUAL</span> <span class="issue-text">${safeHtml(err)}</span></div>`
+        ).join('')}
+       </div>`
+    : '';
+
+  const manualActionsHtml = manualActions.length > 0
+    ? `<div class="fix-remaining">
+        <span class="fix-remaining-label">🛠 建議下一步：</span>
+        ${manualActions.map((item) =>
+          `<div class="issue-row warn"><span class="issue-label">TODO</span> <span class="issue-text">${safeHtml(item.reason)} → ${safeHtml(item.suggestion)}</span></div>`
+        ).join('')}
+       </div>`
+    : '';
+
+  refs.validationIssues.innerHTML = summaryHtml + fixListHtml + remainingHtml + manualActionsHtml;
+}
+
+
 refs.btnLoad.addEventListener('click', loadCurrent);
 refs.btnAudit.addEventListener('click', auditCurrentInput);
 refs.btnSave.addEventListener('click', saveCurrentInput);
+refs.btnFix.addEventListener('click', smartFixInput);
 refs.btnClear.addEventListener('click', clearInputOnly);
 refs.btnCopyCompact.addEventListener('click', () => {
   copyCompactText().catch(() => {

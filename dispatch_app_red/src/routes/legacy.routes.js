@@ -13,6 +13,7 @@ const {
   saveReportVersion,
   resetStorageCache
 } = require('../services/dispatchQuery.service');
+const { smartFixRawInput } = require('../services/smartFix.service');
 const { formatTaipeiTimestamp } = require('../utils/date.util');
 
 const router = express.Router();
@@ -64,8 +65,8 @@ router.post('/audit', (req, res) => {
   try {
     const { report, validation } = parseDispatchDraft({ rawText, operator: 'WEB', source: 'audit' });
     const snapshot = getLegacySnapshot(report, validation, { persisted: false, source: 'audit' });
-    res.json({
-      success: true,
+    res.status(validation.ok ? 200 : 400).json({
+      success: validation.ok,
       message: validation.ok ? '審計通過' : '審計發現問題',
       data: snapshot
     });
@@ -106,6 +107,27 @@ router.post('/save', (req, res) => {
     res.json({ success: true, persisted: true, message: '正式版已存檔', data: snapshot });
   } catch (error) {
     fail(res, 400, error.message || '存檔失敗');
+  }
+});
+
+/* ── POST /api/smart-fix ─────────────────────────────────── */
+router.post('/smart-fix', (req, res) => {
+  const rawText = req.body?.rawText;
+  if (!rawText) { fail(res, 400, '缺少 rawText 欄位'); return; }
+
+  try {
+    const fixResult = smartFixRawInput(rawText);
+
+    res.json({
+      success: true,
+      message: fixResult.fixCount > 0
+        ? `智慧修復完成：${fixResult.fixCount} 項修復，剩餘 ${fixResult.remainingErrors} 個錯誤`
+        : '資料結構正常，無需修復',
+      data: fixResult
+    });
+  } catch (error) {
+    console.error('[SmartFix] 修復過程錯誤:', error);
+    fail(res, 400, error.message || '智慧修復失敗');
   }
 });
 

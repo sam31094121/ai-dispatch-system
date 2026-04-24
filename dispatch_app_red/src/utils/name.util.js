@@ -35,9 +35,24 @@ function getBannedNameViolation(value) {
   return BANNED_NAME_PATTERNS.find((rule) => rule.pattern.test(text)) || null;
 }
 
+function applyAutoFix(value) {
+  let text = cleanText(value);
+  if (!text) return '';
+
+  // 基於 BANNED_NAME_PATTERNS 的自動修正
+  // 例如：將所有符合 /徐華(?!妤)/ 的字串替換為「徐華妤」
+  text = text.replace(/徐華(?!妤)/gu, '徐華妤');
+
+  // 其他常見格式清理（全形空格轉半形、移除不可見字元）
+  text = text.replace(/\uff0c/g, ',').replace(/\uff1a/g, ':');
+  
+  return text;
+}
+
 module.exports = {
   cleanText,
   getBannedNameViolation,
+  applyAutoFix,
   normalizeName,
   normalizeStringArray,
   splitNameTags,

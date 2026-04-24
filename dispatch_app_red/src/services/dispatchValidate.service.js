@@ -9,22 +9,11 @@ const { buildExpectedGroups } = require('./dispatchBuild.service');
 const { cleanText, getBannedNameViolation } = require('../utils/name.util');
 
 function compareRankingRows(left, right) {
-  const leftScore =
-    Number(left.metrics?.總業績 || 0) +
-    Number(left.metrics?.續單金額 || 0) +
-    Number(left.metrics?.追續成交總數 || 0);
-  const rightScore =
-    Number(right.metrics?.總業績 || 0) +
-    Number(right.metrics?.續單金額 || 0) +
-    Number(right.metrics?.追續成交總數 || 0);
-
-  if (rightScore !== leftScore) {
-    return rightScore - leftScore;
-  }
-
-  // 二次排序：派單成交總通數
-  if ((right.metrics?.派單成交總通數 || 0) !== (left.metrics?.派單成交總通數 || 0)) {
-    return (right.metrics?.派單成交總通數 || 0) - (left.metrics?.派單成交總通數 || 0);
+  for (const metric of RANKING_METRICS) {
+    const delta = Number(right.metrics?.[metric] || 0) - Number(left.metrics?.[metric] || 0);
+    if (delta !== 0) {
+      return delta;
+    }
   }
 
   return 0;
@@ -62,6 +51,12 @@ function dedupeIssues(issues) {
     seen.add(key);
     return true;
   });
+}
+
+function buildCompactGroupLabel(groupKey) {
+  if (groupKey === 'B') return 'B組';
+  if (groupKey === 'C') return 'C組';
+  return groupKey;
 }
 
 function validateDispatchReport(report) {
@@ -221,6 +216,27 @@ function validateDispatchReport(report) {
     if (!rankingNameSet.has(name)) pushError('groups', `分級名單多出非正式派單人員：${name}`);
   });
 
+  const compactText = cleanText(report.groupShortText);
+  if (compactText) {
+    const top10Text = (report.rankings || [])
+      .slice(0, 10)
+      .map((row) => `${row.rank}${row.name}`)
+      .join(' ');
+
+    if (top10Text && !compactText.includes(`正式前10名：${top10Text}。`)) {
+      pushError('groupShortText', '群組超精簡版的正式前10名必須與正式名次一致');
+    }
+
+    const compactGroupMismatch = GROUP_KEYS.some((groupKey) => {
+      const names = expectedGroups[groupKey] || [];
+      const snippet = `${buildCompactGroupLabel(groupKey)}：${names.join('、')}。`;
+      return snippet && !compactText.includes(snippet);
+    });
+    if (compactGroupMismatch) {
+      pushError('groupShortText', '群組超精簡版的 A1 / A2 / B / C 必須與正式名次一致');
+    }
+  }
+
   const adviceNames = [];
   const adviceNameSet = new Set();
   (report.adviceList || []).forEach((entry, index) => {
@@ -280,15 +296,20 @@ function validateDispatchReport(report) {
     pushWarning('audit.excludedEmployees', '本輪未提供已離職列示資料');
   }
 
+  const status = errors.length === 0 ? 'PASS' : 'FAIL';
+  const validationSummary = createSummary(report);
+  validationSummary.審計結果 = status; // 強制同步為真實稽核狀態
+
   return {
     ok: errors.length === 0,
-    status: errors.length === 0 ? 'PASS' : 'FAIL',
+    status,
     errors: dedupeIssues(errors),
     warnings: dedupeIssues(warnings),
-    summary: createSummary(report)
+    summary: validationSummary
   };
 }
 
 module.exports = {
-  validateDispatchReport
+  validateDispatchReport,
+  compareRankingRows
 };

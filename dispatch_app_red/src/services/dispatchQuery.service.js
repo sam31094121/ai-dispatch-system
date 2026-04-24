@@ -7,7 +7,8 @@ const {
   buildReportFromSource,
   buildTop10Data,
   clone,
-  createDefaultSeedInput
+  createDefaultSeedInput,
+  syncNarrativeFields
 } = require('./dispatchBuild.service');
 const { validateDispatchReport } = require('./dispatchValidate.service');
 const { formatTaipeiTimestamp } = require('../utils/date.util');
@@ -216,33 +217,35 @@ function ensureSeededLatest() {
 }
 
 function getLatestReport() {
-  return ensureSeededLatest().report;
+  return syncNarrativeFields(clone(ensureSeededLatest().report));
 }
 
 function getReportById(reportId) {
   ensureSeededLatest();
-  return findLatestRecordById(reportId)?.report || null;
+  const report = findLatestRecordById(reportId)?.report || null;
+  return report ? syncNarrativeFields(clone(report)) : null;
 }
 
 function getValidationForReport(report) {
-  return validateDispatchReport(report);
+  return validateDispatchReport(syncNarrativeFields(clone(report)));
 }
 
 function saveNewReport(report, meta = {}) {
   ensureStorageDirs();
-  const existing = findLatestRecordById(report.reportId);
+  const normalizedReport = syncNarrativeFields(clone(report));
+  const existing = findLatestRecordById(normalizedReport.reportId);
   if (existing) {
     throw createAppError(errorCodes.DUPLICATE_REPORT, 409, '重複公告', [
-      { field: 'reportId', reason: `reportId ${report.reportId} 已存在` }
+      { field: 'reportId', reason: `reportId ${normalizedReport.reportId} 已存在` }
     ]);
   }
 
-  const validation = validateDispatchReport(report);
+  const validation = validateDispatchReport(normalizedReport);
   if (!validation.ok) {
     throw createAppError(errorCodes.VALIDATION_FAILED, 400, '資料驗證失敗', validation.errors);
   }
 
-  const storedRecord = wrapStoredRecord(report, meta);
+  const storedRecord = wrapStoredRecord(normalizedReport, meta);
   const persisted = persistStoredRecord(storedRecord, true);
   return {
     report: persisted,
@@ -252,12 +255,13 @@ function saveNewReport(report, meta = {}) {
 
 function saveReportVersion(report, meta = {}) {
   ensureStorageDirs();
-  const existing = findLatestRecordById(report.reportId);
+  const normalizedReport = syncNarrativeFields(clone(report));
+  const existing = findLatestRecordById(normalizedReport.reportId);
   const nextVersion = existing ? Number(existing.report.version || 1) + 1 : 1;
   const nextReport = {
-    ...clone(report),
+    ...normalizedReport,
     version: nextVersion,
-    createdAt: existing?.report?.createdAt || report.createdAt,
+    createdAt: existing?.report?.createdAt || normalizedReport.createdAt,
     updatedAt: formatTaipeiTimestamp()
   };
 

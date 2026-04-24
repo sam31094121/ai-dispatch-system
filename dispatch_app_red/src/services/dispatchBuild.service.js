@@ -79,6 +79,55 @@ function uniqueTexts(values) {
   return result;
 }
 
+const AUDIT_NOTE_INCLUDE_PATTERNS = [
+  /未發現/u,
+  /無漏算/u,
+  /無多算/u,
+  /無總盤衝突/u,
+  /無總表衝突/u,
+  /無衝突/u,
+  /退貨已列入/u,
+  /取消退貨/u,
+  /格式異常/u,
+  /不影響/u
+];
+
+const AUDIT_NOTE_EXCLUDE_PATTERNS = [
+  /^審計結果/u,
+  /^本輪依鎖死規則/u,
+  /^排序固定/u,
+  /總表核對通過/u,
+  /^(累積總派單數|累積派單總成交數|累積追續總成交數|當日續單金額|本月業績|追續單總金額|當日取消退貨)/u,
+  /^已離職[:：]/u,
+  /^已離職人員/u,
+  /^群組超精簡版/u,
+  /^📣【/u,
+  /^本輪最終結論如下[:：]?$/u,
+  /^\d{1,2}\/\d{1,2}\s*結算資料已核對完成/u,
+  /^\d{1,2}\/\d{1,2}\s*正式派單順序，以本則公告為準/u
+];
+
+function trimTrailingPunctuation(value) {
+  return cleanText(value).replace(/[。．！!？?；;]+$/u, '').trim();
+}
+
+function normalizeAuditNoteLine(value) {
+  const text = cleanText(value);
+  if (!text) return '';
+  if (AUDIT_NOTE_EXCLUDE_PATTERNS.some((pattern) => pattern.test(text))) return '';
+  if (!AUDIT_NOTE_INCLUDE_PATTERNS.some((pattern) => pattern.test(text))) return '';
+  return trimTrailingPunctuation(text);
+}
+
+function collectMeaningfulAuditNotes(values = []) {
+  return uniqueTexts(safeArray(values).map(normalizeAuditNoteLine).filter(Boolean));
+}
+
+function buildCompactAuditNotes(notes = []) {
+  const normalized = collectMeaningfulAuditNotes(notes).map(trimTrailingPunctuation);
+  return normalized.length ? normalized.join('；') : '無補充說明';
+}
+
 function normalizeMetricBag(source, metrics) {
   return Object.fromEntries(metrics.map((metric) => [metric, toNumber(source?.[metric])]));
 }
@@ -173,6 +222,7 @@ function normalizeRankingRow(row = {}, index = 0) {
         : tagged.isNew || marker.includes('新人'),
     group: cleanText(row.group || row.分級).toUpperCase(),
     metrics: {
+      正式權重分數: toNumber(firstDefined(metricsSource, ['正式權重分數', 'weightedScore', 'totalScore'])),
       總業績: toNumber(firstDefined(metricsSource, ['總業績', 'totalRevenue'])),
       續單金額: toNumber(firstDefined(metricsSource, ['續單金額', 'renewalRevenue'])),
       追續成交總數: toNumber(firstDefined(metricsSource, ['追續成交總數', 'renewalDeals', '追單'])),
@@ -216,22 +266,50 @@ function buildExpectedGroups(rankings) {
   return groups;
 }
 
-function syncGroups(rankings, providedGroups) {
-  const membership = new Map();
-  GROUP_KEYS.forEach((groupKey) => {
-    safeArray(providedGroups[groupKey]).forEach((name) => {
-      membership.set(name, groupKey);
-    });
-  });
+function compareRankingRows(left, right) {
+  for (const metric of RANKING_METRICS) {
+    const delta = Number(right.metrics?.[metric] || 0) - Number(left.metrics?.[metric] || 0);
+    if (delta !== 0) {
+      return delta;
+    }
+  }
+  return 0;
+}
 
-  const updatedRankings = safeArray(rankings).map((row) => ({
-    ...row,
-    group: row.group || membership.get(row.name) || ''
-  }));
+function resolveGroupByRank(rank) {
+  if (rank <= 4) return 'A1';
+  if (rank <= 10) return 'A2';
+  if (rank <= 17) return 'B';
+  return 'C';
+}
+
+function normalizeRankingOrder(rankings) {
+  return safeArray(rankings)
+    .map((row, index) => ({
+      ...row,
+      rank: Math.max(1, Math.trunc(toNumber(row.rank || index + 1)) || index + 1),
+      __sourceIndex: index
+    }))
+    .sort((left, right) => {
+      const rankingDelta = compareRankingRows(left, right);
+      if (rankingDelta !== 0) return rankingDelta;
+      if (left.rank !== right.rank) return left.rank - right.rank;
+      return left.__sourceIndex - right.__sourceIndex;
+    })
+    .map((row, index) => ({
+      ...row,
+      rank: index + 1,
+      group: resolveGroupByRank(index + 1)
+    }))
+    .map(({ __sourceIndex, ...row }) => row);
+}
+
+function syncGroups(rankings, providedGroups) {
+  const updatedRankings = normalizeRankingOrder(rankings);
 
   return {
     rankings: updatedRankings,
-    groups: hasProvidedGroups(providedGroups) ? providedGroups : buildExpectedGroups(updatedRankings)
+    groups: buildExpectedGroups(updatedRankings)
   };
 }
 
@@ -246,19 +324,12 @@ function syncAdvice(rankings, providedAdvice) {
     advice: row.advice || adviceMap.get(row.name)?.text || ''
   }));
 
-  const adviceList = safeArray(providedAdvice).length
-    ? safeArray(providedAdvice).map((entry) => ({
-        name: entry.name,
-        rank: entry.rank || updatedRankings.find((row) => row.name === entry.name)?.rank || 0,
-        group: entry.group || updatedRankings.find((row) => row.name === entry.name)?.group || '',
-        text: entry.text
-      }))
-    : updatedRankings.map((row) => ({
-        name: row.name,
-        rank: row.rank,
-        group: row.group,
-        text: row.advice
-      }));
+  const adviceList = updatedRankings.map((row) => ({
+    name: row.name,
+    rank: row.rank,
+    group: row.group,
+    text: row.advice
+  }));
 
   return {
     rankings: updatedRankings,
@@ -275,10 +346,23 @@ function resolveTitle(explicitTitle, fallbackTitle, settlementDate, dispatchDate
   return 'AI 派單公告';
 }
 
+function buildAuditStatusText(report) {
+  const platformCount = Array.isArray(report.audit?.platforms) ? report.audit.platforms.length : 0;
+  const auditStatus = cleanText(report.auditResult || report.audit?.result).toUpperCase();
+
+  if (!platformCount) {
+    return auditStatus === 'PASS' ? '審計資料已完成核對' : '審計資料待補齊';
+  }
+
+  if (auditStatus === 'PASS') {
+    return `${platformCount}平台總表全數核對通過`;
+  }
+
+  return `${platformCount}平台總表已完成核對，仍有異常待處理`;
+}
+
 function buildDefaultFinalConfirmations(report) {
-  const platformNote = report.audit.platforms.length
-    ? `${report.audit.platforms.length}平台總表全部通過`
-    : '審計資料已核對完成';
+  const platformNote = buildAuditStatusText(report);
   const excludedLine = report.audit.excludedEmployees.length
     ? `已離職人員${report.audit.excludedEmployees.map((entry) => entry.name).join('、')}只列審計，不入正式派單`
     : '';
@@ -298,14 +382,15 @@ function buildGroupShortText(report) {
     .map((row) => `${row.rank}${row.name}`)
     .join(' ');
 
-  const noteText = report.audit.notes.length ? report.audit.notes.join('、') : '無補充說明';
+  const noteText = buildCompactAuditNotes(report.audit.notes);
   const excluded = report.audit.excludedEmployees.length
     ? `已離職：${report.audit.excludedEmployees.map((entry) => entry.name).join('、')}，只列審計不入派單。`
     : '本輪無離職列示。';
+  const auditStatusText = buildAuditStatusText(report);
 
   return [
     `📣【AI 派單公告｜${formatMonthDay(report.settlementDate)} 結算 → ${formatMonthDay(report.dispatchDate)} 正式派單】`,
-    `審計 ${report.auditResult}，${report.audit.platforms.length}平台總表全數核對通過，${noteText}。`,
+    `審計 ${report.auditResult}，${auditStatusText}，${noteText}。`,
     excluded,
     top10Text ? `正式前10名：${top10Text}。` : '',
     `A1：${report.groups.A1.join('、')}。`,
@@ -316,6 +401,19 @@ function buildGroupShortText(report) {
   ]
     .filter(Boolean)
     .join('');
+}
+
+function syncNarrativeFields(report) {
+  if (!report || typeof report !== 'object') return report;
+
+  report.audit = report.audit || {};
+  report.audit.notes = collectMeaningfulAuditNotes([
+    ...safeArray(report.audit.notes),
+    ...safeArray(report.finalConfirmations)
+  ]);
+  report.finalConfirmations = buildDefaultFinalConfirmations(report);
+  report.groupShortText = buildGroupShortText(report);
+  return report;
 }
 
 function extractJsonCandidates(sourceText) {
@@ -613,19 +711,16 @@ function parseExcludedEmployeesFromText(text) {
   return result;
 }
 
-function parseAuditFromText(sourceText, auditLines = []) {
+function parseAuditFromText(sourceText, auditLines = [], extraNoteLines = []) {
   const resultMatch = String(sourceText || '').match(/審計結果[^A-Z]*(PASS|FAIL)/u);
-  const noteMatches = [
-    ...String(sourceText || '').matchAll(/無漏算|無多算|無總盤衝突|無衝突|核對完成/gu)
-  ];
 
   return {
     result: cleanText(resultMatch?.[1] || '').toUpperCase() || 'FAIL',
     rule: DEFAULT_AUDIT_RULE,
     platforms: parseAuditPlatformsFromLines(auditLines),
-    notes: uniqueTexts([
-      ...noteMatches.map((match) => match[0]),
-      ...safeArray(auditLines).filter((line) => /未發現|格式異常|不影響/u.test(line))
+    notes: collectMeaningfulAuditNotes([
+      ...safeArray(auditLines),
+      ...safeArray(extraNoteLines)
     ]),
     excludedEmployees: normalizeExcludedEmployees(parseExcludedEmployeesFromText(sourceText))
   };
@@ -658,7 +753,7 @@ function parseTextPayload(sourceText, options = {}) {
     title: cleanText(options.title || titleMatch?.[1]),
     settlementDate: textSettlement,
     dispatchDate: textDispatch,
-    audit: parseAuditFromText(sourceText, auditLines),
+    audit: parseAuditFromText(sourceText, auditLines, finalConfirmations),
     summaryBoard: parseSummaryBoardFromText(summaryLines, sourceText),
     rankings: parseRankingSection(rankingLines),
     groups: parseGroupsSection(groupsLines),
@@ -769,7 +864,7 @@ function flattenRanking(row) {
     renewalRevenue: row.metrics.續單金額,
     renewalDeals: row.metrics.追續成交總數,
     dispatchDeals: row.metrics.派單成交總通數,
-    totalScore: row.metrics.總業績,
+    weightedScore: row.metrics.正式權重分數 || 0,
     advice: row.advice
   };
 }
@@ -804,6 +899,7 @@ function toLegacyStandardData(report) {
       名次: row.rank,
       姓名: row.name,
       ...(row.isNew ? { 標記: '新人' } : {}),
+      正式權重分數: row.metrics.正式權重分數 || 0,
       總業績: row.metrics.總業績,
       續單金額: row.metrics.續單金額,
       追續成交總數: row.metrics.追續成交總數,
@@ -870,42 +966,43 @@ function buildLegacyValidation(validation) {
 }
 
 function buildLegacySnapshot(report, validation, options = {}) {
-  const legacyStandardData = toLegacyStandardData(report);
-  const executionId = buildExecutionId(report.updatedAt || report.createdAt);
+  const snapshotReport = syncNarrativeFields(clone(report));
+  const legacyStandardData = toLegacyStandardData(snapshotReport);
+  const executionId = buildExecutionId(snapshotReport.updatedAt || snapshotReport.createdAt);
 
   return {
     executionId,
-    completedAt: report.updatedAt,
+    completedAt: snapshotReport.updatedAt,
     operator: cleanText(options.operator || 'system'),
     source: cleanText(options.source || 'dispatch-report-v1'),
     persisted: Boolean(options.persisted),
-    status: report.status,
+    status: snapshotReport.status,
     systemName: SERVICE_NAME,
     systemVersion: API_VERSION,
-    rawText: report.sourceText,
+    rawText: snapshotReport.sourceText,
     standardData: legacyStandardData,
     validation: buildLegacyValidation(validation),
-    summary: buildSnapshotSummary(report),
-    presentation: buildPresentation(report),
-    ranking: report.rankings.map(flattenRanking),
-    groups: clone(report.groups),
+    summary: buildSnapshotSummary(snapshotReport),
+    presentation: buildPresentation(snapshotReport),
+    ranking: snapshotReport.rankings.map(flattenRanking),
+    groups: clone(snapshotReport.groups),
     audit: {
-      status: report.audit.result,
-      result: report.audit.result,
-      platforms: clone(report.audit.platforms),
-      notes: clone(report.audit.notes),
-      excludedEmployees: clone(report.audit.excludedEmployees)
+      status: snapshotReport.audit.result,
+      result: snapshotReport.audit.result,
+      platforms: clone(snapshotReport.audit.platforms),
+      notes: clone(snapshotReport.audit.notes),
+      excludedEmployees: clone(snapshotReport.audit.excludedEmployees)
     },
     confirmation: {
       status: validation.status,
       message: validation.ok ? '正式派單資料已通過驗證' : validation.errors[0]?.reason || '資料驗證失敗',
       errors: validation.errors.map((error) => error.reason)
     },
-    announcement: report.groupShortText,
+    announcement: snapshotReport.groupShortText,
     broadcast: {
-      title: report.title,
-      text: report.groupShortText,
-      scriptText: report.groupShortText
+      title: snapshotReport.title,
+      text: snapshotReport.groupShortText,
+      scriptText: snapshotReport.groupShortText
     },
     consistencyGuard: {
       status: validation.ok ? 'PASS' : 'FAIL',
@@ -924,8 +1021,8 @@ function buildLegacySnapshot(report, validation, options = {}) {
       frontendMayRewriteAudit: false
     },
     rules: clone(FRONTEND_LOCK_RULES),
-    reportId: report.reportId,
-    title: report.title
+    reportId: snapshotReport.reportId,
+    title: snapshotReport.title
   };
 }
 
@@ -964,11 +1061,14 @@ function formatNumber(value) {
 }
 
 module.exports = {
+  buildAuditStatusText,
+  buildDefaultFinalConfirmations,
   buildExpectedGroups,
   buildGroupShortText,
   buildGroupsData,
   buildHealthData,
   buildLegacySnapshot,
+  collectMeaningfulAuditNotes,
   buildPresentation,
   buildReportFromSource,
   buildSnapshotSummary,
@@ -977,5 +1077,6 @@ module.exports = {
   createDefaultSeedInput,
   createEmptyGroups,
   formatNumber,
+  syncNarrativeFields,
   toLegacyStandardData
 };
