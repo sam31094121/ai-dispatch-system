@@ -27,12 +27,11 @@ const refs = {
   groupsGrid: $('groups-grid'),
   retiredList: $('retired-list'),
   rankingTableBody: $('ranking-table-body'),
-  adviceList: $('adviceList'),
+  adviceList: $('advice-list'),
+  propAdviceGrid: $('prop-advice-grid'),
   compactOutput: $('compact-output'),
   pageSubtitle: $('page-subtitle')
 };
-
-refs.adviceList = $('advice-list');
 
 const LOCKED_RULES = [
   '後端唯一真實來源。',
@@ -396,18 +395,103 @@ function renderRankingTable(rows) {
 
 function renderAdvice(rows) {
   refs.adviceList.replaceChildren(
-    ...rows.map((row, index) => {
-      const detail = document.createElement('details');
-      detail.className = `advice-card group-${row.分級}`;
-      if (index < 4) detail.open = true;
-      detail.innerHTML = `
-        <summary>
-          <span>#${safeHtml(String(row.名次))} ${safeHtml(row.姓名)}</span>
-          <span>${safeHtml(row.分級)}</span>
-        </summary>
-        <p>${safeHtml(row.建議)}</p>
+    ...rows.map((row) => {
+      const card = document.createElement('article');
+      card.className = `advice-card group-${row.分級}`;
+      card.innerHTML = `
+        <div class="advice-header">
+          <div class="advice-rank-name">
+            <span class="advice-rank">#${safeHtml(String(row.名次))}</span>
+            <strong class="advice-name">${safeHtml(row.姓名)}</strong>
+            ${row.標記 ? `<span class="newbie-tag">${safeHtml(row.標記)}</span>` : ''}
+          </div>
+          <span class="advice-group-tag">${safeHtml(row.分級)}</span>
+        </div>
+        <p class="advice-text">${safeHtml(row.建議)}</p>
       `;
-      return detail;
+      return card;
+    })
+  );
+}
+
+const GROUP_COLOR = { A1: '#FFD060', A2: '#00FFC3', B: '#0EA5E9', C: '#64748B' };
+
+function autoProportionalAdvice(rows) {
+  if (!rows.length) return rows;
+  const withWs = rows.map(r => ({
+    ...r,
+    _ws: (r.正式權重分數 > 0 ? r.正式權重分數 :
+      (r.續單金額 * 50000000 + r.總業績 * 40000000 + r.追續成交總數 * 10000000))
+  }));
+  const sorted = [...withWs].sort((a, b) => b._ws - a._ws);
+  const wsRankOf = {};
+  sorted.forEach((p, i) => { wsRankOf[p.姓名] = i + 1; });
+
+  return withWs.map((row, idx) => {
+    if (row.建議 && row.建議.length > 20) return row;
+    const ws = row._ws;
+    const above = withWs[idx - 1];
+    const below = withWs[idx + 1];
+    const gapUp   = above ? ((above._ws - ws) / above._ws * 100).toFixed(1) : null;
+    const gapDown = below ? ((ws - below._ws) / ws * 100).toFixed(1) : null;
+    const wsr = wsRankOf[row.姓名];
+    const trank = row.名次;
+    const rc = row.續單金額 * 50000000;
+    const bc = row.總業績 * 40000000;
+    const dc = row.追續成交總數 * 10000000;
+    const tot = rc + bc + dc || 1;
+    const mainMetric = rc/tot > 0.45 ? '續單' : (dc/tot > 0.12 ? '追續成交' : '業績');
+    const dealCnt = row.追續成交總數;
+    let advice = '';
+    if (trank === 1) {
+      const lead = gapDown || '0';
+      advice = `你穩在榜首，但與第二名差距只有 ${lead}%，不算絕對安全。今天把${mainMetric}再補一筆，差距才能繼續拉開。榜首的位置靠守不住，靠今天繼續進攻才能穩。`;
+    } else if (trank <= 4) {
+      const rival = above ? above.姓名 : '';
+      const threat = parseFloat(gapDown || '100') < 15 ? `下面距你只有 ${gapDown}%，有被追上的壓力。` : `下面距你 ${gapDown}%，位置尚穩。`;
+      advice = `你跟${rival}差距 ${gapUp}%，${threat}今天把${mainMetric}當主方向，一筆有效成交就能縮短差距。前三不是你的終點，往前壓才是今天的任務。`;
+    } else if (trank <= 10) {
+      const wsNote = wsr < trank ? `你的權重排名第 ${wsr}，比傳統排名更靠前——` : '';
+      const threatNote = parseFloat(gapDown || '100') < 12 ? `下面緊咬，差距只有 ${gapDown}%。` : '';
+      advice = `你跟前一名差距 ${gapUp}%。${wsNote}${threatNote}今天把${mainMetric}集中突破，追續 ${dealCnt} 筆是你的槓桿，把努力轉成成交才能讓排名動起來。`;
+    } else if (trank <= 18) {
+      const wsNote = wsr !== trank ? `（權重實際排名第 ${wsr}）` : '';
+      advice = `你跟前一名差距 ${gapUp}%${wsNote}。今天以${mainMetric}為主攻，別讓排名固定太久——${dealCnt > 5 ? `追續 ${dealCnt} 筆代表你在努力，` : ''}一筆有效成交就能讓位置動起來。`;
+    } else {
+      const action = dealCnt > 2 ? `追續 ${dealCnt} 筆是你的起點，把接觸轉成成交` : '今天先讓一筆業績落地';
+      advice = `後段區有你，今天的目標只有一個：讓數字動。${action}，累積才是往前的路。不用看太遠，有一筆就是起點。`;
+    }
+    return { ...row, 建議: advice };
+  });
+}
+
+function renderProportionalAdvice(rows) {
+  const grid = refs.propAdviceGrid;
+  if (!grid) return;
+  const enriched = autoProportionalAdvice(rows);
+  grid.replaceChildren(
+    ...enriched.map((row) => {
+      const card = document.createElement('article');
+      const grpColor = GROUP_COLOR[row.分級] || '#fff';
+      card.className = `prop-card group-${row.分級}`;
+      card.innerHTML = `
+        <div class="prop-card-header">
+          <div class="prop-rank-name">
+            <span class="prop-rank">#${safeHtml(String(row.名次))}</span>
+            <strong class="prop-name">${safeHtml(row.姓名)}</strong>
+            ${row.標記 ? `<span class="newbie-tag">${safeHtml(row.標記)}</span>` : ''}
+          </div>
+          <span class="prop-group-tag" style="color:${grpColor};border-color:${grpColor}40">${safeHtml(row.分級)}</span>
+        </div>
+        ${row.正式權重分數 ? `<div class="prop-score">權重分數 <strong>${safeHtml(fmt(row.正式權重分數))}</strong></div>` : ''}
+        <div class="prop-metrics">
+          <span>業績 <strong>${safeHtml(fmt(row.總業績))}</strong></span>
+          <span>續單 <strong>${safeHtml(fmt(row.續單金額))}</strong></span>
+          <span>追續 <strong>${safeHtml(fmt(row.追續成交總數))}</strong></span>
+        </div>
+        <p class="prop-advice-text">${safeHtml(row.建議 || '')}</p>
+      `;
+      return card;
     })
   );
 }
@@ -429,6 +513,7 @@ function render(snapshot) {
   renderRetired(retired);
   renderRankingTable(data?.正式名次 || []);
   renderAdvice(data?.正式名次 || []);
+  renderProportionalAdvice(data?.正式名次 || []);
   refs.compactOutput.value = data?.群組超精簡版 || '';
 }
 

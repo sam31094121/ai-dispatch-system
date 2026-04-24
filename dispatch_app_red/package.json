@@ -6,8 +6,10 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "check": "node --check server.js && node --check shared/dispatch-engine.js && node --check shared/gemini.js && node scripts/check-dispatch-api.js",
-    "check:dispatch-api": "node scripts/check-dispatch-api.js"
+    "check": "npm run check:syntax && npm run check:api",
+    "check:api": "node scripts/check-dispatch-api.js",
+    "check:dispatch-api": "npm run check:api",
+    "check:syntax": "node --check server.js && node --check src/server.js && node --check src/app.js && node --check src/config/appConfig.js && node --check src/controllers/dispatchReport.controller.js && node --check src/routes/legacy.routes.js && node --check src/services/dispatchQuery.service.js && node --check shared/dispatch-engine.js && node --check shared/gemini.js"
   },
   "engines": {
     "node": ">=20"

@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { appConfig } = require('../config/appConfig');
 const errorCodes = require('../constants/errorCodes');
 const {
   buildGroupsData,
@@ -13,18 +14,10 @@ const {
 const { validateDispatchReport } = require('./dispatchValidate.service');
 const { formatTaipeiTimestamp } = require('../utils/date.util');
 
-function resolveStorageRoot() {
-  if (process.env.DISPATCH_REPORT_STORAGE_ROOT) {
-    return path.resolve(process.env.DISPATCH_REPORT_STORAGE_ROOT);
-  }
-
-  return path.join(__dirname, '..', '..', 'data', 'dispatch-reports-v1');
-}
-
 const storagePaths = {
-  root: resolveStorageRoot(),
-  reportsDir: path.join(resolveStorageRoot(), 'reports'),
-  latestFile: path.join(resolveStorageRoot(), 'latest.json')
+  root: appConfig.storageRoot,
+  reportsDir: path.join(appConfig.storageRoot, 'reports'),
+  latestFile: path.join(appConfig.storageRoot, 'latest.json')
 };
 
 const storageCache = {
@@ -33,6 +26,85 @@ const storageCache = {
   latestById: new Map(),
   latestRecord: null
 };
+
+const derivedCache = {
+  normalizedReports: new Map(),
+  validations: new Map(),
+  legacySnapshots: new Map(),
+  shortTexts: new Map(),
+  top10: new Map(),
+  groups: new Map(),
+  searchText: new Map()
+};
+
+function resetDerivedCache() {
+  Object.values(derivedCache).forEach((cache) => cache.clear());
+}
+
+function getReportCacheKey(report) {
+  if (!report || typeof report !== 'object') return '';
+
+  return [
+    String(report.reportId || ''),
+    String(report.version || ''),
+    String(report.updatedAt || ''),
+    String(report.createdAt || '')
+  ].join('::');
+}
+
+function getCachedValue(cache, key, factory) {
+  if (!key) return factory();
+  if (cache.has(key)) return cache.get(key);
+
+  const value = factory();
+  cache.set(key, value);
+  return value;
+}
+
+function getNormalizedReport(report) {
+  return getCachedValue(derivedCache.normalizedReports, getReportCacheKey(report), () => syncNarrativeFields(clone(report)));
+}
+
+function isValidationResult(value) {
+  return Boolean(
+    value &&
+    typeof value === 'object' &&
+    ('ok' in value || 'status' in value || Array.isArray(value.errors) || Array.isArray(value.warnings))
+  );
+}
+
+function buildValidationCacheKey(report, validation) {
+  const reportKey = getReportCacheKey(report);
+  const issues = Array.isArray(validation?.errors)
+    ? validation.errors.map((issue) => `${issue.field}:${issue.reason}`).join('|')
+    : '';
+
+  return `${reportKey}::${validation?.status || ''}::${issues}`;
+}
+
+function buildSnapshotCacheKey(report, validation, options) {
+  const normalizedOptions = {
+    operator: options?.operator || '',
+    source: options?.source || '',
+    persisted: Boolean(options?.persisted)
+  };
+
+  return `${buildValidationCacheKey(report, validation)}::${JSON.stringify(normalizedOptions)}`;
+}
+
+function getReportSearchText(report) {
+  return getCachedValue(derivedCache.searchText, getReportCacheKey(report), () =>
+    [
+      report.reportId,
+      report.title,
+      report.sourceText,
+      ...(report.rankings || []).map((row) => row.name),
+      ...(report.adviceList || []).map((row) => row.text)
+    ]
+      .filter(Boolean)
+      .join('\n')
+  );
+}
 
 function createAppError(code, status, message, errors = []) {
   const error = new Error(message);
@@ -83,10 +155,16 @@ function wrapStoredRecord(report, meta = {}) {
   };
 }
 
+function toComparableTs(str) {
+  if (!str) return 0;
+  const ts = Date.parse(String(str).replace(/\//g, '-').replace(' ', 'T'));
+  return isNaN(ts) ? 0 : ts;
+}
+
 function sortStoredRecords(records) {
   return [...records].sort((left, right) => {
-    const timeDelta = String(right.report.updatedAt || '').localeCompare(String(left.report.updatedAt || ''));
-    if (timeDelta !== 0) return timeDelta;
+    const tsDelta = toComparableTs(right.report.updatedAt) - toComparableTs(left.report.updatedAt);
+    if (tsDelta !== 0) return tsDelta;
     return Number(right.report.version || 0) - Number(left.report.version || 0);
   });
 }
@@ -114,6 +192,7 @@ function applyStorageIndex(index) {
   storageCache.records = index.records;
   storageCache.latestById = index.latestById;
   storageCache.latestRecord = index.latestRecord;
+  resetDerivedCache();
   return storageCache;
 }
 
@@ -122,6 +201,7 @@ function resetStorageCache() {
   storageCache.records = [];
   storageCache.latestById = new Map();
   storageCache.latestRecord = null;
+  resetDerivedCache();
 }
 
 function scanStoredRecords() {
@@ -143,6 +223,27 @@ function hydrateStorageCache() {
 
   ensureStorageDirs();
   const latestRecord = readJson(storagePaths.latestFile);
+  
+  // 智慧矛盾檢測：檢查 official-locks.js 是否有比伺服器緩存更新、更權威的數據
+  const officialLocks = require('../../shared/official-locks');
+  const officialKeys = Object.keys(officialLocks).filter(k => k.startsWith('OFFICIAL_'));
+  const latestOfficialKey = officialKeys.sort().reverse()[0];
+  const latestOfficial = officialLocks[latestOfficialKey];
+
+  if (latestOfficial && latestRecord) {
+    const officialDate = latestOfficial.reportDate || '';
+    const recordDate = latestRecord.report?.reportDate || '';
+    if (officialDate !== recordDate && officialDate.includes('04/')) {
+        console.log(`[CacheGuard] 檢測到日期矛盾 (Official: ${officialDate} vs Record: ${recordDate})，優先加載官方鎖定數據。`);
+        // 觸發自動同步流程
+        const parsedReport = buildReportFromSource({ sourceText: JSON.stringify(latestOfficial) });
+        const syncValidation = validateDispatchReport(parsedReport);
+        const snapshot = buildLegacySnapshot(parsedReport, syncValidation, { operator: 'system_auto_sync', persisted: true });
+        writeJson(storagePaths.latestFile, snapshot);
+        return applyStorageIndex(buildStorageIndex(scanStoredRecords(), snapshot));
+    }
+  }
+
   return applyStorageIndex(buildStorageIndex(scanStoredRecords(), latestRecord));
 }
 
@@ -217,22 +318,23 @@ function ensureSeededLatest() {
 }
 
 function getLatestReport() {
-  return syncNarrativeFields(clone(ensureSeededLatest().report));
+  return getNormalizedReport(ensureSeededLatest().report);
 }
 
 function getReportById(reportId) {
   ensureSeededLatest();
   const report = findLatestRecordById(reportId)?.report || null;
-  return report ? syncNarrativeFields(clone(report)) : null;
+  return report ? getNormalizedReport(report) : null;
 }
 
 function getValidationForReport(report) {
-  return validateDispatchReport(syncNarrativeFields(clone(report)));
+  const normalizedReport = getNormalizedReport(report);
+  return getCachedValue(derivedCache.validations, getReportCacheKey(normalizedReport), () => validateDispatchReport(normalizedReport));
 }
 
 function saveNewReport(report, meta = {}) {
   ensureStorageDirs();
-  const normalizedReport = syncNarrativeFields(clone(report));
+  const normalizedReport = getNormalizedReport(report);
   const existing = findLatestRecordById(normalizedReport.reportId);
   if (existing) {
     throw createAppError(errorCodes.DUPLICATE_REPORT, 409, '重複公告', [
@@ -255,7 +357,7 @@ function saveNewReport(report, meta = {}) {
 
 function saveReportVersion(report, meta = {}) {
   ensureStorageDirs();
-  const normalizedReport = syncNarrativeFields(clone(report));
+  const normalizedReport = getNormalizedReport(report);
   const existing = findLatestRecordById(normalizedReport.reportId);
   const nextVersion = existing ? Number(existing.report.version || 1) + 1 : 1;
   const nextReport = {
@@ -319,15 +421,7 @@ function listReports(query = {}) {
     if (dispatchDate && report.dispatchDate !== dispatchDate) return false;
     if (auditResult && String(report.auditResult || '').toUpperCase() !== auditResult) return false;
     if (keyword) {
-      const keywordMatched = [
-        report.reportId,
-        report.title,
-        report.sourceText,
-        ...report.rankings.map((row) => row.name),
-        ...report.adviceList.map((row) => row.text)
-      ]
-        .join('\n')
-        .includes(keyword);
+      const keywordMatched = getReportSearchText(report).includes(keyword);
       if (!keywordMatched) return false;
     }
     return true;
@@ -377,10 +471,10 @@ function getShortText(reportId) {
   if (!report) {
     throw createAppError(errorCodes.NOT_FOUND, 404, '查無資料');
   }
-  return {
+  return getCachedValue(derivedCache.shortTexts, getReportCacheKey(report), () => ({
     reportId: report.reportId,
     text: report.groupShortText
-  };
+  }));
 }
 
 function getTop10(reportId) {
@@ -388,7 +482,7 @@ function getTop10(reportId) {
   if (!report) {
     throw createAppError(errorCodes.NOT_FOUND, 404, '查無資料');
   }
-  return buildTop10Data(report);
+  return getCachedValue(derivedCache.top10, getReportCacheKey(report), () => buildTop10Data(report));
 }
 
 function getGroups(reportId) {
@@ -396,14 +490,24 @@ function getGroups(reportId) {
   if (!report) {
     throw createAppError(errorCodes.NOT_FOUND, 404, '查無資料');
   }
-  return buildGroupsData(report);
+  return getCachedValue(derivedCache.groups, getReportCacheKey(report), () => buildGroupsData(report));
 }
 
 function getLegacySnapshot(report, validationOrOptions = {}, options = {}) {
-  const hasOptions = options && Object.keys(options).length > 0;
-  const resolvedOptions = hasOptions ? options : validationOrOptions;
-  const validation = validateDispatchReport(report);
-  return buildLegacySnapshot(report, validation, resolvedOptions);
+  const normalizedReport = getNormalizedReport(report);
+  const explicitValidation = isValidationResult(validationOrOptions) ? validationOrOptions : null;
+  const resolvedOptions = options && Object.keys(options).length > 0
+    ? options
+    : explicitValidation
+      ? {}
+      : validationOrOptions;
+  const validation = explicitValidation || getValidationForReport(normalizedReport);
+
+  return getCachedValue(
+    derivedCache.legacySnapshots,
+    buildSnapshotCacheKey(normalizedReport, validation, resolvedOptions),
+    () => buildLegacySnapshot(normalizedReport, validation, resolvedOptions)
+  );
 }
 
 module.exports = {

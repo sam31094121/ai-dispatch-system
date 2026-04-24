@@ -598,11 +598,11 @@ function scoreReport(parsed) {
   const people = parsed.people.map((person) => {
     const breakdown = SCORE_WEIGHTS.map((weight) => {
       const value = metricValue(person, weight.key);
-      const ratio = maxima[weight.key] > 0 ? value / maxima[weight.key] : 0;
+      const maxValue = maxima[weight.key] || 0;
+      const ratio = maxValue > 0 ? value / maxValue : 0;
       
-      // 1000% 權重視角：採億級原始加權計分 (Metric * Weight)
-      // 若要符合 2.7 億規模，直接使用原始數值乘以權重
-      const rawWeightedScore = round(value * weight.weight, 2);
+      // 優化後的比例原則：(個人值 / 全體最高值) * 權重配點
+      const proportionalScore = round(ratio * weight.weight, 2);
       
       return {
         key: weight.key,
@@ -610,7 +610,7 @@ function scoreReport(parsed) {
         weight: weight.weight,
         value,
         ratio: round(ratio, 4),
-        score: rawWeightedScore // 切換為原始加權分
+        score: proportionalScore
       };
     });
 

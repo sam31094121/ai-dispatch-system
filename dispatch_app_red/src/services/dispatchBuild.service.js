@@ -254,10 +254,6 @@ function normalizeAdviceEntries(rawAdvice = []) {
     .filter((entry) => entry.name);
 }
 
-function hasProvidedGroups(groups) {
-  return GROUP_KEYS.some((groupKey) => (groups[groupKey] || []).length > 0);
-}
-
 function buildExpectedGroups(rankings) {
   const groups = createEmptyGroups();
   safeArray(rankings).forEach((row) => {
@@ -304,7 +300,7 @@ function normalizeRankingOrder(rankings) {
     .map(({ __sourceIndex, ...row }) => row);
 }
 
-function syncGroups(rankings, providedGroups) {
+function syncGroups(rankings, _providedGroups) {
   const updatedRankings = normalizeRankingOrder(rankings);
 
   return {
@@ -454,10 +450,6 @@ function unwrapSourcePayload(payload) {
   if (payload.report) return unwrapSourcePayload(payload.report);
   if (payload.standardData) return unwrapSourcePayload(payload.standardData);
   return null;
-}
-
-function looksLikeLegacyPayload(payload) {
-  return Boolean(payload?.公告標題 || payload?.正式名次 || payload?.整合總盤 || payload?.審計結論);
 }
 
 function splitSections(sourceText) {
@@ -954,8 +946,8 @@ function buildLegacyValidation(validation) {
   return {
     ok: validation.ok,
     status: validation.status,
-    errors: validation.errors.map((error) => error.reason),
-    warnings: validation.warnings.map((warning) => warning.reason),
+    errors: (validation.errors || []).map((error) => error.reason),
+    warnings: (validation.warnings || []).map((warning) => warning.reason),
     summary: clone(validation.summary),
     rules: {
       sourceOfTruth: 'backend',

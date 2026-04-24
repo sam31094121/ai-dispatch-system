@@ -1,19 +1,10 @@
 const { spawn } = require('child_process');
 const { createApp } = require('./app');
+const { appConfig, shouldAutoOpenBrowser } = require('./config/appConfig');
 
-const PORT = Number(process.env.PORT) || 3000;
 const app = createApp();
 
 let browserOpenScheduled = false;
-
-function shouldAutoOpenBrowser() {
-  return !(
-    process.env.AUTO_OPEN_BROWSER === '0' ||
-    process.env.NO_BROWSER === '1' ||
-    process.env.CI === 'true' ||
-    process.env.NODE_ENV === 'test'
-  );
-}
 
 function openBrowser(url) {
   if (!shouldAutoOpenBrowser()) return;
@@ -46,8 +37,11 @@ function scheduleBrowserOpen(url) {
   setTimeout(() => openBrowser(url), 300);
 }
 
-app.listen(PORT, () => {
-  const appUrl = `http://localhost:${PORT}`;
-  console.log(`AI 派單公告系統 API v1 已啟動：${appUrl}`);
+const server = app.listen(appConfig.port, () => {
+  const address = server.address();
+  const listenPort = typeof address === 'object' && address ? address.port : appConfig.port;
+  const appUrl = `http://localhost:${listenPort}`;
+
+  console.log(`Dispatch app listening at ${appUrl}`);
   scheduleBrowserOpen(appUrl);
 });

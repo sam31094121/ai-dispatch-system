@@ -46,6 +46,16 @@ async function requestJson(baseUrl, endpoint, init = {}) {
   };
 }
 
+async function requestText(baseUrl, endpoint, init = {}) {
+  const response = await fetch(`${baseUrl}${endpoint}`, init);
+
+  return {
+    headers: response.headers,
+    status: response.status,
+    text: await response.text()
+  };
+}
+
 async function main() {
   const sourceText = fs.readFileSync(fixturePath, 'utf8');
   const reviewSourceText = fs.readFileSync(reviewFixturePath, 'utf8');
@@ -57,7 +67,8 @@ async function main() {
     const instance = app.listen(0, '127.0.0.1', () => resolve(instance));
   });
   const { port } = server.address();
-  const baseUrl = `http://127.0.0.1:${port}/api`;
+  const appBaseUrl = `http://127.0.0.1:${port}`;
+  const apiBaseUrl = `${appBaseUrl}/api`;
 
   try {
     const payload = {
@@ -68,7 +79,7 @@ async function main() {
       operator: 'test'
     };
 
-    const parse = await requestJson(baseUrl, '/dispatch-reports/parse', {
+    const parse = await requestJson(apiBaseUrl, '/dispatch-reports/parse', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=utf-8'
@@ -86,7 +97,7 @@ async function main() {
       ['陳旭宜']
     );
 
-    const duplicateParse = await requestJson(baseUrl, '/dispatch-reports/parse', {
+    const duplicateParse = await requestJson(apiBaseUrl, '/dispatch-reports/parse', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=utf-8'
@@ -98,12 +109,12 @@ async function main() {
     assert.equal(duplicateParse.body.code, 'DUPLICATE_REPORT');
 
     const reportId = parse.body.data.reportId;
-    const latest = await requestJson(baseUrl, '/dispatch-reports/latest');
-    const report = await requestJson(baseUrl, `/dispatch-reports/${reportId}`);
-    const top10 = await requestJson(baseUrl, `/dispatch-reports/${reportId}/top10`);
-    const groups = await requestJson(baseUrl, `/dispatch-reports/${reportId}/groups`);
-    const shortText = await requestJson(baseUrl, `/dispatch-reports/${reportId}/short-text`);
-    const current = await requestJson(baseUrl, '/current');
+    const latest = await requestJson(apiBaseUrl, '/dispatch-reports/latest');
+    const report = await requestJson(apiBaseUrl, `/dispatch-reports/${reportId}`);
+    const top10 = await requestJson(apiBaseUrl, `/dispatch-reports/${reportId}/top10`);
+    const groups = await requestJson(apiBaseUrl, `/dispatch-reports/${reportId}/groups`);
+    const shortText = await requestJson(apiBaseUrl, `/dispatch-reports/${reportId}/short-text`);
+    const current = await requestJson(apiBaseUrl, '/current');
 
     assert.equal(latest.status, 200);
     assert.equal(latest.body.data.reportId, reportId);
@@ -131,6 +142,38 @@ async function main() {
     assert.equal(current.body.data.audit.status, 'PASS');
     assert.equal(current.body.data.ranking[0].name, '王梅慧');
 
+    const missingApiRoute = await requestJson(apiBaseUrl, '/does-not-exist');
+    assert.equal(missingApiRoute.status, 404);
+    assert.equal(missingApiRoute.body.code, 'NOT_FOUND');
+    assert.equal(missingApiRoute.body.message, 'API route not found');
+
+    const missingApiPostRoute = await requestJson(apiBaseUrl, '/does-not-exist', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8'
+      },
+      body: JSON.stringify({ test: true })
+    });
+    assert.equal(missingApiPostRoute.status, 404);
+    assert.equal(missingApiPostRoute.body.code, 'NOT_FOUND');
+
+    const spaFallback = await requestText(appBaseUrl, '/some/deep/link', {
+      headers: {
+        Accept: 'text/html'
+      }
+    });
+    assert.equal(spaFallback.status, 200);
+    assert.match(spaFallback.headers.get('content-type') || '', /text\/html/i);
+    assert.match(spaFallback.text, /<!DOCTYPE html>/i);
+
+    const nonHtmlFallback = await requestText(appBaseUrl, '/missing.json', {
+      headers: {
+        Accept: 'application/json'
+      }
+    });
+    assert.equal(nonHtmlFallback.status, 404);
+    assert.doesNotMatch(nonHtmlFallback.text, /<!DOCTYPE html>/i);
+
     const conflictedAnnouncement = deepClone(defaultAnnouncement);
     conflictedAnnouncement.審計結論.結果 = 'FAIL';
     conflictedAnnouncement.整合總盤.本月業績 = 1;
@@ -145,7 +188,7 @@ async function main() {
     ];
     conflictedAnnouncement.分級.A2.push(conflictedAnnouncement.分級.B[0]);
 
-    const smartFix = await requestJson(baseUrl, '/smart-fix', {
+    const smartFix = await requestJson(apiBaseUrl, '/smart-fix', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=utf-8'
@@ -178,7 +221,7 @@ async function main() {
     assert.ok(smartFix.body.data.fixes.some((fix) => fix.field === 'adviceList'));
     assert.ok(smartFix.body.data.fixes.some((fix) => fix.field === 'groupShortText'));
 
-    const reviewAudit = await requestJson(baseUrl, '/audit', {
+    const reviewAudit = await requestJson(apiBaseUrl, '/audit', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=utf-8'
@@ -204,7 +247,7 @@ async function main() {
     assert.equal(reviewAudit.body.data.standardData.分級.B[0], '梁依萍');
     assert.match(reviewAudit.body.data.standardData.群組超精簡版, /B組：梁依萍、高美雲、高如郁、廖姿惠、蘇淑玲、江麗勉、陳玲華。/);
 
-    const reviewSmartFix = await requestJson(baseUrl, '/smart-fix', {
+    const reviewSmartFix = await requestJson(apiBaseUrl, '/smart-fix', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=utf-8'

@@ -5,8 +5,8 @@
 
 :root {
   /* 背景層級 - 更深邃的底色 */
-  --bg-main:   #020b16;
-  --bg-panel:  rgba(6, 14, 32, 0.72);
+  --bg-main:   #01060d;
+  --bg-panel:  rgba(6, 17, 34, 0.78);
   --bg-strong: rgba(3, 8, 22, 0.94);
   --bg-glass:  rgba(255, 255, 255, 0.04);
 
@@ -96,6 +96,29 @@ body::before {
   background: rgba(0, 229, 255, 0.1);
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+/* 頂級強固優化標章 */
+.optimization-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(90deg, transparent, rgba(0, 242, 255, 0.2), transparent);
+  border: 1px solid rgba(0, 242, 255, 0.3);
+  padding: 4px 12px;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--cyan);
+  text-transform: uppercase;
+  border-radius: 20px;
+  margin-bottom: 12px;
+  font-family: 'Orbitron', sans-serif;
+  animation: badge-pulse 3s infinite;
+}
+
+@keyframes badge-pulse {
+  0%, 100% { opacity: 0.7; filter: brightness(1); transform: scale(1); }
+  50% { opacity: 1; filter: brightness(1.4); transform: scale(1.02); }
 }
 
 .vfx-layer {
@@ -214,28 +237,6 @@ body::before {
   color: var(--cyan);
   text-shadow: 0 0 15px var(--cyan);
   transform: translateY(-2px);
-}
-
-/* 數值動畫與字型美化 */
-.font-mono {
-  font-family: 'Orbitron', monospace;
-}
-
-@keyframes number-pulse {
-  0% { text-shadow: 0 0 5px var(--cyan); transform: scale(1); }
-  50% { text-shadow: 0 0 20px var(--cyan); transform: scale(1.05); }
-  100% { text-shadow: 0 0 5px var(--cyan); transform: scale(1); }
-}
-
-.sum-card strong,
-.metric-chip strong {
-  transition: all 0.3s ease;
-  display: inline-block;
-}
-
-.sum-card:hover strong {
-  color: var(--cyan);
-  text-shadow: 0 0 10px var(--cyan);
 }
 
 @keyframes scanLine {
@@ -498,7 +499,8 @@ textarea,
 .retired-list,
 .advice-list {
   display: grid;
-  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 12px;
 }
 
 .rule-list {
@@ -1317,49 +1319,76 @@ textarea,
 
 /* ── 26. Advice Cards ───────────────────────────────────── */
 .advice-card {
-  overflow: hidden;
+  padding: 16px 18px;
   border-radius: var(--radius);
   border: 1px solid rgba(0, 200, 255, 0.10);
   background: var(--bg-strong);
-  transition: box-shadow 160ms ease;
+  transition: border-color 180ms ease, transform 180ms ease;
 }
 
-.advice-card.group-A1 { border-color: rgba(0, 200, 255, 0.22); }
-.advice-card.group-A2 { border-color: rgba(16, 245, 180, 0.18); }
-.advice-card.group-B  { border-color: rgba(75, 159, 255, 0.15); }
-.advice-card.group-C  { border-color: rgba(92, 111, 145, 0.12); }
+.advice-card.group-A1 { border-left: 3px solid var(--gold-1); border-color: rgba(255, 215, 0, 0.30); }
+.advice-card.group-A2 { border-left: 3px solid var(--emerald); border-color: rgba(0, 255, 195, 0.22); }
+.advice-card.group-B  { border-left: 3px solid var(--azure); border-color: rgba(14, 165, 233, 0.20); }
+.advice-card.group-C  { border-left: 3px solid #64748B; border-color: rgba(100, 116, 139, 0.18); }
 
 .advice-card:hover {
-  box-shadow: 0 0 18px rgba(0, 200, 255, 0.10);
+  transform: translateX(4px);
+  border-color: rgba(0, 229, 255, 0.30);
 }
 
-.advice-card summary {
+.advice-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  list-style: none;
-  cursor: pointer;
-  padding: 14px 18px;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.advice-rank-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.advice-rank {
+  font-family: 'Orbitron', monospace;
+  font-size: 11px;
   font-weight: 700;
-  font-size: 13px;
-  transition: background 150ms ease;
+  color: var(--cyan);
+  letter-spacing: 0.06em;
 }
 
-.advice-card summary:hover {
-  background: rgba(0, 200, 255, 0.04);
+.advice-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
 }
 
-.advice-card summary::-webkit-details-marker { display: none; }
+.advice-group-tag {
+  font-family: 'Orbitron', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 3px 7px;
+  border-radius: 4px;
+  border: 1px solid currentColor;
+}
 
-.advice-card p {
+.advice-card.group-A1 .advice-group-tag { color: var(--gold-1); }
+.advice-card.group-A2 .advice-group-tag { color: var(--emerald); }
+.advice-card.group-B  .advice-group-tag { color: var(--azure); }
+.advice-card.group-C  .advice-group-tag { color: #64748B; }
+
+.advice-text {
   margin: 0;
-  padding: 0 18px 16px;
+  font-size: 13.5px;
+  line-height: 1.78;
   color: var(--text-sub);
-  line-height: 1.8;
   word-break: break-word;
-  font-size: 13px;
 }
+
+.advice-card.group-A1 .advice-text { color: rgba(255, 245, 210, 0.90); }
+.advice-card.group-A2 .advice-text { color: rgba(200, 255, 240, 0.85); }
 
 /* ── 27. 動畫 ───────────────────────────────────────────── */
 
@@ -1610,6 +1639,125 @@ textarea,
     padding: 10px 8px;
   }
 }
+
+/* ── 比例建議牆 ─────────────────────────────────────────────── */
+.prop-advice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.prop-card {
+  position: relative;
+  padding: 18px 20px 20px;
+  border-radius: var(--radius);
+  background: rgba(6, 14, 32, 0.82);
+  border: 1.5px solid rgba(0, 229, 255, 0.12);
+  transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+}
+.prop-card:hover {
+  border-color: rgba(0, 229, 255, 0.35);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+}
+.prop-card.group-A1 {
+  border-left: 4px solid var(--gold-1);
+  background: linear-gradient(135deg, rgba(255,215,0,0.05) 0%, rgba(6,14,32,0.82) 40%);
+}
+.prop-card.group-A2 {
+  border-left: 4px solid var(--emerald);
+  background: linear-gradient(135deg, rgba(0,255,195,0.05) 0%, rgba(6,14,32,0.82) 40%);
+}
+.prop-card.group-B {
+  border-left: 4px solid var(--azure);
+  background: linear-gradient(135deg, rgba(14,165,233,0.04) 0%, rgba(6,14,32,0.82) 40%);
+}
+.prop-card.group-C {
+  border-left: 4px solid #64748B;
+}
+
+.prop-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.prop-rank-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.prop-rank {
+  font-family: 'Orbitron', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--cyan);
+  letter-spacing: 0.08em;
+  opacity: 0.75;
+}
+.prop-name {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: 0.03em;
+}
+.prop-card.group-A1 .prop-name { color: rgba(255, 245, 210, 0.95); }
+.prop-card.group-A2 .prop-name { color: rgba(210, 255, 240, 0.95); }
+.prop-group-tag {
+  font-family: 'Orbitron', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+.prop-score {
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+  letter-spacing: 0.04em;
+}
+.prop-score strong {
+  font-family: 'Orbitron', monospace;
+  font-size: 11px;
+  color: var(--gold-2);
+  margin-left: 4px;
+}
+.prop-card.group-A1 .prop-score strong { color: var(--gold-1); }
+.prop-metrics {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.prop-metrics span {
+  font-size: 10px;
+  color: var(--text-dim);
+  text-transform: none;
+  letter-spacing: 0;
+}
+.prop-metrics strong {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-sub);
+  margin-left: 3px;
+}
+.prop-advice-text {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.8;
+  color: rgba(180, 215, 240, 0.85);
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding-top: 12px;
+  word-break: break-word;
+}
+.prop-card.group-A1 .prop-advice-text { color: rgba(255, 242, 200, 0.90); }
+.prop-card.group-A2 .prop-advice-text { color: rgba(200, 255, 235, 0.88); }
+.prop-card.group-C  .prop-advice-text { color: rgba(160, 185, 210, 0.80); }
 
 /* ── Score banner (spotlight cards) ─────────────────────────── */
 .score-banner {

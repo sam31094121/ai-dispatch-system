@@ -8,23 +8,26 @@ const { parseDispatchDraft } = require('../services/dispatchParse.service');
 const {
   getLatestReport,
   getLegacySnapshot,
-  getValidationForReport,
   saveNewReport,
-  saveReportVersion,
-  resetStorageCache
+  saveReportVersion
 } = require('../services/dispatchQuery.service');
 const { smartFixRawInput } = require('../services/smartFix.service');
 const { formatTaipeiTimestamp } = require('../utils/date.util');
 
 const router = express.Router();
+const serverTimeFormatter = new Intl.DateTimeFormat('zh-TW', {
+  timeZone: 'Asia/Taipei',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: false
+});
 
 function serverTime() {
-  return new Intl.DateTimeFormat('zh-TW', {
-    timeZone: 'Asia/Taipei',
-    year: 'numeric', month: '2-digit', day: '2-digit',
-    hour: '2-digit', minute: '2-digit', second: '2-digit',
-    hour12: false
-  }).format(new Date()).replace(/\//g, '/');
+  return serverTimeFormatter.format(new Date()).replace(/\//g, '/');
 }
 
 function ok(res, message, data) {
@@ -46,8 +49,7 @@ function fail(res, status, message, data = null) {
 router.get('/current', (_req, res) => {
   try {
     const report     = getLatestReport();
-    const validation = getValidationForReport(report);
-    const snapshot   = getLegacySnapshot(report, validation, {
+    const snapshot   = getLegacySnapshot(report, {
       persisted: report.status === 'published',
       source:    'legacy-bridge'
     });
@@ -97,10 +99,8 @@ router.post('/save', (req, res) => {
       saved = saveReportVersion(report, { operator: 'WEB', reason: 'update', source: 'manual' });
     }
 
-    resetStorageCache();
-    const finalReport     = getLatestReport();
-    const finalValidation = getValidationForReport(finalReport);
-    const snapshot = getLegacySnapshot(finalReport, finalValidation, {
+    const finalReport = getLatestReport();
+    const snapshot = getLegacySnapshot(finalReport, {
       persisted: true,
       source:    'save'
     });
@@ -135,8 +135,7 @@ router.post('/smart-fix', (req, res) => {
 router.get('/broadcast/current', (_req, res) => {
   try {
     const report     = getLatestReport();
-    const validation = getValidationForReport(report);
-    const snapshot   = getLegacySnapshot(report, validation, {
+    const snapshot   = getLegacySnapshot(report, {
       persisted: true,
       source:    'broadcast'
     });

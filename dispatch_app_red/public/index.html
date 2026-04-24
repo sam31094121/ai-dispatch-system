@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Orbitron:wght@700;800;900&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20260421-boss">
+  <link rel="stylesheet" href="style.css?v=20260424-reset">
 </head>
 <body class="command-center">
   <div id="vfx-layer" class="vfx-layer"></div>
@@ -17,6 +17,9 @@
     <header class="hero">
       <div class="hero-copy">
         <p class="hero-kicker">Backend Source of Truth</p>
+        <div class="optimization-badge">
+          System Optimized & Hardened
+        </div>
         <h1 id="page-title">AI 派單公告中樞</h1>
         <p id="page-subtitle" class="hero-subtitle">後端唯一真實來源，前端只負責展示、排序呈現、區塊大小與視覺層級。</p>
       </div>
@@ -203,7 +206,7 @@
         <div class="panel-head">
           <div>
             <p class="eyebrow">每人一句建議</p>
-            <h2>預設收合</h2>
+            <h2>23 人全員建議</h2>
           </div>
         </div>
         <div id="advice-list" class="advice-list"></div>
@@ -219,8 +222,16 @@
         <textarea id="compact-output" class="compact-output" readonly></textarea>
       </article>
     </section>
+
+    <section class="screen screen-fourth">
+      <div class="screen-head">
+        <p class="eyebrow">第四屏</p>
+        <h2>比例建議牆 — 建議・壓力・激勵</h2>
+      </div>
+      <div id="prop-advice-grid" class="prop-advice-grid"></div>
+    </section>
   </div>
 
-  <script src="app.js?v=20260418-v10"></script>
+  <script src="app.js?v=20260424-reset"></script>
 </body>
 </html>
