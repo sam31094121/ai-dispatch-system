@@ -1636,7 +1636,7 @@ const OFFICIAL_0426_TO_0427 = Object.freeze({
   }),
   ranking: Object.freeze([
     { rank: 1,  name: '王珍珠', totalScore: 968.27, totalRevenue: 935228, renewalRevenue: 666560, renewalDeals: 48, dispatchDeals: 41 },
-    { rank: 2,  name: '王梅慧', totalScore: 882.15, totalRevenue: 847580, renewalRevenue: 607190, renewalDeals: 34, dispatchDeals: 35 },
+    { rank: 2,  name: '王梅慧', totalScore: 842.25, totalRevenue: 847580, renewalRevenue: 607190, renewalDeals: 34, dispatchDeals: 35 },
     { rank: 3,  name: '馬秋香', totalScore: 870.8,  totalRevenue: 832318, renewalRevenue: 521240, renewalDeals: 38, dispatchDeals: 52 },
     { rank: 4,  name: '李玲玲', totalScore: 592.95, totalRevenue: 604070, renewalRevenue: 238790, renewalDeals: 24, dispatchDeals: 38 },
     { rank: 5,  name: '林沛昕', totalScore: 577.9,  totalRevenue: 604030, renewalRevenue: 405536, renewalDeals: 13, dispatchDeals: 27 },
