@@ -300,8 +300,42 @@ function normalizeRankingOrder(rankings) {
     .map(({ __sourceIndex, ...row }) => row);
 }
 
+function calculateWeightedScores(rankings) {
+  const people = safeArray(rankings);
+  if (people.length === 0) return people;
+
+  const weights = {
+    總業績: 300,
+    續單金額: 250,
+    追續成交總數: 200,
+    派單成交總通數: 150,
+    base: 100
+  };
+
+  const maxes = {
+    總業績: Math.max(...people.map((r) => Number(r.metrics?.總業績 || 0)), 0),
+    續單金額: Math.max(...people.map((r) => Number(r.metrics?.續單金額 || 0)), 0),
+    追續成交總數: Math.max(...people.map((r) => Number(r.metrics?.追續成交總數 || 0)), 0),
+    派單成交總通數: Math.max(...people.map((r) => Number(r.metrics?.派單成交總通數 || 0)), 0)
+  };
+
+  people.forEach((row) => {
+    const s1 = maxes.總業績 > 0 ? (Number(row.metrics.總業績 || 0) / maxes.總業績) * weights.總業績 : 0;
+    const s2 = maxes.續單金額 > 0 ? (Number(row.metrics.續單金額 || 0) / maxes.續單金額) * weights.續單金額 : 0;
+    const s3 = maxes.追續成交總數 > 0 ? (Number(row.metrics.追續成交總數 || 0) / maxes.追續成交總數) * weights.追續成交總數 : 0;
+    const s4 = maxes.派單成交總通數 > 0 ? (Number(row.metrics.派單成交總通數 || 0) / maxes.派單成交總通數) * weights.派單成交總通數 : 0;
+
+    // 注入正式權重分數 (Proportional Scaling)
+    const score = Math.round((s1 + s2 + s3 + s4 + weights.base) * 100) / 100;
+    row.metrics.正式權重分數 = score;
+  });
+
+  return people;
+}
+
 function syncGroups(rankings, _providedGroups) {
-  const updatedRankings = normalizeRankingOrder(rankings);
+  const withScores = calculateWeightedScores(rankings);
+  const updatedRankings = normalizeRankingOrder(withScores);
 
   return {
     rankings: updatedRankings,
@@ -1065,6 +1099,7 @@ module.exports = {
   buildReportFromSource,
   buildSnapshotSummary,
   buildTop10Data,
+  calculateWeightedScores,
   clone,
   createDefaultSeedInput,
   createEmptyGroups,

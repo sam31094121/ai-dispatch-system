@@ -5,6 +5,7 @@ const {
 const { 
   buildExpectedGroups, 
   buildGroupShortText,
+  calculateWeightedScores,
   toLegacyStandardData 
 } = require('./dispatchBuild.service');
 const { compareRankingRows } = require('./dispatchValidate.service');
@@ -72,7 +73,9 @@ function repairReport(report) {
     }
   }
 
-  // 3. 排序與名次連號校正
+  // 3. 權重分重算與排序校正
+  calculateWeightedScores(report.rankings);
+  
   const originalOrderStr = JSON.stringify(report.rankings.map(r => r.name));
   report.rankings.sort(compareRankingRows);
   const newOrderStr = JSON.stringify(report.rankings.map(r => r.name));
@@ -87,7 +90,7 @@ function repairReport(report) {
   });
 
   if (originalOrderStr !== newOrderStr) {
-    addFix('rankings', '重新排序', '依「總業績 → 續單金額 → 追續成交 → 派單成交」權重邏輯重新排列名次');
+    addFix('rankings', '重新排序', '依「AI 權重分數 (比例原則) → 總業績 → 續單金額」邏輯重新排列名次');
   } else if (rankReordered) {
     addFix('rankings', '名次連號', '修正名次編號為 1 ~ N 連續整數');
   }
