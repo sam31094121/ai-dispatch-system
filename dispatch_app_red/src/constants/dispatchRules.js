@@ -36,6 +36,18 @@ const API_VERSION = 'v1';
 const TIMEZONE = 'Asia/Taipei';
 const DEFAULT_AUDIT_RULE = '先審計，後排序，再派單';
 const SORT_RULE_TEXT = 'AI 權重分數 (比例原則) → 總業績 → 續單金額 → 追續成交總數 → 派單成交總通數';
+const WEIGHTING_POLICY = Object.freeze({
+  title: 'AI 權重分數（比例原則）',
+  description: '以 4/23 業績資料計算，供 4/24 今日正式派單使用；每個項目依全員最高值換算比例分數。',
+  weights: Object.freeze([
+    { key: '總業績', label: '今日業績', weight: 300 },
+    { key: '續單金額', label: '續單金額', weight: 250 },
+    { key: '追續成交總數', label: '追續成交', weight: 200 },
+    { key: '派單成交總通數', label: '派單成交', weight: 150 },
+    { key: 'base', label: '基礎分', weight: 100 }
+  ]),
+  formula: '正式權重分數 = 各項個人數值 ÷ 全員最高值 × 該項權重，再加總基礎分 100'
+});
 const FRONTEND_LOCK_RULES = Object.freeze([
   '後端唯一真實來源。',
   '前端只做畫面呈現，不做業務邏輯。',
@@ -65,6 +77,7 @@ module.exports = {
   TIMEZONE,
   DEFAULT_AUDIT_RULE,
   SORT_RULE_TEXT,
+  WEIGHTING_POLICY,
   FRONTEND_LOCK_RULES,
   BANNED_NAME_PATTERNS
 };

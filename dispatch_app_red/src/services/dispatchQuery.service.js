@@ -235,12 +235,24 @@ function hydrateStorageCache() {
     const recordDate = latestRecord.report?.reportDate || '';
     if (officialDate !== recordDate && officialDate.includes('04/')) {
         console.log(`[CacheGuard] 檢測到日期矛盾 (Official: ${officialDate} vs Record: ${recordDate})，優先加載官方鎖定數據。`);
-        // 觸發自動同步流程
         const parsedReport = buildReportFromSource({ sourceText: JSON.stringify(latestOfficial) });
         const syncValidation = validateDispatchReport(parsedReport);
-        const snapshot = buildLegacySnapshot(parsedReport, syncValidation, { operator: 'system_auto_sync', persisted: true });
-        writeJson(storagePaths.latestFile, snapshot);
-        return applyStorageIndex(buildStorageIndex(scanStoredRecords(), snapshot));
+        if (!syncValidation.ok) {
+          throw createAppError(
+            errorCodes.VALIDATION_FAILED,
+            400,
+            '官方鎖定資料同步失敗',
+            syncValidation.errors
+          );
+        }
+        const storedRecord = wrapStoredRecord(parsedReport, {
+          operator: 'system_auto_sync',
+          reason: 'official-lock',
+          source: 'official-locks'
+        });
+        writeJson(getVersionFile(parsedReport.reportId, parsedReport.version), storedRecord);
+        writeJson(storagePaths.latestFile, storedRecord);
+        return applyStorageIndex(buildStorageIndex([storedRecord, ...scanStoredRecords()], storedRecord));
     }
   }
 

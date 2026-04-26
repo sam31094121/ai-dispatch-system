@@ -170,6 +170,10 @@ function validateDispatchReport(report) {
         pushError('rankings', `${displayName} 缺少 ${metric}`);
       }
     });
+
+    if (Number(row.metrics?.正式權重分數 || 0) === 0) {
+      pushError('rankings', `${displayName} 的 AI 權重分數為 0，請執行智慧修復或檢查計分邏輯`);
+    }
   });
 
   for (let index = 0; index < (report.rankings || []).length - 1; index += 1) {

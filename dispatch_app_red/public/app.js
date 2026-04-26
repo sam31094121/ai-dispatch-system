@@ -30,13 +30,19 @@ const refs = {
   adviceList: $('advice-list'),
   propAdviceGrid: $('prop-advice-grid'),
   compactOutput: $('compact-output'),
-  pageSubtitle: $('page-subtitle')
+  pageSubtitle: $('page-subtitle'),
+  scoringPolicyTitle: $('scoring-policy-title'),
+  scoringPolicyDate: $('scoring-policy-date'),
+  scoringPolicyDescription: $('scoring-policy-description'),
+  scoringWeightGrid: $('scoring-weight-grid'),
+  scoringPolicyFormula: $('scoring-policy-formula')
 };
 
 const LOCKED_RULES = [
   '後端唯一真實來源。',
   '前端只做顯示，不做運算。',
-  '排序固定：總業績 → 續單金額 → 追續成交總數 → 派單成交總通數。',
+  '排序固定：正式權重分數 (AI) → 總業績 → 續單金額。',
+  'AI 計分核心：1000 分制比例原則 (300/250/200/150)。',
   '已離職只列審計，不入正式派單。',
   'A1 / A2 / B / C 必須與正式名次完全一致。',
   '姓名必須完全正確，尤其禁止錯寫「徐華妤」。',
@@ -374,23 +380,27 @@ function renderRetired(retired) {
 }
 
 function renderRankingTable(rows) {
-  refs.rankingTableBody.innerHTML = rows.map((row) => `
-    <tr class="row-${safeHtml(row.分級)}">
-      <td>${safeHtml(String(row.名次))}</td>
-      <td>
-        <div class="table-name">
-          <span>${safeHtml(row.姓名)}</span>
-          ${row.標記 ? `<span class="newbie-tag">${safeHtml(row.標記)}</span>` : ''}
-        </div>
-      </td>
-      <td>${safeHtml(row.分級)}</td>
-      <td class="col-score">${row.正式權重分數 ? safeHtml(fmt(row.正式權重分數)) : '—'}</td>
-      <td>${safeHtml(fmt(row.總業績))}</td>
-      <td>${safeHtml(fmt(row.續單金額))}</td>
-      <td>${safeHtml(fmt(row.追續成交總數))}</td>
-      <td>${safeHtml(fmt(row.派單成交總通數))}</td>
-    </tr>
-  `).join('');
+  refs.rankingTableBody.innerHTML = rows.map((row) => {
+    const score = Number(row.正式權重分數 || 0);
+    const scoreStyle = score >= 800 ? 'style="color: var(--cyan); font-weight: bold; text-shadow: 0 0 8px var(--cyan);"' : '';
+    return `
+      <tr class="row-${safeHtml(row.分級)}">
+        <td>${safeHtml(String(row.名次))}</td>
+        <td>
+          <div class="table-name">
+            <span>${safeHtml(row.姓名)}</span>
+            ${row.標記 ? `<span class="newbie-tag">${safeHtml(row.標記)}</span>` : ''}
+          </div>
+        </td>
+        <td>${safeHtml(row.分級)}</td>
+        <td class="col-score" ${scoreStyle}>${score > 0 ? safeHtml(fmt(score)) : '—'}</td>
+        <td>${safeHtml(fmt(row.總業績))}</td>
+        <td>${safeHtml(fmt(row.續單金額))}</td>
+        <td>${safeHtml(fmt(row.追續成交總數))}</td>
+        <td>${safeHtml(fmt(row.派單成交總通數))}</td>
+      </tr>
+    `;
+  }).join('');
 }
 
 function renderAdvice(rows) {
@@ -496,6 +506,36 @@ function renderProportionalAdvice(rows) {
   );
 }
 
+function renderScoringPolicy(snapshot) {
+  const policy = snapshot?.scoringPolicy || {};
+  const dates = snapshot?.standardData?.日期資訊 || {};
+  if (refs.scoringPolicyTitle) {
+    refs.scoringPolicyTitle.textContent = policy.title || 'AI 權重分數（比例原則）';
+  }
+  if (refs.scoringPolicyDate) {
+    refs.scoringPolicyDate.textContent = `${dates.結算日 || '4/23'} → ${dates.派單日 || '4/24'}`;
+  }
+  if (refs.scoringPolicyDescription) {
+    refs.scoringPolicyDescription.textContent = policy.description || '以今日業績比例換算權重分數。';
+  }
+  if (refs.scoringWeightGrid) {
+    refs.scoringWeightGrid.replaceChildren(
+      ...(policy.weights || []).map((item) => {
+        const card = document.createElement('div');
+        card.className = 'scoring-weight-card';
+        card.innerHTML = `
+          <span>${safeHtml(item.label || item.key)}</span>
+          <strong>${safeHtml(fmt(item.weight))}</strong>
+        `;
+        return card;
+      })
+    );
+  }
+  if (refs.scoringPolicyFormula) {
+    refs.scoringPolicyFormula.textContent = policy.formula || '';
+  }
+}
+
 function render(snapshot) {
   state.current = snapshot;
   const data = snapshot?.standardData || {};
@@ -513,6 +553,7 @@ function render(snapshot) {
   renderRetired(retired);
   renderRankingTable(data?.正式名次 || []);
   renderAdvice(data?.正式名次 || []);
+  renderScoringPolicy(snapshot);
   renderProportionalAdvice(data?.正式名次 || []);
   refs.compactOutput.value = data?.群組超精簡版 || '';
 }

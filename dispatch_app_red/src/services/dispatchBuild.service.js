@@ -9,7 +9,8 @@ const {
   RESERVED_AUDIT_KEYS,
   SERVICE_NAME,
   API_VERSION,
-  SUMMARY_METRICS
+  SUMMARY_METRICS,
+  WEIGHTING_POLICY
 } = require('../constants/dispatchRules');
 const { buildReportId, createDispatchReport, createEmptyGroups } = require('../models/DispatchReport');
 const {
@@ -157,6 +158,29 @@ function normalizePlatform(platformInput = {}, fallbackName = '') {
   };
 }
 
+function normalizeOfficialPlatformMetrics(value = {}) {
+  return {
+    累積總派單數: toNumber(value.cumulativeDispatch ?? value.累積總派單數),
+    累積派單總成交數: toNumber(value.cumulativeDispatchDeals ?? value.累積派單總成交數),
+    累積追續總成交數: toNumber(value.cumulativeRenewalDeals ?? value.累積追續總成交數),
+    當日續單金額: toNumber(value.dailyRenewalAmount ?? value.當日續單金額),
+    本月業績: toNumber(value.monthlyRevenue ?? value.本月業績),
+    追續單總金額: toNumber(value.totalRenewalAmount ?? value.追續單總金額)
+  };
+}
+
+function normalizeOfficialPlatforms(rawPlatforms = {}) {
+  return Object.fromEntries(
+    Object.entries(rawPlatforms || {}).map(([platformName, value]) => [
+      platformName,
+      {
+        ...normalizeOfficialPlatformMetrics(value),
+        通過: true
+      }
+    ])
+  );
+}
+
 function normalizeExcludedEmployees(value) {
   const seen = new Set();
   return safeArray(value)
@@ -196,6 +220,18 @@ function normalizeAudit(rawAudit = {}, fallbackResult = '') {
 
 function normalizeSummaryBoard(rawSummary = {}) {
   return Object.fromEntries(SUMMARY_METRICS.map((metric) => [metric, toNumber(rawSummary?.[metric])]));
+}
+
+function normalizeOfficialSummaryBoard(rawStats = {}) {
+  return normalizeSummaryBoard({
+    累積總派單數: rawStats.totalCalls,
+    累積派單總成交數: rawStats.dispatchCalls,
+    累積追續總成交數: rawStats.renewalCalls,
+    當日續單金額: rawStats.dailyRenewalAmount,
+    本月業績: rawStats.monthlyRevenue,
+    追續單總金額: rawStats.renewalAmount,
+    當日取消退貨: rawStats.cancellations
+  });
 }
 
 function firstDefined(source, keys) {
@@ -301,8 +337,15 @@ function normalizeRankingOrder(rankings) {
 }
 
 function calculateWeightedScores(rankings) {
-  const people = safeArray(rankings);
-  if (people.length === 0) return people;
+  const people = rankings.filter((r) => r.name);
+  if (people.length === 0) return rankings;
+
+  const maxes = {
+    總業績: Math.max(...people.map((r) => Number(r.metrics?.總業績 || 0)), 1),
+    續單金額: Math.max(...people.map((r) => Number(r.metrics?.續單金額 || 0)), 1),
+    追續成交總數: Math.max(...people.map((r) => Number(r.metrics?.追續成交總數 || 0)), 1),
+    派單成交總通數: Math.max(...people.map((r) => Number(r.metrics?.派單成交總通數 || 0)), 1)
+  };
 
   const weights = {
     總業績: 300,
@@ -312,25 +355,18 @@ function calculateWeightedScores(rankings) {
     base: 100
   };
 
-  const maxes = {
-    總業績: Math.max(...people.map((r) => Number(r.metrics?.總業績 || 0)), 0),
-    續單金額: Math.max(...people.map((r) => Number(r.metrics?.續單金額 || 0)), 0),
-    追續成交總數: Math.max(...people.map((r) => Number(r.metrics?.追續成交總數 || 0)), 0),
-    派單成交總通數: Math.max(...people.map((r) => Number(r.metrics?.派單成交總通數 || 0)), 0)
-  };
-
   people.forEach((row) => {
-    const s1 = maxes.總業績 > 0 ? (Number(row.metrics.總業績 || 0) / maxes.總業績) * weights.總業績 : 0;
-    const s2 = maxes.續單金額 > 0 ? (Number(row.metrics.續單金額 || 0) / maxes.續單金額) * weights.續單金額 : 0;
-    const s3 = maxes.追續成交總數 > 0 ? (Number(row.metrics.追續成交總數 || 0) / maxes.追續成交總數) * weights.追續成交總數 : 0;
-    const s4 = maxes.派單成交總通數 > 0 ? (Number(row.metrics.派單成交總通數 || 0) / maxes.派單成交總通數) * weights.派單成交總通數 : 0;
+    const m = row.metrics || {};
+    const s1 = (Number(m.總業績 || 0) / maxes.總業績) * weights.總業績;
+    const s2 = (Number(m.續單金額 || 0) / maxes.續單金額) * weights.續單金額;
+    const s3 = (Number(m.追續成交總數 || 0) / maxes.追續成交總數) * weights.追續成交總數;
+    const s4 = (Number(m.派單成交總通數 || 0) / maxes.派單成交總通數) * weights.派單成交總通數;
 
-    // 注入正式權重分數 (Proportional Scaling)
-    const score = Math.round((s1 + s2 + s3 + s4 + weights.base) * 100) / 100;
-    row.metrics.正式權重分數 = score;
+    const total = weights.base + s1 + s2 + s3 + s4;
+    row.metrics.正式權重分數 = parseFloat(total.toFixed(2));
   });
 
-  return people;
+  return rankings;
 }
 
 function syncGroups(rankings, _providedGroups) {
@@ -349,9 +385,9 @@ function syncAdvice(rankings, providedAdvice) {
     adviceMap.set(entry.name, entry);
   });
 
-  const updatedRankings = safeArray(rankings).map((row) => ({
+  const updatedRankings = safeArray(rankings).map((row, index) => ({
     ...row,
-    advice: row.advice || adviceMap.get(row.name)?.text || ''
+    advice: row.advice || adviceMap.get(row.name)?.text || buildProportionalAdvice(row, safeArray(rankings), index)
   }));
 
   const adviceList = updatedRankings.map((row) => ({
@@ -365,6 +401,39 @@ function syncAdvice(rankings, providedAdvice) {
     rankings: updatedRankings,
     adviceList
   };
+}
+
+function buildProportionalAdvice(row, rankings, index) {
+  const above = rankings[index - 1];
+  const below = rankings[index + 1];
+  const score = Number(row.metrics?.正式權重分數 || 0);
+  const aboveScore = Number(above?.metrics?.正式權重分數 || 0);
+  const belowScore = Number(below?.metrics?.正式權重分數 || 0);
+  const gapUp = above && aboveScore > 0 ? `${((aboveScore - score) / aboveScore * 100).toFixed(1)}%` : '';
+  const gapDown = below && score > 0 ? `${((score - belowScore) / score * 100).toFixed(1)}%` : '';
+  const renewal = Number(row.metrics?.續單金額 || 0);
+  const revenue = Number(row.metrics?.總業績 || 0);
+  const renewalDeals = Number(row.metrics?.追續成交總數 || 0);
+  const dispatchDeals = Number(row.metrics?.派單成交總通數 || 0);
+  const mainMetric = renewal >= revenue * 0.55
+    ? '續單金額'
+    : dispatchDeals >= renewalDeals
+    ? '派單成交'
+    : '今日業績';
+
+  if (row.rank === 1) {
+    return `目前權重分數第一，與第二名差距 ${gapDown || '0%'}。今天繼續把${mainMetric}補厚，才能穩住 4/24 派單優先權。`;
+  }
+  if (row.rank <= 4) {
+    return `你在 A1 前段，距前一名 ${gapUp}。今天主攻${mainMetric}，一筆有效成交就能把權重分數再往前推。`;
+  }
+  if (row.rank <= 10) {
+    return `你在 A2 主力區，距前一名 ${gapUp}，後方差距 ${gapDown || '尚穩'}。今天用${mainMetric}守位並爭取前壓。`;
+  }
+  if (row.rank <= 17) {
+    return `你在 B 組競爭帶，距前一名 ${gapUp}。今天先把${mainMetric}做出明顯增量，權重分數才會動。`;
+  }
+  return `你在 C 組補位區，今天先讓數字落地。從${mainMetric}補一筆開始，比例分數就會往上。`;
 }
 
 function resolveTitle(explicitTitle, fallbackTitle, settlementDate, dispatchDate) {
@@ -479,7 +548,7 @@ function tryParseJsonPayload(sourceText) {
 
 function unwrapSourcePayload(payload) {
   if (!payload || typeof payload !== 'object') return null;
-  if (payload.title || payload.公告標題 || payload.rankings || payload.正式名次) return payload;
+  if (payload.title || payload.公告標題 || payload.rankings || payload.ranking || payload.正式名次 || payload.overallStats) return payload;
   if (payload.data) return unwrapSourcePayload(payload.data);
   if (payload.report) return unwrapSourcePayload(payload.report);
   if (payload.standardData) return unwrapSourcePayload(payload.standardData);
@@ -795,6 +864,7 @@ function buildReportFromPayload(payload, options = {}) {
   const fallbackDates = extractDatesFromTitle(cleanText(options.title || source.title || source.公告標題 || ''));
   const settlementDate = normalizeDateInput(
     options.settlementDate ||
+      source.reportDate ||
       source.settlementDate ||
       source.日期資訊?.結算日 ||
       fallbackDates.settlementDate
@@ -811,12 +881,25 @@ function buildReportFromPayload(payload, options = {}) {
   const updatedAt = cleanText(options.updatedAt || source.updatedAt || createdAt);
   const title = resolveTitle(options.title, source.title || source.公告標題, settlementDate, dispatchDate);
 
-  const audit = normalizeAudit(source.audit || source.審計結論, source.auditResult);
-  const summaryBoard = normalizeSummaryBoard(source.summaryBoard || source.整合總盤);
-  const initialRankings = safeArray(source.rankings || source.正式名次).map(normalizeRankingRow).filter((row) => row.name);
+  const auditSource = source.platforms
+    ? {
+        結果: source.audit?.status || 'PASS',
+        規則: DEFAULT_AUDIT_RULE,
+        ...normalizeOfficialPlatforms(source.platforms),
+        特別說明: ['4/23 官方鎖定資料已依比例原則完成權重計分。'],
+        審計列示不入派單: source.excludedEmployees || []
+      }
+    : source.audit || source.審計結論 || {};
+  const audit = normalizeAudit(auditSource, source.auditResult);
+  const summaryBoard = source.overallStats
+    ? normalizeOfficialSummaryBoard(source.overallStats)
+    : normalizeSummaryBoard(source.summaryBoard || source.整合總盤);
+  const initialRankings = safeArray(source.rankings || source.ranking || source.正式名次)
+    .map(normalizeRankingRow)
+    .filter((row) => row.name);
   const normalizedGroups = normalizeGroups(source.groups || source.分級);
   const grouped = syncGroups(initialRankings, normalizedGroups);
-  const normalizedAdvice = normalizeAdviceEntries(source.adviceList || source.每人一句建議 || source.建議);
+  const normalizedAdvice = normalizeAdviceEntries(source.adviceList || source.advice || source.每人一句建議 || source.建議);
   const advised = syncAdvice(grouped.rankings, normalizedAdvice);
 
   const report = createDispatchReport({
@@ -843,9 +926,7 @@ function buildReportFromPayload(payload, options = {}) {
   if (!report.finalConfirmations.length) {
     report.finalConfirmations = buildDefaultFinalConfirmations(report);
   }
-  if (!report.groupShortText) {
-    report.groupShortText = buildGroupShortText(report);
-  }
+  report.groupShortText = buildGroupShortText(report);
 
   return report;
 }
@@ -1046,6 +1127,7 @@ function buildLegacySnapshot(report, validation, options = {}) {
       frontendMayRewriteAnnouncement: false,
       frontendMayRewriteAudit: false
     },
+    scoringPolicy: clone(WEIGHTING_POLICY),
     rules: clone(FRONTEND_LOCK_RULES),
     reportId: snapshotReport.reportId,
     title: snapshotReport.title

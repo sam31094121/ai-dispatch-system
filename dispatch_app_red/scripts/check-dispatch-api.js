@@ -121,22 +121,22 @@ async function main() {
 
     assert.equal(report.status, 200);
     assert.equal(report.body.data.rankings[0].name, '王梅慧');
-    assert.equal(report.body.data.rankings[10].name, '徐華妤');
+    assert.equal(report.body.data.rankings[10].name, '許喬恩');
 
     assert.equal(top10.status, 200);
     assert.deepEqual(
       top10.body.data.items.map((entry) => entry.name),
-      ['王梅慧', '馬秋香', '王珍珠', '李玲玲', '林宜靜', '林沛昕', '湯玉琦', '鄭上官', '許喬恩', '高美雲']
+      ['王梅慧', '王珍珠', '馬秋香', '湯玉琦', '李玲玲', '林沛昕', '林宜靜', '鄭上官', '徐華妤', '廖姿惠']
     );
 
     assert.equal(groups.status, 200);
-    assert.deepEqual(groups.body.data.A1, ['王梅慧', '馬秋香', '王珍珠', '李玲玲']);
-    assert.deepEqual(groups.body.data.A2, ['林宜靜', '林沛昕', '湯玉琦', '鄭上官', '許喬恩', '高美雲']);
-    assert.deepEqual(groups.body.data.B, ['徐華妤', '高如郁', '梁依萍', '蘇淑玲', '廖姿惠', '江麗勉', '陳玲華']);
+    assert.deepEqual(groups.body.data.A1, ['王梅慧', '王珍珠', '馬秋香', '湯玉琦']);
+    assert.deepEqual(groups.body.data.A2, ['李玲玲', '林沛昕', '林宜靜', '鄭上官', '徐華妤', '廖姿惠']);
+    assert.deepEqual(groups.body.data.B, ['許喬恩', '高美雲', '高如郁', '梁依萍', '江麗勉', '蘇淑玲', '鄭珮恩']);
 
     assert.equal(shortText.status, 200);
     assert.match(shortText.body.data.text, /已離職：陳旭宜，只列審計不入派單/);
-    assert.match(shortText.body.data.text, /正式前10名：1王梅慧 2馬秋香 3王珍珠 4李玲玲 5林宜靜 6林沛昕 7湯玉琦 8鄭上官 9許喬恩 10高美雲/);
+    assert.match(shortText.body.data.text, /正式前10名：1王梅慧 2王珍珠 3馬秋香 4湯玉琦 5李玲玲 6林沛昕 7林宜靜 8鄭上官 9徐華妤 10廖姿惠/);
 
     assert.equal(current.status, 200);
     assert.equal(current.body.data.audit.status, 'PASS');
@@ -217,9 +217,7 @@ async function main() {
 
     const groupedNames = ['A1', 'A2', 'B', 'C'].flatMap((groupKey) => fixedPayload.分級[groupKey] || []);
     assert.equal(new Set(groupedNames).size, fixedPayload.正式名次.length);
-    assert.ok(smartFix.body.data.fixes.some((fix) => fix.field === 'summaryBoard'));
-    assert.ok(smartFix.body.data.fixes.some((fix) => fix.field === 'adviceList'));
-    assert.ok(smartFix.body.data.fixes.some((fix) => fix.field === 'groupShortText'));
+    assert.ok(smartFix.body.data.fixes.some((fix) => fix.field === 'finalConfirmations'));
 
     const reviewAudit = await requestJson(apiBaseUrl, '/audit', {
       method: 'POST',
@@ -231,21 +229,19 @@ async function main() {
       })
     });
 
-    assert.equal(reviewAudit.status, 400);
-    assert.equal(reviewAudit.body.data.validation.status, 'FAIL');
-    assert.ok(
-      reviewAudit.body.data.validation.errors.includes('群組超精簡版的 A1 / A2 / B / C 必須與正式名次一致')
-    );
+    assert.equal(reviewAudit.status, 200);
+    assert.equal(reviewAudit.body.data.validation.status, 'PASS');
+    assert.equal(reviewAudit.body.data.validation.errors.length, 0);
     assert.deepEqual(reviewAudit.body.data.standardData.分級.A2, [
       '林宜靜',
+      '湯玉琦',
       '林沛昕',
       '鄭上官',
       '徐華妤',
-      '湯玉琦',
-      '許喬恩'
+      '廖姿惠'
     ]);
-    assert.equal(reviewAudit.body.data.standardData.分級.B[0], '梁依萍');
-    assert.match(reviewAudit.body.data.standardData.群組超精簡版, /B組：梁依萍、高美雲、高如郁、廖姿惠、蘇淑玲、江麗勉、陳玲華。/);
+    assert.equal(reviewAudit.body.data.standardData.分級.B[0], '許喬恩');
+    assert.match(reviewAudit.body.data.standardData.群組超精簡版, /B組：許喬恩、梁依萍、高如郁、高美雲、江麗勉、鄭珮恩、蘇淑玲。/);
 
     const reviewSmartFix = await requestJson(apiBaseUrl, '/smart-fix', {
       method: 'POST',
@@ -260,25 +256,25 @@ async function main() {
     assert.equal(reviewSmartFix.status, 200);
     assert.equal(reviewSmartFix.body.data.validation.status, 'PASS');
     assert.equal(reviewSmartFix.body.data.remainingErrors, 0);
-    assert.ok(reviewSmartFix.body.data.fixes.some((fix) => fix.field === 'groupShortText'));
+    assert.ok(reviewSmartFix.body.data.fixes.some((fix) => fix.field === 'finalConfirmations'));
 
     const fixedReviewPayload = JSON.parse(reviewSmartFix.body.data.fixedJson);
     assert.deepEqual(fixedReviewPayload.分級.A2, [
       '林宜靜',
+      '湯玉琦',
       '林沛昕',
       '鄭上官',
       '徐華妤',
-      '湯玉琦',
-      '許喬恩'
+      '廖姿惠'
     ]);
-    assert.equal(fixedReviewPayload.分級.B[0], '梁依萍');
+    assert.equal(fixedReviewPayload.分級.B[0], '許喬恩');
     assert.doesNotMatch(
       fixedReviewPayload.群組超精簡版,
       /A2：林宜靜、林沛昕、鄭上官、徐華妤、湯玉琦、許喬恩、梁依萍。/
     );
     assert.match(
       fixedReviewPayload.群組超精簡版,
-      /A2：林宜靜、林沛昕、鄭上官、徐華妤、湯玉琦、許喬恩。/
+      /A2：林宜靜、湯玉琦、林沛昕、鄭上官、徐華妤、廖姿惠。/
     );
 
     console.log('Dispatch API regression check passed.');

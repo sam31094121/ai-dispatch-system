@@ -1257,52 +1257,50 @@ const OFFICIAL_0420_TO_0421 = Object.freeze({
     })
   }),
   ranking: Object.freeze([
-    { rank:  1, name: '馬秋香',       totalRevenue: 728148, renewalRevenue: 464460, renewalDeals: 30, dispatchDeals: 40 },
-    { rank:  2, name: '王梅慧',       totalRevenue: 721520, renewalRevenue: 560650, renewalDeals: 30, dispatchDeals: 24 },
-    { rank:  3, name: '王珍珠',       totalRevenue: 716728, renewalRevenue: 486270, renewalDeals: 33, dispatchDeals: 34 },
-    { rank:  4, name: '李玲玲',       totalRevenue: 432450, renewalRevenue: 204790, renewalDeals: 17, dispatchDeals: 28 },
-    { rank:  5, name: '林宜靜',       totalRevenue: 410810, renewalRevenue:  69540, renewalDeals: 14, dispatchDeals: 41 },
-    { rank:  6, name: '林沛昕',       totalRevenue: 312402, renewalRevenue: 233456, renewalDeals: 10, dispatchDeals: 14 },
-    { rank:  7, name: '鄭上官',       totalRevenue: 311810, renewalRevenue: 311810, renewalDeals:  9, dispatchDeals:  0 },
-    { rank:  8, name: '徐華妤',       totalRevenue: 269830, renewalRevenue: 191680, renewalDeals: 10, dispatchDeals: 15 },
-    { rank:  9, name: '湯玉琦',       totalRevenue: 246558, renewalRevenue: 140140, renewalDeals: 20, dispatchDeals: 23 },
-    { rank: 10, name: '許喬恩',       totalRevenue: 224000, renewalRevenue: 224000, renewalDeals:  6, dispatchDeals:  0 },
-    { rank: 11, name: '梁依萍',       totalRevenue: 193840, renewalRevenue:  36740, renewalDeals:  7, dispatchDeals: 23 },
-    { rank: 12, name: '高美雲',       totalRevenue: 193448, renewalRevenue:  37300, renewalDeals:  5, dispatchDeals: 22 },
-    { rank: 13, name: '高如郁',       totalRevenue: 174420, renewalRevenue:  44160, renewalDeals:  8, dispatchDeals: 19 },
-    { rank: 14, name: '廖姿惠',       totalRevenue: 156308, renewalRevenue:  72168, renewalDeals: 13, dispatchDeals: 20 },
-    { rank: 15, name: '蘇淑玲',       totalRevenue: 131448, renewalRevenue:  71040, renewalDeals:  4, dispatchDeals:  9 },
-    { rank: 16, name: '江麗勉',       totalRevenue: 124490, renewalRevenue:  43380, renewalDeals:  8, dispatchDeals: 14 },
-    { rank: 17, name: '陳玲華',       totalRevenue: 118458, renewalRevenue:  20500, renewalDeals:  3, dispatchDeals: 13 },
-    { rank: 18, name: '鄭珮恩',       totalRevenue:  90178, renewalRevenue:  20690, renewalDeals:  9, dispatchDeals: 14 },
-    { rank: 19, name: '謝啟芳',       totalRevenue:  40070, renewalRevenue:  21540, renewalDeals:  3, dispatchDeals:  4 },
-    { rank: 20, name: '周美蓁',       totalRevenue:  30800, renewalRevenue:  30800, renewalDeals:  3, dispatchDeals:  0 },
-    { rank: 21, name: '陳桂子（新人）', totalRevenue:  26000, renewalRevenue:  26000, renewalDeals:  4, dispatchDeals:  0 },
-    { rank: 22, name: '江沛林',       totalRevenue:   9980, renewalRevenue:   9980, renewalDeals:  3, dispatchDeals:  0 },
-    { rank: 23, name: '林佩君',       totalRevenue:   6528, renewalRevenue:   6528, renewalDeals:  1, dispatchDeals:  0 }
+    { rank: 1, name: '王珍珠', totalScore: 936.52, totalRevenue: 716728, renewalRevenue: 486270, renewalDeals: 33, dispatchDeals: 34 },
+    { rank: 2, name: '馬秋香', totalScore: 935.27, totalRevenue: 728148, renewalRevenue: 464460, renewalDeals: 30, dispatchDeals: 40 },
+    { rank: 3, name: '王梅慧', totalScore: 916.89, totalRevenue: 721520, renewalRevenue: 560650, renewalDeals: 30, dispatchDeals: 24 },
+    { rank: 4, name: '李玲玲', totalScore: 574.96, totalRevenue: 432450, renewalRevenue: 204790, renewalDeals: 17, dispatchDeals: 28 },
+    { rank: 5, name: '林宜靜', totalScore: 535.11, totalRevenue: 410810, renewalRevenue: 69540, renewalDeals: 14, dispatchDeals: 41 },
+    { rank: 6, name: '湯玉琦', totalScore: 469.43, totalRevenue: 246558, renewalRevenue: 140140, renewalDeals: 20, dispatchDeals: 23 },
+    { rank: 7, name: '林沛昕', totalScore: 444.64, totalRevenue: 312402, renewalRevenue: 233456, renewalDeals: 10, dispatchDeals: 14 },
+    { rank: 8, name: '鄭上官', totalScore: 422.05, totalRevenue: 311810, renewalRevenue: 311810, renewalDeals: 9, dispatchDeals: 0 },
+    { rank: 9, name: '徐華妤', totalScore: 412.13, totalRevenue: 269830, renewalRevenue: 191680, renewalDeals: 10, dispatchDeals: 15 },
+    { rank: 10, name: '廖姿惠', totalScore: 348.54, totalRevenue: 156308, renewalRevenue: 72168, renewalDeals: 13, dispatchDeals: 20 },
+    { rank: 11, name: '許喬恩', totalScore: 328.54, totalRevenue: 224000, renewalRevenue: 224000, renewalDeals: 6, dispatchDeals: 0 },
+    { rank: 12, name: '梁依萍', totalScore: 322.82, totalRevenue: 193840, renewalRevenue: 36740, renewalDeals: 7, dispatchDeals: 23 },
+    { rank: 13, name: '高如郁', totalScore: 309.55, totalRevenue: 174420, renewalRevenue: 44160, renewalDeals: 8, dispatchDeals: 19 },
+    { rank: 14, name: '高美雲', totalScore: 307.12, totalRevenue: 193448, renewalRevenue: 37300, renewalDeals: 5, dispatchDeals: 22 },
+    { rank: 15, name: '江麗勉', totalScore: 270.34, totalRevenue: 124490, renewalRevenue: 43380, renewalDeals: 8, dispatchDeals: 14 },
+    { rank: 16, name: '鄭珮恩', totalScore: 252.14, totalRevenue: 90178, renewalRevenue: 20690, renewalDeals: 9, dispatchDeals: 14 },
+    { rank: 17, name: '蘇淑玲', totalScore: 243.0, totalRevenue: 131448, renewalRevenue: 71040, renewalDeals: 4, dispatchDeals: 9 },
+    { rank: 18, name: '陳玲華', totalScore: 223.69, totalRevenue: 118458, renewalRevenue: 20500, renewalDeals: 3, dispatchDeals: 13 },
+    { rank: 19, name: '謝啟芳', totalScore: 158.93, totalRevenue: 40070, renewalRevenue: 21540, renewalDeals: 3, dispatchDeals: 4 },
+    { rank: 20, name: '陳桂子（新人）', totalScore: 146.55, totalRevenue: 26000, renewalRevenue: 26000, renewalDeals: 4, dispatchDeals: 0 },
+    { rank: 21, name: '周美蓁', totalScore: 144.61, totalRevenue: 30800, renewalRevenue: 30800, renewalDeals: 3, dispatchDeals: 0 },
+    { rank: 22, name: '江沛林', totalScore: 126.74, totalRevenue: 9980, renewalRevenue: 9980, renewalDeals: 3, dispatchDeals: 0 },
+    { rank: 23, name: '林佩君', totalScore: 111.66, totalRevenue: 6528, renewalRevenue: 6528, renewalDeals: 1, dispatchDeals: 0 }
   ]),
   groups: Object.freeze({
-    A1: ['馬秋香', '王梅慧', '王珍珠', '李玲玲'],
-    A2: ['林宜靜', '林沛昕', '鄭上官', '徐華妤', '湯玉琦', '許喬恩', '梁依萍'],
-    B:  ['高美雲', '高如郁', '廖姿惠', '蘇淑玲', '江麗勉', '陳玲華', '鄭珮恩'],
-    C:  ['謝啟芳', '周美蓁', '陳桂子（新人）', '江沛林', '林佩君']
+    A1: ['王珍珠', '馬秋香', '王梅慧', '李玲玲'],
+    A2: ['林宜靜', '湯玉琦', '林沛昕', '鄭上官', '徐華妤', '廖姿惠', '許喬恩'],
+    B:  ['梁依萍', '高如郁', '高美雲', '江麗勉', '鄭珮恩', '蘇淑玲', '陳玲華'],
+    C:  ['謝啟芳', '陳桂子（新人）', '周美蓁', '江沛林', '林佩君']
   }),
   rankChanges: Object.freeze({
     up:   [
-      { name: '馬秋香', from: 2,  to: 1  },
-      { name: '徐華妤', from: 13, to: 8  },
-      { name: '湯玉琦', from: 8,  to: 9  },
-      { name: '廖姿惠', from: 15, to: 14 },
-      { name: '江麗勉', from: 17, to: 16 }
+      { name: '王珍珠', from: 3,  to: 1  },
+      { name: '湯玉琦', from: 9,  to: 6  },
+      { name: '廖姿惠', from: 14, to: 10 },
+      { name: '鄭珮恩', from: 18, to: 16 }
     ],
     down: [
-      { name: '王梅慧', from: 1,  to: 2  },
-      { name: '高美雲', from: 9,  to: 12 },
-      { name: '高如郁', from: 12, to: 13 },
-      { name: '蘇淑玲', from: 14, to: 15 },
-      { name: '陳玲華', from: 16, to: 17 }
+      { name: '馬秋香', from: 1,  to: 2  },
+      { name: '王梅慧', from: 2,  to: 3  },
+      { name: '林沛昕', from: 6,  to: 7  },
+      { name: '許喬恩', from: 10, to: 11 }
     ],
-    flat: ['王珍珠', '李玲玲', '林宜靜', '林沛昕', '鄭上官', '許喬恩', '梁依萍', '鄭珮恩', '謝啟芳', '周美蓁', '陳桂子（新人）', '江沛林', '林佩君']
+    flat: ['李玲玲', '林宜靜', '鄭上官', '徐華妤', '梁依萍', '高如郁', '高美雲', '江麗勉', '蘇淑玲', '陳玲華', '謝啟芳', '陳桂子', '周美蓁', '江沛林', '林佩君']
   }),
   advice: Object.freeze([
     { rank:  1, name: '馬秋香',       text: '你這輪翻上第一，今天重點是把差距繼續拉開。' },
@@ -1459,7 +1457,7 @@ function repairOfficial0420Snapshot({ snapshot }) {
 const OFFICIAL_0423_TO_0424 = Object.freeze({
   reportDate: '115/04/23',
   dispatchDate: '115/04/24',
-  scoringMethod: '總業績 → 續單金額 → 追續成交總數 → 派單成交總通數',
+  scoringMethod: 'AI 權重分數（比例原則）＝總業績 300 + 續單金額 250 + 追續成交總數 200 + 派單成交總通數 150 + 基礎 100；各項依最高值比例換算',
   overallStats: {
     totalCalls: 730,
     dispatchCalls: 425,
@@ -1496,40 +1494,40 @@ const OFFICIAL_0423_TO_0424 = Object.freeze({
     })
   }),
   ranking: Object.freeze([
-    { rank: 1, name: '王梅慧', totalScore: 927.05, totalRevenue: 834440, renewalRevenue: 598810, renewalDeals: 32, dispatchDeals: 34 },
-    { rank: 2, name: '馬秋香', totalScore: 914.44, totalRevenue: 823308, renewalRevenue: 523220, renewalDeals: 37, dispatchDeals: 49 },
-    { rank: 3, name: '王珍珠', totalScore: 840.3, totalRevenue: 743148, renewalRevenue: 512030, renewalDeals: 35, dispatchDeals: 36 },
-    { rank: 4, name: '李玲玲', totalScore: 482.78, totalRevenue: 459450, renewalRevenue: 228270, renewalDeals: 21, dispatchDeals: 29 },
-    { rank: 5, name: '許喬恩', totalScore: 440.6, totalRevenue: 454000, renewalRevenue: 454000, renewalDeals: 7, dispatchDeals: 0 },
-    { rank: 6, name: '林沛昕', totalScore: 425.75, totalRevenue: 442362, renewalRevenue: 305536, renewalDeals: 12, dispatchDeals: 21 },
-    { rank: 7, name: '林宜靜', totalScore: 427.03, totalRevenue: 440550, renewalRevenue: 75040, renewalDeals: 16, dispatchDeals: 46 },
-    { rank: 8, name: '徐華妤', totalScore: 350.24, totalRevenue: 314110, renewalRevenue: 216560, renewalDeals: 14, dispatchDeals: 20 },
-    { rank: 9, name: '鄭上官', totalScore: 310.94, totalRevenue: 311810, renewalRevenue: 311810, renewalDeals: 9, dispatchDeals: 0 },
-    { rank: 10, name: '梁依萍', totalScore: 261.03, totalRevenue: 250810, renewalRevenue: 63460, renewalDeals: 9, dispatchDeals: 28 },
-    { rank: 11, name: '湯玉琦', totalScore: 255.42, totalRevenue: 246558, renewalRevenue: 140140, renewalDeals: 20, dispatchDeals: 23 },
-    { rank: 12, name: '廖姿惠', totalScore: 230.12, totalRevenue: 224098, renewalRevenue: 90498, renewalDeals: 18, dispatchDeals: 28 },
-    { rank: 13, name: '高如郁', totalScore: 210.55, totalRevenue: 206858, renewalRevenue: 64340, renewalDeals: 12, dispatchDeals: 22 },
-    { rank: 14, name: '高美雲', totalScore: 190.22, totalRevenue: 195288, renewalRevenue: 37300, renewalDeals: 5, dispatchDeals: 23 },
-    { rank: 15, name: '蘇淑玲', totalScore: 175.44, totalRevenue: 179416, renewalRevenue: 91540, renewalDeals: 5, dispatchDeals: 13 },
-    { rank: 16, name: '江麗勉', totalScore: 150.11, totalRevenue: 152898, renewalRevenue: 59948, renewalDeals: 10, dispatchDeals: 18 },
-    { rank: 17, name: '陳玲華', totalScore: 120.33, totalRevenue: 133478, renewalRevenue: 20500, renewalDeals: 4, dispatchDeals: 15 },
-    { rank: 18, name: '鄭珮恩', totalScore: 105.77, totalRevenue: 112848, renewalRevenue: 36330, renewalDeals: 11, dispatchDeals: 16 },
-    { rank: 19, name: '謝啟芳', totalScore: 45.22, totalRevenue: 35170, renewalRevenue: 16640, renewalDeals: 4, dispatchDeals: 4 },
-    { rank: 20, name: '周美蓁', totalScore: 35.11, totalRevenue: 30800, renewalRevenue: 30800, renewalDeals: 3, dispatchDeals: 0 },
-    { rank: 21, name: '陳桂子（新人）', totalScore: 25.44, totalRevenue: 19000, renewalRevenue: 19000, renewalDeals: 4, dispatchDeals: 0 },
-    { rank: 22, name: '林佩君', totalScore: 15.22, totalRevenue: 13858, renewalRevenue: 13858, renewalDeals: 3, dispatchDeals: 0 },
-    { rank: 23, name: '江沛林', totalScore: 10.55, totalRevenue: 9980, renewalRevenue: 9980, renewalDeals: 3, dispatchDeals: 0 }
+    { rank: 1, name: '馬秋香', totalScore: 964.44, totalRevenue: 823308, renewalRevenue: 523220, renewalDeals: 37, dispatchDeals: 49 },
+    { rank: 2, name: '王梅慧', totalScore: 927.05, totalRevenue: 834440, renewalRevenue: 598810, renewalDeals: 32, dispatchDeals: 34 },
+    { rank: 3, name: '王珍珠', totalScore: 880.34, totalRevenue: 743148, renewalRevenue: 512030, renewalDeals: 35, dispatchDeals: 36 },
+    { rank: 4, name: '李玲玲', totalScore: 562.77, totalRevenue: 459450, renewalRevenue: 228270, renewalDeals: 21, dispatchDeals: 29 },
+    { rank: 5, name: '林宜靜', totalScore: 517.02, totalRevenue: 440550, renewalRevenue: 75040, renewalDeals: 16, dispatchDeals: 46 },
+    { rank: 6, name: '林沛昕', totalScore: 515.75, totalRevenue: 442362, renewalRevenue: 305536, renewalDeals: 12, dispatchDeals: 21 },
+    { rank: 7, name: '許喬恩', totalScore: 490.6, totalRevenue: 454000, renewalRevenue: 454000, renewalDeals: 7, dispatchDeals: 0 },
+    { rank: 8, name: '徐華妤', totalScore: 440.24, totalRevenue: 314110, renewalRevenue: 216560, renewalDeals: 14, dispatchDeals: 20 },
+    { rank: 9, name: '湯玉琦', totalScore: 425.67, totalRevenue: 246558, renewalRevenue: 140140, renewalDeals: 20, dispatchDeals: 23 },
+    { rank: 10, name: '廖姿惠', totalScore: 401.36, totalRevenue: 224098, renewalRevenue: 90498, renewalDeals: 18, dispatchDeals: 28 },
+    { rank: 11, name: '鄭上官', totalScore: 390.93, totalRevenue: 311810, renewalRevenue: 311810, renewalDeals: 9, dispatchDeals: 0 },
+    { rank: 12, name: '梁依萍', totalScore: 351.03, totalRevenue: 250810, renewalRevenue: 63460, renewalDeals: 9, dispatchDeals: 28 },
+    { rank: 13, name: '高如郁', totalScore: 333.44, totalRevenue: 206858, renewalRevenue: 64340, renewalDeals: 12, dispatchDeals: 22 },
+    { rank: 14, name: '江麗勉', totalScore: 289.15, totalRevenue: 152898, renewalRevenue: 59948, renewalDeals: 10, dispatchDeals: 18 },
+    { rank: 15, name: '高美雲', totalScore: 283.22, totalRevenue: 195288, renewalRevenue: 37300, renewalDeals: 5, dispatchDeals: 23 },
+    { rank: 16, name: '蘇淑玲', totalScore: 269.54, totalRevenue: 179416, renewalRevenue: 91540, renewalDeals: 5, dispatchDeals: 13 },
+    { rank: 17, name: '鄭珮恩', totalScore: 264.18, totalRevenue: 112848, renewalRevenue: 36330, renewalDeals: 11, dispatchDeals: 16 },
+    { rank: 18, name: '陳玲華', totalScore: 224.09, totalRevenue: 133478, renewalRevenue: 20500, renewalDeals: 4, dispatchDeals: 15 },
+    { rank: 19, name: '謝啟芳', totalScore: 153.46, totalRevenue: 35170, renewalRevenue: 16640, renewalDeals: 4, dispatchDeals: 4 },
+    { rank: 20, name: '周美蓁', totalScore: 140.15, totalRevenue: 30800, renewalRevenue: 30800, renewalDeals: 3, dispatchDeals: 0 },
+    { rank: 21, name: '陳桂子（新人）', totalScore: 136.38, totalRevenue: 19000, renewalRevenue: 19000, renewalDeals: 4, dispatchDeals: 0 },
+    { rank: 22, name: '林佩君', totalScore: 126.98, totalRevenue: 13858, renewalRevenue: 13858, renewalDeals: 3, dispatchDeals: 0 },
+    { rank: 23, name: '江沛林', totalScore: 123.97, totalRevenue: 9980, renewalRevenue: 9980, renewalDeals: 3, dispatchDeals: 0 }
   ]),
   groups: Object.freeze({
-    A1: ['王梅慧', '馬秋香', '王珍珠', '李玲玲'],
-    A2: ['許喬恩', '林沛昕', '林宜靜', '徐華妤', '鄭上官', '梁依萍', '湯玉琦'],
-    B:  ['廖姿惠', '高如郁', '高美雲', '蘇淑玲', '江麗勉', '陳玲華', '鄭珮恩'],
-    C:  ['謝啟芳', '周美蓁', '陳桂子（新人）', '江慶林', '林佩君']
+    A1: ['馬秋香', '王梅慧', '王珍珠', '李玲玲'],
+    A2: ['林宜靜', '林沛昕', '許喬恩', '徐華妤', '湯玉琦', '廖姿惠', '鄭上官'],
+    B:  ['梁依萍', '高如郁', '江麗勉', '高美雲', '蘇淑玲', '鄭珮恩', '陳玲華'],
+    C:  ['謝啟芳', '周美蓁', '陳桂子（新人）', '林佩君', '江沛林']
   }),
   rankChanges: Object.freeze({
-    up: ['許喬恩', '高如郁'],
-    down: ['林宜靜', '鄭上官', '湯玉琦', '高美雲'],
-    flat: ['王梅慧', '馬秋香', '王珍珠', '李玲玲', '林沛昕', '徐華妤', '梁依萍', '廖姿惠', '蘇淑玲', '江麗勉', '陳玲華', '鄭珮恩', '謝啟芳', '周美蓁', '陳桂子', '林佩君', '江沛林']
+    up: ['馬秋香', '許喬恩', '高如郁', '江麗勉'],
+    down: ['王梅慧', '林宜靜', '鄭上官', '湯玉琦', '高美雲'],
+    flat: ['王珍珠', '李玲玲', '林沛昕', '徐華妤', '梁依萍', '廖姿惠', '蘇淑玲', '鄭珮恩', '陳玲華', '謝啟芳', '周美蓁', '陳桂子', '林佩君', '江沛林']
   }),
   advice: Object.freeze([
     { rank: 1, name: '王梅慧', text: '穩住第一，今天重點是把領先差距再拉大。' },
@@ -1557,7 +1555,7 @@ function official0423GroupOf(name) {
 }
 
 function buildOfficial0423Announcement() {
-  return "📣【AI 派單公告｜4/23 結算 → 4/24 正式派單順序】\n系統已鎖定 4/23 數據，審計 PASS。";
+  return "📣【AI 派單公告｜4/23 結算 → 4/24 正式派單順序】\n系統已鎖定 4/23 業績，4/24 今日派單依 AI 權重分數（比例原則）執行，審計 PASS。";
 }
 
 function repairOfficial0423Snapshot({ snapshot }) {
