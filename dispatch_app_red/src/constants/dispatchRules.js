@@ -38,15 +38,15 @@ const DEFAULT_AUDIT_RULE = '先審計，後排序，再派單';
 const SORT_RULE_TEXT = 'AI 權重分數 (比例原則) → 總業績 → 續單金額 → 追續成交總數 → 派單成交總通數';
 const WEIGHTING_POLICY = Object.freeze({
   title: 'AI 權重分數（比例原則）',
-  description: '以 4/23 業績資料計算，供 4/24 今日正式派單使用；每個項目依全員最高值換算比例分數。',
+  description: '以 4/26 業績資料計算，供 4/27 今日正式派單使用；每個項目依全員最高值換算比例分數。',
   weights: Object.freeze([
-    { key: '總業績', label: '今日業績', weight: 300 },
-    { key: '續單金額', label: '續單金額', weight: 250 },
-    { key: '追續成交總數', label: '追續成交', weight: 200 },
-    { key: '派單成交總通數', label: '派單成交', weight: 150 },
-    { key: 'base', label: '基礎分', weight: 100 }
+    { key: '實收總業績', label: '實收總業績', weight: 300 },
+    { key: '追續單金額', label: '追續單金額', weight: 250 },
+    { key: '全部總金額', label: '全部總金額', weight: 150 },
+    { key: '追續客單價', label: '追續客單價', weight: 150 },
+    { key: '追續單數量', label: '追續單數量', weight: 150 }
   ]),
-  formula: '正式權重分數 = 各項個人數值 ÷ 全員最高值 × 該項權重，再加總基礎分 100'
+  formula: '正式權重分數 = 各項個人數值 ÷ 全員最高值 × 該項權重，再加總（滿分 1000）'
 });
 const FRONTEND_LOCK_RULES = Object.freeze([
   '後端唯一真實來源。',

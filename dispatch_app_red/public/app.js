@@ -42,10 +42,10 @@ const LOCKED_RULES = [
   '後端唯一真實來源。',
   '前端只做顯示，不做運算。',
   '排序固定：正式權重分數 (AI) → 總業績 → 續單金額。',
-  'AI 計分核心：1000 分制比例原則 (300/250/200/150)。',
+  'AI 計分核心：1000 分制比例原則 (300/250/150/150/150)。',
   '已離職只列審計，不入正式派單。',
   'A1 / A2 / B / C 必須與正式名次完全一致。',
-  '姓名必須完全正確，尤其禁止錯寫「徐華妤」。',
+  '姓名辨識度必須完全正確，禁止錯寫。',
   '群組精簡版、排行榜、分組卡、建議卡只能來自同一份後端資料。'
 ];
 
@@ -513,7 +513,7 @@ function renderScoringPolicy(snapshot) {
     refs.scoringPolicyTitle.textContent = policy.title || 'AI 權重分數（比例原則）';
   }
   if (refs.scoringPolicyDate) {
-    refs.scoringPolicyDate.textContent = `${dates.結算日 || '4/23'} → ${dates.派單日 || '4/24'}`;
+    refs.scoringPolicyDate.textContent = `${dates.結算日 || '4/26'} → ${dates.派單日 || '4/27'}`;
   }
   if (refs.scoringPolicyDescription) {
     refs.scoringPolicyDescription.textContent = policy.description || '以今日業績比例換算權重分數。';
