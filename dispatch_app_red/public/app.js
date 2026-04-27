@@ -62,6 +62,27 @@ function fmt(value) {
   return numberFormatter.format(Number(value || 0));
 }
 
+// 欄位多名稱解析器：依序嘗試 keys，回傳第一個有效值
+function fieldVal(row, ...keys) {
+  for (const k of keys) {
+    const v = row[k];
+    if (v !== null && v !== undefined && v !== '') return v;
+  }
+  return 0;
+}
+
+// 取出各計分指標，支援新舊欄位名稱
+function getMetrics(row) {
+  return {
+    實收:     fieldVal(row, '實收', '實收總金額', '實收總業績', 'actualRevenue'),
+    追續金額: fieldVal(row, '追續金額', '續單金額', '追續單金額', 'renewalRevenue'),
+    全部總業績: fieldVal(row, '全部總業績', '總業績', 'totalRevenue'),
+    追續客單價: fieldVal(row, '追續客單價', 'avgRenewal'),
+    追續單數:  fieldVal(row, '追續單數', '追續成交總數', 'renewalDeals'),
+    AI分數:   fieldVal(row, '正式權重分數', 'AI權重分數', 'weightedScore', 'totalScore')
+  };
+}
+
 function countUp(el, target, duration = 1200) {
   const numTarget = Number(target || 0);
   if (!numTarget) { el.textContent = numberFormatter.format(0); return; }
