@@ -210,14 +210,14 @@ function renderSummary(summaryBoard) {
 }
 
 function renderPodium(rankings, matchedKey) {
-  const top4 = Array.isArray(rankings) ? rankings.slice(0, 4) : [];
+  const top5 = Array.isArray(rankings) ? rankings.slice(0, 5) : [];
 
-  if (!top4.length) {
-    refs.podiumGrid.innerHTML = '<div class="empty-state">目前沒有前四名資料。</div>';
+  if (!top5.length) {
+    refs.podiumGrid.innerHTML = '<div class="empty-state">目前沒有前五名資料。</div>';
     return;
   }
 
-  refs.podiumGrid.innerHTML = top4.map((item, index) => {
+  refs.podiumGrid.innerHTML = top5.map((item, index) => {
     const isMatch = matchedKey && normalizeNameKey(item.name) === matchedKey;
 
     return `
