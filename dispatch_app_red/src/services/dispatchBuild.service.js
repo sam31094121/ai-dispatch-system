@@ -165,7 +165,8 @@ function normalizeOfficialPlatformMetrics(value = {}) {
     累積追續總成交數: toNumber(value.cumulativeRenewalDeals ?? value.累積追續總成交數),
     當日續單金額: toNumber(value.dailyRenewalAmount ?? value.當日續單金額),
     本月業績: toNumber(value.monthlyRevenue ?? value.本月業績),
-    追續單總金額: toNumber(value.totalRenewalAmount ?? value.追續單總金額)
+    追續單總金額: toNumber(value.totalRenewalAmount ?? value.追續單總金額),
+    實收總金額: toNumber(value.actualRevenue ?? value.實收總金額)
   };
 }
 
@@ -230,6 +231,7 @@ function normalizeOfficialSummaryBoard(rawStats = {}) {
     當日續單金額: rawStats.dailyRenewalAmount,
     本月業績: rawStats.monthlyRevenue,
     追續單總金額: rawStats.renewalAmount,
+    實收總金額: rawStats.actualRevenue,
     當日取消退貨: rawStats.cancellations
   });
 }
@@ -259,9 +261,11 @@ function normalizeRankingRow(row = {}, index = 0) {
     group: cleanText(row.group || row.分級).toUpperCase(),
     metrics: {
       正式權重分數: toNumber(firstDefined(metricsSource, ['正式權重分數', 'weightedScore', 'totalScore'])),
-      總業績: toNumber(firstDefined(metricsSource, ['總業績', 'totalRevenue'])),
-      續單金額: toNumber(firstDefined(metricsSource, ['續單金額', 'renewalRevenue'])),
-      追續成交總數: toNumber(firstDefined(metricsSource, ['追續成交總數', 'renewalDeals', '追單'])),
+      實收: toNumber(firstDefined(metricsSource, ['實收', '實收總金額', '實收總業績', 'actualRevenue'])),
+      總業績: toNumber(firstDefined(metricsSource, ['總業績', 'totalRevenue', '全部總業績'])),
+      續單金額: toNumber(firstDefined(metricsSource, ['續單金額', '追續金額', '追續單金額', 'renewalRevenue'])),
+      追續成交總數: toNumber(firstDefined(metricsSource, ['追續成交總數', '追續單數', 'renewalDeals', '追單'])),
+      追續客單價: toNumber(firstDefined(metricsSource, ['追續客單價', 'avgRenewal', 'renewalAvgPrice'])),
       派單成交總通數: toNumber(firstDefined(metricsSource, ['派單成交總通數', 'dispatchDeals', '派單成交']))
     },
     advice
@@ -366,32 +370,47 @@ function calculateWeightedScores(rankings) {
   const people = rankings.filter((r) => r.name);
   if (people.length === 0) return rankings;
 
+  const hasNewMetrics = people.some((r) => Number(r.metrics?.實收 || 0) > 0);
+
+  if (hasNewMetrics) {
+    // 5 指標 10000 分制：實收3000＋追續金額2500＋全部總業績1500＋追續客單價1500＋追續單數1500
+    const maxes = {
+      實收: Math.max(...people.map((r) => Number(r.metrics?.實收 || 0)), 1),
+      續單金額: Math.max(...people.map((r) => Number(r.metrics?.續單金額 || 0)), 1),
+      總業績: Math.max(...people.map((r) => Number(r.metrics?.總業績 || 0)), 1),
+      追續客單價: Math.max(...people.map((r) => Number(r.metrics?.追續客單價 || 0)), 1),
+      追續成交總數: Math.max(...people.map((r) => Number(r.metrics?.追續成交總數 || 0)), 1)
+    };
+    people.forEach((row) => {
+      const m = row.metrics || {};
+      const score =
+        (Number(m.實收 || 0) / maxes.實收) * 3000 +
+        (Number(m.續單金額 || 0) / maxes.續單金額) * 2500 +
+        (Number(m.總業績 || 0) / maxes.總業績) * 1500 +
+        (Number(m.追續客單價 || 0) / maxes.追續客單價) * 1500 +
+        (Number(m.追續成交總數 || 0) / maxes.追續成交總數) * 1500;
+      row.metrics.正式權重分數 = parseFloat(score.toFixed(2));
+    });
+    return rankings;
+  }
+
+  // 舊版 4 指標 1000 分制
   const maxes = {
     總業績: Math.max(...people.map((r) => Number(r.metrics?.總業績 || 0)), 1),
     續單金額: Math.max(...people.map((r) => Number(r.metrics?.續單金額 || 0)), 1),
     追續成交總數: Math.max(...people.map((r) => Number(r.metrics?.追續成交總數 || 0)), 1),
     派單成交總通數: Math.max(...people.map((r) => Number(r.metrics?.派單成交總通數 || 0)), 1)
   };
-
-  const weights = {
-    總業績: 300,
-    續單金額: 250,
-    追續成交總數: 200,
-    派單成交總通數: 150,
-    base: 100
-  };
-
+  const weights = { 總業績: 300, 續單金額: 250, 追續成交總數: 200, 派單成交總通數: 150, base: 100 };
   people.forEach((row) => {
     const m = row.metrics || {};
-    const s1 = (Number(m.總業績 || 0) / maxes.總業績) * weights.總業績;
-    const s2 = (Number(m.續單金額 || 0) / maxes.續單金額) * weights.續單金額;
-    const s3 = (Number(m.追續成交總數 || 0) / maxes.追續成交總數) * weights.追續成交總數;
-    const s4 = (Number(m.派單成交總通數 || 0) / maxes.派單成交總通數) * weights.派單成交總通數;
-
-    const total = weights.base + s1 + s2 + s3 + s4;
+    const total = weights.base +
+      (Number(m.總業績 || 0) / maxes.總業績) * weights.總業績 +
+      (Number(m.續單金額 || 0) / maxes.續單金額) * weights.續單金額 +
+      (Number(m.追續成交總數 || 0) / maxes.追續成交總數) * weights.追續成交總數 +
+      (Number(m.派單成交總通數 || 0) / maxes.派單成交總通數) * weights.派單成交總通數;
     row.metrics.正式權重分數 = parseFloat(total.toFixed(2));
   });
-
   return rankings;
 }
 
@@ -1001,6 +1020,8 @@ function flattenRanking(row) {
     renewalDeals: row.metrics.追續成交總數,
     dispatchDeals: row.metrics.派單成交總通數,
     weightedScore: row.metrics.正式權重分數 || 0,
+    actualRevenue: row.metrics.實收 || 0,
+    avgRenewal: row.metrics.追續客單價 || 0,
     advice: row.advice
   };
 }
@@ -1036,9 +1057,14 @@ function toLegacyStandardData(report) {
       姓名: row.name,
       ...(row.isNew ? { 標記: '新人' } : {}),
       正式權重分數: row.metrics.正式權重分數 || 0,
+      實收: row.metrics.實收 || 0,
+      全部總業績: row.metrics.總業績,
       總業績: row.metrics.總業績,
+      追續金額: row.metrics.續單金額,
       續單金額: row.metrics.續單金額,
+      追續單數: row.metrics.追續成交總數,
       追續成交總數: row.metrics.追續成交總數,
+      追續客單價: row.metrics.追續客單價 || 0,
       派單成交總通數: row.metrics.派單成交總通數,
       分級: row.group,
       建議: row.advice
@@ -1053,21 +1079,30 @@ function buildPresentation(report) {
   const legacyRanking = toLegacyStandardData(report).正式名次;
 
   return {
-    top4: legacyRanking.slice(0, 4),
+    top5: legacyRanking.slice(0, 5),
     top10: legacyRanking.slice(0, 10),
     compactTable: legacyRanking.slice(10),
     retired: report.audit.excludedEmployees.map((entry) => ({
       姓名: entry.name,
       原因: entry.reason
     })),
-    summaryCards: [
-      ['累積總派單數', report.summaryBoard['累積總派單數'] || 0],
-      ['累積派單總成交數', report.summaryBoard['累積派單總成交數'] || 0],
-      ['累積追續總成交數', report.summaryBoard['累積追續總成交數'] || 0],
-      ['當日續單金額', report.summaryBoard['當日續單金額'] || 0],
-      ['本月業績', report.summaryBoard['本月業績'] || 0],
-      ['追續單總金額', report.summaryBoard['追續單總金額'] || 0]
-    ],
+    summaryCards: report.summaryBoard['實收總金額']
+      ? [
+          ['實收總金額', report.summaryBoard['實收總金額']],
+          ['追續單金額', report.summaryBoard['追續單總金額'] || 0],
+          ['全部總業績', report.summaryBoard['本月業績'] || 0],
+          ['追續單成交', report.summaryBoard['累積追續總成交數'] || 0],
+          ['累積派單成交', report.summaryBoard['累積派單總成交數'] || 0],
+          ['取消退貨', report.summaryBoard['當日取消退貨'] || 0]
+        ]
+      : [
+          ['累積總派單數', report.summaryBoard['累積總派單數'] || 0],
+          ['累積派單總成交數', report.summaryBoard['累積派單總成交數'] || 0],
+          ['累積追續總成交數', report.summaryBoard['累積追續總成交數'] || 0],
+          ['當日續單金額', report.summaryBoard['當日續單金額'] || 0],
+          ['本月業績', report.summaryBoard['本月業績'] || 0],
+          ['追續單總金額', report.summaryBoard['追續單總金額'] || 0]
+        ],
     cancellationAmount: report.summaryBoard['當日取消退貨'] || 0
   };
 }

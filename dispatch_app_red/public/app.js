@@ -389,29 +389,85 @@ function renderSummaryCards(cards) {
 }
 
 function renderSpotlight(rows) {
+  if (!rows || !rows.length) return;
+  const top1Score = getMetrics(rows[0]).AI分數 || 0;
+
   refs.spotlightGrid.replaceChildren(
     ...rows.map((row, index) => {
       const m = getMetrics(row);
+      const rank = index + 1;
+      const scoreGap = rank > 1 && top1Score > 0 ? (top1Score - (m.AI分數 || 0)) : 0;
       const card = document.createElement('article');
-      card.className = `spotlight-card rank-${index + 1} group-${row.分級}`;
+      card.className = `spotlight-card rank-${rank} group-${row.分級}`;
+
+      const championBanner = rank === 1 ? `
+        <div class="spotlight-champion-banner">
+          <span class="champion-icon">👑</span>
+          <span class="champion-label">CHAMPION · #1</span>
+          <span class="champion-ai">AI 10000 比例原則</span>
+        </div>` : '';
+
+      const gapBadge = scoreGap > 0
+        ? `<span class="spotlight-gap-badge">↓ −${scoreGap.toFixed(2)} pts</span>`
+        : '';
+
+      // 進階優化：榮耀稱號系統 (增加大卡感)
+      const titles = {
+        1: { text: '王者 KING', class: 'title-champion' },
+        2: { text: '頂尖 ELITE', class: 'title-elite' },
+        3: { text: '豪傑 HERO', class: 'title-elite' },
+        4: { text: '強襲 STRIKER', class: 'title-striker' },
+        5: { text: '破軍 VANGUARD', class: 'title-striker' }
+      };
+      const titleData = titles[rank];
+      const titleHtml = titleData ? `<span class="prestige-title ${titleData.class}">${titleData.text}</span>` : '';
+
+      // 大卡展示：前 5 名全部使用 5 欄完整顯示
+      const metricsHTML = rank <= 5
+        ? `<div class="spotlight-grid-inner spotlight-5col">
+            <div><span>實收總金額</span><strong>${safeHtml(fmt(m.實收))}</strong></div>
+            <div><span>追續金額</span><strong>${safeHtml(fmt(m.追續金額))}</strong></div>
+            <div><span>全部總業績</span><strong>${safeHtml(fmt(m.全部總業績))}</strong></div>
+            <div><span>追續客單價</span><strong>${safeHtml(fmt(m.追續客單價))}</strong></div>
+            <div><span>追續單數</span><strong>${safeHtml(String(m.追續單數))} 單</strong></div>
+          </div>`
+        : `<div class="spotlight-grid-inner">
+            <div><span>實收總金額</span><strong>${safeHtml(fmt(m.實收))}</strong></div>
+            <div><span>追續金額</span><strong>${safeHtml(fmt(m.追續金額))}</strong></div>
+            <div><span>全部總業績</span><strong>${safeHtml(fmt(m.全部總業績))}</strong></div>
+            <div><span>追續客單價</span><strong>${safeHtml(fmt(m.追續客單價))}</strong></div>
+          </div>
+          <div class="spotlight-renewal-row">
+            <span class="spotlight-renewal-label">追續單數</span>
+            <span class="spotlight-renewal-value">${safeHtml(String(m.追續單數))} 單</span>
+          </div>`;
+
+      const scoreHTML = m.AI分數
+        ? `<div class="score-banner">
+            <span class="score-label">AI 權重分數</span>
+            <strong class="score-value">${safeHtml(Number(m.AI分數).toFixed(2))}</strong>
+            ${rank <= 3 ? '<span class="score-max">/ 10000 · A1 TIER</span>' : ''}
+          </div>`
+        : '';
+
+      const adviceHTML = rank <= 3 && row.建議
+        ? `<p class="spotlight-advice-text">${safeHtml(row.建議)}</p>`
+        : '';
+
       card.innerHTML = `
-        <div class="spotlight-meta">
-          <span class="rank-no">#${safeHtml(String(row.名次))}</span>
-          <span class="group-tag">${safeHtml(row.分級)}</span>
+        <div class="spotlight-content-wrapper">
+          ${championBanner}
+          <div class="spotlight-meta">
+            <span class="rank-no">#${safeHtml(String(row.名次))}</span>
+            <span class="group-tag" style="background:var(--cyan); color:#000;">${safeHtml(row.分級)}</span>
+            ${gapBadge}
+          </div>
+          <h3>${safeHtml(row.姓名)}${titleHtml}</h3>
+          ${row.標記 ? `<span class="newbie-tag">${safeHtml(row.標記)}</span>` : ''}
+          ${metricsHTML}
+          ${scoreHTML}
+          ${adviceHTML}
         </div>
-        <h3>${safeHtml(row.姓名)}</h3>
-        ${row.標記 ? `<span class="newbie-tag">${safeHtml(row.標記)}</span>` : ''}
-        <div class="spotlight-grid-inner">
-          <div><span>實收總金額</span><strong>${safeHtml(fmt(m.實收))}</strong></div>
-          <div><span>追續金額</span><strong>${safeHtml(fmt(m.追續金額))}</strong></div>
-          <div><span>全部總業績</span><strong>${safeHtml(fmt(m.全部總業績))}</strong></div>
-          <div><span>追續客單價</span><strong>${safeHtml(fmt(m.追續客單價))}</strong></div>
-        </div>
-        <div class="spotlight-renewal-row">
-          <span class="spotlight-renewal-label">追續單數</span>
-          <span class="spotlight-renewal-value">${safeHtml(String(m.追續單數))} 單</span>
-        </div>
-        ${m.AI分數 ? `<div class="score-banner"><span class="score-label">AI 權重分數</span><strong class="score-value">${safeHtml(Number(m.AI分數).toFixed(2))}</strong></div>` : ''}
       `;
       return card;
     })
@@ -674,7 +730,7 @@ function render(snapshot) {
   renderHero(data, snapshot);
   renderOfficialLock(snapshot);
   renderSummaryCards(presentation.summaryCards || []);
-  renderSpotlight(presentation.top4 || []);
+  renderSpotlight(presentation.top5 || []);
   renderLeaderboard(presentation.top10 || []);
   const rankMap = {};
   (data?.正式名次 || []).forEach(row => { if (row?.姓名) rankMap[row.姓名] = row.名次; });

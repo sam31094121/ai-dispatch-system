@@ -1,6 +1,7 @@
 const GROUP_KEYS = Object.freeze(['A1', 'A2', 'B', 'C']);
 const RANKING_METRICS = Object.freeze([
   '正式權重分數',
+  '實收',
   '總業績',
   '續單金額',
   '追續成交總數',
@@ -12,7 +13,8 @@ const AUDIT_METRICS = Object.freeze([
   '累積追續總成交數',
   '當日續單金額',
   '本月業績',
-  '追續單總金額'
+  '追續單總金額',
+  '實收總金額'
 ]);
 const SUMMARY_METRICS = Object.freeze([...AUDIT_METRICS, '當日取消退貨']);
 const PLATFORM_NAME_TO_KEY = Object.freeze({
@@ -38,7 +40,7 @@ const DEFAULT_AUDIT_RULE = '先審計，後排序，再派單';
 const SORT_RULE_TEXT = 'AI 權重分數 (比例原則) → 總業績 → 續單金額 → 追續成交總數 → 派單成交總通數';
 const WEIGHTING_POLICY = Object.freeze({
   title: 'AI 權重分數（比例原則）',
-  description: '以 4/26 業績資料計算，供 4/27 今日正式派單使用；每個項目依全員最高值換算比例分數。',
+  description: '以 4/27 業績資料計算，供 4/28 今日正式派單使用；每個項目依全員最高值換算比例分數。',
   weights: Object.freeze([
     { key: '實收總業績', label: '實收總業績', weight: 3000 },
     { key: '追續單金額', label: '追續單金額', weight: 2500 },

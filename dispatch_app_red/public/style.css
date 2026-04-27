@@ -661,7 +661,7 @@ textarea,
   text-shadow: 0 0 22px rgba(255, 59, 92, 0.65);
 }
 
-/* ── 17. Spotlight 前四名 ───────────────────────────────── */
+/* ── 17. Spotlight 前五名 ───────────────────────────────── */
 .spotlight-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -726,6 +726,14 @@ textarea,
   width: 90px; height: 90px;
   background: radial-gradient(circle at top right, rgba(200,150,70,0.14) 0%, transparent 65%);
 }
+.spotlight-card.rank-4::after {
+  width: 80px; height: 80px;
+  background: radial-gradient(circle at top right, rgba(0,180,216,0.14) 0%, transparent 65%);
+}
+.spotlight-card.rank-5::after {
+  width: 70px; height: 70px;
+  background: radial-gradient(circle at top right, rgba(130,100,255,0.13) 0%, transparent 65%);
+}
 
 .spotlight-card:hover {
   transform: perspective(900px) translateY(-6px) rotateX(1.5deg) scale(1.008);
@@ -747,67 +755,71 @@ textarea,
     inset 0 -2px 8px rgba(0, 0, 0, 0.66);
 }
 
-/* #1 名 — 冠軍金 */
+/* #1-#5 名 — 全幅大卡展示 (王者與精英) */
+.spotlight-content-wrapper {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: inherit;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* #1-#5 名 — 全幅大卡展示 (王者與精英) */
+.spotlight-card.rank-1,
+.spotlight-card.rank-2,
+.spotlight-card.rank-3,
+.spotlight-card.rank-4,
+.spotlight-card.rank-5 {
+  grid-column: span 4;
+  opacity: 1 !important;
+  visibility: visible !important;
+  isolation: isolate;
+}
+
 .spotlight-card.rank-1 {
-  grid-column: span 2;
-  min-height: 320px;
-  border: 4px solid rgba(255, 218, 60, 0.88);
-  background:
-    linear-gradient(43deg, transparent 26%, rgba(255,240,110,0.08) 48%, transparent 68%),
-    linear-gradient(71deg, transparent 46%, rgba(255,215,60,0.05) 60%, transparent 78%),
-    radial-gradient(ellipse 80% 55% at 16% 12%, rgba(255,222,80,0.26) 0%, transparent 100%),
-    radial-gradient(ellipse 40% 35% at 80% 80%, rgba(200,130,10,0.12) 0%, transparent 100%),
-    linear-gradient(155deg,
-      rgba(255, 210, 55, 0.20) 0%,
-      rgba(200, 140, 10, 0.10) 28%,
-      rgba(2, 6, 18, 0.98) 62%
-    );
-  box-shadow:
-    0 0 0 1px rgba(255, 240, 130, 0.22),
-    0 0 55px rgba(255, 210, 50, 0.22),
-    0 0 120px rgba(255, 165, 20, 0.12),
-    0 26px 60px rgba(0, 0, 0, 0.80),
-    inset 0 3px 0 rgba(255, 248, 160, 0.65),
-    inset 3px 0 16px rgba(255, 210, 50, 0.07),
-    inset 0 -3px 8px rgba(0, 0, 0, 0.65);
-  animation: glowBreathGold1 3.2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  min-height: 400px;
+  padding: 24px;
+  border: 4px solid #FFD700 !important;
+  background: linear-gradient(165deg, #1a1a00 0%, #000 70%) !important;
+  box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
 }
 
-/* #2 名 — 白金 */
-.spotlight-card.rank-2 {
-  border-color: rgba(224, 200, 120, 0.44);
-  background:
-    linear-gradient(52deg, transparent 36%, rgba(224,200,120,0.052) 54%, transparent 70%),
-    radial-gradient(ellipse 62% 44% at 16% 12%, rgba(224,200,120,0.14) 0%, transparent 100%),
-    linear-gradient(155deg,
-      rgba(224, 200, 120, 0.11) 0%,
-      rgba(2, 6, 18, 0.97) 62%
-    );
-  box-shadow:
-    0 0 40px rgba(224, 200, 120, 0.15),
-    0 16px 40px rgba(0, 0, 0, 0.62),
-    inset 0 2px 0 rgba(255, 220, 110, 0.34),
-    inset 0 -1px 4px rgba(0, 0, 0, 0.46);
-  animation: glowBreathGold2 4s ease-in-out infinite;
-}
-
-/* #3 名 — 銅金 */
+.spotlight-card.rank-1,
+.spotlight-card.rank-2,
 .spotlight-card.rank-3 {
-  border-color: rgba(200, 144, 64, 0.38);
-  background:
-    linear-gradient(57deg, transparent 40%, rgba(200,150,68,0.046) 56%, transparent 72%),
-    radial-gradient(ellipse 56% 40% at 14% 10%, rgba(200,150,70,0.12) 0%, transparent 100%),
-    linear-gradient(155deg,
-      rgba(200, 144, 64, 0.10) 0%,
-      rgba(2, 6, 18, 0.97) 62%
-    );
-  box-shadow:
-    0 0 30px rgba(200, 144, 64, 0.13),
-    0 12px 32px rgba(0, 0, 0, 0.58),
-    inset 0 2px 0 rgba(210, 158, 78, 0.28),
-    inset 0 -1px 3px rgba(0, 0, 0, 0.42);
-  animation: glowBreathGold3 4.5s ease-in-out infinite;
+  min-height: 360px !important; /* 降低最小高度，確保在小螢幕也能看到 */
+  padding: 20px !important;
 }
+
+.spotlight-card strong {
+  opacity: 1 !important;
+  visibility: visible !important;
+  animation: none !important; /* 強制移除前 5 名的進場動畫，確保即時顯示 */
+}
+
+.spotlight-card.rank-2 {
+  min-height: 480px;
+  border: 4px solid #E0E8F0 !important;
+  background: linear-gradient(165deg, #0f172a 0%, #000 70%) !important;
+}
+
+.spotlight-card.rank-3 {
+  min-height: 480px;
+  border: 4px solid #CD8B4A !important;
+  background: linear-gradient(165deg, #2a1506 0%, #000 70%) !important;
+}
+
+.spotlight-card.rank-4,
+.spotlight-card.rank-5 {
+  min-height: 420px;
+  border: 2px solid var(--cyan) !important;
+  background: var(--bg-strong) !important;
+}
+
+
 
 .spotlight-card h3 {
   margin: 0;
@@ -852,6 +864,22 @@ textarea,
   background-clip: text;
 }
 
+/* 上升之星 */
+.spotlight-card.rank-4 h3 {
+  background: linear-gradient(130deg, #E0F8FF 30%, #00C8E8 85%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 挑戰者 */
+.spotlight-card.rank-5 h3 {
+  background: linear-gradient(130deg, #F0EEFF 30%, #9880FF 85%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 .spotlight-grid-inner {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -867,9 +895,10 @@ textarea,
   text-shadow: 0 0 8px rgba(160, 110, 30, 0.35);
 }
 
-/* 各排名的數值金色降梯 */
+/* 各排名的數值色階降梯 */
 .spotlight-card.rank-1 .spotlight-grid-inner strong {
   color: var(--gold-1);
+  font-size: 17px;
   text-shadow: 0 0 12px rgba(255, 200, 50, 0.55);
 }
 .spotlight-card.rank-2 .spotlight-grid-inner strong {
@@ -879,6 +908,19 @@ textarea,
 .spotlight-card.rank-3 .spotlight-grid-inner strong {
   color: var(--gold-3);
   text-shadow: 0 0 9px rgba(200, 144, 64, 0.38);
+}
+.spotlight-card.rank-4 .spotlight-grid-inner strong {
+  color: #00C8E8;
+  text-shadow: 0 0 8px rgba(0, 200, 230, 0.36);
+}
+.spotlight-card.rank-5 .spotlight-grid-inner strong {
+  color: #A088FF;
+  text-shadow: 0 0 8px rgba(160, 130, 255, 0.36);
+}
+
+/* rank-1 全幅五欄指標 */
+.spotlight-5col {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 /* ── 18. Rank / Group Tags ─────────────────────────────── */
@@ -922,6 +964,91 @@ textarea,
   border-color: rgba(200, 144, 64, 0.40);
   color: var(--gold-3);
   text-shadow: 0 0 8px rgba(200, 144, 64, 0.45);
+}
+.spotlight-card.rank-4 .rank-no {
+  background: rgba(0, 180, 216, 0.14);
+  border-color: rgba(0, 180, 216, 0.42);
+  color: #00C8E8;
+  text-shadow: 0 0 8px rgba(0, 200, 230, 0.50);
+}
+.spotlight-card.rank-5 .rank-no {
+  background: rgba(130, 100, 255, 0.14);
+  border-color: rgba(130, 100, 255, 0.40);
+  color: #A088FF;
+  text-shadow: 0 0 8px rgba(160, 130, 255, 0.50);
+}
+
+/* ── Champion Banner (#1 王者橫幅) ─────────────────────── */
+.spotlight-champion-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px;
+  background: linear-gradient(90deg, rgba(255,210,50,0.18) 0%, rgba(255,200,50,0.06) 60%, transparent 100%);
+  border: 1px solid rgba(255, 215, 60, 0.40);
+  border-radius: 8px;
+  margin-bottom: 4px;
+}
+.champion-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+.champion-label {
+  font-family: 'Orbitron', monospace;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: var(--gold-1);
+  text-shadow: 0 0 12px rgba(255, 200, 50, 0.55);
+  text-transform: uppercase;
+}
+.champion-ai {
+  font-family: 'Orbitron', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: rgba(255, 200, 80, 0.50);
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+/* ── Gap Badge (#2-#5 與第一的落差) ─────────────────────── */
+.spotlight-gap-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  background: rgba(255, 55, 75, 0.10);
+  border: 1px solid rgba(255, 80, 90, 0.28);
+  border-radius: 999px;
+  font-family: 'Orbitron', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255, 130, 140, 0.88);
+  letter-spacing: 0.04em;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+/* ── Advice text in rank-1 ──────────────────────────────── */
+.spotlight-advice-text {
+  margin: 6px 0 0;
+  padding: 8px 12px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(255, 240, 165, 0.78);
+  border-left: 3px solid rgba(255, 210, 50, 0.40);
+  background: rgba(255, 200, 50, 0.04);
+  border-radius: 0 6px 6px 0;
+}
+
+/* ── Score max label "/ 10000" ──────────────────────────── */
+.score-max {
+  font-family: 'Orbitron', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 200, 80, 0.42);
+  margin-left: 4px;
+  letter-spacing: 0.04em;
 }
 
 .group-tag {
@@ -1542,9 +1669,9 @@ textarea,
   100% { left: 120%; }
 }
 
-/* 數字進場 */
+/* 數字進場 (修復：初始不為 0，避免渲染失敗導致隱形) */
 @keyframes numFlash {
-  0%   { opacity: 0; transform: scale(0.95); filter: blur(4px); }
+  0%   { opacity: 0.5; transform: scale(0.98); filter: blur(2px); }
   100% { opacity: 1; transform: scale(1); filter: blur(0); }
 }
 
@@ -1591,8 +1718,12 @@ textarea,
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .spotlight-card.rank-1 {
-    grid-column: span 2;
+  .spotlight-card.rank-1,
+  .spotlight-card.rank-2,
+  .spotlight-card.rank-3,
+  .spotlight-card.rank-4,
+  .spotlight-card.rank-5 {
+    grid-column: span 2 !important;
   }
 
   .groups-grid {
@@ -1626,8 +1757,14 @@ textarea,
     grid-template-columns: 1fr;
   }
 
-  .spotlight-card.rank-1 {
-    grid-column: span 1;
+  .spotlight-card.rank-1,
+  .spotlight-card.rank-2,
+  .spotlight-card.rank-3,
+  .spotlight-card.rank-4,
+  .spotlight-card.rank-5 {
+    grid-column: span 1 !important;
+    min-height: 280px !important; /* 手機端更緊湊，確保可見 */
+    margin-bottom: 10px;
   }
 
   .title-wrap {
@@ -2067,12 +2204,9 @@ textarea,
 }
 
 .spotlight-card {
-  background:
-    radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, -100%), rgba(255, 215, 60, 0.12), transparent 40%),
-    linear-gradient(43deg, transparent 44%, rgba(255,200,80,0.028) 55%, transparent 66%),
-    linear-gradient(160deg, rgba(40, 28, 4, 0.45) 0%, transparent 50%),
-    var(--bg-strong) !important;
-  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty, 0px));
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
   transition: box-shadow 260ms ease, border-color 260ms ease, transform 0.1s ease-out;
   will-change: transform;
 }
@@ -2171,3 +2305,84 @@ textarea,
     grid-template-columns: 1fr;
   }
 }
+
+/* ── 28. 榮耀前五名 (Prestige VFX) ────────────────────────── */
+
+/* 冠軍：超新星背景 (Supernova) */
+@keyframes supernova-move {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
+.spotlight-card.rank-1::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(255, 140, 0, 0.15) 0%, transparent 40%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-size: 200% 200%, 200% 200%, 150px 150px;
+  animation: supernova-move 12s ease-in-out infinite, scanLine 8s linear infinite;
+  opacity: 0.4;
+  z-index: 0;
+}
+
+/* 絲綢掃描特效 (Satin Sweep) */
+@keyframes satin-sweep {
+  0% { transform: translateX(-100%) skewX(-15deg); opacity: 0; }
+  15% { opacity: 0.6; }
+  35% { opacity: 0.6; }
+  50% { transform: translateX(150%) skewX(-15deg); opacity: 0; }
+  100% { transform: translateX(150%) skewX(-15deg); opacity: 0; }
+}
+
+.spotlight-card.rank-2::after,
+.spotlight-card.rank-3::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; width: 40%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  animation: satin-sweep 5s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 脈衝能量邊框 (Pulse Energy) */
+@keyframes border-pulse-energy {
+  0%, 100% { border-color: rgba(0, 200, 255, 0.3); box-shadow: 0 0 15px rgba(0, 200, 255, 0.1); }
+  50% { border-color: rgba(0, 200, 255, 0.8); box-shadow: 0 0 30px rgba(0, 200, 255, 0.3); }
+}
+
+.spotlight-card.rank-4 { animation: border-pulse-energy 3s infinite ease-in-out; }
+.spotlight-card.rank-5 { animation: border-pulse-energy 4s infinite ease-in-out; border-color: rgba(139, 92, 246, 0.3); }
+
+/* 稱號樣式 (Prestige Titles) */
+.prestige-title {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  vertical-align: middle;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.title-champion { color: var(--gold-1); border-color: var(--gold-1); background: rgba(218, 165, 32, 0.2); }
+.title-elite    { color: var(--gold-2); border-color: var(--gold-2); background: rgba(255, 255, 255, 0.1); }
+.title-striker  { color: var(--cyan); border-color: var(--cyan); background: rgba(0, 229, 255, 0.1); }
+
+/* AI 分數跳動優化 */
+.spotlight-card .score-value {
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.spotlight-card:hover .score-value {
+  transform: scale(1.1);
+  text-shadow: 0 0 20px currentColor;
+}
+
