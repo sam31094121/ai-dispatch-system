@@ -297,6 +297,14 @@ function groupLine(groups, key, label) {
 function buildPasteReadyAnnouncement(snapshot) {
   const ranking = Array.isArray(snapshot?.ranking) ? snapshot.ranking : [];
   const groups = snapshot?.groups || {};
+  const dates = snapshot?.standardData?.日期資訊 || {};
+  const settleDay = dates.結算日 || '4/27';
+  const dispatchDay = dates.派單日 || '4/28';
+
+  // 取離職人員
+  const retiredNames = (snapshot?.standardData?.審計結論?.['審計列示不入派單'] || [])
+    .map(e => e?.姓名 || e).filter(Boolean);
+
   if (!ranking.length) return '';
 
   const top10 = ranking
@@ -306,15 +314,22 @@ function buildPasteReadyAnnouncement(snapshot) {
 
   const rankingLines = ranking.map((row) => {
     const score = Number(row.weightedScore || row.totalScore || 0).toFixed(2);
-    return `${row.rank}、${row.name}｜AI ${score}｜總業績 ${fmt(row.totalRevenue)}｜追續 ${fmt(row.renewalRevenue)}｜追續單數 ${fmt(row.renewalDeals)}`;
+    const actual = row.actualRevenue || row.totalRevenue || 0;
+    const renewal = row.renewalRevenue || 0;
+    const deals = row.renewalDeals || 0;
+    return `${row.rank}、${row.name}｜AI ${score}｜實收 ${fmt(actual)}｜追續金額 ${fmt(renewal)}｜追續單數 ${deals}`;
   });
 
+  const retiredLine = retiredNames.length
+    ? `已離職：${retiredNames.join('、')}，只列審計，不入正式派單。`
+    : '';
+
   return [
-    '📣【AI 派單公告｜4/27 結算 → 4/28 正式派單順序｜三平台整合比例原則版】',
+    `📣【AI 派單公告｜${settleDay} 結算 → ${dispatchDay} 正式派單順序｜三平台整合比例原則版】`,
     '',
     '審計結果：PASS',
     '三平台總表與個別明細全部核對通過，無漏算、無多算、無總盤衝突。',
-    '已離職：陳旭宜，只列審計，不入正式派單。',
+    retiredLine,
     '',
     '正式前10名：',
     `${top10}。`,
@@ -328,11 +343,11 @@ function buildPasteReadyAnnouncement(snapshot) {
     groupLine(groups, 'B', 'B組｜穩定進階'),
     groupLine(groups, 'C', 'C組｜補位觀察'),
     '',
-    '4/28 正式派單順序以本則公告為準。',
+    `${dispatchDay} 正式派單順序以本則公告為準。`,
     '今日派單請依 A1 → A2 → B → C 順序執行；前方全忙才往下派，不得跳位，不得指定。',
     '同客戶回撥，優先由原承接人服務。',
     '請全員確認後回覆「+1」。'
-  ].join('\n');
+  ].filter(v => v !== null && v !== undefined).join('\n');
 }
 
 function renderOfficialLock(snapshot) {
