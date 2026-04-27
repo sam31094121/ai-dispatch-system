@@ -2003,3 +2003,137 @@ textarea,
   font-family: "Orbitron", monospace;
   letter-spacing: 0.05em;
 }
+
+
+/* ── 終極生命力優化 (Dynamic Cyber-Aesthetics) ──────────────── */
+@keyframes systemBoot {
+  0% { opacity: 0; transform: translateY(30px) scale(0.98); filter: blur(5px); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+.stagger-enter {
+  opacity: 0;
+  animation: systemBoot 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* 讓 Panel 與 Spotlight 支援滑鼠 3D 追蹤光暈 */
+.panel {
+  background: 
+    radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, -100%), rgba(0, 229, 255, 0.1), transparent 40%),
+    linear-gradient(165deg, rgba(12, 28, 64, 0.85) 0%, rgba(3, 8, 22, 0.98) 60%),
+    radial-gradient(circle at 0% 0%, rgba(0, 229, 255, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 100% 100%, rgba(139, 92, 246, 0.08) 0%, transparent 40%) !important;
+  transform: perspective(1200px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty, 0px));
+  transition: box-shadow 0.4s ease, border-color 0.4s ease, transform 0.1s ease-out;
+  will-change: transform;
+}
+
+.panel:hover {
+  --ty: -4px;
+}
+
+.spotlight-card {
+  background:
+    radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, -100%), rgba(255, 215, 60, 0.12), transparent 40%),
+    linear-gradient(43deg, transparent 44%, rgba(255,200,80,0.028) 55%, transparent 66%),
+    linear-gradient(160deg, rgba(40, 28, 4, 0.45) 0%, transparent 50%),
+    var(--bg-strong) !important;
+  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty, 0px));
+  transition: box-shadow 260ms ease, border-color 260ms ease, transform 0.1s ease-out;
+  will-change: transform;
+}
+
+.spotlight-card:hover {
+  --ty: -6px;
+  transform: perspective(900px) rotateX(calc(var(--rx, 0deg) + 1.5deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty, -6px)) scale(1.008);
+}
+
+.spotlight-card.rank-1:hover {
+  --ty: -9px;
+  transform: perspective(900px) rotateX(calc(var(--rx, 0deg) + 2deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty, -9px)) scale(1.01);
+}
+
+/* 按鈕點擊漣漪特效與光暈 */
+.btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 120%; height: 0;
+  padding-bottom: 120%;
+  background: radial-gradient(circle, rgba(255,255,255,0.4) 10%, transparent 10.01%);
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  border-radius: 50%;
+  transition: transform 0.5s, opacity 1s;
+}
+
+.btn:active::after {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  transition: 0s;
+}
+
+
+.official-lock-panel {
+  border-color: rgba(0, 255, 195, 0.30);
+  background:
+    linear-gradient(135deg, rgba(0, 255, 195, 0.08), rgba(255, 208, 60, 0.06)),
+    rgba(7, 15, 27, 0.88);
+}
+
+.official-lock-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.official-lock-head h2 {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.35;
+}
+
+.official-lock-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 14px;
+}
+
+.official-lock-grid > div {
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius);
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.official-lock-label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--emerald);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.official-lock-text {
+  margin: 0;
+  color: rgba(245, 250, 255, 0.92);
+  font-size: 14px;
+  line-height: 1.8;
+  word-break: break-word;
+}
+
+@media (max-width: 760px) {
+  .official-lock-head,
+  .official-lock-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+}

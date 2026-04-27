@@ -40,13 +40,13 @@ const WEIGHTING_POLICY = Object.freeze({
   title: 'AI 權重分數（比例原則）',
   description: '以 4/26 業績資料計算，供 4/27 今日正式派單使用；每個項目依全員最高值換算比例分數。',
   weights: Object.freeze([
-    { key: '實收總業績', label: '實收總業績', weight: 300 },
-    { key: '追續單金額', label: '追續單金額', weight: 250 },
-    { key: '全部總金額', label: '全部總金額', weight: 150 },
-    { key: '追續客單價', label: '追續客單價', weight: 150 },
-    { key: '追續單數量', label: '追續單數量', weight: 150 }
+    { key: '實收總業績', label: '實收總業績', weight: 3000 },
+    { key: '追續單金額', label: '追續單金額', weight: 2500 },
+    { key: '全部總金額', label: '全部總金額', weight: 1500 },
+    { key: '追續客單價', label: '追續客單價', weight: 1500 },
+    { key: '追續單數量', label: '追續單數量', weight: 1500 }
   ]),
-  formula: '正式權重分數 = 各項個人數值 ÷ 全員最高值 × 該項權重，再加總（滿分 1000）'
+  formula: '正式權重分數 = 各項個人數值 ÷ 全員最高值 × 該項權重，再加總（滿分 10000）'
 });
 const FRONTEND_LOCK_RULES = Object.freeze([
   '後端唯一真實來源。',

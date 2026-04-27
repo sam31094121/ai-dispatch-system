@@ -75,7 +75,7 @@ function repairReport(report) {
 
   // 3. 權重分重算與排序校正
   calculateWeightedScores(report.rankings);
-  addFix('rankings', 'AI 計分', '已依「比例原則」完成 1000 分制加權分數注入');
+  addFix('rankings', 'AI 計分', '已依「比例原則」完成 10000 分制加權分數注入');
   
   const originalOrderStr = JSON.stringify(report.rankings.map(r => r.name));
   report.rankings.sort(compareRankingRows);

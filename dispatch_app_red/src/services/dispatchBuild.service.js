@@ -336,6 +336,32 @@ function normalizeRankingOrder(rankings) {
     .map(({ __sourceIndex, ...row }) => row);
 }
 
+function normalizePreservedRankingOrder(rankings, providedGroups = {}) {
+  const groupByName = new Map();
+  GROUP_KEYS.forEach((groupKey) => {
+    safeArray(providedGroups?.[groupKey]).forEach((name) => {
+      groupByName.set(name, groupKey);
+    });
+  });
+
+  return safeArray(rankings)
+    .map((row, index) => ({
+      ...row,
+      rank: Math.max(1, Math.trunc(toNumber(row.rank || index + 1)) || index + 1),
+      __sourceIndex: index
+    }))
+    .sort((left, right) => {
+      if (left.rank !== right.rank) return left.rank - right.rank;
+      return left.__sourceIndex - right.__sourceIndex;
+    })
+    .map((row, index) => ({
+      ...row,
+      rank: index + 1,
+      group: groupByName.get(row.name) || row.group || resolveGroupByRank(index + 1)
+    }))
+    .map(({ __sourceIndex, ...row }) => row);
+}
+
 function calculateWeightedScores(rankings) {
   const people = rankings.filter((r) => r.name);
   if (people.length === 0) return rankings;
@@ -369,9 +395,10 @@ function calculateWeightedScores(rankings) {
   return rankings;
 }
 
-function syncGroups(rankings, _providedGroups) {
-  const withScores = calculateWeightedScores(rankings);
-  const updatedRankings = normalizeRankingOrder(withScores);
+function syncGroups(rankings, providedGroups, options = {}) {
+  const updatedRankings = options.preserveRankingOrder
+    ? normalizePreservedRankingOrder(rankings, providedGroups)
+    : normalizeRankingOrder(calculateWeightedScores(rankings));
 
   return {
     rankings: updatedRankings,
@@ -898,7 +925,9 @@ function buildReportFromPayload(payload, options = {}) {
     .map(normalizeRankingRow)
     .filter((row) => row.name);
   const normalizedGroups = normalizeGroups(source.groups || source.分級);
-  const grouped = syncGroups(initialRankings, normalizedGroups);
+  const grouped = syncGroups(initialRankings, normalizedGroups, {
+    preserveRankingOrder: Boolean(source.preserveRankingOrder || source.officialLock?.preserveRankingOrder)
+  });
   const normalizedAdvice = normalizeAdviceEntries(source.adviceList || source.advice || source.每人一句建議 || source.建議);
   const advised = syncAdvice(grouped.rankings, normalizedAdvice);
 

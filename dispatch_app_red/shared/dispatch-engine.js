@@ -572,7 +572,7 @@ function auditReport(parsed) {
 
   return {
     status: errors.length ? '失敗' : '通過',
-    message: errors.length ? errors[0] : '審計通過，可進入 1000 權重排序。',
+    message: errors.length ? errors[0] : '審計通過，可進入 10000 權重排序。',
     errors,
     checks
   };
@@ -1202,7 +1202,7 @@ function runFullPipeline({ rawText, operator = SYSTEM.defaultOperator, dataPaths
     setStageDone(stages, 'audit', '審計通過');
 
     const scoring = scoreReport(parsed);
-    setStageDone(stages, 'score', '1000 權重完成');
+    setStageDone(stages, 'score', '10000 權重完成');
 
     const rankingResult = rankReport(scoring);
     setStageDone(stages, 'rank', `排序完成 ${rankingResult.ranked.length} 人`);
@@ -1281,7 +1281,7 @@ function createPreviewSnapshot(rawText, options = {}) {
 
   if (analysis.audit.status === '通過') {
     setStageDone(stages, 'audit', '審計通過');
-    setStageDone(stages, 'score', '1000 權重完成');
+    setStageDone(stages, 'score', '10000 權重完成');
     setStageDone(stages, 'rank', `排序完成 ${analysis.rankingResult.ranked.length} 人`);
     setStageDone(
       stages,
@@ -1344,7 +1344,7 @@ function runFullPipeline({ rawText, operator = SYSTEM.defaultOperator, dataPaths
     setStageDone(stages, 'audit', '審計通過');
 
     const scoring = scoreReport(parsed);
-    setStageDone(stages, 'score', '1000 權重計分完成');
+    setStageDone(stages, 'score', '10000 權重計分完成');
 
     const rankingResult = rankReport(scoring);
     setStageDone(stages, 'rank', `排序完成 ${rankingResult.ranked.length} 人`);
@@ -1462,7 +1462,7 @@ function createPreviewSnapshot(rawText, options = {}) {
     analysis.audit = mergeAuditWithConfirmation(analysis.audit, previewSnapshot.confirmation);
 
     setStageDone(stages, 'audit', '審計通過');
-    setStageDone(stages, 'score', '1000 權重計分完成');
+    setStageDone(stages, 'score', '10000 權重計分完成');
     setStageDone(stages, 'rank', `排序完成 ${analysis.rankingResult.ranked.length} 人`);
     setStageDone(
       stages,
@@ -1844,7 +1844,7 @@ function auditReport(parsed) {
 
   return {
     status: errors.length ? '失敗' : '通過',
-    message: errors.length ? errors[0] : '審計通過，可進入 1000 權重排序。',
+    message: errors.length ? errors[0] : '審計通過，可進入 10000 權重排序。',
     errors,
     checks
   };

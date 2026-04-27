@@ -20,6 +20,11 @@ const refs = {
   announcementTitle: $('announcement-title'),
   dateRange: $('date-range'),
   auditResult: $('audit-result'),
+  officialLockPanel: $('official-lock-panel'),
+  officialLockStatus: $('official-lock-status'),
+  officialLockDate: $('official-lock-date'),
+  officialLockTop10: $('official-lock-top10'),
+  officialLockGroups: $('official-lock-groups'),
   cancellationChip: $('cancellation-chip'),
   summaryGrid: $('summary-grid'),
   spotlightGrid: $('spotlight-grid'),
@@ -42,7 +47,7 @@ const LOCKED_RULES = [
   '後端唯一真實來源。',
   '前端只做顯示，不做運算。',
   '排序固定：正式權重分數 (AI) → 總業績 → 續單金額。',
-  'AI 計分核心：1000 分制比例原則 (300/250/150/150/150)。',
+  'AI 計分核心：10000 分制比例原則 (3000/2500/1500/1500/1500)。',
   '已離職只列審計，不入正式派單。',
   'A1 / A2 / B / C 必須與正式名次完全一致。',
   '姓名辨識度必須完全正確，禁止錯寫。',
@@ -261,6 +266,75 @@ function renderHero(data, snapshot) {
   refs.pageSubtitle.textContent = snapshot?.persisted
     ? `目前展示的是後端正式版資料，完成時間 ${snapshot.completedAt || '-'}。`
     : '目前展示的是預覽結果，尚未寫入正式版。';
+}
+
+function groupLine(groups, key, label) {
+  const names = Array.isArray(groups?.[key]) ? groups[key] : [];
+  return `${label}：${names.join('、') || '-'}`;
+}
+
+function buildPasteReadyAnnouncement(snapshot) {
+  const ranking = Array.isArray(snapshot?.ranking) ? snapshot.ranking : [];
+  const groups = snapshot?.groups || {};
+  if (!ranking.length) return '';
+
+  const top10 = ranking
+    .slice(0, 10)
+    .map((row) => `${row.rank}${row.name}`)
+    .join(' ');
+
+  const rankingLines = ranking.map((row) => {
+    const score = Number(row.weightedScore || row.totalScore || 0).toFixed(2);
+    return `${row.rank}、${row.name}｜AI ${score}｜總業績 ${fmt(row.totalRevenue)}｜追續 ${fmt(row.renewalRevenue)}｜追續單數 ${fmt(row.renewalDeals)}`;
+  });
+
+  return [
+    '📣【AI 派單公告｜4/27 結算 → 4/28 正式派單順序｜三平台整合比例原則版】',
+    '',
+    '審計結果：PASS',
+    '三平台總表與個別明細全部核對通過，無漏算、無多算、無總盤衝突。',
+    '已離職：陳旭宜，只列審計，不入正式派單。',
+    '',
+    '正式前10名：',
+    `${top10}。`,
+    '',
+    '正式名次：',
+    ...rankingLines,
+    '',
+    'A1／A2／B／C 派單分組：',
+    groupLine(groups, 'A1', 'A1｜核心主力'),
+    groupLine(groups, 'A2', 'A2｜續單收割'),
+    groupLine(groups, 'B', 'B組｜穩定進階'),
+    groupLine(groups, 'C', 'C組｜補位觀察'),
+    '',
+    '4/28 正式派單順序以本則公告為準。',
+    '今日派單請依 A1 → A2 → B → C 順序執行；前方全忙才往下派，不得跳位，不得指定。',
+    '同客戶回撥，優先由原承接人服務。',
+    '請全員確認後回覆「+1」。'
+  ].join('\n');
+}
+
+function renderOfficialLock(snapshot) {
+  if (!refs.officialLockPanel) return;
+
+  const ranking = Array.isArray(snapshot?.ranking) ? snapshot.ranking : [];
+  const groups = snapshot?.groups || {};
+  const top10 = ranking
+    .slice(0, 10)
+    .map((row) => `${row.rank}.${row.name}`)
+    .join('  ');
+
+  refs.officialLockStatus.textContent = ranking.length
+    ? '4/28 正式派單順序已確認，可直接執行'
+    : '等待正式派單順序';
+  refs.officialLockDate.textContent = '4/28 LOCK';
+  refs.officialLockTop10.textContent = top10 || '-';
+  refs.officialLockGroups.textContent = [
+    groupLine(groups, 'A1', 'A1'),
+    groupLine(groups, 'A2', 'A2'),
+    groupLine(groups, 'B', 'B'),
+    groupLine(groups, 'C', 'C')
+  ].join('｜');
 }
 
 function renderSummaryCards(cards) {
@@ -513,7 +587,7 @@ function renderScoringPolicy(snapshot) {
     refs.scoringPolicyTitle.textContent = policy.title || 'AI 權重分數（比例原則）';
   }
   if (refs.scoringPolicyDate) {
-    refs.scoringPolicyDate.textContent = `${dates.結算日 || '4/26'} → ${dates.派單日 || '4/27'}`;
+    refs.scoringPolicyDate.textContent = `${dates.結算日 || '4月26日'} → ${dates.派單日 || '4月27日'}`;
   }
   if (refs.scoringPolicyDescription) {
     refs.scoringPolicyDescription.textContent = policy.description || '以今日業績比例換算權重分數。';
@@ -544,6 +618,7 @@ function render(snapshot) {
 
   renderValidation(snapshot);
   renderHero(data, snapshot);
+  renderOfficialLock(snapshot);
   renderSummaryCards(presentation.summaryCards || []);
   renderSpotlight(presentation.top4 || []);
   renderLeaderboard(presentation.top10 || []);
@@ -555,7 +630,7 @@ function render(snapshot) {
   renderAdvice(data?.正式名次 || []);
   renderScoringPolicy(snapshot);
   renderProportionalAdvice(data?.正式名次 || []);
-  refs.compactOutput.value = data?.群組超精簡版 || '';
+  refs.compactOutput.value = buildPasteReadyAnnouncement(snapshot) || data?.群組超精簡版 || '';
 }
 
 async function loadCurrent() {
@@ -778,3 +853,48 @@ refs.btnCopyCompact.addEventListener('click', () => {
 init().catch(() => {
   setBadge(refs.inputStatus, 'FAIL', '初始化失敗');
 });
+
+
+function initDynamicAesthetics() {
+  document.addEventListener('mousemove', (e) => {
+    const cards = document.querySelectorAll('.panel, .spotlight-card');
+    cards.forEach(card => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const px = x / rect.width * 100;
+      const py = y / rect.height * 100;
+      card.style.setProperty('--mouse-x', `${px}%`);
+      card.style.setProperty('--mouse-y', `${py}%`);
+      if (x > -50 && x < rect.width + 50 && y > -50 && y < rect.height + 50) {
+        const tiltX = (0.5 - (y / rect.height)) * 8;
+        const tiltY = ((x / rect.width) - 0.5) * 8;
+        card.style.setProperty('--rx', `${tiltX}deg`);
+        card.style.setProperty('--ry', `${tiltY}deg`);
+      } else {
+        card.style.setProperty('--rx', '0deg');
+        card.style.setProperty('--ry', '0deg');
+      }
+    });
+  });
+
+  const applyStaggerEntrance = () => {
+    const panels = document.querySelectorAll('.panel:not(.stagger-enter), .spotlight-card:not(.stagger-enter)');
+    panels.forEach((panel, index) => {
+      panel.style.animationDelay = `${Math.min(index * 0.035, 0.35)}s`;
+      panel.classList.add('stagger-enter');
+    });
+  };
+
+  const observer = new MutationObserver(() => {
+    applyStaggerEntrance();
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+  applyStaggerEntrance();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initDynamicAesthetics);
+} else {
+  initDynamicAesthetics();
+}
