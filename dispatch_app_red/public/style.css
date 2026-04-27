@@ -1808,6 +1808,40 @@ textarea,
 .prop-card.group-A2 .prop-advice-text { color: rgba(200, 255, 235, 0.88); }
 .prop-card.group-C  .prop-advice-text { color: rgba(160, 185, 210, 0.80); }
 
+/* â”€â”€ Spotlight è¿½çºŒå–®æ•¸æ©«æ¢ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+.spotlight-renewal-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  margin-top: 4px;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 200, 255, 0.06);
+  border: 1px solid rgba(0, 200, 255, 0.14);
+}
+.spotlight-renewal-label {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-sub);
+  font-family: "Orbitron", monospace;
+}
+.spotlight-renewal-value {
+  font-family: "Orbitron", monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cyan);
+  text-shadow: 0 0 8px rgba(0, 200, 255, 0.4);
+}
+.spotlight-card.rank-1 .spotlight-renewal-row {
+  background: rgba(255, 210, 50, 0.08);
+  border-color: rgba(255, 210, 50, 0.22);
+}
+.spotlight-card.rank-1 .spotlight-renewal-value {
+  color: var(--gold-1);
+  text-shadow: 0 0 10px rgba(255, 200, 50, 0.5);
+}
+
 /* â”€â”€ Score banner (spotlight cards) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .score-banner {
   margin-top: 12px;
@@ -2005,7 +2039,7 @@ textarea,
 }
 
 
-/* ¢w¢w ²×·¥¥Í©R¤OÀu¤Æ (Dynamic Cyber-Aesthetics) ¢w¢w¢w¢w¢w¢w¢w¢w¢w¢w¢w¢w¢w¢w¢w¢w */
+/* ï¿½wï¿½w ï¿½×·ï¿½ï¿½Í©Rï¿½Oï¿½uï¿½ï¿½ (Dynamic Cyber-Aesthetics) ï¿½wï¿½wï¿½wï¿½wï¿½wï¿½wï¿½wï¿½wï¿½wï¿½wï¿½wï¿½wï¿½wï¿½wï¿½wï¿½w */
 @keyframes systemBoot {
   0% { opacity: 0; transform: translateY(30px) scale(0.98); filter: blur(5px); }
   100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
@@ -2016,7 +2050,7 @@ textarea,
   animation: systemBoot 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Åı Panel »P Spotlight ¤ä´©·Æ¹« 3D °lÂÜ¥ú·w */
+/* ï¿½ï¿½ Panel ï¿½P Spotlight ï¿½ä´©ï¿½Æ¹ï¿½ 3D ï¿½lï¿½Ü¥ï¿½ï¿½w */
 .panel {
   background: 
     radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, -100%), rgba(0, 229, 255, 0.1), transparent 40%),
@@ -2053,7 +2087,7 @@ textarea,
   transform: perspective(900px) rotateX(calc(var(--rx, 0deg) + 2deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty, -9px)) scale(1.01);
 }
 
-/* «ö¶sÂIÀ»º§º¬¯S®Ä»P¥ú·w */
+/* ï¿½ï¿½ï¿½sï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Sï¿½Ä»Pï¿½ï¿½ï¿½w */
 .btn {
   position: relative;
   overflow: hidden;

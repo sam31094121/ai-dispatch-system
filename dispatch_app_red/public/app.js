@@ -618,11 +618,14 @@ function renderProportionalAdvice(rows) {
           </div>
           <span class="prop-group-tag" style="color:${grpColor};border-color:${grpColor}40">${safeHtml(row.分級)}</span>
         </div>
-        ${row.正式權重分數 ? `<div class="prop-score">權重分數 <strong>${safeHtml(fmt(row.正式權重分數))}</strong></div>` : ''}
+        ${(() => { const m = getMetrics(row); return m.AI分數 ? `<div class="prop-score">AI 分數 <strong>${safeHtml(Number(m.AI分數).toFixed(2))}</strong></div>` : ''; })()}
         <div class="prop-metrics">
-          <span>業績 <strong>${safeHtml(fmt(row.總業績))}</strong></span>
-          <span>續單 <strong>${safeHtml(fmt(row.續單金額))}</strong></span>
-          <span>追續 <strong>${safeHtml(fmt(row.追續成交總數))}</strong></span>
+          ${(() => { const m = getMetrics(row); return `
+          <span>實收 <strong>${safeHtml(fmt(m.實收))}</strong></span>
+          <span>追續金額 <strong>${safeHtml(fmt(m.追續金額))}</strong></span>
+          <span>追續單數 <strong>${safeHtml(String(m.追續單數))}</strong></span>
+          <span>客單價 <strong>${safeHtml(fmt(m.追續客單價))}</strong></span>
+          `; })()}
         </div>
         <p class="prop-advice-text">${safeHtml(row.建議 || '')}</p>
       `;
