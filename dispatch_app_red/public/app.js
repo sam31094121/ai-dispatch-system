@@ -406,6 +406,7 @@ function renderSpotlight(rows) {
 function renderLeaderboard(rows) {
   refs.leaderboard.replaceChildren(
     ...rows.map((row) => {
+      const m = getMetrics(row);
       const item = document.createElement('article');
       item.className = `leader-row group-${row.分級}`;
       item.innerHTML = `
@@ -417,8 +418,9 @@ function renderLeaderboard(rows) {
           </div>
         </div>
         <div class="leader-right">
-          <span>總業績</span>
-          <strong>${safeHtml(fmt(row.總業績))}</strong>
+          <span>實收</span>
+          <strong>${safeHtml(fmt(m.實收 || m.全部總業績))}</strong>
+          <span style="margin-top:4px">AI ${safeHtml(Number(m.AI分數).toFixed(0))}</span>
         </div>
       `;
       return item;
@@ -481,8 +483,9 @@ function renderRetired(retired) {
 
 function renderRankingTable(rows) {
   refs.rankingTableBody.innerHTML = rows.map((row) => {
-    const score = Number(row.正式權重分數 || 0);
-    const scoreStyle = score >= 800 ? 'style="color: var(--cyan); font-weight: bold; text-shadow: 0 0 8px var(--cyan);"' : '';
+    const m = getMetrics(row);
+    const score = Number(m.AI分數 || 0);
+    const scoreStyle = score >= 3000 ? 'style="color: var(--cyan); font-weight: bold; text-shadow: 0 0 8px var(--cyan);"' : '';
     return `
       <tr class="row-${safeHtml(row.分級)}">
         <td>${safeHtml(String(row.名次))}</td>
@@ -493,11 +496,12 @@ function renderRankingTable(rows) {
           </div>
         </td>
         <td>${safeHtml(row.分級)}</td>
-        <td class="col-score" ${scoreStyle}>${score > 0 ? safeHtml(fmt(score)) : '—'}</td>
-        <td>${safeHtml(fmt(row.總業績))}</td>
-        <td>${safeHtml(fmt(row.續單金額))}</td>
-        <td>${safeHtml(fmt(row.追續成交總數))}</td>
-        <td>${safeHtml(fmt(row.派單成交總通數))}</td>
+        <td class="col-score" ${scoreStyle}>${score > 0 ? safeHtml(Number(score).toFixed(2)) : '—'}</td>
+        <td>${safeHtml(fmt(m.實收))}</td>
+        <td>${safeHtml(fmt(m.追續金額))}</td>
+        <td>${safeHtml(fmt(m.全部總業績))}</td>
+        <td>${safeHtml(fmt(m.追續客單價))}</td>
+        <td>${safeHtml(String(m.追續單數))}</td>
       </tr>
     `;
   }).join('');
