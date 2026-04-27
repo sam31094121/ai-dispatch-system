@@ -376,6 +376,7 @@ function renderSummaryCards(cards) {
 function renderSpotlight(rows) {
   refs.spotlightGrid.replaceChildren(
     ...rows.map((row, index) => {
+      const m = getMetrics(row);
       const card = document.createElement('article');
       card.className = `spotlight-card rank-${index + 1} group-${row.分級}`;
       card.innerHTML = `
@@ -386,12 +387,16 @@ function renderSpotlight(rows) {
         <h3>${safeHtml(row.姓名)}</h3>
         ${row.標記 ? `<span class="newbie-tag">${safeHtml(row.標記)}</span>` : ''}
         <div class="spotlight-grid-inner">
-          <div><span>總業績</span><strong>${safeHtml(fmt(row.總業績))}</strong></div>
-          <div><span>續單金額</span><strong>${safeHtml(fmt(row.續單金額))}</strong></div>
-          <div><span>追續成交</span><strong>${safeHtml(fmt(row.追續成交總數))}</strong></div>
-          <div><span>派單成交</span><strong>${safeHtml(fmt(row.派單成交總通數))}</strong></div>
+          <div><span>實收總金額</span><strong>${safeHtml(fmt(m.實收))}</strong></div>
+          <div><span>追續金額</span><strong>${safeHtml(fmt(m.追續金額))}</strong></div>
+          <div><span>全部總業績</span><strong>${safeHtml(fmt(m.全部總業績))}</strong></div>
+          <div><span>追續客單價</span><strong>${safeHtml(fmt(m.追續客單價))}</strong></div>
         </div>
-        ${row.正式權重分數 ? `<div class="score-banner"><span class="score-label">正式權重分數</span><strong class="score-value">${safeHtml(fmt(row.正式權重分數))}</strong></div>` : ''}
+        <div class="spotlight-renewal-row">
+          <span class="spotlight-renewal-label">追續單數</span>
+          <span class="spotlight-renewal-value">${safeHtml(String(m.追續單數))} 單</span>
+        </div>
+        ${m.AI分數 ? `<div class="score-banner"><span class="score-label">AI 權重分數</span><strong class="score-value">${safeHtml(Number(m.AI分數).toFixed(2))}</strong></div>` : ''}
       `;
       return card;
     })
