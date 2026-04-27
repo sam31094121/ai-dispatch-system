@@ -547,17 +547,22 @@ const GROUP_COLOR = { A1: '#FFD060', A2: '#00FFC3', B: '#0EA5E9', C: '#64748B' }
 
 function autoProportionalAdvice(rows) {
   if (!rows.length) return rows;
-  const withWs = rows.map(r => ({
-    ...r,
-    _ws: (r.正式權重分數 > 0 ? r.正式權重分數 :
-      (r.續單金額 * 50000000 + r.總業績 * 40000000 + r.追續成交總數 * 10000000))
-  }));
+  const withWs = rows.map(r => {
+    const m = getMetrics(r);
+    return {
+      ...r,
+      _m: m,
+      _ws: (m.AI分數 > 0 ? m.AI分數 :
+        (m.追續金額 * 0.25 + m.全部總業績 * 0.15 + m.實收 * 0.30 + m.追續客單價 * 0.15 + m.追續單數 * 100 * 0.15))
+    };
+  });
   const sorted = [...withWs].sort((a, b) => b._ws - a._ws);
   const wsRankOf = {};
   sorted.forEach((p, i) => { wsRankOf[p.姓名] = i + 1; });
 
   return withWs.map((row, idx) => {
     if (row.建議 && row.建議.length > 20) return row;
+    const m = row._m;
     const ws = row._ws;
     const above = withWs[idx - 1];
     const below = withWs[idx + 1];
@@ -565,12 +570,13 @@ function autoProportionalAdvice(rows) {
     const gapDown = below ? ((ws - below._ws) / ws * 100).toFixed(1) : null;
     const wsr = wsRankOf[row.姓名];
     const trank = row.名次;
-    const rc = row.續單金額 * 50000000;
-    const bc = row.總業績 * 40000000;
-    const dc = row.追續成交總數 * 10000000;
-    const tot = rc + bc + dc || 1;
-    const mainMetric = rc/tot > 0.45 ? '續單' : (dc/tot > 0.12 ? '追續成交' : '業績');
-    const dealCnt = row.追續成交總數;
+    // 判斷主指標：實收 > 追續金額 > 客單價
+    const rc = m.追續金額 * 2500;
+    const ac = m.實收 * 3000;
+    const dc = m.追續單數 * 1500;
+    const tot = rc + ac + dc || 1;
+    const mainMetric = ac/tot > 0.45 ? '實收' : (rc/tot > 0.35 ? '追續金額' : '追續單數');
+    const dealCnt = m.追續單數;
     let advice = '';
     if (trank === 1) {
       const lead = gapDown || '0';
