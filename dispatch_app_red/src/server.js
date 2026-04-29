@@ -43,5 +43,5 @@ const server = app.listen(appConfig.port, () => {
   const appUrl = `http://localhost:${listenPort}`;
 
   console.log(`Dispatch app listening at ${appUrl}`);
-  scheduleBrowserOpen(appUrl);
+  scheduleBrowserOpen(`${appUrl}/mobile.html`);
 });
