@@ -98,6 +98,46 @@ body::before {
   letter-spacing: 1px;
 }
 
+/* AI 掃描與雷射效果 */
+@keyframes laser-sweep {
+  0% { top: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+@keyframes ai-glow-pulse {
+  0%, 100% { border-color: rgba(0, 229, 255, 0.3); box-shadow: 0 0 5px rgba(0, 229, 255, 0.1); }
+  50% { border-color: rgba(0, 229, 255, 0.8); box-shadow: 0 0 20px rgba(0, 229, 255, 0.3); }
+}
+
+.ai-scanning {
+  position: relative;
+  overflow: hidden;
+  animation: ai-glow-pulse 1.5s infinite ease-in-out !important;
+}
+
+.ai-scanning::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  box-shadow: 0 0 15px var(--cyan);
+  z-index: 10;
+  pointer-events: none;
+  animation: laser-sweep 2s infinite linear;
+}
+
+.ai-scanning-text {
+  background: linear-gradient(90deg, var(--cyan), var(--emerald));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
 /* 頂級強固優化標章 */
 .optimization-badge {
   display: inline-flex;

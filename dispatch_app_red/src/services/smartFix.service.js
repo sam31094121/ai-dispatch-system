@@ -228,6 +228,26 @@ function repairReport(report) {
   }
 
   const extractedDates = extractDatesFromTitle(repairedReport.title);
+  
+  // 進階優化：日期自動推導邏輯 (Today -> Tomorrow)
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+  const todayROC = `${year - 1911}/${String(month).padStart(2, '0')}/${String(day).padStart(2, '0')}`;
+  
+  const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+  const tomorrowROC = `${tomorrow.getFullYear() - 1911}/${String(tomorrow.getMonth() + 1).padStart(2, '0')}/${String(tomorrow.getDate()).padStart(2, '0')}`;
+
+  if (!repairedReport.settlementDate || repairedReport.settlementDate === '115/04/27') {
+    repairedReport.settlementDate = todayROC;
+    addFix('settlementDate', '日期自動推導', `檢測到今日為 ${todayROC}，已自動將結算日更新。`);
+  }
+  if (!repairedReport.dispatchDate || repairedReport.dispatchDate === '115/04/28') {
+    repairedReport.dispatchDate = tomorrowROC;
+    addFix('dispatchDate', '日期自動推導', `檢測到派單需求，已自動將派單日推導為明日 ${tomorrowROC}。`);
+  }
+
   if (extractedDates.settlementDate && extractedDates.settlementDate !== repairedReport.settlementDate) {
     const previousDate = repairedReport.settlementDate || '空白';
     repairedReport.settlementDate = extractedDates.settlementDate;
