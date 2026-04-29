@@ -153,7 +153,8 @@ async function requestJson(url) {
   const response = await fetch(url, {
     headers: {
       'Content-Type': 'application/json'
-    }
+    },
+    cache: 'no-store' // 強制不使用快取，確保每次取得最新官方鎖資料
   });
 
   const payload = await response.json().catch(() => ({
