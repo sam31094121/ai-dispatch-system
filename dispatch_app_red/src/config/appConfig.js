@@ -50,7 +50,7 @@ function resolveStorageRoot() {
 const appConfig = Object.freeze({
   environment: readString(process.env.NODE_ENV, 'development'),
   jsonBodyLimit: readString(process.env.API_BODY_LIMIT, '10mb'),
-  port: readInteger(process.env.PORT, 3000, { allowZero: true }),
+  port: readInteger(process.env.PORT, 3001, { allowZero: true }),
   projectRoot: PROJECT_ROOT,
   publicDir: path.join(PROJECT_ROOT, 'public'),
   staticAssetMaxAgeSeconds: readInteger(process.env.STATIC_ASSET_MAX_AGE_SECONDS, 3600),
