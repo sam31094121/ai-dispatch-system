@@ -233,8 +233,11 @@ function hydrateStorageCache() {
   if (latestOfficial && latestRecord) {
     const officialDate = latestOfficial.reportDate || '';
     const recordDate = latestRecord.report?.reportDate || '';
-    if (officialDate !== recordDate && officialDate.includes('04/')) {
-        console.log(`[CacheGuard] 檢測到日期矛盾 (Official: ${officialDate} vs Record: ${recordDate})，優先加載官方鎖定數據。`);
+    
+    // 優化：只有當官方日期「晚於」紀錄日期時，才執行強制覆蓋
+    // 否則手動更新的數據會被舊的官方緩存洗掉
+    if (officialDate !== recordDate && officialDate.includes('04/') && officialDate > recordDate) {
+        console.log(`[CacheGuard] 檢測到官方有更新版本 (Official: ${officialDate} > Record: ${recordDate})，執行同步。`);
         const parsedReport = buildReportFromSource({ sourceText: JSON.stringify(latestOfficial) });
         const syncValidation = validateDispatchReport(parsedReport);
         if (!syncValidation.ok) {
