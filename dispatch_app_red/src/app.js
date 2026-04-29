@@ -8,7 +8,7 @@ const healthRoutes = require('./routes/health.routes');
 const lineNotifyRoutes = require('./routes/lineNotify.routes');
 const dispatchReportRoutes = require('./routes/dispatchReport.routes');
 const versionRoutes = require('./routes/version.routes');
-app.use('/api/version', versionRoutes);
+
 const { errorResponse } = require('./utils/response.util');
 const errorCodes = require('./constants/errorCodes');
 
@@ -56,6 +56,7 @@ function createApp() {
   app.use('/api/line', lineNotifyRoutes);
   app.use('/api', legacyRoutes);
   app.use('/api', dispatchReportRoutes);
+  app.use('/api/version', versionRoutes);
   app.use('/api', (_req, res) => {
     res
       .status(404)

@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 // 讀取 package.json
-const pkgPath = path.resolve(__dirname, '..', '..', 'package.json');
+const pkgPath = path.resolve(__dirname, '..', 'package.json');
 let pkg;
 try {
   pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));

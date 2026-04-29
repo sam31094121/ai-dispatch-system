@@ -1,6 +1,6 @@
 {
   "name": "zhaogui-ai-dispatch-all-in-one",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "兆櫃AI派單整合系統｜工程鎖死版",
   "main": "server.js",
   "scripts": {
