@@ -58,14 +58,5 @@ const server = app.listen(appConfig.port, async () => {
     }
   }
 
-  // 若啟用雙埠，額外在 3000 監聽相同的 app
-  if (process.env.ENABLE_DUAL_PORT === 'true') {
-    const dualPort = 3000;
-    app.listen(dualPort, () => {
-      const dualUrl = `http://localhost:${dualPort}`;
-      console.log(`Dual port listening at ${dualUrl}`);
-      // 自動開啟 3000 頁面
-      scheduleBrowserOpen(`${dualUrl}/mobile.html`);
-    });
-  }
+
 });
