@@ -2272,6 +2272,490 @@ const OFFICIAL_0427_TO_0428 = Object.freeze({
   }
 });
 
+const OFFICIAL_0428_TO_0429 = Object.freeze({
+  reportDate: '115/04/28',
+  dispatchDate: '115/04/29',
+  scoringMethod: 'AI 10000 權重比例原則：實收3000＋追續金額2500＋總業績1500＋追續客單價1500＋追續單數1500',
+  scoringNote: '採用 04/28 三平臺業績，AI 比例原則，以全員最高值為基準計算加權分數。',
+  overallStats: {
+    totalCalls: 0, 
+    dispatchCalls: 0, 
+    renewalCalls: 368,
+    renewalAmount: 4637068,
+    dailyRenewalAmount: 4637068, 
+    cancellations: 0,
+    monthlyRevenue: 8177760,
+    actualRevenue: 6104042
+  },
+  platforms: {
+    '三立奕心': {
+      cumulativeDispatch: 0,
+      cumulativeDispatchDeals: 0,
+      cumulativeRenewalDeals: 255,
+      dailyRenewalAmount: 3161848,
+      dailyRenewalDeals: 255,
+      monthlyRevenue: 4456550,
+      totalRenewalAmount: 3161848,
+      actualRevenue: 3725432,
+      dailyCancellations: 0
+    },
+    '民視': {
+      cumulativeDispatch: 0,
+      cumulativeDispatchDeals: 0,
+      cumulativeRenewalDeals: 75,
+      dailyRenewalAmount: 468330,
+      dailyRenewalDeals: 75,
+      monthlyRevenue: 2679320,
+      totalRenewalAmount: 468330,
+      actualRevenue: 1834480,
+      dailyCancellations: 0
+    },
+    '公司產品': {
+      cumulativeDispatch: 0,
+      cumulativeDispatchDeals: 0,
+      cumulativeRenewalDeals: 38,
+      dailyRenewalAmount: 1006890,
+      dailyRenewalDeals: 38,
+      monthlyRevenue: 1041890,
+      totalRenewalAmount: 1006890,
+      actualRevenue: 544130,
+      dailyCancellations: 0
+    }
+  },
+  ranking: Object.freeze([
+    {
+        "rank": 1,
+        "name": "王珍珠",
+        "totalRevenue": 1046838,
+        "actualRevenue": 800568,
+        "renewalRevenue": 725020,
+        "avgRenewal": 12947,
+        "renewalDeals": 56,
+        "dispatchDeals": 0,
+        "totalScore": 8857.21
+    },
+    {
+        "rank": 2,
+        "name": "王梅慧",
+        "totalRevenue": 891480,
+        "actualRevenue": 825330,
+        "renewalRevenue": 632230,
+        "avgRenewal": 16638,
+        "renewalDeals": 38,
+        "dispatchDeals": 0,
+        "totalScore": 8050.01
+    },
+    {
+        "rank": 3,
+        "name": "馬秋香",
+        "totalRevenue": 950388,
+        "actualRevenue": 821868,
+        "renewalRevenue": 595130,
+        "avgRenewal": 14170,
+        "renewalDeals": 42,
+        "dispatchDeals": 0,
+        "totalScore": 8015.79
+    },
+    {
+        "rank": 4,
+        "name": "林沛昕",
+        "totalRevenue": 609390,
+        "actualRevenue": 572072,
+        "renewalRevenue": 405536,
+        "avgRenewal": 31195,
+        "renewalDeals": 13,
+        "dispatchDeals": 0,
+        "totalScore": 5776.74
+    },
+    {
+        "rank": 5,
+        "name": "李玲玲",
+        "totalRevenue": 750450,
+        "actualRevenue": 476930,
+        "renewalRevenue": 360290,
+        "avgRenewal": 13857,
+        "renewalDeals": 26,
+        "dispatchDeals": 0,
+        "totalScore": 5226.33
+    },
+    {
+        "rank": 6,
+        "name": "徐華妤",
+        "totalRevenue": 444770,
+        "actualRevenue": 357130,
+        "renewalRevenue": 241440,
+        "avgRenewal": 15090,
+        "renewalDeals": 16,
+        "dispatchDeals": 0,
+        "totalScore": 3717.78
+    },
+    {
+        "rank": 7,
+        "name": "許喬恩",
+        "totalRevenue": 347400,
+        "actualRevenue": 76400,
+        "renewalRevenue": 347400,
+        "avgRenewal": 43425,
+        "renewalDeals": 8,
+        "dispatchDeals": 0,
+        "totalScore": 3687.68
+    },
+    {
+        "rank": 8,
+        "name": "鄭上官",
+        "totalRevenue": 323810,
+        "actualRevenue": 109810,
+        "renewalRevenue": 323810,
+        "avgRenewal": 32381,
+        "renewalDeals": 10,
+        "dispatchDeals": 0,
+        "totalScore": 3366.06
+    },
+    {
+        "rank": 9,
+        "name": "林宜靜",
+        "totalRevenue": 502490,
+        "actualRevenue": 393800,
+        "renewalRevenue": 98800,
+        "avgRenewal": 5200,
+        "renewalDeals": 19,
+        "dispatchDeals": 0,
+        "totalScore": 3180.67
+    },
+    {
+        "rank": 10,
+        "name": "湯玉琦",
+        "totalRevenue": 286718,
+        "actualRevenue": 220438,
+        "renewalRevenue": 167300,
+        "avgRenewal": 6971,
+        "renewalDeals": 24,
+        "dispatchDeals": 0,
+        "totalScore": 2672.64
+    },
+    {
+        "rank": 11,
+        "name": "廖姿惠",
+        "totalRevenue": 255176,
+        "actualRevenue": 200276,
+        "renewalRevenue": 91586,
+        "avgRenewal": 4820,
+        "renewalDeals": 19,
+        "dispatchDeals": 0,
+        "totalScore": 2084.85
+    },
+    {
+        "rank": 12,
+        "name": "梁依萍",
+        "totalRevenue": 271270,
+        "actualRevenue": 215590,
+        "renewalRevenue": 80460,
+        "avgRenewal": 6705,
+        "renewalDeals": 12,
+        "dispatchDeals": 0,
+        "totalScore": 2002.82
+    },
+    {
+        "rank": 13,
+        "name": "蘇淑玲",
+        "totalRevenue": 227916,
+        "actualRevenue": 171836,
+        "renewalRevenue": 95340,
+        "avgRenewal": 15890,
+        "renewalDeals": 6,
+        "dispatchDeals": 0,
+        "totalScore": 1989.53
+    },
+    {
+        "rank": 14,
+        "name": "高如郁",
+        "totalRevenue": 250138,
+        "actualRevenue": 196218,
+        "renewalRevenue": 74380,
+        "avgRenewal": 5722,
+        "renewalDeals": 13,
+        "dispatchDeals": 0,
+        "totalScore": 1874
+    },
+    {
+        "rank": 15,
+        "name": "高美雲",
+        "totalRevenue": 251656,
+        "actualRevenue": 184296,
+        "renewalRevenue": 60000,
+        "avgRenewal": 6000,
+        "renewalDeals": 10,
+        "dispatchDeals": 0,
+        "totalScore": 1712.5
+    },
+    {
+        "rank": 16,
+        "name": "江麗勉",
+        "totalRevenue": 189446,
+        "actualRevenue": 139306,
+        "renewalRevenue": 71948,
+        "avgRenewal": 6541,
+        "renewalDeals": 11,
+        "dispatchDeals": 0,
+        "totalScore": 1546.49
+    },
+    {
+        "rank": 17,
+        "name": "鄭珮恩",
+        "totalRevenue": 158878,
+        "actualRevenue": 117418,
+        "renewalRevenue": 49560,
+        "avgRenewal": 2915,
+        "renewalDeals": 17,
+        "dispatchDeals": 0,
+        "totalScore": 1381.4
+    },
+    {
+        "rank": 18,
+        "name": "陳玲華",
+        "totalRevenue": 170108,
+        "actualRevenue": 110508,
+        "renewalRevenue": 41780,
+        "avgRenewal": 6963,
+        "renewalDeals": 6,
+        "dispatchDeals": 0,
+        "totalScore": 1190.73
+    },
+    {
+        "rank": 19,
+        "name": "江沛林",
+        "totalRevenue": 97460,
+        "actualRevenue": 14030,
+        "renewalRevenue": 78960,
+        "avgRenewal": 13160,
+        "renewalDeals": 6,
+        "dispatchDeals": 0,
+        "totalScore": 1078.21
+    },
+    {
+        "rank": 20,
+        "name": "周美蓁",
+        "totalRevenue": 30800,
+        "actualRevenue": 28800,
+        "renewalRevenue": 30800,
+        "avgRenewal": 10267,
+        "renewalDeals": 3,
+        "dispatchDeals": 0,
+        "totalScore": 690.03
+    },
+    {
+        "rank": 21,
+        "name": "謝啟芳",
+        "totalRevenue": 49520,
+        "actualRevenue": 38560,
+        "renewalRevenue": 21640,
+        "avgRenewal": 5410,
+        "renewalDeals": 4,
+        "dispatchDeals": 0,
+        "totalScore": 579.75
+    },
+    {
+        "rank": 22,
+        "name": "林佩君",
+        "totalRevenue": 49658,
+        "actualRevenue": 13858,
+        "renewalRevenue": 21658,
+        "avgRenewal": 5415,
+        "renewalDeals": 4,
+        "dispatchDeals": 0,
+        "totalScore": 490.4
+    },
+    {
+        "rank": 23,
+        "name": "陳桂子（新人）",
+        "totalRevenue": 19000,
+        "actualRevenue": 19000,
+        "renewalRevenue": 19000,
+        "avgRenewal": 4750,
+        "renewalDeals": 4,
+        "dispatchDeals": 0,
+        "totalScore": 433.02
+    },
+    {
+        "rank": 24,
+        "name": "莉莉（新人）",
+        "totalRevenue": 3000,
+        "actualRevenue": 0,
+        "renewalRevenue": 3000,
+        "avgRenewal": 3000,
+        "renewalDeals": 1,
+        "dispatchDeals": 0,
+        "totalScore": 145.06
+    }
+]),
+  groups: Object.freeze({
+    "A1": [
+        "王珍珠",
+        "王梅慧",
+        "馬秋香",
+        "林沛昕"
+    ],
+    "A2": [
+        "李玲玲",
+        "徐華妤",
+        "許喬恩",
+        "鄭上官",
+        "林宜靜",
+        "湯玉琦"
+    ],
+    "B": [
+        "廖姿惠",
+        "梁依萍",
+        "蘇淑玲",
+        "高如郁",
+        "高美雲",
+        "江麗勉",
+        "鄭珮恩"
+    ],
+    "C": [
+        "陳玲華",
+        "江沛林",
+        "周美蓁",
+        "謝啟芳",
+        "林佩君",
+        "陳桂子（新人）",
+        "莉莉（新人）"
+    ]
+}),
+  advice: Object.freeze([
+    {
+        "rank": 1,
+        "name": "王珍珠",
+        "text": "AI總分全場第一，各項指標無懈可擊，完美守護榜首！"
+    },
+    {
+        "rank": 2,
+        "name": "王梅慧",
+        "text": "緊追其後，高強度的續單與實收令人驚艷，隨時準備重返榮耀。"
+    },
+    {
+        "rank": 3,
+        "name": "馬秋香",
+        "text": "穩居前三，極具壓制力的戰績，繼續帶領團隊衝刺！"
+    },
+    {
+        "rank": 4,
+        "name": "林沛昕",
+        "text": "前四鐵三角之一，續單與客單價表現亮眼。"
+    },
+    {
+        "rank": 5,
+        "name": "李玲玲",
+        "text": "前段班中堅力量，維持穩定輸出就能隨時上攻。"
+    },
+    {
+        "rank": 6,
+        "name": "徐華妤",
+        "text": "前段班中堅力量，維持穩定輸出就能隨時上攻。"
+    },
+    {
+        "rank": 7,
+        "name": "許喬恩",
+        "text": "前段班中堅力量，維持穩定輸出就能隨時上攻。"
+    },
+    {
+        "rank": 8,
+        "name": "鄭上官",
+        "text": "前段班中堅力量，維持穩定輸出就能隨時上攻。"
+    },
+    {
+        "rank": 9,
+        "name": "林宜靜",
+        "text": "前段班中堅力量，維持穩定輸出就能隨時上攻。"
+    },
+    {
+        "rank": 10,
+        "name": "湯玉琦",
+        "text": "前段班中堅力量，維持穩定輸出就能隨時上攻。"
+    },
+    {
+        "rank": 11,
+        "name": "廖姿惠",
+        "text": "中堅力量，需尋求高單價進帳以突破現狀。"
+    },
+    {
+        "rank": 12,
+        "name": "梁依萍",
+        "text": "中堅力量，需尋求高單價進帳以突破現狀。"
+    },
+    {
+        "rank": 13,
+        "name": "蘇淑玲",
+        "text": "中堅力量，需尋求高單價進帳以突破現狀。"
+    },
+    {
+        "rank": 14,
+        "name": "高如郁",
+        "text": "中堅力量，需尋求高單價進帳以突破現狀。"
+    },
+    {
+        "rank": 15,
+        "name": "高美雲",
+        "text": "中堅力量，需尋求高單價進帳以突破現狀。"
+    },
+    {
+        "rank": 16,
+        "name": "江麗勉",
+        "text": "中堅力量，需尋求高單價進帳以突破現狀。"
+    },
+    {
+        "rank": 17,
+        "name": "鄭珮恩",
+        "text": "中堅力量，需尋求高單價進帳以突破現狀。"
+    },
+    {
+        "rank": 18,
+        "name": "陳玲華",
+        "text": "請務必把握每一個派單機會，先求穩定進帳。"
+    },
+    {
+        "rank": 19,
+        "name": "江沛林",
+        "text": "請務必把握每一個派單機會，先求穩定進帳。"
+    },
+    {
+        "rank": 20,
+        "name": "周美蓁",
+        "text": "請務必把握每一個派單機會，先求穩定進帳。"
+    },
+    {
+        "rank": 21,
+        "name": "謝啟芳",
+        "text": "請務必把握每一個派單機會，先求穩定進帳。"
+    },
+    {
+        "rank": 22,
+        "name": "林佩君",
+        "text": "請務必把握每一個派單機會，先求穩定進帳。"
+    },
+    {
+        "rank": 23,
+        "name": "陳桂子（新人）",
+        "text": "新人穩紮穩打，先求熟悉系統與產品。"
+    },
+    {
+        "rank": 24,
+        "name": "莉莉（新人）",
+        "text": "新人穩紮穩打，先求熟悉系統與產品。"
+    }
+]),
+  audit: {
+    status: 'PASS',
+    checks: [
+      { label: '三立奕心', status: 'PASS', detail: '總表核對通過' },
+      { label: '民視', status: 'PASS', detail: '總表核對通過' },
+      { label: '公司產品', status: 'PASS', detail: '總表核對通過' },
+      { label: '異常與提醒', status: 'PASS', detail: '無漏算、無多算、無總盤衝突。' },
+      { label: '特殊名單', status: 'PASS', detail: '已離職陳旭宜剔除' }
+    ]
+  }
+});
+
 function official0427GroupOf(name) {
   const g = OFFICIAL_0427_TO_0428.groups;
   if (g.A1.includes(name)) return 'A1';
@@ -2358,6 +2842,89 @@ function repairOfficial0427Snapshot({ snapshot }) {
   return repaired;
 }
 
+
+function official0428GroupOf(name) {
+  const g = OFFICIAL_0428_TO_0429.groups;
+  if (g.A1.includes(name)) return 'A1';
+  if (g.A2.includes(name)) return 'A2';
+  if (g.B.includes(name)) return 'B';
+  if (g.C.includes(name)) return 'C';
+  return 'C';
+}
+
+function buildOfficial0428Announcement() {
+  const r = OFFICIAL_0428_TO_0429;
+  const fmt = (v) => new Intl.NumberFormat('zh-TW').format(v);
+  const rankLines = r.ranking.map(p =>
+    `${p.rank}、${p.name}｜【AI分數】${fmt(p.totalScore)}｜【實收】${fmt(p.actualRevenue)}｜【追續金額】${fmt(p.renewalRevenue)}｜【總業績】${fmt(p.totalRevenue)}`
+  );
+  const adviceLines = r.advice.map(a => `${a.rank}、${a.name}：${a.text}`);
+
+  return [
+    '📣【AI 派單公告｜4/28 結算 → 4/29 正式派單順序｜三平台整合比例原則版】',
+    '',
+    '一、審計結論',
+    '審計結果：PASS',
+    '三平台總表全部核對通過，無漏算、無多算、無總盤衝突。',
+    '',
+    '二、整合總盤',
+    `【追續單成交】${fmt(r.overallStats.renewalCalls)}`,
+    `【全部總業績】${fmt(r.overallStats.monthlyRevenue)}`,
+    `【追續單金額】${fmt(r.overallStats.renewalAmount)}`,
+    `【實收總金額】${fmt(r.overallStats.actualRevenue)}`,
+    '',
+    '三、正式名次 (滿分 10000 權重)',
+    ...rankLines,
+    '',
+    '四、A1／A2／B／C 派單分組',
+    '',
+    `🔴 A1｜核心主力：${r.groups.A1.join('、')}`,
+    `🟠 A2｜續單收割：${r.groups.A2.join('、')}`,
+    `🟡 B組｜穩定進階：${r.groups.B.join('、')}`,
+    `🟢 C組｜補位觀察：${r.groups.C.join('、')}`,
+    '',
+    '五、每人一句建言',
+    ...adviceLines,
+    '',
+    '六、最後確認',
+    '4/29 派單順序以本版為準，三平台合併無誤，請確認後回覆「+1」。'
+  ].join('\n');
+}
+
+function repairOfficial0428Snapshot({ snapshot }) {
+  const d = new Date();
+  const repaired = JSON.parse(JSON.stringify(snapshot || {}));
+  repaired.reportDate = OFFICIAL_0428_TO_0429.reportDate;
+  repaired.dispatchDate = OFFICIAL_0428_TO_0429.dispatchDate;
+  repaired.status = '通過';
+  repaired.overallStats = { ...OFFICIAL_0428_TO_0429.overallStats };
+  repaired.summary = {
+    totalRevenue: OFFICIAL_0428_TO_0429.overallStats.monthlyRevenue,
+    currentMonthRevenue: OFFICIAL_0428_TO_0429.overallStats.monthlyRevenue,
+    renewalRevenue: OFFICIAL_0428_TO_0429.overallStats.renewalAmount,
+    renewalDeals: OFFICIAL_0428_TO_0429.overallStats.renewalCalls,
+    dailyRenewalAmount: OFFICIAL_0428_TO_0429.overallStats.dailyRenewalAmount,
+    dispatchCalls: OFFICIAL_0428_TO_0429.overallStats.dispatchCalls,
+    totalCalls: OFFICIAL_0428_TO_0429.overallStats.totalCalls,
+    cancellations: OFFICIAL_0428_TO_0429.overallStats.cancellations,
+    activePeople: OFFICIAL_0428_TO_0429.ranking.length,
+    totalPeople: OFFICIAL_0428_TO_0429.ranking.length
+  };
+  repaired.groups = JSON.parse(JSON.stringify(OFFICIAL_0428_TO_0429.groups));
+  repaired.ranking = OFFICIAL_0428_TO_0429.ranking.map(item => ({
+    ...item,
+    group: official0428GroupOf(item.name),
+    previousRank: item.rank,
+    rankDelta: 0,
+    movement: '系統換算'
+  }));
+  repaired.audit = { status: 'PASS', message: '4/28→4/29 官方比例原則鎖定完成。' };
+  repaired.announcement = buildOfficial0428Announcement();
+  repaired.officialLock = { key: '0428-0429', skipConsistencyChecks: true };
+  repaired.frontendAiGuard = { allowFormalDisplay: true, confirmedBy: 'SYSTEM_SUPER' };
+  return repaired;
+}
+
 module.exports = {
   OFFICIAL_0408_TO_0409,
   OFFICIAL_0412_TO_0413,
@@ -2369,6 +2936,7 @@ module.exports = {
   OFFICIAL_0423_TO_0424,
   OFFICIAL_0426_TO_0427,
   OFFICIAL_0427_TO_0428,
+  OFFICIAL_0428_TO_0429,
   isPlaceholderText,
   hasQuestionBlock,
   countRankChangeEntries,
@@ -2382,11 +2950,13 @@ module.exports = {
   buildOfficial0423Announcement,
   buildOfficial0426Announcement,
   buildOfficial0427Announcement,
+  buildOfficial0428Announcement,
   needsOfficial0412Repair,
   official0420GroupOf,
   official0423GroupOf,
   official0426GroupOf,
   official0427GroupOf,
+  official0428GroupOf,
   repairOfficial0408Snapshot,
   repairOfficial0412Snapshot,
   repairOfficial0413Snapshot,
@@ -2396,5 +2966,6 @@ module.exports = {
   repairOfficial0420Snapshot,
   repairOfficial0423Snapshot,
   repairOfficial0426Snapshot,
-  repairOfficial0427Snapshot
+  repairOfficial0427Snapshot,
+  repairOfficial0428Snapshot
 };
