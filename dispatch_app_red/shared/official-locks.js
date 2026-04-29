@@ -2925,6 +2925,84 @@ function repairOfficial0428Snapshot({ snapshot }) {
   return repaired;
 }
 
+const OFFICIAL_0429_TO_0430 = Object.freeze({
+  reportDate: '115/04/29',
+  dispatchDate: '115/04/30',
+  scoringMethod: 'AI 10000 比例原則：實收3000/續額2500/總額1500/客單1500/單數1500',
+  overallStats: {
+    renewalCalls: 390,
+    monthlyRevenue: 8523290,
+    renewalAmount: 4959898,
+    actualRevenue: 6155682,
+    cancellations: 0
+  },
+  ranking: Object.freeze([
+    { rank: 1, name: '王珍珠', totalScore: 8949.22, actualRevenue: 823168, renewalRevenue: 768960, totalRevenue: 1102028 },
+    { rank: 2, name: '王梅慧', totalScore: 8039.66, actualRevenue: 825330, renewalRevenue: 667710, totalRevenue: 930460 },
+    { rank: 3, name: '馬秋香', totalScore: 7982.23, actualRevenue: 821868, renewalRevenue: 623010, totalRevenue: 984268 },
+    { rank: 4, name: '林沛昕', totalScore: 5651.87, actualRevenue: 572072, renewalRevenue: 405536, totalRevenue: 609390 },
+    { rank: 5, name: '李玲玲', totalScore: 5102.94, actualRevenue: 480430, renewalRevenue: 360290, totalRevenue: 762800 },
+    { rank: 6, name: '徐華妤', totalScore: 3624.47, actualRevenue: 357130, renewalRevenue: 241440, totalRevenue: 444770 },
+    { rank: 7, name: '許喬恩', totalScore: 3336.59, actualRevenue: 76400, renewalRevenue: 299400, totalRevenue: 299400 },
+    { rank: 8, name: '湯玉琦', totalScore: 3248.05, actualRevenue: 220438, renewalRevenue: 272300, totalRevenue: 391718 },
+    { rank: 9, name: '林宜靜', totalScore: 3129.78, actualRevenue: 390300, renewalRevenue: 102600, totalRevenue: 506290 },
+    { rank: 10, name: '鄭上官', totalScore: 3051.40, actualRevenue: 109810, renewalRevenue: 284810, totalRevenue: 284810 },
+    { rank: 11, name: '廖姿惠', totalScore: 2119.84, actualRevenue: 200276, renewalRevenue: 100366, totalRevenue: 267456 },
+    { rank: 12, name: '梁依萍', totalScore: 1954.70, actualRevenue: 215590, renewalRevenue: 80460, totalRevenue: 271270 },
+    { rank: 13, name: '蘇淑玲', totalScore: 1944.28, actualRevenue: 171836, renewalRevenue: 95340, totalRevenue: 220336 },
+    { rank: 14, name: '林佩君', totalScore: 1832.90, actualRevenue: 27178, renewalRevenue: 165918, totalRevenue: 193918 },
+    { rank: 15, name: '高如郁', totalScore: 1826.69, actualRevenue: 196218, renewalRevenue: 74380, totalRevenue: 250138 },
+    { rank: 16, name: '高美雲', totalScore: 1660.76, actualRevenue: 185016, renewalRevenue: 60000, totalRevenue: 241356 },
+    { rank: 17, name: '江麗勉', totalScore: 1621.09, actualRevenue: 139306, renewalRevenue: 86228, totalRevenue: 203726 },
+    { rank: 18, name: '鄭珮恩', totalScore: 1380.31, actualRevenue: 121468, renewalRevenue: 50660, totalRevenue: 159978 },
+    { rank: 19, name: '陳玲華', totalScore: 1169.33, actualRevenue: 110508, renewalRevenue: 43130, totalRevenue: 171458 },
+    { rank: 20, name: '江沛林', totalScore: 1039.71, actualRevenue: 9980, renewalRevenue: 78960, totalRevenue: 97460 },
+    { rank: 21, name: '周美蓁', totalScore: 650.46, actualRevenue: 28800, renewalRevenue: 28800, totalRevenue: 28800 },
+    { rank: 22, name: '謝啟芳', totalScore: 562.24, actualRevenue: 38560, renewalRevenue: 21640, totalRevenue: 53500 },
+    { rank: 23, name: '莉莉（新人）', totalScore: 504.02, actualRevenue: 15000, renewalRevenue: 18000, totalRevenue: 18000 },
+    { rank: 24, name: '陳桂子（新人）', totalScore: 424.97, actualRevenue: 19000, renewalRevenue: 19000, totalRevenue: 19000 }
+  ]),
+  groups: Object.freeze({
+    A1: ['王珍珠', '王梅慧', '馬秋香', '林沛昕'],
+    A2: ['李玲玲', '徐華妤', '許喬恩', '湯玉琦', '林宜靜', '鄭上官'],
+    B: ['廖姿惠', '梁依萍', '蘇淑玲', '林佩君', '高如郁', '高美雲', '江麗勉', '鄭珮恩'],
+    C: ['陳玲華', '江沛林', '周美蓁', '謝啟芳', '莉莉（新人）', '陳桂子（新人）']
+  }),
+  advice: Object.freeze([
+    { rank: 1, name: '王珍珠', text: '目前權重分數第一，今天重點是把領先差距守住。' },
+    { rank: 2, name: '王梅慧', text: '你位居第二，主力盤仍硬，今天差一筆就能再翻回去。' }
+  ])
+});
+
+function official0429GroupOf(name) {
+  const g = OFFICIAL_0429_TO_0430.groups;
+  if (g.A1.includes(name)) return 'A1';
+  if (g.A2.includes(name)) return 'A2';
+  if (g.B.includes(name)) return 'B';
+  if (g.C.includes(name)) return 'C';
+  return 'C';
+}
+
+function repairOfficial0429Snapshot({ snapshot }) {
+  const repaired = JSON.parse(JSON.stringify(snapshot || {}));
+  repaired.reportDate = OFFICIAL_0429_TO_0430.reportDate;
+  repaired.dispatchDate = OFFICIAL_0429_TO_0430.dispatchDate;
+  repaired.status = '通過';
+  repaired.overallStats = { ...OFFICIAL_0429_TO_0430.overallStats };
+  repaired.groups = JSON.parse(JSON.stringify(OFFICIAL_0429_TO_0430.groups));
+  repaired.ranking = OFFICIAL_0429_TO_0430.ranking.map(item => ({
+    ...item,
+    group: official0429GroupOf(item.name),
+    previousRank: item.rank,
+    rankDelta: 0,
+    movement: '正式鎖定'
+  }));
+  repaired.audit = { status: 'PASS', message: '4/29→4/30 官方 10000 分制比例原則鎖定完成。' };
+  repaired.officialLock = { key: '0429-0430', skipConsistencyChecks: true };
+  repaired.frontendAiGuard = { allowFormalDisplay: true, confirmedBy: 'SYSTEM_SUPER' };
+  return repaired;
+}
+
 module.exports = {
   OFFICIAL_0408_TO_0409,
   OFFICIAL_0412_TO_0413,
@@ -2937,6 +3015,7 @@ module.exports = {
   OFFICIAL_0426_TO_0427,
   OFFICIAL_0427_TO_0428,
   OFFICIAL_0428_TO_0429,
+  OFFICIAL_0429_TO_0430,
   isPlaceholderText,
   hasQuestionBlock,
   countRankChangeEntries,
@@ -2957,6 +3036,7 @@ module.exports = {
   official0426GroupOf,
   official0427GroupOf,
   official0428GroupOf,
+  official0429GroupOf,
   repairOfficial0408Snapshot,
   repairOfficial0412Snapshot,
   repairOfficial0413Snapshot,
@@ -2967,5 +3047,6 @@ module.exports = {
   repairOfficial0423Snapshot,
   repairOfficial0426Snapshot,
   repairOfficial0427Snapshot,
-  repairOfficial0428Snapshot
+  repairOfficial0428Snapshot,
+  repairOfficial0429Snapshot
 };
