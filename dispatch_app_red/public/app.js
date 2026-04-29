@@ -827,12 +827,10 @@ async function init() {
 
 async function smartFixInput() {
   const rawText = refs.rawInput.value.trim();
-  if (!rawText) {
-    setBadge(refs.inputStatus, 'FAIL', '輸入區為空，無法執行修復');
-    return;
-  }
-
-  setBadge(refs.inputStatus, 'PENDING', '智慧修復中...');
+  // 已優化：後端會處理空字串並生成模板，故前端不再阻擋
+  
+  setBadge(refs.inputStatus, 'PENDING', '智慧掃描中...');
+  AudioManager.sweep(); // 掃描音效
   
   // 視覺效果：加入掃描動效
   refs.rawInput.classList.add('ai-scanning', 'ai-glow');

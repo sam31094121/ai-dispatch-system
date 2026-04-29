@@ -566,8 +566,42 @@ function collectReportFixes(originalReport, repairedReport, fixes) {
 }
 
 function smartFixRawInput(rawText) {
+  const text = String(rawText || '').trim();
+  
+  // 優化：若為空，自動生成今日模板
+  if (!text) {
+    const now = new Date();
+    const today = `${now.getFullYear() - 1911}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}`;
+    const tomorrow = new Date(now.getTime() + 86400000);
+    const tomorrowStr = `${tomorrow.getFullYear() - 1911}/${String(tomorrow.getMonth() + 1).padStart(2, '0')}/${String(tomorrow.getDate()).padStart(2, '0')}`;
+    
+    const template = {
+      公告標題: `AI 派單公告｜${today} 結算 → ${tomorrowStr} 正式派單順序`,
+      日期資訊: { 結算日: today, 派單日: tomorrowStr },
+      整合總盤: { 當日取消退貨: 0 },
+      正式名次: [
+        { 名次: 1, 姓名: "人員1", 分級: "A1", 實收: 0, 續單金額: 0, 總業績: 0, 追續單數: 0 },
+        { 名次: 2, 姓名: "人員2", 分級: "A1", 實收: 0, 續單金額: 0, 總業績: 0, 追續單數: 0 }
+      ],
+      審計結論: { 結果: "FAIL", 說明: "請輸入今日實收、續單、總業績與追續單數。" }
+    };
+    
+    return {
+      fixedJson: JSON.stringify(template, null, 2),
+      fixes: [{ field: "input", action: "模板生成", detail: "已為您生成今日業績錄入模板，請填入數值。" }],
+      fixCount: 1,
+      resolvedErrorCount: 0,
+      resolvedErrors: [],
+      manualActions: [{ reason: "初始錄入", suggestion: "請將 0 替換為今日實際業績，並補齊全員名單。" }],
+      remainingErrors: 1,
+      remainingWarnings: 0,
+      validation: { status: "FAIL", errors: ["請輸入業績數據"], warnings: [] },
+      beforeValidation: { status: "FAIL", errors: ["輸入為空"], warnings: [] }
+    };
+  }
+
   const originalDraft = parseDispatchDraft({
-    rawText,
+    rawText: text,
     operator: 'SMART_FIX',
     source: 'smart-fix'
   });
