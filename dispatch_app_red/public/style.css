@@ -2386,3 +2386,187 @@ textarea,
   text-shadow: 0 0 20px currentColor;
 }
 
+.performance-panel {
+  border-color: rgba(255, 208, 96, 0.24);
+  background:
+    linear-gradient(135deg, rgba(255, 208, 96, 0.08), rgba(0, 229, 255, 0.06)),
+    rgba(7, 15, 27, 0.92);
+}
+
+.performance-summary {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.perf-metric,
+.perf-product,
+.perf-focus-card,
+.dispatch-order-row {
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.perf-metric {
+  padding: 16px;
+}
+
+.perf-metric span,
+.perf-product span,
+.perf-focus-card span,
+.dispatch-order-head,
+.dispatch-person span,
+.dispatch-stats span,
+.perf-product small {
+  color: var(--text-sub);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.perf-metric strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--cyan);
+  font-family: "Orbitron", "Sora", monospace;
+  font-size: clamp(18px, 2vw, 26px);
+}
+
+.perf-metric.hot strong {
+  color: var(--gold-1);
+}
+
+.perf-metric.cash strong {
+  color: var(--pass);
+}
+
+.performance-recommendation {
+  margin: 0 0 16px;
+  padding: 14px 16px;
+  border-left: 4px solid var(--gold-1);
+  border-radius: var(--radius-sm);
+  color: rgba(255, 245, 210, 0.94);
+  background: rgba(255, 208, 96, 0.08);
+  line-height: 1.8;
+}
+
+.performance-products,
+.performance-focus {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.perf-product {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px;
+}
+
+.perf-product strong,
+.perf-focus-card strong,
+.dispatch-person strong {
+  display: block;
+  color: var(--text);
+  font-size: 16px;
+}
+
+.perf-product b {
+  display: block;
+  color: var(--gold-2);
+  font-family: "Orbitron", "Sora", monospace;
+  text-align: right;
+}
+
+.perf-product small {
+  display: block;
+  text-align: right;
+}
+
+.perf-focus-card {
+  padding: 14px;
+}
+
+.perf-focus-card strong {
+  margin-top: 8px;
+  line-height: 1.7;
+}
+
+.dispatch-order-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 8px 0 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dispatch-order-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.dispatch-order-row {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 0.9fr) minmax(0, 1.2fr);
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+}
+
+.dispatch-rank {
+  color: var(--gold-1);
+  font-family: "Orbitron", "Sora", monospace;
+  font-weight: 900;
+}
+
+.dispatch-stats {
+  text-align: right;
+}
+
+.dispatch-stats b {
+  display: block;
+  color: var(--cyan);
+  font-family: "Orbitron", "Sora", monospace;
+}
+
+.performance-panel.is-loading {
+  opacity: 0.78;
+}
+
+.performance-panel.is-error {
+  border-color: rgba(255, 51, 102, 0.4);
+}
+
+@media (max-width: 1180px) {
+  .performance-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .dispatch-order-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .performance-summary,
+  .performance-products,
+  .performance-focus {
+    grid-template-columns: 1fr;
+  }
+
+  .dispatch-order-head,
+  .dispatch-order-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    text-align: left;
+  }
+
+  .dispatch-stats {
+    text-align: left;
+  }
+}

@@ -14,6 +14,7 @@ const {
   saveNewReport,
   saveReportVersion
 } = require('../services/dispatchQuery.service');
+const { buildPerformanceAnalysis } = require('../services/performanceAnalysis.service');
 const { errorResponse, successResponse } = require('../utils/response.util');
 const { validateParseRequestBody, validateRebuildRequestBody } = require('../validators/dispatchReport.validator');
 
@@ -255,6 +256,14 @@ function getSystemMeta(_req, res) {
   );
 }
 
+function getPerformanceAnalysis(_req, res) {
+  try {
+    res.json(successResponse(errorCodes.OK, 'performance analysis loaded', buildPerformanceAnalysis()));
+  } catch (error) {
+    sendAppError(res, error);
+  }
+}
+
 module.exports = {
   auditInput,
   getBaselineLatest,
@@ -267,6 +276,7 @@ module.exports = {
   getDispatchShortText,
   getDispatchTop10,
   getLatestDispatchReport,
+  getPerformanceAnalysis,
   getSystemMeta,
   parseReport,
   rebuildDispatchReport,

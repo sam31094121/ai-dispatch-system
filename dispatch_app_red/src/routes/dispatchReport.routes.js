@@ -11,6 +11,7 @@ const {
   getDispatchShortText,
   getDispatchTop10,
   getLatestDispatchReport,
+  getPerformanceAnalysis,
   parseReport,
   rebuildDispatchReport,
   saveInput,
@@ -35,5 +36,7 @@ router.get('/baseline/latest', getBaselineLatest);
 router.post('/audit', auditInput);
 router.post('/save', saveInput);
 router.post('/workspace/zero', zeroWorkspace);
+router.get('/performance/2026-04-29', getPerformanceAnalysis);
+router.get('/performance/current', getPerformanceAnalysis);
 
 module.exports = router;
