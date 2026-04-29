@@ -54,7 +54,8 @@ const appConfig = Object.freeze({
   projectRoot: PROJECT_ROOT,
   publicDir: path.join(PROJECT_ROOT, 'public'),
   staticAssetMaxAgeSeconds: readInteger(process.env.STATIC_ASSET_MAX_AGE_SECONDS, 3600),
-  storageRoot: resolveStorageRoot()
+  storageRoot: resolveStorageRoot(),
+  version: 'v2-upgraded'
 });
 
 module.exports = {

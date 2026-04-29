@@ -7,7 +7,8 @@ const { appConfig } = require('./config/appConfig');
 const healthRoutes = require('./routes/health.routes');
 const lineNotifyRoutes = require('./routes/lineNotify.routes');
 const dispatchReportRoutes = require('./routes/dispatchReport.routes');
-const legacyRoutes = require('./routes/legacy.routes');
+const versionRoutes = require('./routes/version.routes');
+app.use('/api/version', versionRoutes);
 const { errorResponse } = require('./utils/response.util');
 const errorCodes = require('./constants/errorCodes');
 

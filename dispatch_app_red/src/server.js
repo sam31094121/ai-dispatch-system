@@ -57,4 +57,12 @@ const server = app.listen(appConfig.port, async () => {
       console.error('自動 LINE 訊息失敗:', e.message);
     }
   }
+
+  // 若啟用雙埠，額外在 3000 監聽相同的 app
+  if (process.env.ENABLE_DUAL_PORT === 'true') {
+    app.listen(3000, () => {
+      console.log('Dual port listening at http://localhost:3000');
+      // 若需要自動開啟 3000 頁面，可自行呼叫 scheduleBrowserOpen
+    });
+  }
 });

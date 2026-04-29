@@ -4,8 +4,10 @@
   "description": "兆櫃AI派單整合系統｜工程鎖死版",
   "main": "server.js",
   "scripts": {
-    "start": "node --env-file=.env server.js",
+    "predev": "node src/autoUpgrade.js",
+    "prestart": "node src/autoUpgrade.js",
     "dev": "node --env-file=.env server.js",
+    "start": "node --env-file=.env server.js",
     "check": "npm run check:syntax && npm run check:api",
     "check:api": "node scripts/check-dispatch-api.js",
     "check:dispatch-api": "npm run check:api",
