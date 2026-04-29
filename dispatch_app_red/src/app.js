@@ -52,6 +52,7 @@ function createApp() {
   }));
 
   app.use('/api', healthRoutes);
+  app.use('/api/line', lineNotifyRoutes);
   app.use('/api', legacyRoutes);
   app.use('/api', dispatchReportRoutes);
   app.use('/api', (_req, res) => {
