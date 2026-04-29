@@ -115,7 +115,9 @@ function buildReportApiPath() {
       : '';
 
   const reportId = queryReportId || pathReportId;
-  return reportId ? `/api/dispatch-reports/${encodeURIComponent(reportId)}` : '/api/dispatch-reports/latest';
+  const base = reportId ? `/api/dispatch-reports/${encodeURIComponent(reportId)}` : '/api/dispatch-reports/latest';
+  // 加上時間戳記避免快取舊資料
+  return `${base}?t=${Date.now()}`;
 }
 
 function canonicalMobileUrl(reportId) {
