@@ -37,11 +37,24 @@ function scheduleBrowserOpen(url) {
   setTimeout(() => openBrowser(url), 300);
 }
 
-const server = app.listen(appConfig.port, () => {
+const server = app.listen(appConfig.port, async () => {
   const address = server.address();
   const listenPort = typeof address === 'object' && address ? address.port : appConfig.port;
   const appUrl = `http://localhost:${listenPort}`;
 
   console.log(`Dispatch app listening at ${appUrl}`);
   scheduleBrowserOpen(`${appUrl}/mobile.html`);
+
+  // 若設定自動通知環境變數，發送 LINE 訊息
+  const { sendLineMessage } = require('./services/lineNotify.service');
+  const autoUser = process.env.LINE_AUTO_NOTIFY_USER;
+  const autoText = process.env.LINE_AUTO_NOTIFY_TEXT || '系統已啟動';
+  if (autoUser) {
+    try {
+      await sendLineMessage(autoUser, autoText);
+      console.log('自動 LINE 訊息已發送');
+    } catch (e) {
+      console.error('自動 LINE 訊息失敗:', e.message);
+    }
+  }
 });
