@@ -62,7 +62,7 @@ router.get('/current', (_req, res) => {
 /* ── POST /api/audit ──────────────────────────────────────── */
 router.post('/audit', (req, res) => {
   const rawText = req.body?.rawText;
-  if (!rawText) { fail(res, 400, '缺少 rawText 欄位'); return; }
+  if (rawText === undefined) { fail(res, 400, '缺少 rawText 欄位'); return; }
 
   try {
     const { report, validation } = parseDispatchDraft({ rawText, operator: 'WEB', source: 'audit' });
@@ -80,7 +80,7 @@ router.post('/audit', (req, res) => {
 /* ── POST /api/save ───────────────────────────────────────── */
 router.post('/save', (req, res) => {
   const rawText = req.body?.rawText;
-  if (!rawText) { fail(res, 400, '缺少 rawText 欄位'); return; }
+  if (rawText === undefined) { fail(res, 400, '缺少 rawText 欄位'); return; }
 
   try {
     const { report, validation } = parseDispatchDraft({ rawText, operator: 'WEB', source: 'manual' });
@@ -113,7 +113,7 @@ router.post('/save', (req, res) => {
 /* ── POST /api/smart-fix ─────────────────────────────────── */
 router.post('/smart-fix', (req, res) => {
   const rawText = req.body?.rawText;
-  if (!rawText) { fail(res, 400, '缺少 rawText 欄位'); return; }
+  if (rawText === undefined) { fail(res, 400, '缺少 rawText 欄位'); return; }
 
   try {
     const fixResult = smartFixRawInput(rawText);
