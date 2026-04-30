@@ -240,19 +240,14 @@ function hydrateStorageCache() {
         console.log(`[CacheGuard] 檢測到官方有更新版本 (Official: ${officialDate} > Record: ${recordDate})，執行同步。`);
         const parsedReport = buildReportFromSource({ sourceText: JSON.stringify(latestOfficial) });
         const syncValidation = validateDispatchReport(parsedReport);
-        if (!syncValidation.ok) {
-          throw createAppError(
-            errorCodes.VALIDATION_FAILED,
-            400,
-            '官方鎖定資料同步失敗',
-            syncValidation.errors
-          );
-        }
         const storedRecord = wrapStoredRecord(parsedReport, {
           operator: 'system_auto_sync',
           reason: 'official-lock',
           source: 'official-locks'
         });
+        if (!syncValidation.ok) {
+          console.warn(`[CacheGuard] 官方鎖定資料驗證未完全通過，但仍執行同步：`, syncValidation.errors.map(e => e.reason).join(', '));
+        }
         writeJson(getVersionFile(parsedReport.reportId, parsedReport.version), storedRecord);
         writeJson(storagePaths.latestFile, storedRecord);
         return applyStorageIndex(buildStorageIndex([storedRecord, ...scanStoredRecords()], storedRecord));

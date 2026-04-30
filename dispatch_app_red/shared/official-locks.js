@@ -2937,30 +2937,30 @@ const OFFICIAL_0429_TO_0430 = Object.freeze({
     cancellations: 0
   },
   ranking: Object.freeze([
-    { rank: 1, name: '王珍珠', totalScore: 8949.22, actualRevenue: 823168, renewalRevenue: 768960, totalRevenue: 1102028 },
-    { rank: 2, name: '王梅慧', totalScore: 8039.66, actualRevenue: 825330, renewalRevenue: 667710, totalRevenue: 930460 },
-    { rank: 3, name: '馬秋香', totalScore: 7982.23, actualRevenue: 821868, renewalRevenue: 623010, totalRevenue: 984268 },
-    { rank: 4, name: '林沛昕', totalScore: 5651.87, actualRevenue: 572072, renewalRevenue: 405536, totalRevenue: 609390 },
-    { rank: 5, name: '李玲玲', totalScore: 5102.94, actualRevenue: 480430, renewalRevenue: 360290, totalRevenue: 762800 },
-    { rank: 6, name: '徐華妤', totalScore: 3624.47, actualRevenue: 357130, renewalRevenue: 241440, totalRevenue: 444770 },
-    { rank: 7, name: '許喬恩', totalScore: 3336.59, actualRevenue: 76400, renewalRevenue: 299400, totalRevenue: 299400 },
-    { rank: 8, name: '湯玉琦', totalScore: 3248.05, actualRevenue: 220438, renewalRevenue: 272300, totalRevenue: 391718 },
-    { rank: 9, name: '林宜靜', totalScore: 3129.78, actualRevenue: 390300, renewalRevenue: 102600, totalRevenue: 506290 },
-    { rank: 10, name: '鄭上官', totalScore: 3051.40, actualRevenue: 109810, renewalRevenue: 284810, totalRevenue: 284810 },
-    { rank: 11, name: '廖姿惠', totalScore: 2119.84, actualRevenue: 200276, renewalRevenue: 100366, totalRevenue: 267456 },
-    { rank: 12, name: '梁依萍', totalScore: 1954.70, actualRevenue: 215590, renewalRevenue: 80460, totalRevenue: 271270 },
-    { rank: 13, name: '蘇淑玲', totalScore: 1944.28, actualRevenue: 171836, renewalRevenue: 95340, totalRevenue: 220336 },
-    { rank: 14, name: '林佩君', totalScore: 1832.90, actualRevenue: 27178, renewalRevenue: 165918, totalRevenue: 193918 },
-    { rank: 15, name: '高如郁', totalScore: 1826.69, actualRevenue: 196218, renewalRevenue: 74380, totalRevenue: 250138 },
-    { rank: 16, name: '高美雲', totalScore: 1660.76, actualRevenue: 185016, renewalRevenue: 60000, totalRevenue: 241356 },
-    { rank: 17, name: '江麗勉', totalScore: 1621.09, actualRevenue: 139306, renewalRevenue: 86228, totalRevenue: 203726 },
-    { rank: 18, name: '鄭珮恩', totalScore: 1380.31, actualRevenue: 121468, renewalRevenue: 50660, totalRevenue: 159978 },
-    { rank: 19, name: '陳玲華', totalScore: 1169.33, actualRevenue: 110508, renewalRevenue: 43130, totalRevenue: 171458 },
-    { rank: 20, name: '江沛林', totalScore: 1039.71, actualRevenue: 9980, renewalRevenue: 78960, totalRevenue: 97460 },
-    { rank: 21, name: '周美蓁', totalScore: 650.46, actualRevenue: 28800, renewalRevenue: 28800, totalRevenue: 28800 },
-    { rank: 22, name: '謝啟芳', totalScore: 562.24, actualRevenue: 38560, renewalRevenue: 21640, totalRevenue: 53500 },
-    { rank: 23, name: '莉莉（新人）', totalScore: 504.02, actualRevenue: 15000, renewalRevenue: 18000, totalRevenue: 18000 },
-    { rank: 24, name: '陳桂子（新人）', totalScore: 424.97, actualRevenue: 19000, renewalRevenue: 19000, totalRevenue: 19000 }
+    { rank: 1, name: '王珍珠', totalScore: 8949.22, actualRevenue: 823168, renewalRevenue: 768960, totalRevenue: 1102028, metrics: { 正式權重分數: 8949.22, 實收: 823168, 續單金額: 768960, 總業績: 1102028, 追續成交總數: 59, 追續客單價: 13033.22, 派單成交總通數: 0 }, advice: '目前權重分數第一，今天重點是把領先差距守住。', group: 'A1' },
+    { rank: 2, name: '王梅慧', totalScore: 8039.66, actualRevenue: 825330, renewalRevenue: 667710, totalRevenue: 930460, metrics: { 正式權重分數: 8039.66, 實收: 825330, 續單金額: 667710, 總業績: 930460, 追續成交總數: 40, 追續客單價: 16692.75, 派單成交總通數: 0 }, advice: '你位居第二，主力盤仍硬，今天差一筆就能再翻回去。', group: 'A1' },
+    { rank: 3, name: '馬秋香', totalScore: 7982.23, actualRevenue: 821868, renewalRevenue: 623010, totalRevenue: 984268, metrics: { 正式權重分數: 7982.23, 實收: 821868, 續單金額: 623010, 總業績: 984268, 追續成交總數: 45, 追續客單價: 13844.67, 派單成交總通數: 0 }, group: 'A1' },
+    { rank: 4, name: '林沛昕', totalScore: 5651.87, actualRevenue: 572072, renewalRevenue: 405536, totalRevenue: 609390, metrics: { 正式權重分數: 5651.87, 實收: 572072, 續單金額: 405536, 總業績: 609390, 追續成交總數: 13, 追續客單價: 31195.08, 派單成交總通數: 0 }, group: 'A1' },
+    { rank: 5, name: '李玲玲', totalScore: 5102.94, actualRevenue: 480430, renewalRevenue: 360290, totalRevenue: 762800, metrics: { 正式權重分數: 5102.94, 實收: 480430, 續單金額: 360290, 總業績: 762800, 追續成交總數: 26, 追續客單價: 13857.31, 派單成交總通數: 0 }, group: 'A2' },
+    { rank: 6, name: '徐華妤', totalScore: 3624.47, actualRevenue: 357130, renewalRevenue: 241440, totalRevenue: 444770, metrics: { 正式權重分數: 3624.47, 實收: 357130, 續單金額: 241440, 總業績: 444770, 追續成交總數: 16, 追續客單價: 15090.00, 派單成交總通數: 0 }, group: 'A2' },
+    { rank: 7, name: '許喬恩', totalScore: 3336.59, actualRevenue: 76400, renewalRevenue: 299400, totalRevenue: 299400, metrics: { 正式權重分數: 3336.59, 實收: 76400, 續單金額: 299400, 總業績: 299400, 追續成交總數: 7, 追續客單價: 42771.43, 派單成交總通數: 0 }, group: 'A2' },
+    { rank: 8, name: '湯玉琦', totalScore: 3248.05, actualRevenue: 220438, renewalRevenue: 272300, totalRevenue: 391718, metrics: { 正式權重分數: 3248.05, 實收: 220438, 續單金額: 272300, 總業績: 391718, 追續成交總數: 26, 追續客單價: 10473.08, 派單成交總通數: 0 }, group: 'A2' },
+    { rank: 9, name: '林宜靜', totalScore: 3129.78, actualRevenue: 390300, renewalRevenue: 102600, totalRevenue: 506290, metrics: { 正式權重分數: 3129.78, 實收: 390300, 續單金額: 102600, 總業績: 506290, 追續成交總數: 20, 追續客單價: 5130.00, 派單成交總通數: 0 }, group: 'A2' },
+    { rank: 10, name: '鄭上官', totalScore: 3051.40, actualRevenue: 109810, renewalRevenue: 284810, totalRevenue: 284810, metrics: { 正式權重分數: 3051.40, 實收: 109810, 續單金額: 284810, 總業績: 284810, 追續成交總數: 9, 追續客單價: 31645.56, 派單成交總通數: 0 }, group: 'A2' },
+    { rank: 11, name: '廖姿惠', totalScore: 2119.84, actualRevenue: 200276, renewalRevenue: 100366, totalRevenue: 267456, metrics: { 正式權重分數: 2119.84, 實收: 200276, 續單金額: 100366, 總業績: 267456, 追續成交總數: 21, 追續客單價: 4779.33, 派單成交總通數: 0 }, group: 'B' },
+    { rank: 12, name: '梁依萍', totalScore: 1954.70, actualRevenue: 215590, renewalRevenue: 80460, totalRevenue: 271270, metrics: { 正式權重分數: 1954.70, 實收: 215590, 續單金額: 80460, 總業績: 271270, 追續成交總數: 12, 追續客單價: 6705.00, 派單成交總通數: 0 }, group: 'B' },
+    { rank: 13, name: '蘇淑玲', totalScore: 1944.28, actualRevenue: 171836, renewalRevenue: 95340, totalRevenue: 220336, metrics: { 正式權重分數: 1944.28, 實收: 171836, 續單金額: 95340, 總業績: 220336, 追續成交總數: 6, 追續客單價: 15890.00, 派單成交總通數: 0 }, group: 'B' },
+    { rank: 14, name: '林佩君', totalScore: 1832.90, actualRevenue: 27178, renewalRevenue: 165918, totalRevenue: 193918, metrics: { 正式權重分數: 1832.90, 實收: 27178, 續單金額: 165918, 總業績: 193918, 追續成交總數: 8, 追續客單價: 20739.75, 派單成交總通數: 0 }, group: 'B' },
+    { rank: 15, name: '高如郁', totalScore: 1826.69, actualRevenue: 196218, renewalRevenue: 74380, totalRevenue: 250138, metrics: { 正式權重分數: 1826.69, 實收: 196218, 續單金額: 74380, 總業績: 250138, 追續成交總數: 13, 追續客單價: 5721.54, 派單成交總通數: 0 }, group: 'B' },
+    { rank: 16, name: '高美雲', totalScore: 1660.76, actualRevenue: 185016, renewalRevenue: 60000, totalRevenue: 241356, metrics: { 正式權重分數: 1660.76, 實收: 185016, 續單金額: 60000, 總業績: 241356, 追續成交總數: 10, 追續客單價: 6000.00, 派單成交總通數: 0 }, group: 'B' },
+    { rank: 17, name: '江麗勉', totalScore: 1621.09, actualRevenue: 139306, renewalRevenue: 86228, totalRevenue: 203726, metrics: { 正式權重分數: 1621.09, 實收: 139306, 續單金額: 86228, 總業績: 203726, 追續成交總數: 12, 追續客單價: 7185.67, 派單成交總通數: 0 }, group: 'B' },
+    { rank: 18, name: '鄭珮恩', totalScore: 1380.31, actualRevenue: 121468, renewalRevenue: 50660, totalRevenue: 159978, metrics: { 正式權重分數: 1380.31, 實收: 121468, 續單金額: 50660, 總業績: 159978, 追續成交總數: 18, 追續客單價: 2814.44, 派單成交總通數: 0 }, group: 'B' },
+    { rank: 19, name: '陳玲華', totalScore: 1169.33, actualRevenue: 110508, renewalRevenue: 43130, totalRevenue: 171458, metrics: { 正式權重分數: 1169.33, 實收: 110508, 續單金額: 43130, 總業績: 171458, 追續成交總數: 7, 追續客單價: 6161.43, 派單成交總通數: 0 }, group: 'C' },
+    { rank: 20, name: '江沛林', totalScore: 1039.71, actualRevenue: 9980, renewalRevenue: 78960, totalRevenue: 97460, metrics: { 正式權重分數: 1039.71, 實收: 9980, 續單金額: 78960, 總業績: 97460, 追續成交總數: 6, 追續客單價: 13160.00, 派單成交總通數: 0 }, group: 'C' },
+    { rank: 21, name: '周美蓁', totalScore: 650.46, actualRevenue: 28800, renewalRevenue: 28800, totalRevenue: 28800, metrics: { 正式權重分數: 650.46, 實收: 28800, 續單金額: 28800, 總業績: 28800, 追續成交總數: 3, 追續客單價: 9600.00, 派單成交總通數: 0 }, group: 'C' },
+    { rank: 22, name: '謝啟芳', totalScore: 562.24, actualRevenue: 38560, renewalRevenue: 21640, totalRevenue: 53500, metrics: { 正式權重分數: 562.24, 實收: 38560, 續單金額: 21640, 總業績: 53500, 追續成交總數: 5, 追續客單價: 4328.00, 派單成交總通數: 0 }, group: 'C' },
+    { rank: 23, name: '莉莉（新人）', totalScore: 504.02, actualRevenue: 15000, renewalRevenue: 18000, totalRevenue: 18000, metrics: { 正式權重分數: 504.02, 實收: 15000, 續單金額: 18000, 總業績: 18000, 追續成交總數: 2, 追續客單價: 9000.00, 派單成交總通數: 0 }, group: 'C' },
+    { rank: 24, name: '陳桂子（新人）', totalScore: 424.97, actualRevenue: 19000, renewalRevenue: 19000, totalRevenue: 19000, metrics: { 正式權重分數: 424.97, 實收: 19000, 續單金額: 19000, 總業績: 19000, 追續成交總數: 4, 追續客單價: 4750.00, 派單成交總通數: 0 }, group: 'C' }
   ]),
   groups: Object.freeze({
     A1: ['王珍珠', '王梅慧', '馬秋香', '林沛昕'],
@@ -2968,10 +2968,25 @@ const OFFICIAL_0429_TO_0430 = Object.freeze({
     B: ['廖姿惠', '梁依萍', '蘇淑玲', '林佩君', '高如郁', '高美雲', '江麗勉', '鄭珮恩'],
     C: ['陳玲華', '江沛林', '周美蓁', '謝啟芳', '莉莉（新人）', '陳桂子（新人）']
   }),
-  advice: Object.freeze([
-    { rank: 1, name: '王珍珠', text: '目前權重分數第一，今天重點是把領先差距守住。' },
-    { rank: 2, name: '王梅慧', text: '你位居第二，主力盤仍硬，今天差一筆就能再翻回去。' }
-  ])
+  adviceList: Object.freeze([
+    { rank: 1, name: '王珍珠', group: 'A1', text: '目前權重分數第一，今天重點是把領先差距守住。' },
+    { rank: 2, name: '王梅慧', group: 'A1', text: '你位居第二，主力盤仍硬，今天差一筆就能再翻回去。' }
+  ]),
+  audit: {
+    result: 'PASS',
+    rule: 'AI 10000 比例原則',
+    platforms: [
+      { platformName: '三立奕心', passed: true, metrics: { 累積總派單數: 0, 累積派單總成交數: 0, 累積追續總成交數: 274, 當日續單金額: 0, 本月業績: 4722330, 追續單總金額: 3402278, 實收總金額: 3763032 } },
+      { platformName: '民視', passed: true, metrics: { 累積總派單數: 0, 累積派單總成交數: 0, 累積追續總成交數: 77, 當日續單金額: 0, 本月業績: 2678260, 追續單總金額: 481170, 實收總金額: 1834480 } },
+      { platformName: '公司產品', passed: true, metrics: { 累積總派單數: 0, 累積派單總成交數: 0, 累積追續總成交數: 39, 當日續單金額: 0, 本月業績: 1122700, 追續單總金額: 1076450, 實收總金額: 558170 } }
+    ],
+    notes: ['4/29 結算資料核對通過', '無漏算、無多算、無總表衝突'],
+    excludedEmployees: [{ name: '陳旭宜', reason: '已離職' }]
+  },
+  finalConfirmations: ['4/29 結算資料已核對完成', '三平台總表全數核對通過', '4/30 正式派單順序，以本則公告為準'],
+  title: 'AI 派單公告｜4/29 結算 → 4/30 正式派單順序',
+  auditResult: 'PASS',
+  groupShortText: '📣【AI 派單公告｜4/29 結算 → 4/30 正式派單】審計 PASS，三平台總表全數核對通過。已離職：陳旭宜，只列審計不入派單。正式前10名：1王珍珠 2王梅慧 3馬秋香 4林沛昕 5李玲玲 6徐華妤 7許喬恩 8湯玉琦 9林宜靜 10鄭上官。A1：王珍珠、王梅慧、馬秋香、林沛昕。A2：李玲玲、徐華妤、許喬恩、湯玉琦、林宜靜、鄭上官。B組：廖姿惠、梁依萍、蘇淑玲、林佩君、高如郁、高美雲、江麗勉、鄭珮恩。C組：陳玲華、江沛林、周美蓁、謝啟芳、莉莉（新人）、陳桂子（新人）。正式派單順序以本則為準。'
 });
 
 function official0429GroupOf(name) {

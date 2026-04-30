@@ -4,7 +4,13 @@
   const percent = (v) => `${Math.round(Number(v || 0) * 100)}%`;
   const esc = (v) => String(v || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-  const TIER_COLOR = { A1: '#ef4444', A2: '#f97316', B: '#eab308', C: '#22c55e' };
+  const TIERS = [
+    { key: 'A1', label: 'A1｜高單主力',  color: '#ef4444' },
+    { key: 'A2', label: 'A2｜續追主力',  color: '#f97316' },
+    { key: 'B',  label: 'B 組｜一般量單', color: '#eab308' },
+    { key: 'C',  label: 'C 組｜補位觀察', color: '#22c55e' }
+  ];
+  const TIER_COLOR = Object.fromEntries(TIERS.map((t) => [t.key, t.color]));
 
   function el(tag, className, html) {
     const node = document.createElement(tag);
@@ -78,15 +84,8 @@
   function renderGroups(data) {
     const grid = document.getElementById('performance-groups');
     if (!grid) return;
-    const TIERS = [
-      { key: 'A1', label: 'A1｜高單主力' },
-      { key: 'A2', label: 'A2｜續追主力' },
-      { key: 'B',  label: 'B 組｜一般量單' },
-      { key: 'C',  label: 'C 組｜補位觀察' }
-    ];
-    grid.replaceChildren(...TIERS.map(({ key, label }) => {
+    grid.replaceChildren(...TIERS.map(({ key, label, color }) => {
       const members = data.groups[key] || [];
-      const color = TIER_COLOR[key] || '#888';
       return el('article', 'perf-group-card', `
         <span class="perf-group-label" style="color:${color}">${esc(label)}</span>
         <div class="perf-group-names">
@@ -134,9 +133,20 @@
       const data = payload.data;
       if (!response.ok || !data) throw new Error(payload.message || 'load failed');
 
+      const titleEl = document.getElementById('performance-title');
+      if (titleEl) {
+        titleEl.textContent = `${data.displayDate} 業績結算 → ${data.nextDispatchDisplayDate} 今日正式派單順序`;
+      }
+
       const dateEl = document.getElementById('performance-date');
       if (dateEl) {
-        dateEl.textContent = `${data.displayDate} 業績 → ${data.nextDispatchDisplayDate} 正式派單`;
+        dateEl.textContent = `${data.displayDate} 業績 → ${data.nextDispatchDisplayDate} 今日派單`;
+        dateEl.className = 'badge badge-pass';
+      }
+
+      const orderTitleEl = document.getElementById('dispatch-order-title');
+      if (orderTitleEl) {
+        orderTitleEl.textContent = `今日（${data.nextDispatchDisplayDate}）正式派單順位 · 完整 ${data.dispatchOrder.length} 人`;
       }
 
       const recEl = document.getElementById('performance-recommendation');
