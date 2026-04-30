@@ -2610,3 +2610,191 @@ textarea,
     text-align: left;
   }
 }
+
+/* ── Performance Panel Extensions ── */
+.perf-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin: 22px 0 12px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.perf-section-head span:first-child {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gold-1);
+  white-space: nowrap;
+}
+
+.perf-section-head span:last-child {
+  font-size: 11px;
+  color: var(--text-sub);
+  text-align: right;
+}
+
+/* Tier tag inline badge */
+.dispatch-tier-tag {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #000;
+  margin-right: 5px;
+  vertical-align: middle;
+  line-height: 1.6;
+}
+
+/* AI score in dispatch list */
+.dispatch-score {
+  color: var(--gold-2);
+  font-family: "Orbitron", "Sora", monospace;
+  font-size: 11px;
+}
+
+/* ── A1 / A2 / B / C 分級卡 ── */
+.performance-groups {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.perf-group-card {
+  padding: 14px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.perf-group-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin-bottom: 10px;
+}
+
+.perf-group-names {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.perf-group-name {
+  font-size: 13px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.perf-group-rank {
+  font-family: "Orbitron", monospace;
+  font-size: 10px;
+  color: var(--gold-1);
+  min-width: 24px;
+}
+
+/* ── 每人一句建議 ── */
+.performance-advice {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.perf-advice-row {
+  display: grid;
+  grid-template-columns: 30px 96px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.perf-advice-rank {
+  color: var(--gold-1);
+  font-family: "Orbitron", monospace;
+  font-weight: 700;
+  font-size: 11px;
+  padding-top: 2px;
+}
+
+.perf-advice-name {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.perf-advice-text {
+  color: rgba(220, 230, 245, 0.82);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+/* ── 審計列示 ── */
+.performance-retired {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+  min-height: 32px;
+}
+
+.perf-retired-tag {
+  padding: 5px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 51, 102, 0.4);
+  background: rgba(255, 51, 102, 0.08);
+  color: #ff6688;
+  font-size: 13px;
+}
+
+.perf-retired-none {
+  color: var(--text-sub);
+  font-size: 13px;
+  padding: 5px 0;
+}
+
+/* 整合總盤：六欄 */
+.performance-summary {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+@media (max-width: 1400px) {
+  .performance-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1180px) {
+  .performance-groups {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .performance-advice {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .performance-groups {
+    grid-template-columns: 1fr;
+  }
+  .perf-advice-row {
+    grid-template-columns: 30px minmax(0, 1fr);
+    grid-template-rows: auto auto;
+  }
+  .perf-advice-text {
+    grid-column: 1 / -1;
+  }
+}
