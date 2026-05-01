@@ -3018,6 +3018,9 @@ function repairOfficial0429Snapshot({ snapshot }) {
   return repaired;
 }
 
+const { OFFICIAL_0430_TO_0501 } = require('./official-0430-to-0501');
+const { OFFICIAL_0501_TO_0502 } = require('./official-0501-to-0502');
+
 module.exports = {
   OFFICIAL_0408_TO_0409,
   OFFICIAL_0412_TO_0413,
@@ -3031,6 +3034,8 @@ module.exports = {
   OFFICIAL_0427_TO_0428,
   OFFICIAL_0428_TO_0429,
   OFFICIAL_0429_TO_0430,
+  OFFICIAL_0430_TO_0501,
+  OFFICIAL_0501_TO_0502,
   isPlaceholderText,
   hasQuestionBlock,
   countRankChangeEntries,
