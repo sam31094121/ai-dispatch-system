@@ -223,40 +223,15 @@ function hydrateStorageCache() {
 
   ensureStorageDirs();
   const latestRecord = readJson(storagePaths.latestFile);
-  
-  // 智慧矛盾檢測：檢查 official-locks.js 是否有比伺服器緩存更新、更權威的數據
-  const officialLocks = require('../../shared/official-locks');
-  const officialKeys = Object.keys(officialLocks).filter(k => k.startsWith('OFFICIAL_'));
-  const latestOfficialKey = officialKeys.sort().reverse()[0];
-  const latestOfficial = officialLocks[latestOfficialKey];
 
-  if (latestOfficial && latestRecord) {
-    const officialDate = latestOfficial.reportDate || '';
-    // 防禦：reportDate 欄位可能不存在（部分 report 只有 settlementDate），
-    // 優先讀 reportDate，fallback 到 settlementDate，避免 recordDate 恆為空字串
-    const recordDate =
-      latestRecord.report?.reportDate ||
-      latestRecord.report?.settlementDate ||
-      '';
-    
-    // 優化：只有當官方日期「晚於」紀錄日期時，才執行強制覆蓋
-    // 否則手動更新的數據會被舊的官方緩存洗掉
-    if (officialDate !== recordDate && officialDate.includes('04/') && officialDate > recordDate) {
-        console.log(`[CacheGuard] 檢測到官方有更新版本 (Official: ${officialDate} > Record: ${recordDate})，執行同步。`);
-        const parsedReport = buildReportFromSource({ sourceText: JSON.stringify(latestOfficial) });
-        const syncValidation = validateDispatchReport(parsedReport);
-        const storedRecord = wrapStoredRecord(parsedReport, {
-          operator: 'system_auto_sync',
-          reason: 'official-lock',
-          source: 'official-locks'
-        });
-        if (!syncValidation.ok) {
-          console.warn(`[CacheGuard] 官方鎖定資料驗證未完全通過，但仍執行同步：`, syncValidation.errors.map(e => e.reason).join(', '));
-        }
-        writeJson(getVersionFile(parsedReport.reportId, parsedReport.version), storedRecord);
-        writeJson(storagePaths.latestFile, storedRecord);
-        return applyStorageIndex(buildStorageIndex([storedRecord, ...scanStoredRecords()], storedRecord));
-    }
+  // [CacheGuard] 自動同步邏輯已停用：
+  // official-locks.js 目前最新版本只到 4/29，但 data/ 中已有 4/30→5/1 正式數據。
+  // 啟用此邏輯會導致舊的 official-locks 覆蓋更新的 data/latest.json。
+  // 如需重新啟用，請確保 official-locks.js 已同步到最新派單日期。
+  if (latestRecord) {
+    const recordId = latestRecord.report?.reportId || '(unknown)';
+    const recordDate = latestRecord.report?.settlementDate || latestRecord.report?.reportDate || '';
+    console.log(`[CacheGuard] 停用自動同步，直接使用 latest.json (reportId: ${recordId}, date: ${recordDate})`);
   }
 
   return applyStorageIndex(buildStorageIndex(scanStoredRecords(), latestRecord));
