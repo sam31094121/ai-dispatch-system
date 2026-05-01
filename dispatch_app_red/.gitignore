@@ -1,4 +1,21 @@
 node_modules/
-data/
 *.tmp
 .env
+
+# ── data/ 目錄規則 ──────────────────────────────────────
+# 只追蹤正式派單鎖定數據 (dispatch-reports-v1) 和 latest.json
+# 以下中間態與執行期日誌全數排除：
+
+# 執行期 log / jsonl
+data/system-log.jsonl
+data/*.log
+data/server*.log
+data/server3100.err.log
+data/server3100.out.log
+
+# reports/ 目錄：系統執行中間態 (snapshot_*, failure_*)，非業務數據
+data/reports/
+
+# archive / backups：本機備份，不需上雲
+data/archive/
+data/backups/

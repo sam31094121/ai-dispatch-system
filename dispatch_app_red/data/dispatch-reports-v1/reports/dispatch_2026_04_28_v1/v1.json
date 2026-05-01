@@ -1,0 +1,655 @@
+{
+  "report": {
+    "reportId": "dispatch_2026_04_28_v1",
+    "version": 1,
+    "status": "published",
+    "title": "AI 派單公告｜4/28 結算 → 4/29 正式派單順序",
+    "settlementDate": "2026-04-28",
+    "dispatchDate": "2026-04-29",
+    "auditResult": "PASS",
+    "createdAt": "2026-04-29T19:03:22+08:00",
+    "updatedAt": "2026-04-29T19:03:22+08:00",
+    "sourceText": "{\"reportDate\":\"115/04/28\",\"dispatchDate\":\"115/04/29\",\"scoringMethod\":\"AI 10000 權重比例原則：實收3000＋追續金額2500＋總業績1500＋追續客單價1500＋追續單數1500\",\"scoringNote\":\"採用 04/28 三平臺業績，AI 比例原則，以全員最高值為基準計算加權分數。\",\"overallStats\":{\"totalCalls\":0,\"dispatchCalls\":0,\"renewalCalls\":368,\"renewalAmount\":4637068,\"dailyRenewalAmount\":4637068,\"cancellations\":0,\"monthlyRevenue\":8177760,\"actualRevenue\":6104042},\"platforms\":{\"三立奕心\":{\"cumulativeDispatch\":0,\"cumulativeDispatchDeals\":0,\"cumulativeRenewalDeals\":255,\"dailyRenewalAmount\":3161848,\"dailyRenewalDeals\":255,\"monthlyRevenue\":4456550,\"totalRenewalAmount\":3161848,\"actualRevenue\":3725432,\"dailyCancellations\":0},\"民視\":{\"cumulativeDispatch\":0,\"cumulativeDispatchDeals\":0,\"cumulativeRenewalDeals\":75,\"dailyRenewalAmount\":468330,\"dailyRenewalDeals\":75,\"monthlyRevenue\":2679320,\"totalRenewalAmount\":468330,\"actualRevenue\":1834480,\"dailyCancellations\":0},\"公司產品\":{\"cumulativeDispatch\":0,\"cumulativeDispatchDeals\":0,\"cumulativeRenewalDeals\":38,\"dailyRenewalAmount\":1006890,\"dailyRenewalDeals\":38,\"monthlyRevenue\":1041890,\"totalRenewalAmount\":1006890,\"actualRevenue\":544130,\"dailyCancellations\":0}},\"ranking\":[{\"rank\":1,\"name\":\"王珍珠\",\"totalRevenue\":1046838,\"actualRevenue\":800568,\"renewalRevenue\":725020,\"avgRenewal\":12947,\"renewalDeals\":56,\"dispatchDeals\":0,\"totalScore\":8857.21},{\"rank\":2,\"name\":\"王梅慧\",\"totalRevenue\":891480,\"actualRevenue\":825330,\"renewalRevenue\":632230,\"avgRenewal\":16638,\"renewalDeals\":38,\"dispatchDeals\":0,\"totalScore\":8050.01},{\"rank\":3,\"name\":\"馬秋香\",\"totalRevenue\":950388,\"actualRevenue\":821868,\"renewalRevenue\":595130,\"avgRenewal\":14170,\"renewalDeals\":42,\"dispatchDeals\":0,\"totalScore\":8015.79},{\"rank\":4,\"name\":\"林沛昕\",\"totalRevenue\":609390,\"actualRevenue\":572072,\"renewalRevenue\":405536,\"avgRenewal\":31195,\"renewalDeals\":13,\"dispatchDeals\":0,\"totalScore\":5776.74},{\"rank\":5,\"name\":\"李玲玲\",\"totalRevenue\":750450,\"actualRevenue\":476930,\"renewalRevenue\":360290,\"avgRenewal\":13857,\"renewalDeals\":26,\"dispatchDeals\":0,\"totalScore\":5226.33},{\"rank\":6,\"name\":\"徐華妤\",\"totalRevenue\":444770,\"actualRevenue\":357130,\"renewalRevenue\":241440,\"avgRenewal\":15090,\"renewalDeals\":16,\"dispatchDeals\":0,\"totalScore\":3717.78},{\"rank\":7,\"name\":\"許喬恩\",\"totalRevenue\":347400,\"actualRevenue\":76400,\"renewalRevenue\":347400,\"avgRenewal\":43425,\"renewalDeals\":8,\"dispatchDeals\":0,\"totalScore\":3687.68},{\"rank\":8,\"name\":\"鄭上官\",\"totalRevenue\":323810,\"actualRevenue\":109810,\"renewalRevenue\":323810,\"avgRenewal\":32381,\"renewalDeals\":10,\"dispatchDeals\":0,\"totalScore\":3366.06},{\"rank\":9,\"name\":\"林宜靜\",\"totalRevenue\":502490,\"actualRevenue\":393800,\"renewalRevenue\":98800,\"avgRenewal\":5200,\"renewalDeals\":19,\"dispatchDeals\":0,\"totalScore\":3180.67},{\"rank\":10,\"name\":\"湯玉琦\",\"totalRevenue\":286718,\"actualRevenue\":220438,\"renewalRevenue\":167300,\"avgRenewal\":6971,\"renewalDeals\":24,\"dispatchDeals\":0,\"totalScore\":2672.64},{\"rank\":11,\"name\":\"廖姿惠\",\"totalRevenue\":255176,\"actualRevenue\":200276,\"renewalRevenue\":91586,\"avgRenewal\":4820,\"renewalDeals\":19,\"dispatchDeals\":0,\"totalScore\":2084.85},{\"rank\":12,\"name\":\"梁依萍\",\"totalRevenue\":271270,\"actualRevenue\":215590,\"renewalRevenue\":80460,\"avgRenewal\":6705,\"renewalDeals\":12,\"dispatchDeals\":0,\"totalScore\":2002.82},{\"rank\":13,\"name\":\"蘇淑玲\",\"totalRevenue\":227916,\"actualRevenue\":171836,\"renewalRevenue\":95340,\"avgRenewal\":15890,\"renewalDeals\":6,\"dispatchDeals\":0,\"totalScore\":1989.53},{\"rank\":14,\"name\":\"高如郁\",\"totalRevenue\":250138,\"actualRevenue\":196218,\"renewalRevenue\":74380,\"avgRenewal\":5722,\"renewalDeals\":13,\"dispatchDeals\":0,\"totalScore\":1874},{\"rank\":15,\"name\":\"高美雲\",\"totalRevenue\":251656,\"actualRevenue\":184296,\"renewalRevenue\":60000,\"avgRenewal\":6000,\"renewalDeals\":10,\"dispatchDeals\":0,\"totalScore\":1712.5},{\"rank\":16,\"name\":\"江麗勉\",\"totalRevenue\":189446,\"actualRevenue\":139306,\"renewalRevenue\":71948,\"avgRenewal\":6541,\"renewalDeals\":11,\"dispatchDeals\":0,\"totalScore\":1546.49},{\"rank\":17,\"name\":\"鄭珮恩\",\"totalRevenue\":158878,\"actualRevenue\":117418,\"renewalRevenue\":49560,\"avgRenewal\":2915,\"renewalDeals\":17,\"dispatchDeals\":0,\"totalScore\":1381.4},{\"rank\":18,\"name\":\"陳玲華\",\"totalRevenue\":170108,\"actualRevenue\":110508,\"renewalRevenue\":41780,\"avgRenewal\":6963,\"renewalDeals\":6,\"dispatchDeals\":0,\"totalScore\":1190.73},{\"rank\":19,\"name\":\"江沛林\",\"totalRevenue\":97460,\"actualRevenue\":14030,\"renewalRevenue\":78960,\"avgRenewal\":13160,\"renewalDeals\":6,\"dispatchDeals\":0,\"totalScore\":1078.21},{\"rank\":20,\"name\":\"周美蓁\",\"totalRevenue\":30800,\"actualRevenue\":28800,\"renewalRevenue\":30800,\"avgRenewal\":10267,\"renewalDeals\":3,\"dispatchDeals\":0,\"totalScore\":690.03},{\"rank\":21,\"name\":\"謝啟芳\",\"totalRevenue\":49520,\"actualRevenue\":38560,\"renewalRevenue\":21640,\"avgRenewal\":5410,\"renewalDeals\":4,\"dispatchDeals\":0,\"totalScore\":579.75},{\"rank\":22,\"name\":\"林佩君\",\"totalRevenue\":49658,\"actualRevenue\":13858,\"renewalRevenue\":21658,\"avgRenewal\":5415,\"renewalDeals\":4,\"dispatchDeals\":0,\"totalScore\":490.4},{\"rank\":23,\"name\":\"陳桂子（新人）\",\"totalRevenue\":19000,\"actualRevenue\":19000,\"renewalRevenue\":19000,\"avgRenewal\":4750,\"renewalDeals\":4,\"dispatchDeals\":0,\"totalScore\":433.02},{\"rank\":24,\"name\":\"莉莉（新人）\",\"totalRevenue\":3000,\"actualRevenue\":0,\"renewalRevenue\":3000,\"avgRenewal\":3000,\"renewalDeals\":1,\"dispatchDeals\":0,\"totalScore\":145.06}],\"groups\":{\"A1\":[\"王珍珠\",\"王梅慧\",\"馬秋香\",\"林沛昕\"],\"A2\":[\"李玲玲\",\"徐華妤\",\"許喬恩\",\"鄭上官\",\"林宜靜\",\"湯玉琦\"],\"B\":[\"廖姿惠\",\"梁依萍\",\"蘇淑玲\",\"高如郁\",\"高美雲\",\"江麗勉\",\"鄭珮恩\"],\"C\":[\"陳玲華\",\"江沛林\",\"周美蓁\",\"謝啟芳\",\"林佩君\",\"陳桂子（新人）\",\"莉莉（新人）\"]},\"advice\":[{\"rank\":1,\"name\":\"王珍珠\",\"text\":\"AI總分全場第一，各項指標無懈可擊，完美守護榜首！\"},{\"rank\":2,\"name\":\"王梅慧\",\"text\":\"緊追其後，高強度的續單與實收令人驚艷，隨時準備重返榮耀。\"},{\"rank\":3,\"name\":\"馬秋香\",\"text\":\"穩居前三，極具壓制力的戰績，繼續帶領團隊衝刺！\"},{\"rank\":4,\"name\":\"林沛昕\",\"text\":\"前四鐵三角之一，續單與客單價表現亮眼。\"},{\"rank\":5,\"name\":\"李玲玲\",\"text\":\"前段班中堅力量，維持穩定輸出就能隨時上攻。\"},{\"rank\":6,\"name\":\"徐華妤\",\"text\":\"前段班中堅力量，維持穩定輸出就能隨時上攻。\"},{\"rank\":7,\"name\":\"許喬恩\",\"text\":\"前段班中堅力量，維持穩定輸出就能隨時上攻。\"},{\"rank\":8,\"name\":\"鄭上官\",\"text\":\"前段班中堅力量，維持穩定輸出就能隨時上攻。\"},{\"rank\":9,\"name\":\"林宜靜\",\"text\":\"前段班中堅力量，維持穩定輸出就能隨時上攻。\"},{\"rank\":10,\"name\":\"湯玉琦\",\"text\":\"前段班中堅力量，維持穩定輸出就能隨時上攻。\"},{\"rank\":11,\"name\":\"廖姿惠\",\"text\":\"中堅力量，需尋求高單價進帳以突破現狀。\"},{\"rank\":12,\"name\":\"梁依萍\",\"text\":\"中堅力量，需尋求高單價進帳以突破現狀。\"},{\"rank\":13,\"name\":\"蘇淑玲\",\"text\":\"中堅力量，需尋求高單價進帳以突破現狀。\"},{\"rank\":14,\"name\":\"高如郁\",\"text\":\"中堅力量，需尋求高單價進帳以突破現狀。\"},{\"rank\":15,\"name\":\"高美雲\",\"text\":\"中堅力量，需尋求高單價進帳以突破現狀。\"},{\"rank\":16,\"name\":\"江麗勉\",\"text\":\"中堅力量，需尋求高單價進帳以突破現狀。\"},{\"rank\":17,\"name\":\"鄭珮恩\",\"text\":\"中堅力量，需尋求高單價進帳以突破現狀。\"},{\"rank\":18,\"name\":\"陳玲華\",\"text\":\"請務必把握每一個派單機會，先求穩定進帳。\"},{\"rank\":19,\"name\":\"江沛林\",\"text\":\"請務必把握每一個派單機會，先求穩定進帳。\"},{\"rank\":20,\"name\":\"周美蓁\",\"text\":\"請務必把握每一個派單機會，先求穩定進帳。\"},{\"rank\":21,\"name\":\"謝啟芳\",\"text\":\"請務必把握每一個派單機會，先求穩定進帳。\"},{\"rank\":22,\"name\":\"林佩君\",\"text\":\"請務必把握每一個派單機會，先求穩定進帳。\"},{\"rank\":23,\"name\":\"陳桂子（新人）\",\"text\":\"新人穩紮穩打，先求熟悉系統與產品。\"},{\"rank\":24,\"name\":\"莉莉（新人）\",\"text\":\"新人穩紮穩打，先求熟悉系統與產品。\"}],\"audit\":{\"status\":\"PASS\",\"checks\":[{\"label\":\"三立奕心\",\"status\":\"PASS\",\"detail\":\"總表核對通過\"},{\"label\":\"民視\",\"status\":\"PASS\",\"detail\":\"總表核對通過\"},{\"label\":\"公司產品\",\"status\":\"PASS\",\"detail\":\"總表核對通過\"},{\"label\":\"異常與提醒\",\"status\":\"PASS\",\"detail\":\"無漏算、無多算、無總盤衝突。\"},{\"label\":\"特殊名單\",\"status\":\"PASS\",\"detail\":\"已離職陳旭宜剔除\"}]}}",
+    "audit": {
+      "result": "PASS",
+      "rule": "先審計，後排序，再派單",
+      "platforms": [
+        {
+          "platformKey": "sanli_yixin",
+          "platformName": "三立奕心",
+          "passed": true,
+          "metrics": {
+            "累積總派單數": 0,
+            "累積派單總成交數": 0,
+            "累積追續總成交數": 255,
+            "當日續單金額": 3161848,
+            "本月業績": 4456550,
+            "追續單總金額": 3161848,
+            "實收總金額": 3725432
+          }
+        },
+        {
+          "platformKey": "ftv",
+          "platformName": "民視",
+          "passed": true,
+          "metrics": {
+            "累積總派單數": 0,
+            "累積派單總成交數": 0,
+            "累積追續總成交數": 75,
+            "當日續單金額": 468330,
+            "本月業績": 2679320,
+            "追續單總金額": 468330,
+            "實收總金額": 1834480
+          }
+        },
+        {
+          "platformKey": "company_product",
+          "platformName": "公司產品",
+          "passed": true,
+          "metrics": {
+            "累積總派單數": 0,
+            "累積派單總成交數": 0,
+            "累積追續總成交數": 38,
+            "當日續單金額": 1006890,
+            "本月業績": 1041890,
+            "追續單總金額": 1006890,
+            "實收總金額": 544130
+          }
+        }
+      ],
+      "notes": [
+        "4/23 官方鎖定資料已依比例原則完成權重計分。"
+      ],
+      "excludedEmployees": []
+    },
+    "summaryBoard": {
+      "累積總派單數": 0,
+      "累積派單總成交數": 0,
+      "累積追續總成交數": 368,
+      "當日續單金額": 4637068,
+      "本月業績": 8177760,
+      "追續單總金額": 4637068,
+      "實收總金額": 6104042,
+      "當日取消退貨": 0
+    },
+    "rankings": [
+      {
+        "rank": 1,
+        "name": "王珍珠",
+        "isNew": false,
+        "group": "A1",
+        "metrics": {
+          "正式權重分數": 8857.21,
+          "實收": 800568,
+          "總業績": 1046838,
+          "續單金額": 725020,
+          "追續成交總數": 56,
+          "追續客單價": 12947,
+          "派單成交總通數": 0
+        },
+        "advice": "AI總分全場第一，各項指標無懈可擊，完美守護榜首！"
+      },
+      {
+        "rank": 2,
+        "name": "王梅慧",
+        "isNew": false,
+        "group": "A1",
+        "metrics": {
+          "正式權重分數": 8050.01,
+          "實收": 825330,
+          "總業績": 891480,
+          "續單金額": 632230,
+          "追續成交總數": 38,
+          "追續客單價": 16638,
+          "派單成交總通數": 0
+        },
+        "advice": "緊追其後，高強度的續單與實收令人驚艷，隨時準備重返榮耀。"
+      },
+      {
+        "rank": 3,
+        "name": "馬秋香",
+        "isNew": false,
+        "group": "A1",
+        "metrics": {
+          "正式權重分數": 8015.79,
+          "實收": 821868,
+          "總業績": 950388,
+          "續單金額": 595130,
+          "追續成交總數": 42,
+          "追續客單價": 14170,
+          "派單成交總通數": 0
+        },
+        "advice": "穩居前三，極具壓制力的戰績，繼續帶領團隊衝刺！"
+      },
+      {
+        "rank": 4,
+        "name": "林沛昕",
+        "isNew": false,
+        "group": "A1",
+        "metrics": {
+          "正式權重分數": 5776.74,
+          "實收": 572072,
+          "總業績": 609390,
+          "續單金額": 405536,
+          "追續成交總數": 13,
+          "追續客單價": 31195,
+          "派單成交總通數": 0
+        },
+        "advice": "前四鐵三角之一，續單與客單價表現亮眼。"
+      },
+      {
+        "rank": 5,
+        "name": "李玲玲",
+        "isNew": false,
+        "group": "A2",
+        "metrics": {
+          "正式權重分數": 5226.33,
+          "實收": 476930,
+          "總業績": 750450,
+          "續單金額": 360290,
+          "追續成交總數": 26,
+          "追續客單價": 13857,
+          "派單成交總通數": 0
+        },
+        "advice": "前段班中堅力量，維持穩定輸出就能隨時上攻。"
+      },
+      {
+        "rank": 6,
+        "name": "徐華妤",
+        "isNew": false,
+        "group": "A2",
+        "metrics": {
+          "正式權重分數": 3717.78,
+          "實收": 357130,
+          "總業績": 444770,
+          "續單金額": 241440,
+          "追續成交總數": 16,
+          "追續客單價": 15090,
+          "派單成交總通數": 0
+        },
+        "advice": "前段班中堅力量，維持穩定輸出就能隨時上攻。"
+      },
+      {
+        "rank": 7,
+        "name": "許喬恩",
+        "isNew": false,
+        "group": "A2",
+        "metrics": {
+          "正式權重分數": 3687.68,
+          "實收": 76400,
+          "總業績": 347400,
+          "續單金額": 347400,
+          "追續成交總數": 8,
+          "追續客單價": 43425,
+          "派單成交總通數": 0
+        },
+        "advice": "前段班中堅力量，維持穩定輸出就能隨時上攻。"
+      },
+      {
+        "rank": 8,
+        "name": "鄭上官",
+        "isNew": false,
+        "group": "A2",
+        "metrics": {
+          "正式權重分數": 3366.06,
+          "實收": 109810,
+          "總業績": 323810,
+          "續單金額": 323810,
+          "追續成交總數": 10,
+          "追續客單價": 32381,
+          "派單成交總通數": 0
+        },
+        "advice": "前段班中堅力量，維持穩定輸出就能隨時上攻。"
+      },
+      {
+        "rank": 9,
+        "name": "林宜靜",
+        "isNew": false,
+        "group": "A2",
+        "metrics": {
+          "正式權重分數": 3180.67,
+          "實收": 393800,
+          "總業績": 502490,
+          "續單金額": 98800,
+          "追續成交總數": 19,
+          "追續客單價": 5200,
+          "派單成交總通數": 0
+        },
+        "advice": "前段班中堅力量，維持穩定輸出就能隨時上攻。"
+      },
+      {
+        "rank": 10,
+        "name": "湯玉琦",
+        "isNew": false,
+        "group": "A2",
+        "metrics": {
+          "正式權重分數": 2672.64,
+          "實收": 220438,
+          "總業績": 286718,
+          "續單金額": 167300,
+          "追續成交總數": 24,
+          "追續客單價": 6971,
+          "派單成交總通數": 0
+        },
+        "advice": "前段班中堅力量，維持穩定輸出就能隨時上攻。"
+      },
+      {
+        "rank": 11,
+        "name": "廖姿惠",
+        "isNew": false,
+        "group": "B",
+        "metrics": {
+          "正式權重分數": 2084.85,
+          "實收": 200276,
+          "總業績": 255176,
+          "續單金額": 91586,
+          "追續成交總數": 19,
+          "追續客單價": 4820,
+          "派單成交總通數": 0
+        },
+        "advice": "中堅力量，需尋求高單價進帳以突破現狀。"
+      },
+      {
+        "rank": 12,
+        "name": "梁依萍",
+        "isNew": false,
+        "group": "B",
+        "metrics": {
+          "正式權重分數": 2002.82,
+          "實收": 215590,
+          "總業績": 271270,
+          "續單金額": 80460,
+          "追續成交總數": 12,
+          "追續客單價": 6705,
+          "派單成交總通數": 0
+        },
+        "advice": "中堅力量，需尋求高單價進帳以突破現狀。"
+      },
+      {
+        "rank": 13,
+        "name": "蘇淑玲",
+        "isNew": false,
+        "group": "B",
+        "metrics": {
+          "正式權重分數": 1989.53,
+          "實收": 171836,
+          "總業績": 227916,
+          "續單金額": 95340,
+          "追續成交總數": 6,
+          "追續客單價": 15890,
+          "派單成交總通數": 0
+        },
+        "advice": "中堅力量，需尋求高單價進帳以突破現狀。"
+      },
+      {
+        "rank": 14,
+        "name": "高如郁",
+        "isNew": false,
+        "group": "B",
+        "metrics": {
+          "正式權重分數": 1874,
+          "實收": 196218,
+          "總業績": 250138,
+          "續單金額": 74380,
+          "追續成交總數": 13,
+          "追續客單價": 5722,
+          "派單成交總通數": 0
+        },
+        "advice": "中堅力量，需尋求高單價進帳以突破現狀。"
+      },
+      {
+        "rank": 15,
+        "name": "高美雲",
+        "isNew": false,
+        "group": "B",
+        "metrics": {
+          "正式權重分數": 1712.5,
+          "實收": 184296,
+          "總業績": 251656,
+          "續單金額": 60000,
+          "追續成交總數": 10,
+          "追續客單價": 6000,
+          "派單成交總通數": 0
+        },
+        "advice": "中堅力量，需尋求高單價進帳以突破現狀。"
+      },
+      {
+        "rank": 16,
+        "name": "江麗勉",
+        "isNew": false,
+        "group": "B",
+        "metrics": {
+          "正式權重分數": 1546.49,
+          "實收": 139306,
+          "總業績": 189446,
+          "續單金額": 71948,
+          "追續成交總數": 11,
+          "追續客單價": 6541,
+          "派單成交總通數": 0
+        },
+        "advice": "中堅力量，需尋求高單價進帳以突破現狀。"
+      },
+      {
+        "rank": 17,
+        "name": "鄭珮恩",
+        "isNew": false,
+        "group": "B",
+        "metrics": {
+          "正式權重分數": 1381.4,
+          "實收": 117418,
+          "總業績": 158878,
+          "續單金額": 49560,
+          "追續成交總數": 17,
+          "追續客單價": 2915,
+          "派單成交總通數": 0
+        },
+        "advice": "中堅力量，需尋求高單價進帳以突破現狀。"
+      },
+      {
+        "rank": 18,
+        "name": "陳玲華",
+        "isNew": false,
+        "group": "C",
+        "metrics": {
+          "正式權重分數": 1190.73,
+          "實收": 110508,
+          "總業績": 170108,
+          "續單金額": 41780,
+          "追續成交總數": 6,
+          "追續客單價": 6963,
+          "派單成交總通數": 0
+        },
+        "advice": "請務必把握每一個派單機會，先求穩定進帳。"
+      },
+      {
+        "rank": 19,
+        "name": "江沛林",
+        "isNew": false,
+        "group": "C",
+        "metrics": {
+          "正式權重分數": 1078.21,
+          "實收": 14030,
+          "總業績": 97460,
+          "續單金額": 78960,
+          "追續成交總數": 6,
+          "追續客單價": 13160,
+          "派單成交總通數": 0
+        },
+        "advice": "請務必把握每一個派單機會，先求穩定進帳。"
+      },
+      {
+        "rank": 20,
+        "name": "周美蓁",
+        "isNew": false,
+        "group": "C",
+        "metrics": {
+          "正式權重分數": 690.03,
+          "實收": 28800,
+          "總業績": 30800,
+          "續單金額": 30800,
+          "追續成交總數": 3,
+          "追續客單價": 10267,
+          "派單成交總通數": 0
+        },
+        "advice": "請務必把握每一個派單機會，先求穩定進帳。"
+      },
+      {
+        "rank": 21,
+        "name": "謝啟芳",
+        "isNew": false,
+        "group": "C",
+        "metrics": {
+          "正式權重分數": 579.75,
+          "實收": 38560,
+          "總業績": 49520,
+          "續單金額": 21640,
+          "追續成交總數": 4,
+          "追續客單價": 5410,
+          "派單成交總通數": 0
+        },
+        "advice": "請務必把握每一個派單機會，先求穩定進帳。"
+      },
+      {
+        "rank": 22,
+        "name": "林佩君",
+        "isNew": false,
+        "group": "C",
+        "metrics": {
+          "正式權重分數": 490.4,
+          "實收": 13858,
+          "總業績": 49658,
+          "續單金額": 21658,
+          "追續成交總數": 4,
+          "追續客單價": 5415,
+          "派單成交總通數": 0
+        },
+        "advice": "請務必把握每一個派單機會，先求穩定進帳。"
+      },
+      {
+        "rank": 23,
+        "name": "陳桂子",
+        "isNew": true,
+        "group": "C",
+        "metrics": {
+          "正式權重分數": 433.02,
+          "實收": 19000,
+          "總業績": 19000,
+          "續單金額": 19000,
+          "追續成交總數": 4,
+          "追續客單價": 4750,
+          "派單成交總通數": 0
+        },
+        "advice": "新人穩紮穩打，先求熟悉系統與產品。"
+      },
+      {
+        "rank": 24,
+        "name": "莉莉",
+        "isNew": true,
+        "group": "C",
+        "metrics": {
+          "正式權重分數": 145.06,
+          "實收": 0,
+          "總業績": 3000,
+          "續單金額": 3000,
+          "追續成交總數": 1,
+          "追續客單價": 3000,
+          "派單成交總通數": 0
+        },
+        "advice": "新人穩紮穩打，先求熟悉系統與產品。"
+      }
+    ],
+    "groups": {
+      "A1": [
+        "王珍珠",
+        "王梅慧",
+        "馬秋香",
+        "林沛昕"
+      ],
+      "A2": [
+        "李玲玲",
+        "徐華妤",
+        "許喬恩",
+        "鄭上官",
+        "林宜靜",
+        "湯玉琦"
+      ],
+      "B": [
+        "廖姿惠",
+        "梁依萍",
+        "蘇淑玲",
+        "高如郁",
+        "高美雲",
+        "江麗勉",
+        "鄭珮恩"
+      ],
+      "C": [
+        "陳玲華",
+        "江沛林",
+        "周美蓁",
+        "謝啟芳",
+        "林佩君",
+        "陳桂子",
+        "莉莉"
+      ]
+    },
+    "adviceList": [
+      {
+        "name": "王珍珠",
+        "rank": 1,
+        "group": "A1",
+        "text": "AI總分全場第一，各項指標無懈可擊，完美守護榜首！"
+      },
+      {
+        "name": "王梅慧",
+        "rank": 2,
+        "group": "A1",
+        "text": "緊追其後，高強度的續單與實收令人驚艷，隨時準備重返榮耀。"
+      },
+      {
+        "name": "馬秋香",
+        "rank": 3,
+        "group": "A1",
+        "text": "穩居前三，極具壓制力的戰績，繼續帶領團隊衝刺！"
+      },
+      {
+        "name": "林沛昕",
+        "rank": 4,
+        "group": "A1",
+        "text": "前四鐵三角之一，續單與客單價表現亮眼。"
+      },
+      {
+        "name": "李玲玲",
+        "rank": 5,
+        "group": "A2",
+        "text": "前段班中堅力量，維持穩定輸出就能隨時上攻。"
+      },
+      {
+        "name": "徐華妤",
+        "rank": 6,
+        "group": "A2",
+        "text": "前段班中堅力量，維持穩定輸出就能隨時上攻。"
+      },
+      {
+        "name": "許喬恩",
+        "rank": 7,
+        "group": "A2",
+        "text": "前段班中堅力量，維持穩定輸出就能隨時上攻。"
+      },
+      {
+        "name": "鄭上官",
+        "rank": 8,
+        "group": "A2",
+        "text": "前段班中堅力量，維持穩定輸出就能隨時上攻。"
+      },
+      {
+        "name": "林宜靜",
+        "rank": 9,
+        "group": "A2",
+        "text": "前段班中堅力量，維持穩定輸出就能隨時上攻。"
+      },
+      {
+        "name": "湯玉琦",
+        "rank": 10,
+        "group": "A2",
+        "text": "前段班中堅力量，維持穩定輸出就能隨時上攻。"
+      },
+      {
+        "name": "廖姿惠",
+        "rank": 11,
+        "group": "B",
+        "text": "中堅力量，需尋求高單價進帳以突破現狀。"
+      },
+      {
+        "name": "梁依萍",
+        "rank": 12,
+        "group": "B",
+        "text": "中堅力量，需尋求高單價進帳以突破現狀。"
+      },
+      {
+        "name": "蘇淑玲",
+        "rank": 13,
+        "group": "B",
+        "text": "中堅力量，需尋求高單價進帳以突破現狀。"
+      },
+      {
+        "name": "高如郁",
+        "rank": 14,
+        "group": "B",
+        "text": "中堅力量，需尋求高單價進帳以突破現狀。"
+      },
+      {
+        "name": "高美雲",
+        "rank": 15,
+        "group": "B",
+        "text": "中堅力量，需尋求高單價進帳以突破現狀。"
+      },
+      {
+        "name": "江麗勉",
+        "rank": 16,
+        "group": "B",
+        "text": "中堅力量，需尋求高單價進帳以突破現狀。"
+      },
+      {
+        "name": "鄭珮恩",
+        "rank": 17,
+        "group": "B",
+        "text": "中堅力量，需尋求高單價進帳以突破現狀。"
+      },
+      {
+        "name": "陳玲華",
+        "rank": 18,
+        "group": "C",
+        "text": "請務必把握每一個派單機會，先求穩定進帳。"
+      },
+      {
+        "name": "江沛林",
+        "rank": 19,
+        "group": "C",
+        "text": "請務必把握每一個派單機會，先求穩定進帳。"
+      },
+      {
+        "name": "周美蓁",
+        "rank": 20,
+        "group": "C",
+        "text": "請務必把握每一個派單機會，先求穩定進帳。"
+      },
+      {
+        "name": "謝啟芳",
+        "rank": 21,
+        "group": "C",
+        "text": "請務必把握每一個派單機會，先求穩定進帳。"
+      },
+      {
+        "name": "林佩君",
+        "rank": 22,
+        "group": "C",
+        "text": "請務必把握每一個派單機會，先求穩定進帳。"
+      },
+      {
+        "name": "陳桂子",
+        "rank": 23,
+        "group": "C",
+        "text": "新人穩紮穩打，先求熟悉系統與產品。"
+      },
+      {
+        "name": "莉莉",
+        "rank": 24,
+        "group": "C",
+        "text": "新人穩紮穩打，先求熟悉系統與產品。"
+      }
+    ],
+    "finalConfirmations": [
+      "4/28 結算資料已核對完成",
+      "3平台總表全數核對通過",
+      "4/23 官方鎖定資料已依比例原則完成權重計分。",
+      "4/29 正式派單順序，以本則公告為準"
+    ],
+    "groupShortText": "📣【AI 派單公告｜4/28 結算 → 4/29 正式派單】審計 PASS，3平台總表全數核對通過，無補充說明。本輪無離職列示。正式前10名：1王珍珠 2王梅慧 3馬秋香 4林沛昕 5李玲玲 6徐華妤 7許喬恩 8鄭上官 9林宜靜 10湯玉琦。A1：王珍珠、王梅慧、馬秋香、林沛昕。A2：李玲玲、徐華妤、許喬恩、鄭上官、林宜靜、湯玉琦。B組：廖姿惠、梁依萍、蘇淑玲、高如郁、高美雲、江麗勉、鄭珮恩。C組：陳玲華、江沛林、周美蓁、謝啟芳、林佩君、陳桂子、莉莉。正式派單順序以本則為準。"
+  },
+  "meta": {
+    "operator": "system_auto_sync",
+    "reason": "official-lock",
+    "savedAt": "2026-04-29T19:03:22+08:00",
+    "source": "official-locks"
+  }
+}
