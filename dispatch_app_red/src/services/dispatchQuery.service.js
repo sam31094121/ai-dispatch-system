@@ -232,7 +232,12 @@ function hydrateStorageCache() {
 
   if (latestOfficial && latestRecord) {
     const officialDate = latestOfficial.reportDate || '';
-    const recordDate = latestRecord.report?.reportDate || '';
+    // 防禦：reportDate 欄位可能不存在（部分 report 只有 settlementDate），
+    // 優先讀 reportDate，fallback 到 settlementDate，避免 recordDate 恆為空字串
+    const recordDate =
+      latestRecord.report?.reportDate ||
+      latestRecord.report?.settlementDate ||
+      '';
     
     // 優化：只有當官方日期「晚於」紀錄日期時，才執行強制覆蓋
     // 否則手動更新的數據會被舊的官方緩存洗掉
