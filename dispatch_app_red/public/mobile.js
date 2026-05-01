@@ -43,10 +43,11 @@ const SUMMARY_ORDER = [
 ];
 
 const METRIC_ORDER = [
+  '正式權重分數',
+  '實收',
   '總業績',
   '續單金額',
-  '追續成交總數',
-  '派單成交總通數'
+  '追續成交總數'
 ];
 
 const GROUP_META = {
@@ -263,13 +264,17 @@ function renderTop10(rankings, matchedKey) {
         </div>
         <p class="rank-card-name">${escapeHtml(item.name)}</p>
         <div class="metric-grid">
+          <div class="metric-item score-highlight">
+            <span>正式權重分數</span>
+            <strong>${escapeHtml(formatNumber(item.metrics?.['正式權重分數'] || 0))}</strong>
+          </div>
+          <div class="metric-item">
+            <span>實收金額</span>
+            <strong>${escapeHtml(formatNumber(item.metrics?.['實收'] || 0))}</strong>
+          </div>
           <div class="metric-item">
             <span>總業績</span>
             <strong>${escapeHtml(formatNumber(item.metrics?.['總業績'] || 0))}</strong>
-          </div>
-          <div class="metric-item">
-            <span>續單金額</span>
-            <strong>${escapeHtml(formatNumber(item.metrics?.['續單金額'] || 0))}</strong>
           </div>
         </div>
       </article>
@@ -329,7 +334,7 @@ function renderRanking(rankings, matchedKey) {
         <p class="ranking-card-name">${escapeHtml(item.name)}</p>
         <div class="metric-grid">
           ${METRIC_ORDER.map((key) => `
-            <div class="metric-item">
+            <div class="metric-item ${key === '正式權重分數' ? 'score-highlight' : ''}">
               <span>${escapeHtml(key)}</span>
               <strong>${escapeHtml(formatNumber(item.metrics?.[key] || 0))}</strong>
             </div>
@@ -398,7 +403,7 @@ function renderLookup(report) {
 
       <div class="metric-grid">
         ${METRIC_ORDER.map((key) => `
-          <div class="metric-item">
+          <div class="metric-item ${key === '正式權重分數' ? 'score-highlight' : ''}">
             <span>${escapeHtml(key)}</span>
             <strong>${escapeHtml(formatNumber(match.metrics?.[key] || 0))}</strong>
           </div>

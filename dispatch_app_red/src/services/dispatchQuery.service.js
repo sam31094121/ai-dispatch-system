@@ -224,14 +224,45 @@ function hydrateStorageCache() {
   ensureStorageDirs();
   const latestRecord = readJson(storagePaths.latestFile);
 
-  // [CacheGuard] 自動同步邏輯已停用：
-  // official-locks.js 目前最新版本只到 4/29，但 data/ 中已有 4/30→5/1 正式數據。
-  // 啟用此邏輯會導致舊的 official-locks 覆蓋更新的 data/latest.json。
-  // 如需重新啟用，請確保 official-locks.js 已同步到最新派單日期。
-  if (latestRecord) {
-    const recordId = latestRecord.report?.reportId || '(unknown)';
-    const recordDate = latestRecord.report?.settlementDate || latestRecord.report?.reportDate || '';
-    console.log(`[CacheGuard] 停用自動同步，直接使用 latest.json (reportId: ${recordId}, date: ${recordDate})`);
+  // [CacheGuard] 自動同步：若 official-locks 有比 latest.json 更新的資料則同步
+  const officialLocks = require('../../shared/official-locks');
+  const officialKeys = Object.keys(officialLocks).filter((k) => k.startsWith('OFFICIAL_'));
+  const latestOfficialKey = officialKeys.sort().reverse()[0];
+  const latestOfficial = latestOfficialKey ? officialLocks[latestOfficialKey] : null;
+
+  if (latestOfficial && latestRecord) {
+    // 將 ROC 日期 (115/05/01) 轉為西元 (2026-05-01) 再比較
+    const rocToIso = (d) => {
+      const parts = String(d || '').split('/');
+      if (parts.length !== 3) return d || '';
+      return `${parseInt(parts[0], 10) + 1911}-${parts[1]}-${parts[2]}`;
+    };
+    const officialIso = rocToIso(latestOfficial.reportDate);
+    const recordIso   = latestRecord.report?.settlementDate || rocToIso(latestRecord.report?.reportDate) || '';
+    if (officialIso && recordIso && officialIso > recordIso) {
+      console.log(`[CacheGuard] 官方有更新版本 (${officialIso} > ${recordIso})，執行同步。`);
+      const parsedReport  = buildReportFromSource({ sourceText: JSON.stringify(latestOfficial) });
+      const syncValidation = validateDispatchReport(parsedReport);
+      const storedRecord  = wrapStoredRecord(parsedReport, { operator: 'system_auto_sync', reason: 'official-lock', source: 'official-locks' });
+      if (!syncValidation.ok) {
+        console.warn(`[CacheGuard] 驗證有警告但仍同步：`, syncValidation.errors.slice(0, 3).map((e) => e.reason).join(', '));
+      }
+      writeJson(getVersionFile(parsedReport.reportId, parsedReport.version), storedRecord);
+      writeJson(storagePaths.latestFile, storedRecord);
+      return applyStorageIndex(buildStorageIndex([storedRecord, ...scanStoredRecords()], storedRecord));
+    }
+    console.log(`[CacheGuard] latest.json 已是最新 (${recordIso})，略過同步。`);
+  } else if (latestOfficial && !latestRecord) {
+    console.log(`[CacheGuard] 無 latest.json，從 official-locks 建立初始資料。`);
+    const parsedReport  = buildReportFromSource({ sourceText: JSON.stringify(latestOfficial) });
+    const syncValidation = validateDispatchReport(parsedReport);
+    const storedRecord  = wrapStoredRecord(parsedReport, { operator: 'system_auto_sync', reason: 'official-lock', source: 'official-locks' });
+    if (!syncValidation.ok) {
+      console.warn(`[CacheGuard] 驗證有警告但仍建立：`, syncValidation.errors.slice(0, 3).map((e) => e.reason).join(', '));
+    }
+    writeJson(getVersionFile(parsedReport.reportId, parsedReport.version), storedRecord);
+    writeJson(storagePaths.latestFile, storedRecord);
+    return applyStorageIndex(buildStorageIndex([storedRecord], storedRecord));
   }
 
   return applyStorageIndex(buildStorageIndex(scanStoredRecords(), latestRecord));

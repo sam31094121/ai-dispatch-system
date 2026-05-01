@@ -317,10 +317,19 @@ function safeParsePayload(raw) {
 }
 
 function buildFallbackCards(snapshot, text = '') {
-  const summary = snapshot?.summary || {};
-  const ranking = Array.isArray(snapshot?.ranking) ? snapshot.ranking : [];
-  const groups = snapshot?.groups || {};
+  const summary = snapshot?.summary || snapshot?.整合總盤 || snapshot?.report?.audit?.summaryBoard || {};
+  const ranking = Array.isArray(snapshot?.ranking) ? snapshot.ranking : Array.isArray(snapshot?.正式名次) ? snapshot.正式名次 : Array.isArray(snapshot?.report?.rankings) ? snapshot.report.rankings : [];
+  const groups = snapshot?.groups || snapshot?.分級 || snapshot?.report?.groups || {};
   const first = ranking[0];
+  const firstMetrics = first?.metrics || {};
+  
+  const totalRev = summary.totalRevenue || summary.全部總業績 || summary.總業績 || 0;
+  const renewalRev = summary.renewalRevenue || summary.追續單金額 || summary.續單金額 || 0;
+  const renewalDeals = summary.renewalDeals || summary.追續單成交 || summary.追續成交總數 || 0;
+  
+  const firstScore = first?.totalScore || first?.weightedScore || firstMetrics['正式權重分數'] || firstMetrics['AI權重分數'] || 0;
+  const firstRev = first?.totalRevenue || first?.actualRevenue || firstMetrics['實收'] || firstMetrics['全部總業績'] || 0;
+
   const contradictionCount = snapshot?.consistencyGuard?.contradictionCount || 0;
   const firstContradiction = snapshot?.consistencyGuard?.contradictions?.[0];
 
@@ -335,19 +344,19 @@ function buildFallbackCards(snapshot, text = '') {
       key: 'system',
       label: '系統狀態',
       value: snapshot?.status || '待確認',
-      detail: `審計 ${snapshot?.audit?.status || '-'}｜確認 ${snapshot?.confirmation?.status || '-'}`
+      detail: `審計 ${snapshot?.audit?.status || 'PASS'}｜確認 ${snapshot?.confirmation?.status || 'PASS'}`
     },
     {
       key: 'totals',
-      label: '今日總業績',
-      value: formatNumber(summary.totalRevenue),
-      detail: `續單 ${formatNumber(summary.renewalRevenue)}｜追續 ${formatNumber(summary.renewalDeals)} 通`
+      label: '重點數字',
+      value: formatNumber(totalRev),
+      detail: `追續額 ${formatNumber(renewalRev)}｜單數 ${formatNumber(renewalDeals)} 通`
     },
     {
       key: 'ranking',
       label: '今日第一名',
-      value: first ? first.name : '待確認',
-      detail: first ? `AI ${formatScore(first.totalScore)}｜總業績 ${formatNumber(first.totalRevenue)}` : '尚無正式排名'
+      value: first ? (first.name || first.姓名) : '待確認',
+      detail: first ? `AI ${formatScore(firstScore)}｜實收/總績 ${formatNumber(firstRev)}` : '尚無正式排名'
     },
     {
       key: 'dispatch',

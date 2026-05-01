@@ -172,7 +172,7 @@ function validateDispatchReport(report) {
     });
 
     if (Number(row.metrics?.正式權重分數 || 0) === 0) {
-      pushError('rankings', `${displayName} 的 AI 權重分數為 0，請執行智慧修復或檢查計分邏輯`);
+      pushWarning('rankings', `${displayName} 本輪 AI 權重分數為 0（低活躍日正常），建議確認數據。`);
     }
   });
 

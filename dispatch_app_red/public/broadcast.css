@@ -50,6 +50,27 @@ body {
     radial-gradient(circle at 78% 82%, rgba(139,128,255,0.16), transparent 26%),
     radial-gradient(circle at 24% 86%, rgba(255,158,214,0.12), transparent 22%),
     linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 46%, var(--bg-2) 100%);
+  position: relative;
+}
+
+body::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: 
+    linear-gradient(rgba(82, 235, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(82, 235, 255, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(circle at center, black, transparent 80%);
+  pointer-events: none;
+  z-index: -1;
+  animation: radarScan 15s linear infinite;
+}
+
+@keyframes radarScan {
+  0% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 0.5; }
 }
 
 .broadcast-shell {

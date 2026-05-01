@@ -62,11 +62,11 @@ function fmt(value) {
   return numberFormatter.format(Number(value || 0));
 }
 
-// 欄位多名稱解析器：依序嘗試 keys，回傳第一個有效值
 function fieldVal(row, ...keys) {
+  const metricsObj = row.metrics || {};
   for (const k of keys) {
-    const v = row[k];
-    if (v !== null && v !== undefined && v !== '') return v;
+    if (row[k] !== null && row[k] !== undefined && row[k] !== '') return row[k];
+    if (metricsObj[k] !== null && metricsObj[k] !== undefined && metricsObj[k] !== '') return metricsObj[k];
   }
   return 0;
 }
@@ -374,7 +374,8 @@ function renderOfficialLock(snapshot) {
 }
 
 function renderSummaryCards(cards) {
-  const items = cards.map(([label, value]) => {
+  const entries = Array.isArray(cards) ? cards : Object.entries(cards || {});
+  const items = entries.map(([label, value]) => {
     const card = document.createElement('article');
     card.className = 'summary-card';
     const span = document.createElement('span');
@@ -458,12 +459,12 @@ function renderSpotlight(rows) {
         <div class="spotlight-content-wrapper">
           ${championBanner}
           <div class="spotlight-meta">
-            <span class="rank-no">#${safeHtml(String(row.名次))}</span>
-            <span class="group-tag" style="background:var(--cyan); color:#000;">${safeHtml(row.分級)}</span>
+            <span class="rank-no">#${safeHtml(String(row.名次 || row.rank))}</span>
+            <span class="group-tag" style="background:var(--cyan); color:#000;">${safeHtml(row.分級 || row.group)}</span>
             ${gapBadge}
           </div>
-          <h3>${safeHtml(row.姓名)}${titleHtml}</h3>
-          ${row.標記 ? `<span class="newbie-tag">${safeHtml(row.標記)}</span>` : ''}
+          <h3>${safeHtml(row.姓名 || row.name)}${titleHtml}</h3>
+          ${(row.標記 || row.isNew) ? `<span class="newbie-tag">${safeHtml(row.標記 || '新人')}</span>` : ''}
           ${metricsHTML}
           ${scoreHTML}
           ${adviceHTML}
@@ -479,13 +480,13 @@ function renderLeaderboard(rows) {
     ...rows.map((row) => {
       const m = getMetrics(row);
       const item = document.createElement('article');
-      item.className = `leader-row group-${row.分級}`;
+      item.className = `leader-row group-${row.分級 || row.group}`;
       item.innerHTML = `
         <div class="leader-left">
-          <strong>#${safeHtml(String(row.名次))}</strong>
+          <strong>#${safeHtml(String(row.名次 || row.rank))}</strong>
           <div>
-            <p>${safeHtml(row.姓名)}</p>
-            <span>${safeHtml(row.分級)}${row.標記 ? `・${safeHtml(row.標記)}` : ''}</span>
+            <p>${safeHtml(row.姓名 || row.name)}</p>
+            <span>${safeHtml(row.分級 || row.group)}${(row.標記 || row.isNew) ? `・${safeHtml(row.標記 || '新人')}` : ''}</span>
           </div>
         </div>
         <div class="leader-right">
@@ -558,15 +559,15 @@ function renderRankingTable(rows) {
     const score = Number(m.AI分數 || 0);
     const scoreStyle = score >= 3000 ? 'style="color: var(--cyan); font-weight: bold; text-shadow: 0 0 8px var(--cyan);"' : '';
     return `
-      <tr class="row-${safeHtml(row.分級)}">
-        <td>${safeHtml(String(row.名次))}</td>
+      <tr class="row-${safeHtml(row.分級 || row.group)}">
+        <td>${safeHtml(String(row.名次 || row.rank))}</td>
         <td>
           <div class="table-name">
-            <span>${safeHtml(row.姓名)}</span>
-            ${row.標記 ? `<span class="newbie-tag">${safeHtml(row.標記)}</span>` : ''}
+            <span>${safeHtml(row.姓名 || row.name)}</span>
+            ${(row.標記 || row.isNew) ? `<span class="newbie-tag">${safeHtml(row.標記 || '新人')}</span>` : ''}
           </div>
         </td>
-        <td>${safeHtml(row.分級)}</td>
+        <td>${safeHtml(row.分級 || row.group)}</td>
         <td class="col-score" ${scoreStyle}>${score > 0 ? safeHtml(Number(score).toFixed(2)) : '—'}</td>
         <td>${safeHtml(fmt(m.實收))}</td>
         <td>${safeHtml(fmt(m.追續金額))}</td>
@@ -582,17 +583,17 @@ function renderAdvice(rows) {
   refs.adviceList.replaceChildren(
     ...rows.map((row) => {
       const card = document.createElement('article');
-      card.className = `advice-card group-${row.分級}`;
+      card.className = `advice-card group-${row.分級 || row.group}`;
       card.innerHTML = `
         <div class="advice-header">
           <div class="advice-rank-name">
-            <span class="advice-rank">#${safeHtml(String(row.名次))}</span>
-            <strong class="advice-name">${safeHtml(row.姓名)}</strong>
-            ${row.標記 ? `<span class="newbie-tag">${safeHtml(row.標記)}</span>` : ''}
+            <span class="advice-rank">#${safeHtml(String(row.名次 || row.rank))}</span>
+            <strong class="advice-name">${safeHtml(row.姓名 || row.name)}</strong>
+            ${(row.標記 || row.isNew) ? `<span class="newbie-tag">${safeHtml(row.標記 || '新人')}</span>` : ''}
           </div>
-          <span class="advice-group-tag">${safeHtml(row.分級)}</span>
+          <span class="advice-group-tag">${safeHtml(row.分級 || row.group)}</span>
         </div>
-        <p class="advice-text">${safeHtml(row.建議)}</p>
+        <p class="advice-text">${safeHtml(row.建議 || row.advice)}</p>
       `;
       return card;
     })
@@ -614,18 +615,18 @@ function autoProportionalAdvice(rows) {
   });
   const sorted = [...withWs].sort((a, b) => b._ws - a._ws);
   const wsRankOf = {};
-  sorted.forEach((p, i) => { wsRankOf[p.姓名] = i + 1; });
+  sorted.forEach((p, i) => { wsRankOf[p.姓名 || p.name] = i + 1; });
 
   return withWs.map((row, idx) => {
-    if (row.建議 && row.建議.length > 20) return row;
+    if ((row.建議 || row.advice) && (row.建議 || row.advice).length > 20) return row;
     const m = row._m;
     const ws = row._ws;
     const above = withWs[idx - 1];
     const below = withWs[idx + 1];
     const gapUp   = above ? ((above._ws - ws) / above._ws * 100).toFixed(1) : null;
     const gapDown = below ? ((ws - below._ws) / ws * 100).toFixed(1) : null;
-    const wsr = wsRankOf[row.姓名];
-    const trank = row.名次;
+    const wsr = wsRankOf[row.姓名 || row.name];
+    const trank = row.名次 || row.rank;
     // 判斷主指標：實收 > 追續金額 > 客單價
     const rc = m.追續金額 * 2500;
     const ac = m.實收 * 3000;
@@ -663,16 +664,16 @@ function renderProportionalAdvice(rows) {
   grid.replaceChildren(
     ...enriched.map((row) => {
       const card = document.createElement('article');
-      const grpColor = GROUP_COLOR[row.分級] || '#fff';
-      card.className = `prop-card group-${row.分級}`;
+      const grpColor = GROUP_COLOR[row.分級 || row.group] || '#fff';
+      card.className = `prop-card group-${row.分級 || row.group}`;
       card.innerHTML = `
         <div class="prop-card-header">
           <div class="prop-rank-name">
-            <span class="prop-rank">#${safeHtml(String(row.名次))}</span>
-            <strong class="prop-name">${safeHtml(row.姓名)}</strong>
-            ${row.標記 ? `<span class="newbie-tag">${safeHtml(row.標記)}</span>` : ''}
+            <span class="prop-rank">#${safeHtml(String(row.名次 || row.rank))}</span>
+            <strong class="prop-name">${safeHtml(row.姓名 || row.name)}</strong>
+            ${(row.標記 || row.isNew) ? `<span class="newbie-tag">${safeHtml(row.標記 || '新人')}</span>` : ''}
           </div>
-          <span class="prop-group-tag" style="color:${grpColor};border-color:${grpColor}40">${safeHtml(row.分級)}</span>
+          <span class="prop-group-tag" style="color:${grpColor};border-color:${grpColor}40">${safeHtml(row.分級 || row.group)}</span>
         </div>
         ${(() => { const m = getMetrics(row); return m.AI分數 ? `<div class="prop-score">AI 分數 <strong>${safeHtml(Number(m.AI分數).toFixed(2))}</strong></div>` : ''; })()}
         <div class="prop-metrics">
@@ -729,17 +730,17 @@ function render(snapshot) {
   renderValidation(snapshot);
   renderHero(data, snapshot);
   renderOfficialLock(snapshot);
-  renderSummaryCards(presentation.summaryCards || []);
-  renderSpotlight(presentation.top5 || []);
-  renderLeaderboard(presentation.top10 || []);
+  renderSummaryCards(presentation.summaryCards || data?.整合總盤 || snapshot?.report?.audit?.summaryBoard || []);
+  renderSpotlight(presentation.top5 || data?.正式名次 || snapshot?.report?.rankings || []);
+  renderLeaderboard(presentation.top10 || data?.正式名次 || snapshot?.report?.rankings || []);
   const rankMap = {};
-  (data?.正式名次 || []).forEach(row => { if (row?.姓名) rankMap[row.姓名] = row.名次; });
-  renderGroups(data?.分級 || {}, rankMap);
+  (data?.正式名次 || snapshot?.report?.rankings || []).forEach(row => { if (row?.姓名 || row?.name) rankMap[row.姓名 || row.name] = row.名次 || row.rank; });
+  renderGroups(data?.分級 || snapshot?.report?.groups || {}, rankMap);
   renderRetired(retired);
-  renderRankingTable(data?.正式名次 || []);
-  renderAdvice(data?.正式名次 || []);
+  renderRankingTable(data?.正式名次 || snapshot?.report?.rankings || []);
+  renderAdvice(data?.正式名次 || snapshot?.report?.rankings || []);
   renderScoringPolicy(snapshot);
-  renderProportionalAdvice(data?.正式名次 || []);
+  renderProportionalAdvice(data?.正式名次 || snapshot?.report?.rankings || []);
   refs.compactOutput.value = buildPasteReadyAnnouncement(snapshot) || data?.群組超精簡版 || '';
 }
 
