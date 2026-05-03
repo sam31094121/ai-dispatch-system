@@ -73,13 +73,14 @@ body::before {
 .mobile-shell {
   position: relative;
   z-index: 1;
-  width: min(100%, 760px);
+  width: 100%;
+  max-width: 540px; /* 針對大螢幕手機優化比例 */
   margin: 0 auto;
   padding:
-    max(16px, env(safe-area-inset-top))
-    14px
-    calc(108px + env(safe-area-inset-bottom))
-    14px;
+    max(12px, env(safe-area-inset-top))
+    10px /* 縮減邊距，增加數據空間 */
+    calc(96px + env(safe-area-inset-bottom))
+    10px;
 }
 
 .hero-card,
@@ -152,10 +153,10 @@ body::before {
 }
 
 .hero-card h1 {
-  font-size: clamp(24px, 7.6vw, 38px);
+  font-size: clamp(26px, 8vw, 36px);
   font-weight: 900;
+  line-height: 1.2;
   overflow-wrap: break-word;
-  word-break: normal;
 }
 
 .hero-range {
@@ -259,7 +260,8 @@ body::before {
 }
 
 .panel-card {
-  padding: 18px 16px;
+  padding: 20px 14px;
+  margin-bottom: 4px;
 }
 
 .panel-head {
