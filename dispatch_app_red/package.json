@@ -6,8 +6,8 @@
   "scripts": {
     "predev": "node src/autoUpgrade.js",
     "prestart": "node src/autoUpgrade.js",
-    "dev": "node --env-file=.env server.js",
-    "start": "node --env-file=.env server.js",
+    "dev": "node server.js",
+    "start": "node server.js",
     "check": "npm run check:syntax && npm run check:api",
     "check:api": "node scripts/check-dispatch-api.js",
     "check:dispatch-api": "npm run check:api",
