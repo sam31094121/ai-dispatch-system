@@ -11,9 +11,11 @@ const {
   getDispatchShortText,
   getDispatchTop10,
   getLatestDispatchReport,
+  getLineOutput,
   getPerformanceAnalysis,
   parseReport,
   rebuildDispatchReport,
+  handleUnifiedUpdate,
   saveInput,
   zeroWorkspace
 } = require('../controllers/dispatchReport.controller');
@@ -39,5 +41,6 @@ router.post('/unified/update', handleUnifiedUpdate);
 router.post('/workspace/zero', zeroWorkspace);
 router.get('/performance/2026-04-29', getPerformanceAnalysis);
 router.get('/performance/current', getPerformanceAnalysis);
+router.get('/line-output', getLineOutput);
 
 module.exports = router;

@@ -22,6 +22,9 @@ const refs = {
   excludedEmployees: $('excluded-employees'),
   shortText: $('short-text-output'),
   copyShortButton: $('copy-short-button'),
+  lineOutputText: $('line-output-text'),
+  copyLineButton: $('copy-line-button'),
+  lineOpenLink: $('line-open-link'),
   shareButton: $('share-button'),
   copyButton: $('copy-button'),
   topButton: $('top-button'),
@@ -31,6 +34,8 @@ const refs = {
 const STORAGE_KEYS = {
   employeeName: 'dispatch_mobile_employee_name'
 };
+
+const GOLD_SCORE_THRESHOLD = 7000;
 
 const SUMMARY_ORDER = [
   '累積總派單數',
@@ -242,12 +247,17 @@ function renderPodium(rankings, matchedKey) {
         <h3 class="person-name">${escapeHtml(item.name)}</h3>
         <p class="sub-meta">${item.isNew ? '新人角標已生效' : '正式派單名次'}</p>
         <div class="metric-grid">
-          ${METRIC_ORDER.map((key) => `
-            <div class="metric-item ${key === '正式權重分數' ? 'score-highlight' : ''}">
-              <span>${escapeHtml(LABEL_MAP[key] || key)}</span>
-              <strong>${escapeHtml(formatNumber(item.metrics?.[key] || 0))}</strong>
-            </div>
-          `).join('')}
+          ${METRIC_ORDER.map((key) => {
+            const val = Number(item.metrics?.[key] || 0);
+            const isScore = key === '正式權重分數';
+            const isGold = isScore && val >= GOLD_SCORE_THRESHOLD;
+            return `
+              <div class="metric-item ${isScore ? 'score-highlight' : ''} ${isGold ? 'score-trophy-gold' : ''}">
+                <span>${escapeHtml(LABEL_MAP[key] || key)} ${isGold ? '🏆' : ''}</span>
+                <strong>${escapeHtml(formatNumber(val))}</strong>
+              </div>
+            `;
+          }).join('')}
         </div>
       </article>
     `;
@@ -275,7 +285,7 @@ function renderTop10(rankings, matchedKey) {
         <div class="metric-grid">
           ${(() => {
             const val = Number(item.metrics?.['正式權重分數'] || 0);
-            const isGold = val >= 8000;
+            const isGold = val >= GOLD_SCORE_THRESHOLD;
             return `
               <div class="metric-item score-highlight ${isGold ? 'score-trophy-gold' : ''}">
                 <span>正式權重分數 ${isGold ? '🏆' : ''}</span>
@@ -348,12 +358,17 @@ function renderRanking(rankings, matchedKey) {
         </div>
         <p class="ranking-card-name">${escapeHtml(item.name)}</p>
         <div class="metric-grid">
-          ${METRIC_ORDER.map((key) => `
-            <div class="metric-item ${key === '正式權重分數' ? 'score-highlight' : ''}">
-              <span>${escapeHtml(LABEL_MAP[key] || key)}</span>
-              <strong>${escapeHtml(formatNumber(item.metrics?.[key] || 0))}</strong>
-            </div>
-          `).join('')}
+          ${METRIC_ORDER.map((key) => {
+            const val = Number(item.metrics?.[key] || 0);
+            const isScore = key === '正式權重分數';
+            const isGold = isScore && val >= GOLD_SCORE_THRESHOLD;
+            return `
+              <div class="metric-item ${isScore ? 'score-highlight' : ''} ${isGold ? 'score-trophy-gold' : ''}">
+                <span>${escapeHtml(LABEL_MAP[key] || key)} ${isGold ? '🏆' : ''}</span>
+                <strong>${escapeHtml(formatNumber(val))}</strong>
+              </div>
+            `;
+          }).join('')}
         </div>
         <div class="advice-box">${escapeHtml(item.advice || '本次未提供建議')}</div>
       </article>
@@ -420,7 +435,7 @@ function renderLookup(report) {
         ${METRIC_ORDER.map((key) => {
           const val = Number(match.metrics?.[key] || 0);
           const isScore = key === '正式權重分數';
-          const isGold = isScore && val >= 8000;
+          const isGold = isScore && val >= GOLD_SCORE_THRESHOLD;
           return `
             <div class="metric-item ${isScore ? 'score-highlight' : ''} ${isGold ? 'score-trophy-gold' : ''}">
               <span>${escapeHtml(LABEL_MAP[key] || key)} ${isGold ? '🏆' : ''}</span>
@@ -510,6 +525,10 @@ function renderReport(report) {
   refs.updatedAt.textContent = `更新 ${formatTime(report.updatedAt || report.createdAt)}`;
   refs.shortText.value = report.groupShortText || '';
 
+  const lineText = report.groupShortText || '';
+  if (refs.lineOutputText) refs.lineOutputText.value = lineText;
+  if (refs.lineOpenLink) refs.lineOpenLink.href = lineText ? buildLineUrl(lineText) : '#';
+
   const canonicalPath = `/mobile/${encodeURIComponent(currentReportId)}`;
   if (currentReportId && window.location.pathname !== canonicalPath) {
     window.history.replaceState({}, '', canonicalPath);
@@ -532,6 +551,35 @@ function renderError(message) {
   refs.auditNotes.innerHTML = '';
   refs.excludedEmployees.innerHTML = '';
   refs.shortText.value = '';
+  if (refs.lineOutputText) refs.lineOutputText.value = '';
+  if (refs.lineOpenLink) refs.lineOpenLink.href = '#';
+}
+
+function buildLineUrl(text) {
+  return `https://line.me/R/msg/text/?${encodeURIComponent(text)}`;
+}
+
+async function copyLineText() {
+  const text = safeText(refs.lineOutputText?.value);
+  if (!text) {
+    showToast('目前沒有可複製的 LINE 稿');
+    return;
+  }
+
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      showToast('LINE 稿已複製，可直接貼到 LINE');
+    } else {
+      refs.lineOutputText.select();
+      refs.lineOutputText.setSelectionRange(0, 99999);
+      document.execCommand('copy');
+      window.getSelection()?.removeAllRanges();
+      showToast('LINE 稿已複製，可直接貼到 LINE');
+    }
+  } catch {
+    showToast('複製失敗，請手動全選複製');
+  }
 }
 
 async function copyShortText() {
@@ -596,6 +644,10 @@ function bindEvents() {
 
   refs.copyShortButton.addEventListener('click', () => {
     copyShortText().catch(() => showToast('複製失敗'));
+  });
+
+  refs.copyLineButton?.addEventListener('click', () => {
+    copyLineText().catch(() => showToast('複製失敗'));
   });
 
   refs.copyButton.addEventListener('click', () => {

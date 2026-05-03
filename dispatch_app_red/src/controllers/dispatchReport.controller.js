@@ -16,7 +16,6 @@ const {
 } = require('../services/dispatchQuery.service');
 const { processUnifiedUpdate } = require('../services/unifiedDispatch.service');
 const { buildPerformanceAnalysis } = require('../services/performanceAnalysis.service');
-const { buildPerformanceAnalysis } = require('../services/performanceAnalysis.service');
 const { errorResponse, successResponse } = require('../utils/response.util');
 const { validateParseRequestBody, validateRebuildRequestBody } = require('../validators/dispatchReport.validator');
 
@@ -271,6 +270,25 @@ function getPerformanceAnalysis(_req, res) {
   }
 }
 
+function getLineOutput(_req, res) {
+  try {
+    const latest = getLatestReport();
+    const snapshot = getLegacySnapshot(latest, {
+      persisted: true,
+      source: 'saved',
+      operator: 'system'
+    });
+    const lineText = snapshot?.standardData?.['群組超精簡版'] || latest.groupShortText || '';
+    res.json(successResponse(errorCodes.OK, 'LINE 輸出稿讀取成功', {
+      text: lineText,
+      reportId: latest.reportId,
+      title: latest.title
+    }));
+  } catch (error) {
+    sendAppError(res, error);
+  }
+}
+
 module.exports = {
   auditInput,
   getBaselineLatest,
@@ -283,6 +301,7 @@ module.exports = {
   getDispatchShortText,
   getDispatchTop10,
   getLatestDispatchReport,
+  getLineOutput,
   getPerformanceAnalysis,
   getSystemMeta,
   parseReport,

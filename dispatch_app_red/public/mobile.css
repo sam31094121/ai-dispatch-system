@@ -845,6 +845,27 @@ body::before {
   border: none;
 }
 
+.action-button-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  background: #06C755;
+  color: #fff;
+  border: none;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.line-send-actions {
+  margin-top: 16px;
+  display: flex;
+}
+
+.line-send-actions .action-button-line {
+  flex: 1;
+}
+
 .toast {
   position: fixed;
   left: 50%;

@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800;900&family=Orbitron:wght@700;800;900&family=Sora:wght@400;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/mobile.css?v=20260502">
+  <link rel="stylesheet" href="/mobile.css?v=20260503">
 </head>
 <body>
   <div class="mobile-shell">
@@ -43,15 +43,29 @@
     </header>
 
     <nav class="section-nav" aria-label="頁面段落">
+      <a href="#line-send">傳LINE</a>
       <a href="#lookup">找我</a>
       <a href="#overview">總覽</a>
       <a href="#top10">前 10 名</a>
       <a href="#groups">分級</a>
       <a href="#ranking">完整名次</a>
-      <a href="#short-text">群組版</a>
     </nav>
 
     <main class="content-stack">
+      <section class="panel-card" id="line-send">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">LINE Output</p>
+            <h2>一鍵傳 LINE</h2>
+          </div>
+          <button id="copy-line-button" class="text-button" type="button">複製文字</button>
+        </div>
+        <textarea id="line-output-text" class="short-text-output" readonly></textarea>
+        <div class="line-send-actions">
+          <a id="line-open-link" class="action-button action-button-line" href="#" target="_blank" rel="noopener noreferrer">開啟 LINE 傳送</a>
+        </div>
+      </section>
+
       <section class="panel-card" id="lookup">
         <div class="panel-head">
           <div>
@@ -160,6 +174,6 @@
 
   <div id="toast" class="toast" aria-live="polite"></div>
 
-  <script src="/mobile.js?v=20260502"></script>
+  <script src="/mobile.js?v=20260503"></script>
 </body>
 </html>

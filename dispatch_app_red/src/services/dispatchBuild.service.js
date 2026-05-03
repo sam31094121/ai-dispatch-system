@@ -508,14 +508,15 @@ function buildAuditStatusText(report) {
 
 function buildDefaultFinalConfirmations(report) {
   const platformNote = buildAuditStatusText(report);
-  const excludedLine = report.audit.excludedEmployees.length
-    ? `已離職人員${report.audit.excludedEmployees.map((entry) => entry.name).join('、')}只列審計，不入正式派單`
+  const excluded = report.audit.excludedEmployees || [];
+  const excludedLine = excluded.length
+    ? `已離職人員${excluded.map((entry) => entry.name).join('、')}只列審計，不入正式派單`
     : '';
 
   return uniqueTexts([
     `${formatMonthDay(report.settlementDate)} 結算資料已核對完成`,
     platformNote,
-    ...report.audit.notes,
+    ...(report.audit.notes || []),
     excludedLine,
     `${formatMonthDay(report.dispatchDate)} 正式派單順序，以本則公告為準`
   ]);
@@ -527,9 +528,10 @@ function buildGroupShortText(report) {
     .map((row) => `${row.rank}${row.name}`)
     .join(' ');
 
-  const noteText = buildCompactAuditNotes(report.audit.notes);
-  const excluded = report.audit.excludedEmployees.length
-    ? `已離職：${report.audit.excludedEmployees.map((entry) => entry.name).join('、')}，只列審計不入派單。`
+  const noteText = buildCompactAuditNotes(report.audit.notes || []);
+  const excludedEmps = report.audit.excludedEmployees || [];
+  const excluded = excludedEmps.length
+    ? `已離職：${excludedEmps.map((entry) => entry.name).join('、')}，只列審計不入派單。`
     : '本輪無離職列示。';
   const auditStatusText = buildAuditStatusText(report);
 
@@ -1089,8 +1091,7 @@ function toLegacyStandardData(report) {
       }))
     },
     整合總盤: clone(report.summaryBoard),
-      建議: row.advice
-    })),
+    正式名次: ranking,
     分級: clone(report.groups),
     最後確認: clone(report.finalConfirmations),
     群組超精簡版: report.groupShortText
