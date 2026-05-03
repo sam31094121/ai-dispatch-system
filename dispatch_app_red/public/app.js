@@ -355,15 +355,17 @@ function renderOfficialLock(snapshot) {
 
   const ranking = Array.isArray(snapshot?.ranking) ? snapshot.ranking : [];
   const groups = snapshot?.groups || {};
+  const dates = snapshot?.standardData?.日期資訊 || {};
+  const dispatchDay = dates.派單日 || snapshot?.report?.nextDispatchDisplayDate || '-';
   const top10 = ranking
     .slice(0, 10)
     .map((row) => `${row.rank}.${row.name}`)
     .join('  ');
 
   refs.officialLockStatus.textContent = ranking.length
-    ? '4/28 正式派單順序已確認，可直接執行'
+    ? `${dispatchDay} 正式派單順序已確認，可直接執行`
     : '等待正式派單順序';
-  refs.officialLockDate.textContent = '4/28 LOCK';
+  refs.officialLockDate.textContent = `${dispatchDay} LOCK`;
   refs.officialLockTop10.textContent = top10 || '-';
   refs.officialLockGroups.textContent = [
     groupLine(groups, 'A1', 'A1'),
