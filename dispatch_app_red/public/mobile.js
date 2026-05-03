@@ -273,10 +273,16 @@ function renderTop10(rankings, matchedKey) {
         </div>
         <p class="rank-card-name">${escapeHtml(item.name)}</p>
         <div class="metric-grid">
-          <div class="metric-item score-highlight">
-            <span>正式權重分數</span>
-            <strong>${escapeHtml(formatNumber(item.metrics?.['正式權重分數'] || 0))}</strong>
-          </div>
+          ${(() => {
+            const val = Number(item.metrics?.['正式權重分數'] || 0);
+            const isGold = val >= 8000;
+            return `
+              <div class="metric-item score-highlight ${isGold ? 'score-trophy-gold' : ''}">
+                <span>正式權重分數 ${isGold ? '🏆' : ''}</span>
+                <strong>${escapeHtml(formatNumber(val))}</strong>
+              </div>
+            `;
+          })()}
           <div class="metric-item">
             <span>實收總業績</span>
             <strong>${escapeHtml(formatNumber(item.metrics?.['實收'] || 0))}</strong>
