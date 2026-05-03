@@ -561,8 +561,8 @@ body::before {
 .metric-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-top: 14px;
+  gap: 12px;
+  margin-top: 16px;
 }
 
 @media (max-width: 360px) {
@@ -593,10 +593,14 @@ body::before {
 }
 
 .metric-item.score-highlight {
-  background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(0, 255, 195, 0.05));
-  border: 1px solid rgba(0, 229, 255, 0.4);
+  grid-column: 1 / -1; /* 正式權重分數獨自佔據一行，解決空間重疊 */
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.18), rgba(0, 255, 195, 0.08));
+  border: 1px solid rgba(0, 229, 255, 0.45);
+  padding: 16px;
+  min-height: 90px;
   position: relative;
   overflow: hidden;
+  margin-bottom: 4px;
 }
 
 .metric-item.score-highlight::before {
@@ -620,8 +624,8 @@ body::before {
 
 .metric-item.score-highlight strong {
   color: #fff;
-  text-shadow: 0 0 10px rgba(0, 229, 255, 0.6);
-  font-size: 22px;
+  text-shadow: 0 0 15px rgba(0, 229, 255, 0.6);
+  font-size: 28px; /* 加大權重分數，突顯重點 */
 }
 
 .metric-item span {
@@ -639,7 +643,7 @@ body::before {
   font-family: "Orbitron", sans-serif;
   font-size: 20px;
   font-weight: 900;
-  line-height: 1.1;
+  line-height: 1.2;
   color: #fff;
   word-break: break-all;
 }
