@@ -45,8 +45,9 @@ const SUMMARY_ORDER = [
 const METRIC_ORDER = [
   '正式權重分數',
   '實收',
-  '總業績',
   '續單金額',
+  '總業績',
+  '追續客單價',
   '追續成交總數'
 ];
 
@@ -55,6 +56,14 @@ const GROUP_META = {
   A2: { title: 'A2', description: '續單收割' },
   B: { title: 'B', description: '一般量單' },
   C: { title: 'C', description: '補位／觀察培養' }
+};
+const LABEL_MAP = {
+  '正式權重分數': '正式權重分數',
+  '實收': '實收總業績',
+  '續單金額': '追續單金額',
+  '總業績': '全部總金額',
+  '追續客單價': '追續客單價',
+  '追續成交總數': '追續單數量'
 };
 
 let toastTimer = null;
@@ -234,8 +243,8 @@ function renderPodium(rankings, matchedKey) {
         <p class="sub-meta">${item.isNew ? '新人角標已生效' : '正式派單名次'}</p>
         <div class="metric-grid">
           ${METRIC_ORDER.map((key) => `
-            <div class="metric-item">
-              <span>${escapeHtml(key)}</span>
+            <div class="metric-item ${key === '正式權重分數' ? 'score-highlight' : ''}">
+              <span>${escapeHtml(LABEL_MAP[key] || key)}</span>
               <strong>${escapeHtml(formatNumber(item.metrics?.[key] || 0))}</strong>
             </div>
           `).join('')}
@@ -269,12 +278,12 @@ function renderTop10(rankings, matchedKey) {
             <strong>${escapeHtml(formatNumber(item.metrics?.['正式權重分數'] || 0))}</strong>
           </div>
           <div class="metric-item">
-            <span>實收金額</span>
+            <span>實收總業績</span>
             <strong>${escapeHtml(formatNumber(item.metrics?.['實收'] || 0))}</strong>
           </div>
           <div class="metric-item">
-            <span>總業績</span>
-            <strong>${escapeHtml(formatNumber(item.metrics?.['總業績'] || 0))}</strong>
+            <span>追續單金額</span>
+            <strong>${escapeHtml(formatNumber(item.metrics?.['續單金額'] || 0))}</strong>
           </div>
         </div>
       </article>
@@ -335,7 +344,7 @@ function renderRanking(rankings, matchedKey) {
         <div class="metric-grid">
           ${METRIC_ORDER.map((key) => `
             <div class="metric-item ${key === '正式權重分數' ? 'score-highlight' : ''}">
-              <span>${escapeHtml(key)}</span>
+              <span>${escapeHtml(LABEL_MAP[key] || key)}</span>
               <strong>${escapeHtml(formatNumber(item.metrics?.[key] || 0))}</strong>
             </div>
           `).join('')}
@@ -404,7 +413,7 @@ function renderLookup(report) {
       <div class="metric-grid">
         ${METRIC_ORDER.map((key) => `
           <div class="metric-item ${key === '正式權重分數' ? 'score-highlight' : ''}">
-            <span>${escapeHtml(key)}</span>
+            <span>${escapeHtml(LABEL_MAP[key] || key)}</span>
             <strong>${escapeHtml(formatNumber(match.metrics?.[key] || 0))}</strong>
           </div>
         `).join('')}
