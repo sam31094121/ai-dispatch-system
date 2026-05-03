@@ -411,12 +411,17 @@ function renderLookup(report) {
       <p class="lookup-meta">你目前在 ${escapeHtml(match.group)} 組，正式派單名次第 ${escapeHtml(match.rank)} 名。</p>
 
       <div class="metric-grid">
-        ${METRIC_ORDER.map((key) => `
-          <div class="metric-item ${key === '正式權重分數' ? 'score-highlight' : ''}">
-            <span>${escapeHtml(LABEL_MAP[key] || key)}</span>
-            <strong>${escapeHtml(formatNumber(match.metrics?.[key] || 0))}</strong>
-          </div>
-        `).join('')}
+        ${METRIC_ORDER.map((key) => {
+          const val = Number(match.metrics?.[key] || 0);
+          const isScore = key === '正式權重分數';
+          const isGold = isScore && val >= 8000;
+          return `
+            <div class="metric-item ${isScore ? 'score-highlight' : ''} ${isGold ? 'score-trophy-gold' : ''}">
+              <span>${escapeHtml(LABEL_MAP[key] || key)} ${isGold ? '🏆' : ''}</span>
+              <strong>${escapeHtml(formatNumber(val))}</strong>
+            </div>
+          `;
+        }).join('')}
       </div>
 
       <div class="lookup-group-line">
