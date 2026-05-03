@@ -196,6 +196,7 @@ function setupLiveAudit() {
 
 async function request(url, options = {}) {
   const response = await fetch(url, {
+    cache: 'no-store',
     headers: { 'Content-Type': 'application/json' },
     ...options
   });
@@ -275,7 +276,7 @@ function renderHero(data, snapshot) {
   const result = snapshot?.validation?.status || 'FAIL';
   const dates = data?.日期資訊 || {};
 
-  refs.announcementTitle.textContent = data?.公告標題 || '尚未載入公告';
+  refs.announcementTitle.textContent = data?.公告標題 || snapshot?.title || '尚未載入公告';
   refs.dateRange.textContent = `${dates.結算日 || '-'} 結算 → ${dates.派單日 || '-'} 正式派單`;
   refs.auditResult.textContent = result;
   refs.auditResult.className = `audit-hero ${result === 'PASS' ? 'audit-pass' : 'audit-fail'}`;
@@ -298,8 +299,8 @@ function buildPasteReadyAnnouncement(snapshot) {
   const ranking = Array.isArray(snapshot?.ranking) ? snapshot.ranking : [];
   const groups = snapshot?.groups || {};
   const dates = snapshot?.standardData?.日期資訊 || {};
-  const settleDay = dates.結算日 || '4/27';
-  const dispatchDay = dates.派單日 || '4/28';
+  const settleDay = dates.結算日 || '-';
+  const dispatchDay = dates.派單日 || '-';
 
   // 取離職人員
   const retiredNames = (snapshot?.standardData?.審計結論?.['審計列示不入派單'] || [])
@@ -700,7 +701,7 @@ function renderScoringPolicy(snapshot) {
     refs.scoringPolicyTitle.textContent = policy.title || 'AI 權重分數（比例原則）';
   }
   if (refs.scoringPolicyDate) {
-    refs.scoringPolicyDate.textContent = `${dates.結算日 || '4月26日'} → ${dates.派單日 || '4月27日'}`;
+    refs.scoringPolicyDate.textContent = `${dates.結算日 || '-'} → ${dates.派單日 || '-'}`;
   }
   if (refs.scoringPolicyDescription) {
     refs.scoringPolicyDescription.textContent = policy.description || '以今日業績比例換算權重分數。';

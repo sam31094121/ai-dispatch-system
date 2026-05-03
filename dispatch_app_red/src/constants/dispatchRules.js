@@ -40,7 +40,7 @@ const DEFAULT_AUDIT_RULE = '先審計，後排序，再派單';
 const SORT_RULE_TEXT = 'AI 權重分數 (比例原則) → 總業績 → 續單金額 → 追續成交總數 → 派單成交總通數';
 const WEIGHTING_POLICY = Object.freeze({
   title: 'AI 權重分數（比例原則）',
-  description: '以 4/27 業績資料計算，供 4/28 今日正式派單使用；每個項目依全員最高值換算比例分數。',
+  description: '依當日結算業績計算；每個項目依全員最高值換算比例分數，再加總（滿分 10000）。',
   weights: Object.freeze([
     { key: '實收總業績', label: '實收總業績', weight: 3000 },
     { key: '追續單金額', label: '追續單金額', weight: 2500 },

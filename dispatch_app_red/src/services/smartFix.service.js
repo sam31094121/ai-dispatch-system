@@ -239,13 +239,13 @@ function repairReport(report) {
   const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
   const tomorrowROC = `${tomorrow.getFullYear() - 1911}/${String(tomorrow.getMonth() + 1).padStart(2, '0')}/${String(tomorrow.getDate()).padStart(2, '0')}`;
 
-  if (!repairedReport.settlementDate || repairedReport.settlementDate === '115/04/27') {
+  if (!repairedReport.settlementDate) {
     repairedReport.settlementDate = todayROC;
-    addFix('settlementDate', '日期自動推導', `檢測到今日為 ${todayROC}，已自動將結算日更新。`);
+    addFix('settlementDate', '日期自動推導', `結算日空白，已自動填入今日 ${todayROC}。`);
   }
-  if (!repairedReport.dispatchDate || repairedReport.dispatchDate === '115/04/28') {
+  if (!repairedReport.dispatchDate) {
     repairedReport.dispatchDate = tomorrowROC;
-    addFix('dispatchDate', '日期自動推導', `檢測到派單需求，已自動將派單日推導為明日 ${tomorrowROC}。`);
+    addFix('dispatchDate', '日期自動推導', `派單日空白，已自動推導為明日 ${tomorrowROC}。`);
   }
 
   if (extractedDates.settlementDate && extractedDates.settlementDate !== repairedReport.settlementDate) {

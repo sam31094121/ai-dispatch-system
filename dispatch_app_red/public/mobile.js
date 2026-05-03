@@ -523,8 +523,20 @@ async function copyShortText() {
     return;
   }
 
-  await navigator.clipboard.writeText(text);
-  showToast('群組精簡版已複製');
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      showToast('群組精簡版已複製');
+    } else {
+      refs.shortText.select();
+      refs.shortText.setSelectionRange(0, 99999);
+      document.execCommand('copy');
+      window.getSelection()?.removeAllRanges();
+      showToast('群組精簡版已複製');
+    }
+  } catch (err) {
+    showToast('複製失敗，請手動全選複製');
+  }
 }
 
 async function shareLink() {

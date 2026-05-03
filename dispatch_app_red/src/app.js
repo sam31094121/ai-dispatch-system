@@ -26,7 +26,7 @@ function wantsHtmlDocument(req) {
 }
 
 function setStaticCacheHeaders(res, filePath) {
-  if (filePath.endsWith('.html')) {
+  if (filePath.endsWith('.html') || filePath.endsWith('.js') || filePath.endsWith('.css')) {
     res.setHeader('Cache-Control', 'no-cache');
     return;
   }
@@ -47,6 +47,10 @@ function createApp() {
   app.use(compression());
   app.use(cors());
   app.use(express.json({ limit: appConfig.jsonBodyLimit }));
+  app.use('/api', (_req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store');
+    next();
+  });
   app.use(express.static(appConfig.publicDir, {
     etag: true,
     maxAge: 0,
