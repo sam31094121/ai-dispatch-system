@@ -495,7 +495,7 @@ function renderReport(report) {
   refs.auditResult.textContent = safeText(report.auditResult) || '-';
   refs.reportVersion.textContent = `v${safeText(report.version) || '1'}`;
   refs.auditResult.parentElement.dataset.status = safeText(report.auditResult);
-  refs.heroNote.textContent = '【AI 比例原則】權重由實收(3000)+追續金額(2500)+總額(1500)+客單價(1500)+單數(1500)加總，滿分 10000。空間已鎖定優化。';
+  refs.heroNote.textContent = '【AI 比例原則：10,000 滿分制】\n實收(3000)+追續金額(2500)+總額(1500)\n+客單價(1500)+單數(1500)\n空間已優化，滑動到底部可完整查看。';
   refs.updatedAt.textContent = `更新 ${formatTime(report.updatedAt || report.createdAt)}`;
   refs.shortText.value = report.groupShortText || '';
 
