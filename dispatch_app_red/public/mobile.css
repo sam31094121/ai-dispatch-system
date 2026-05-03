@@ -74,12 +74,12 @@ body::before {
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 540px; /* 針對大螢幕手機優化比例 */
+  max-width: 540px;
   margin: 0 auto;
   padding:
     max(12px, env(safe-area-inset-top))
-    10px /* 縮減邊距，增加數據空間 */
-    calc(96px + env(safe-area-inset-bottom))
+    10px
+    calc(180px + env(safe-area-inset-bottom)) /* 大幅增加底部間距，確保數據滑出按鈕上方 */
     10px;
 }
 
@@ -224,13 +224,14 @@ body::before {
 .section-nav {
   position: sticky;
   top: 0;
-  z-index: 5;
+  z-index: 20; /* 提升層級避免重疊 */
   display: flex;
   gap: 10px;
-  margin: 14px 0 16px;
-  padding: 6px 0 2px;
+  margin: 16px 0;
+  padding: 12px 4px;
   overflow-x: auto;
   scrollbar-width: none;
+  background: linear-gradient(180deg, var(--bg-main) 70%, transparent);
 }
 
 .section-nav::-webkit-scrollbar {
