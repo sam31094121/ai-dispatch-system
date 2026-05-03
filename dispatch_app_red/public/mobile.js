@@ -495,9 +495,7 @@ function renderReport(report) {
   refs.auditResult.textContent = safeText(report.auditResult) || '-';
   refs.reportVersion.textContent = `v${safeText(report.version) || '1'}`;
   refs.auditResult.parentElement.dataset.status = safeText(report.auditResult);
-  refs.heroNote.textContent = report.groupShortText
-    ? '正式派單順序、分級與群組精簡版已同步到手機頁，直接傳 LINE 連結即可。'
-    : '正式派單順序、分級、建議與群組精簡版，全部以後端正式公告為準。';
+  refs.heroNote.textContent = '【AI 比例原則】權重由實收(3000)+追續金額(2500)+總額(1500)+客單價(1500)+單數(1500)加總，滿分 10000。空間已鎖定優化。';
   refs.updatedAt.textContent = `更新 ${formatTime(report.updatedAt || report.createdAt)}`;
   refs.shortText.value = report.groupShortText || '';
 
