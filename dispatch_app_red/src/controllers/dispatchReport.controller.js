@@ -14,6 +14,8 @@ const {
   saveNewReport,
   saveReportVersion
 } = require('../services/dispatchQuery.service');
+const { processUnifiedUpdate } = require('../services/unifiedDispatch.service');
+const { buildPerformanceAnalysis } = require('../services/performanceAnalysis.service');
 const { buildPerformanceAnalysis } = require('../services/performanceAnalysis.service');
 const { errorResponse, successResponse } = require('../utils/response.util');
 const { validateParseRequestBody, validateRebuildRequestBody } = require('../validators/dispatchReport.validator');
@@ -204,25 +206,30 @@ function auditInput(req, res) {
   }
 }
 
-function saveInput(req, res) {
+async function saveInput(req, res) {
   try {
-    const draft = parseDispatchDraft(req.body);
-    if (!draft.validation.ok) {
-      res.status(400).json(errorResponse(errorCodes.VALIDATION_FAILED, '資料驗證失敗', draft.validation.errors));
-      return;
-    }
-
-    const stored = saveReportVersion(draft.report, {
-      operator: req.body.operator || 'system',
-      reason: 'legacy-save',
-      source: 'legacy'
+    const result = await processUnifiedUpdate(req.body, {
+      appDir: req.app.get('projectRoot') || process.cwd()
     });
-    const snapshot = getLegacySnapshot(stored.report, {
+
+    const snapshot = getLegacySnapshot(result.snapshot, {
       persisted: true,
       source: 'saved',
       operator: req.body.operator || 'system'
     });
-    res.json(successResponse(errorCodes.OK, '正式版已存檔', snapshot));
+
+    res.json(successResponse(errorCodes.OK, '正式版已鎖定儲存 (經 AI 專業處理)', snapshot));
+  } catch (error) {
+    sendAppError(res, error);
+  }
+}
+
+async function handleUnifiedUpdate(req, res) {
+  try {
+    const result = await processUnifiedUpdate(req.body, {
+      appDir: req.app.get('projectRoot') || process.cwd()
+    });
+    res.json(successResponse(errorCodes.OK, 'AI 統一指令更新完成', result));
   } catch (error) {
     sendAppError(res, error);
   }
@@ -280,6 +287,7 @@ module.exports = {
   getSystemMeta,
   parseReport,
   rebuildDispatchReport,
+  handleUnifiedUpdate,
   saveInput,
   zeroWorkspace
 };

@@ -373,7 +373,7 @@ function calculateWeightedScores(rankings) {
   const hasNewMetrics = people.some((r) => Number(r.metrics?.實收 || 0) > 0);
 
   if (hasNewMetrics) {
-    // 5 指標 10000 分制：實收3000＋追續金額2500＋全部總業績1500＋追續客單價1500＋追續單數1500
+    // [AI 比例原則] 5 指標 10000 分制：實收3000＋追續金額2500＋全部總業績1500＋追續客單價1500＋追續單數1500
     const maxes = {
       實收: Math.max(...people.map((r) => Number(r.metrics?.實收 || 0)), 1),
       續單金額: Math.max(...people.map((r) => Number(r.metrics?.續單金額 || 0)), 1),
@@ -462,10 +462,10 @@ function buildProportionalAdvice(row, rankings, index) {
   const renewalDeals = Number(row.metrics?.追續成交總數 || 0);
   const dispatchDeals = Number(row.metrics?.派單成交總通數 || 0);
   const mainMetric = renewal >= revenue * 0.55
-    ? '續單金額'
+    ? '追續單金額'
     : dispatchDeals >= renewalDeals
     ? '派單成交'
-    : '今日業績';
+    : '實收業績';
 
   if (row.rank === 1) {
     return `目前權重分數第一，與第二名差距 ${gapDown || '0%'}。今天繼續把${mainMetric}補厚，才能穩住 4/24 派單優先權。`;

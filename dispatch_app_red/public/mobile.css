@@ -152,8 +152,10 @@ body::before {
 }
 
 .hero-card h1 {
-  font-size: clamp(28px, 7.6vw, 42px);
+  font-size: clamp(24px, 7.6vw, 38px);
   font-weight: 900;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .hero-range {
@@ -188,8 +190,11 @@ body::before {
   display: block;
   margin-top: 6px;
   font-family: "Orbitron", sans-serif;
-  font-size: 20px;
+  font-size: clamp(16px, 4.5vw, 20px);
   font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .status-pill[data-status="PASS"] strong {
@@ -419,7 +424,7 @@ body::before {
 }
 
 .summary-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
 }
 
 .summary-card {
@@ -541,7 +546,7 @@ body::before {
 
 .metric-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   gap: 8px;
   margin-top: 14px;
 }
@@ -766,8 +771,8 @@ body::before {
   bottom: 0;
   z-index: 7;
   display: grid;
-  grid-template-columns: 1.3fr 1fr 0.95fr;
-  gap: 10px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
   padding:
     12px
     14px
