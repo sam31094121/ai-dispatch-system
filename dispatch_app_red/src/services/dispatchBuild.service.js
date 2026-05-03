@@ -384,17 +384,17 @@ function calculateWeightedScores(rankings) {
     people.forEach((row) => {
       const m = row.metrics || {};
       const score =
-        (Number(m.實收 || 0) / maxes.實收) * 3000 +
-        (Number(m.續單金額 || 0) / maxes.續單金額) * 2500 +
-        (Number(m.總業績 || 0) / maxes.總業績) * 1500 +
-        (Number(m.追續客單價 || 0) / maxes.追續客單價) * 1500 +
-        (Number(m.追續成交總數 || 0) / maxes.追續成交總數) * 1500;
-      row.metrics.正式權重分數 = parseFloat(score.toFixed(2));
+        (maxes.實收 > 0 ? (Number(m.實收 || 0) / maxes.實收) * 3000 : 0) +
+        (maxes.續單金額 > 0 ? (Number(m.續單金額 || 0) / maxes.續單金額) * 2500 : 0) +
+        (maxes.總業績 > 0 ? (Number(m.總業績 || 0) / maxes.總業績) * 1500 : 0) +
+        (maxes.追續客單價 > 0 ? (Number(m.追續客單價 || 0) / maxes.追續客單價) * 1500 : 0) +
+        (maxes.追續成交總數 > 0 ? (Number(m.追續成交總數 || 0) / maxes.追續成交總數) * 1500 : 0);
+
+      m.正式權重分數 = isFinite(score) ? Number(score.toFixed(2)) : 0;
     });
     return rankings;
   }
 
-  // 舊版 4 指標 1000 分制
   const maxes = {
     總業績: Math.max(...people.map((r) => Number(r.metrics?.總業績 || 0)), 1),
     續單金額: Math.max(...people.map((r) => Number(r.metrics?.續單金額 || 0)), 1),
@@ -1034,6 +1034,43 @@ function toLegacyStandardData(report) {
       通過: platform.passed
     };
   });
+  
+  const ranking = report.rankings.map((row) => ({
+      名次: row.rank,
+      姓名: row.name,
+      ...(row.isNew ? { 標記: '新人' } : {}),
+      正式權重分數: row.metrics.正式權重分數 || 0,
+      實收: row.metrics.實收 || 0,
+      全部總業績: row.metrics.總業績,
+      總業績: row.metrics.總業績,
+      追續金額: row.metrics.續單金額,
+      續單金額: row.metrics.續單金額,
+      追續單數: row.metrics.追續成交總數,
+      追續成交總數: row.metrics.追續成交總數,
+      追續客單價: row.metrics.追續客單價 || 0,
+      派單成交總通數: row.metrics.派單成交總通數,
+      分級: row.group,
+      建議: row.advice
+    }));
+
+  ranking.sort((a, b) => {
+    if ((b.正式權重分數 || 0) !== (a.正式權重分數 || 0)) {
+      return (b.正式權重分數 || 0) - (a.正式權重分數 || 0);
+    }
+    if ((b.實收 || 0) !== (a.實收 || 0)) {
+      return (b.實收 || 0) - (a.實收 || 0);
+    }
+    if ((b.續單金額 || 0) !== (a.續單金額 || 0)) {
+      return (b.續單金額 || 0) - (a.續單金額 || 0);
+    }
+    if ((b.總業績 || 0) !== (a.總業績 || 0)) {
+      return (b.總業績 || 0) - (a.總業績 || 0);
+    }
+    if ((b.追續客單價 || 0) !== (a.追續客單價 || 0)) {
+      return (b.追續客單價 || 0) - (a.追續客單價 || 0);
+    }
+    return (b.追續成交總數 || 0) - (a.追續成交總數 || 0);
+  });
 
   return {
     公告標題: report.title,
@@ -1052,21 +1089,6 @@ function toLegacyStandardData(report) {
       }))
     },
     整合總盤: clone(report.summaryBoard),
-    正式名次: report.rankings.map((row) => ({
-      名次: row.rank,
-      姓名: row.name,
-      ...(row.isNew ? { 標記: '新人' } : {}),
-      正式權重分數: row.metrics.正式權重分數 || 0,
-      實收: row.metrics.實收 || 0,
-      全部總業績: row.metrics.總業績,
-      總業績: row.metrics.總業績,
-      追續金額: row.metrics.續單金額,
-      續單金額: row.metrics.續單金額,
-      追續單數: row.metrics.追續成交總數,
-      追續成交總數: row.metrics.追續成交總數,
-      追續客單價: row.metrics.追續客單價 || 0,
-      派單成交總通數: row.metrics.派單成交總通數,
-      分級: row.group,
       建議: row.advice
     })),
     分級: clone(report.groups),
