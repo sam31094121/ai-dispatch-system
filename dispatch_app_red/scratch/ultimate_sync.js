@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { OFFICIAL_0503_TO_0504 } = require('./shared/official-0503-to-0504');
+const { OFFICIAL_0503_TO_0504 } = require('../shared/official-0503-to-0504');
 
 const EXACT_TEXT = `📣【AI 派單公告｜5/3 結算 → 5/4 正式派單順序｜AI 比例原則版】
 
