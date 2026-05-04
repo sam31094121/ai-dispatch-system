@@ -460,15 +460,15 @@ function buildProportionalAdvice(row, rankings, index) {
     return `目前權重分數第一，與第二名差距 ${gapDown || '0%'}。今天繼續把${mainMetric}補厚，才能穩住派單優先權。`;
   }
   if (row.rank <= GROUP_RANK_POLICY.A1.max) {
-    return `${GROUP_RANK_POLICY.A1.label}，距前一名 ${gapUp}。今天主攻${mainMetric}，一筆有效成交就能把權重分數再往前推。`;
+    return `你在 A1 主力區，距前一名 ${gapUp}。今天主攻${mainMetric}，一筆有效成交就能把權重分數再往前推。`;
   }
   if (row.rank <= GROUP_RANK_POLICY.A2.max) {
-    return `${GROUP_RANK_POLICY.A2.label}，距前一名 ${gapUp}，後方差距 ${gapDown || '尚穩'}。今天用${mainMetric}守位並爭取前壓。`;
+    return `你在 A2 主力區，距前一名 ${gapUp}，後方差距 ${gapDown || '尚穩'}。今天用${mainMetric}守位並爭取前壓。`;
   }
   if (row.rank <= GROUP_RANK_POLICY.B.max) {
-    return `${GROUP_RANK_POLICY.B.label}，距前一名 ${gapUp}。今天先把${mainMetric}做出明顯增量，權重分數才會動。`;
+    return `你在 B 組競爭帶，距前一名 ${gapUp}。今天先把${mainMetric}做出明顯增量，權重分數才會動。`;
   }
-  return `${GROUP_RANK_POLICY.C.label}，今天先讓數字落地。從${mainMetric}補一筆開始，比例分數就會往上。`;
+  return `你在 C 組補位區，今天先讓數字落地。從${mainMetric}補一筆開始，比例分數就會往上。`;
 }
 
 function resolveTitle(explicitTitle, fallbackTitle, settlementDate, dispatchDate) {
@@ -527,7 +527,7 @@ function buildGroupShortText(report) {
   return [
     `📣【AI 派單公告｜${formatMonthDay(report.settlementDate)} 結算 → ${formatMonthDay(report.dispatchDate)} 正式派單】`,
     `審計 ${report.auditResult}，${auditStatusText}，${noteText}。`,
-    excluded,
+    excludedLine,
     top10Text ? `正式前10名：${top10Text}。` : '',
     `A1：${report.groups.A1.join('、')}。`,
     `A2：${report.groups.A2.join('、')}。`,

@@ -87,7 +87,7 @@ async function fetchData() {
   try {
     const res = await fetch(`${CONFIG.API_URL}?t=${Date.now()}`);
     const data = await res.json();
-    state.report = data.report || data;
+    state.report = data.data || data.report || data;
     renderAll();
   } catch (err) {
     console.error('Fetch Error:', err);
@@ -114,11 +114,12 @@ function renderAll() {
 }
 
 function renderSummary(board) {
+  const b = board || {};
   const items = [
-    { label: '實收總金額', value: board['實收總金額'] || 0 },
-    { label: '追續單金額', value: board['追續單總金額'] || 0 },
-    { label: '全部總業績', value: board['本月業績'] || 0 },
-    { label: '追續單成交', value: board['累積追續總成交數'] || 0 }
+    { label: '實收總金額', value: b['實收總金額'] || 0 },
+    { label: '追續單金額', value: b['追續單總金額'] || 0 },
+    { label: '全部總業績', value: b['本月業績'] || 0 },
+    { label: '追續單成交', value: b['累積追續總成交數'] || 0 }
   ];
 
   refs.summaryGrid.innerHTML = items.map(i => `

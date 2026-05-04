@@ -1,4 +1,4 @@
-const { AUDIT_METRICS, GROUP_KEYS, SUMMARY_METRICS } = require('../constants/dispatchRules');
+const { AUDIT_METRICS, GROUP_KEYS, GROUP_RANK_POLICY, SUMMARY_METRICS } = require('../constants/dispatchRules');
 const {
   buildDefaultFinalConfirmations,
   buildExpectedGroups,
@@ -100,9 +100,9 @@ function buildSummaryBoardFromPlatforms(platforms, previousSummaryBoard = {}) {
 }
 
 function resolveGroupByRank(rank) {
-  if (rank <= 4) return 'A1';
-  if (rank <= 11) return 'A2';
-  if (rank <= 18) return 'B';
+  if (rank <= GROUP_RANK_POLICY.A1.max) return 'A1';
+  if (rank <= GROUP_RANK_POLICY.A2.max) return 'A2';
+  if (rank <= GROUP_RANK_POLICY.B.max) return 'B';
   return 'C';
 }
 

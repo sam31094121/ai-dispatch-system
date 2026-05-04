@@ -631,7 +631,6 @@ function scoreReport(parsed) {
 }
 
 function groupKey(rank) {
-  // 正式分組規則：A1 (1-4), A2 (5-11), B (12-18), C (19+)
   if (rank <= 4) return 'A1';
   if (rank <= 11) return 'A2';
   if (rank <= 18) return 'B';
