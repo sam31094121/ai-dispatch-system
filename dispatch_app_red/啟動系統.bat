@@ -18,7 +18,7 @@ for /f "tokens=5" %%a in ('netstat -ano ^| findstr :%PORT% ^| findstr LISTENING 
 )
 
 echo [Step 2] Starting Node.js server...
-start "Zhaogui Server Engine" /min cmd /c "set AUTO_OPEN_BROWSER=0&& set PORT=%PORT%&& npm start"
+start "Zhaogui Server Engine" /min cmd /c "set AUTO_OPEN_BROWSER=0&& set PORT=%PORT%&& node server.js"
 
 echo [Step 3] Waiting for health check...
 for /l %%i in (1,1,45) do (

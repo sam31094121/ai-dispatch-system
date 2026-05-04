@@ -32,7 +32,7 @@ Stop-PortOwner -LocalPort $Port
 $command = @"
 `$env:AUTO_OPEN_BROWSER='0'
 Set-Location '$AppRoot'
-npm start
+node server.js
 "@
 
 Start-Process powershell -WindowStyle Minimized -ArgumentList '-NoExit', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', $command
