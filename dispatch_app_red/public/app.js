@@ -126,7 +126,7 @@ function safeHtml(value) {
 
 const AudioManager = {
   ctx: null,
-  init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
+  init() { if (!this.ctx) this.ctx = new (window.AudioContext || /** @type {any} */(window).webkitAudioContext)(); },
   play(freq, type = 'sine', duration = 0.1, vol = 0.1) {
     this.init();
     const osc = this.ctx.createOscillator();
@@ -296,9 +296,19 @@ function buildPasteReadyAnnouncement(snapshot) {
   const settleDay = dates.結算日 || '-';
   const dispatchDay = dates.派單日 || '-';
 
-  // 取離職人員
-  const retiredNames = (snapshot?.standardData?.審計結論?.['審計列示不入派單'] || [])
-    .map(e => e?.姓名 || e).filter(Boolean);
+  const auditStatus = (snapshot?.audit?.status || snapshot?.validation?.status || 'FAIL').toUpperCase();
+  const auditNotes = Array.isArray(snapshot?.audit?.notes) ? snapshot.audit.notes : [];
+  const excludedEmployees = Array.isArray(snapshot?.audit?.excludedEmployees)
+    ? snapshot.audit.excludedEmployees
+    : (snapshot?.standardData?.審計結論?.['審計列示不入派單'] || []).map(e => ({ name: e?.姓名 || e, reason: e?.原因 || '已離職' }));
+
+  const auditLine = auditStatus === 'PASS'
+    ? `審計結果：PASS　三平台總表核對通過${auditNotes.length ? '，' + auditNotes.join('；') : '，無漏算、無多算、無總盤衝突'}。`
+    : `審計結果：${auditStatus}　${auditNotes.length ? auditNotes.join('；') : '請確認資料後重新審計'}。`;
+
+  const retiredLine = excludedEmployees.length
+    ? `已離職：${excludedEmployees.map(e => e.name || e).filter(Boolean).join('、')}，只列審計，不入正式派單。`
+    : '';
 
   if (!ranking.length) return '';
 
@@ -315,15 +325,10 @@ function buildPasteReadyAnnouncement(snapshot) {
     return `${row.rank}、${row.name}｜AI ${score}｜實收 ${fmt(actual)}｜追續金額 ${fmt(renewal)}｜追續單數 ${deals}`;
   });
 
-  const retiredLine = retiredNames.length
-    ? `已離職：${retiredNames.join('、')}，只列審計，不入正式派單。`
-    : '';
-
   return [
     `📣【AI 派單公告｜${settleDay} 結算 → ${dispatchDay} 正式派單順序｜三平台整合比例原則版】`,
     '',
-    '審計結果：PASS',
-    '三平台總表與個別明細全部核對通過，無漏算、無多算、無總盤衝突。',
+    auditLine,
     retiredLine,
     '',
     '正式前10名：',
@@ -342,7 +347,7 @@ function buildPasteReadyAnnouncement(snapshot) {
     '今日派單請依 A1 → A2 → B → C 順序執行；前方全忙才往下派，不得跳位，不得指定。',
     '同客戶回撥，優先由原承接人服務。',
     '請全員確認後回覆「+1」。'
-  ].filter(v => v !== null && v !== undefined).join('\n');
+  ].filter(v => v !== null && v !== undefined && v !== '').join('\n');
 }
 
 function renderOfficialLock(snapshot) {
@@ -828,7 +833,7 @@ async function smartFixInput() {
   refs.rawInput.classList.add('ai-scanning', 'ai-glow');
 
   try {
-    const { ok, payload } = await request('/api/smart-fix', {
+    const { payload } = await request('/api/smart-fix', {
       method: 'POST',
       body: JSON.stringify({ rawText })
     });
