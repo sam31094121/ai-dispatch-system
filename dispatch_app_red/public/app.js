@@ -1,15 +1,9 @@
 
-const PREV_RANK_MAP = {
-  '湯玉琦': 1, '馬秋香': 2, '王珍珠': 3, '莉莉（新人）': 4, '廖姿惠': 5,
-  '林宜靜': 6, '高如郁': 7, '王梅慧': 8, '周美蓁': 9, '許喬恩': 10,
-  '李玲玲': 11, '高美雲': 12, '江麗勉': 13, '鄭珮恩': 14, '梁依萍': 15,
-  '陳玲華': 16, '謝啟芳': 17, '江沛林': 18, '林沛昕': 19, '徐華妤': 20,
-  '林佩君': 21, '蘇淑玲': 22, '鄭上官': 23, '陳百玲（新人）': 24
-};
-
-function getMovement(name, currentRank) {
-  const prevRank = PREV_RANK_MAP[name];
-  if (!prevRank) return { class: 'flat', arrow: '＝' };
+function getMovement(row) {
+  const currentRank = Number(row.名次 || row.rank || 0);
+  const prevRank = Number(row.上輪名次 || row.prevRank || 0);
+  
+  if (!prevRank || prevRank === 0) return { class: 'new', arrow: 'NEW' };
   if (currentRank < prevRank) return { class: 'up', arrow: '↑' };
   if (currentRank > prevRank) return { class: 'down', arrow: '↓' };
   return { class: 'flat', arrow: '＝' };
@@ -514,18 +508,6 @@ function renderSpotlight(rows) {
       const titleData = titles[rank];
       const titleHtml = titleData ? `<span class="prestige-title ${titleData.class}">${titleData.text}</span>` : '';
 
-      const metricsHTML = rank <= 5
-        ? `<div class="spotlight-grid-inner spotlight-5col">
-            <div><span>實收總金額</span><strong>${safeHtml(fmt(m.實收))}</strong></div>
-            <div><span>追續金額</span><strong>${safeHtml(fmt(m.追續金額))}</strong></div>
-            <div><span>全部總業績</span><strong>${safeHtml(fmt(m.全部總業績))}</strong></div>
-            <div><span>追續客單價</span><strong>${safeHtml(fmt(m.追續客單價))}</strong></div>
-            <div><span>追續單數</span><strong>${safeHtml(String(m.追續單數))} 單</strong></div>
-          </div>`
-        : `<div class="spotlight-grid-inner">
-            <div><span>實收總金額</span><strong>${safeHtml(fmt(m.實收))}</strong></div>
-            <div><span>追續金額</span><strong>${safeHtml(fmt(m.追續金額))}</strong></div>
-            <div><span>全部總業績</span><strong>${safeHtml(fmt(m.全部總業績))}</strong></div>
             <div><span>追續客單價</span><strong>${safeHtml(fmt(m.追續客單價))}</strong></div>
           </div>
           <div class="spotlight-renewal-row">
