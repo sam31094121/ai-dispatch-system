@@ -14,6 +14,11 @@ const OFFICIAL_0503_TO_0504 = {
     actualRevenue: 100640,
     cancellations: 0
   },
+  platforms: {
+    '三立奕心': { cumulativeRenewalDeals: 24, monthlyRevenue: 336420, totalRenewalAmount: 226160, actualRevenue: 58480 },
+    '民視': { cumulativeRenewalDeals: 8, monthlyRevenue: 367970, totalRenewalAmount: 43880, actualRevenue: 18160 },
+    '公司產品': { cumulativeRenewalDeals: 3, monthlyRevenue: 34460, totalRenewalAmount: 31980, actualRevenue: 24000 }
+  },
   benchmarks: {
     maxActualRevenue: { value: 28500, holder: '湯玉琦' },
     maxRenewalRevenue: { value: 69910, holder: '馬秋香' },
