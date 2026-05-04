@@ -1045,12 +1045,14 @@ function flattenRanking(row) {
 
 function toLegacyStandardData(report) {
   const auditPlatforms = {};
-  report.audit.platforms.forEach((platform) => {
-    auditPlatforms[platform.platformName] = {
-      ...clone(platform.metrics),
-      通過: platform.passed
-    };
-  });
+  if (Array.isArray(report.audit?.platforms)) {
+    report.audit.platforms.forEach((platform) => {
+      auditPlatforms[platform.platformName] = {
+        ...clone(platform.metrics),
+        通過: platform.passed
+      };
+    });
+  }
   
   const ranking = report.rankings.map((row) => ({
     名次: row.rank,
