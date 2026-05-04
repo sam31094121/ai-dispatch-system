@@ -126,7 +126,7 @@ function validateDispatchReport(report) {
     });
   });
 
-  if ((report.audit?.platforms || []).length > 0) {
+  if (Array.isArray(report.audit?.platforms) && report.audit.platforms.length > 0) {
     const aggregate = Object.fromEntries(AUDIT_METRICS.map((metric) => [metric, 0]));
     report.audit.platforms.forEach((platform) => {
       AUDIT_METRICS.forEach((metric) => {
@@ -193,16 +193,15 @@ function validateDispatchReport(report) {
     const names = Array.isArray(report.groups?.[groupKey]) ? report.groups[groupKey] : [];
     if (!Array.isArray(report.groups?.[groupKey])) {
       pushError('groups', `${groupKey} 分級缺失`);
-      return;
-    }
-
-    names.forEach((name) => {
+    } else {
+      names.forEach((name) => {
       if (groupedNameSet.has(name)) {
         pushError('groups', `分級名單重複分配：${name}`);
       }
       groupedNameSet.add(name);
       groupedNames.push(name);
-    });
+      });
+    }
 
     if (
       names.length !== expectedGroups[groupKey].length ||
