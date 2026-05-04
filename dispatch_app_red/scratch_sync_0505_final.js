@@ -180,10 +180,10 @@ const rawText = `📣【AI 派單公告｜5/4 結算 → 5/5 正式派單順序�
 
 function parseData() {
   const rankingsSection = rawText.substring(rawText.indexOf("四、正式名次"), rawText.indexOf("五、名次異動"));
-  const rankingLines = rankingsSection.split('\\n').filter(l => l.match(/^\\d+、/));
+  const rankingLines = rankingsSection.split('\n').filter(l => l.match(/^\d+、/));
   
   const adviceSection = rawText.substring(rawText.indexOf("七、每人一句建議"));
-  const adviceLines = adviceSection.split('\\n').filter(l => l.match(/^\\d+、/));
+  const adviceLines = adviceSection.split('\n').filter(l => l.match(/^\d+、/));
 
   const movementSection = rawText.substring(rawText.indexOf("五、名次異動"), rawText.indexOf("六、A1／A2／B／C 分級"));
   const groupsSection = rawText.substring(rawText.indexOf("六、A1／A2／B／C 分級"), rawText.indexOf("七、每人一句建議"));
@@ -192,11 +192,11 @@ function parseData() {
     const parts = line.split('｜');
     if (parts.length < 7) return null;
     
-    const rankMatch = parts[0].match(/^(\\d+)、(.*)/);
+    const rankMatch = parts[0].match(/^(\d+)、(.*)/);
     const rank = parseInt(rankMatch[1]);
     const name = rankMatch[2].trim();
     
-    const getNum = (str) => parseFloat(str.replace(/[^0-9.-]/g, '')) || 0;
+    const getNum = (str) => parseFloat(String(str).replace(/[^0-9.-]/g, '')) || 0;
     
     const score = getNum(parts[1]);
     const realRevenue = getNum(parts[2]);
@@ -212,10 +212,10 @@ function parseData() {
     let movement = "flat";
     let prevRank = rank;
     
-    const mLines = movementSection.split('\\n');
+    const mLines = movementSection.split('\n');
     for (let ml of mLines) {
       if (ml.includes(name) && ml.includes('→')) {
-        const mm = ml.match(/(\\d+)\\s*→\\s*(\\d+)/);
+        const mm = ml.match(/(\d+)\s*→\s*(\d+)/);
         if (mm) {
           prevRank = parseInt(mm[1]);
           if (ml.includes('↑')) movement = "up";
@@ -225,9 +225,9 @@ function parseData() {
     }
 
     let group = "C";
-    if (groupsSection.includes('A1') && groupsSection.split('A1')[1].split('A2')[0].includes(name)) group = "A1";
-    else if (groupsSection.includes('A2') && groupsSection.split('A2')[1].split('B組')[0].includes(name)) group = "A2";
-    else if (groupsSection.includes('B組') && groupsSection.split('B組')[1].split('C組')[0].includes(name)) group = "B";
+    if (groupsSection.includes('🔴 A1') && groupsSection.split('🔴 A1')[1].split('🟠 A2')[0].includes(name)) group = "A1";
+    else if (groupsSection.includes('🟠 A2') && groupsSection.split('🟠 A2')[1].split('🟡 B組')[0].includes(name)) group = "A2";
+    else if (groupsSection.includes('🟡 B組') && groupsSection.split('🟡 B組')[1].split('🟢 C組')[0].includes(name)) group = "B";
 
     return {
       rank,
@@ -246,22 +246,26 @@ function parseData() {
   }).filter(Boolean);
 
   const snapshot = {
-    executionId: '20260504193000',
+    reportId: 'dispatch_2026_05_04_v1',
     title: 'AI 派單公告｜5/4 結算 → 5/5 正式派單',
     reportDate: '115/05/04',
     dispatchDate: '115/05/05',
-    status: '通過',
-    persisted: true,
-    validation: {
-      status: 'PASS',
-      summary: {
-        審計結果: 'PASS',
-        正式人數: ranking.length,
-        本月業績: 1253068,
-        追續單數: 61
-      },
-      errors: [],
-      warnings: []
+    status: 'published',
+    auditResult: 'PASS',
+    sourceText: rawText,
+    rankings: ranking,
+    groups: {
+        A1: ranking.filter(r => r.group === 'A1').map(r => r.name),
+        A2: ranking.filter(r => r.group === 'A2').map(r => r.name),
+        B: ranking.filter(r => r.group === 'B').map(r => r.name),
+        C: ranking.filter(r => r.group === 'C').map(r => r.name)
+    },
+    summaryBoard: {
+        追續單成交: 61,
+        全部總業績: 1253068,
+        追續單金額: 699260,
+        實收總金額: 113870,
+        當日取消退貨: 0
     },
     standardData: {
       公告標題: 'AI 派單公告｜5/4 結算 → 5/5 正式派單',
