@@ -1,15 +1,16 @@
 @echo off
 chcp 65001 >nul
 title 兆櫃 AI 派單系統 - 總啟動器
+
 set "PROJECT_ROOT=%~dp0"
+set "START_SCRIPT=%PROJECT_ROOT%啟動全部系統.ps1"
 
 echo =======================================================
-echo 正在啟動 兆櫃 AI 派單總系統...
+echo 兆櫃 AI 派單系統｜正在啟動並開啟網頁...
 echo =======================================================
 
-cd /d "%PROJECT_ROOT%dispatch_app_red"
-start "" "啟動系統.bat"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%START_SCRIPT%"
 
 echo.
-echo 總啟動程序已發送。
-exit
+echo 啟動程序已完成。
+pause
