@@ -71,7 +71,6 @@ function fieldVal(row, ...keys) {
   return 0;
 }
 
-// 取出各計分指標，支援新舊欄位名稱
 function getMetrics(row) {
   return {
     實收:     fieldVal(row, '實收', '實收總金額', '實收總業績', 'actualRevenue'),
@@ -87,14 +86,11 @@ function countUp(el, target, duration = 1200) {
   const numTarget = Number(target || 0);
   if (!numTarget) { el.textContent = numberFormatter.format(0); return; }
   const t0 = performance.now();
-  
-  // 加入數值跳動感 VFX
   el.style.textShadow = '0 0 15px var(--cyan)';
   el.style.transition = 'transform 0.1s ease';
 
   function tick(now) {
     const p = Math.min((now - t0) / duration, 1);
-    // Exponential out easing
     const ease = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
     
     el.textContent = numberFormatter.format(Math.round(numTarget * ease));
@@ -128,7 +124,6 @@ function safeHtml(value) {
     .replace(/"/g, '&quot;');
 }
 
-// 進階優化：音效管理器 (專為 Cyber Command Center 設計)
 const AudioManager = {
   ctx: null,
   init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
@@ -163,7 +158,6 @@ const AudioManager = {
   }
 };
 
-// 進階優化：即時監聽與 Debounce 機制
 let auditTimeout = null;
 function setupLiveAudit() {
   refs.rawInput.addEventListener('input', () => {
@@ -415,7 +409,6 @@ function renderSpotlight(rows) {
         ? `<span class="spotlight-gap-badge">↓ −${scoreGap.toFixed(2)} pts</span>`
         : '';
 
-      // 進階優化：榮耀稱號系統 (增加大卡感)
       const titles = {
         1: { text: '王者 KING', class: 'title-champion' },
         2: { text: '頂尖 ELITE', class: 'title-elite' },
@@ -426,7 +419,6 @@ function renderSpotlight(rows) {
       const titleData = titles[rank];
       const titleHtml = titleData ? `<span class="prestige-title ${titleData.class}">${titleData.text}</span>` : '';
 
-      // 大卡展示：前 5 名全部使用 5 欄完整顯示
       const metricsHTML = rank <= 5
         ? `<div class="spotlight-grid-inner spotlight-5col">
             <div><span>實收總金額</span><strong>${safeHtml(fmt(m.實收))}</strong></div>
@@ -630,7 +622,6 @@ function autoProportionalAdvice(rows) {
     const gapDown = below ? ((ws - below._ws) / ws * 100).toFixed(1) : null;
     const wsr = wsRankOf[row.姓名 || row.name];
     const trank = row.名次 || row.rank;
-    // 判斷主指標：實收 > 追續金額 > 客單價
     const rc = m.追續金額 * 2500;
     const ac = m.實收 * 3000;
     const dc = m.追續單數 * 1500;
@@ -826,17 +817,14 @@ function clearInputOnly() {
 async function init() {
   console.log("%c Zhaogui AI System %c Optimized Entry Sequence Activated ", "background: #00F2FF; color: #000; font-weight: bold; border-radius: 3px 0 0 3px; padding: 2px 4px;", "background: #111; color: #00F2FF; border-radius: 0 3px 3px 0; padding: 2px 4px; border: 1px solid #00F2FF;");
   renderRules();
+  setupLiveAudit();
   await loadCurrent();
 }
 
 async function smartFixInput() {
   const rawText = refs.rawInput.value.trim();
-  // 已優化：後端會處理空字串並生成模板，故前端不再阻擋
-  
   setBadge(refs.inputStatus, 'PENDING', '智慧掃描中...');
-  AudioManager.sweep(); // 掃描音效
-  
-  // 視覺效果：加入掃描動效
+  AudioManager.sweep();
   refs.rawInput.classList.add('ai-scanning', 'ai-glow');
 
   try {
@@ -845,7 +833,6 @@ async function smartFixInput() {
       body: JSON.stringify({ rawText })
     });
     
-    // 移除動效
     refs.rawInput.classList.remove('ai-scanning', 'ai-glow');
 
     const fixData = payload.data;
@@ -854,12 +841,10 @@ async function smartFixInput() {
       return;
     }
 
-    // 回填正規化後的 JSON 到輸入區
     if (fixData.fixedJson) {
       refs.rawInput.value = fixData.fixedJson;
     }
 
-    // 設定狀態燈號
     const fixCount = fixData.fixCount || 0;
     const remaining = fixData.remainingErrors || 0;
     let badgeStatus = 'FAIL';
@@ -874,7 +859,6 @@ async function smartFixInput() {
       badgeText = `已修復 ${fixCount} 項，尚餘 ${remaining} 個錯誤`;
     }
 
-    // 自動觸發審計預覽
     await auditCurrentInput({
       suppressPending: true,
       fixData,
@@ -890,7 +874,6 @@ async function smartFixInput() {
   }
 }
 
-/** 渲染修復報告面板到驗證區域 */
 function renderFixReport(fixData) {
   const fixes = fixData.fixes || [];
   const validation = fixData.validation || {};
@@ -898,7 +881,6 @@ function renderFixReport(fixData) {
   const resolvedErrors = fixData.resolvedErrors || [];
   const manualActions = fixData.manualActions || [];
 
-  // 修復摘要
   const summaryHtml = `
     <div class="fix-report-header">
       <span class="fix-report-title">🔧 智慧修復報告</span>
@@ -917,7 +899,6 @@ function renderFixReport(fixData) {
     </div>
   `;
 
-  // 修復明細清單
   const fixListHtml = fixes.length > 0
     ? fixes.map(fix => `
         <div class="fix-item">
@@ -928,7 +909,6 @@ function renderFixReport(fixData) {
       `).join('')
     : '<div class="fix-item fix-empty">所有欄位均已通過結構驗證，無需修復。</div>';
 
-  // 剩餘問題
   const remainingHtml = (validation.errors || []).length > 0
     ? `<div class="fix-remaining">
         <span class="fix-remaining-label">⚠ 剩餘 ${validation.errors.length} 個錯誤需手動處理：</span>
