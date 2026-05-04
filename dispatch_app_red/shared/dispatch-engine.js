@@ -24,15 +24,13 @@ const taipeiDateTimeFormatter = new Intl.DateTimeFormat('zh-TW', {
   hour12: false
 });
 
-// 正式 4/13 規格權重：客單價 + 實收金額 + 續單總額 + 續單成交件數
+// AI比例原則永久鎖死版：滿分 10000，依全員最高值換算比例分數。
 const SCORE_WEIGHTS = [
-  { key: 'dailyTicket', label: '當日客單價', weight: 150 },
-  { key: 'dailyReceived', label: '當日實收金額', weight: 300 },
-  { key: 'renewalRevenue', label: '續單金額', weight: 250 },
-  { key: 'renewalDeals', label: '追續成交總數', weight: 200 },
-  { key: 'currentMonthRevenue', label: '本月業績', weight: 50 },
-  { key: 'lastMonthRevenue', label: '上月業績', weight: 30 },
-  { key: 'overallTicket', label: '整體客單價', weight: 20 }
+  { key: 'dailyReceived', label: '實收總業績', weight: 3000 },
+  { key: 'renewalRevenue', label: '追續單金額', weight: 2500 },
+  { key: 'totalRevenue', label: '全部總金額', weight: 1500 },
+  { key: 'dailyTicket', label: '追續客單價', weight: 1500 },
+  { key: 'renewalDeals', label: '追續單數量', weight: 1500 }
 ];
 
 const STAGES = [
@@ -241,7 +239,7 @@ function buildBaseline(referenceDate = new Date(), previousSnapshot = null) {
     dispatchDate: rocDate(addDays(referenceDate, 1)),
     people: BASELINE_SEEDS.map((seed, index) => {
       const dailyReceived = seed.totalRevenue;
-      const dailyTicket = seed.renewalDeals > 0 ? round(seed.totalRevenue / seed.renewalDeals, 2) : 0;
+      const dailyTicket = seed.renewalDeals > 0 ? round(seed.renewalRevenue / seed.renewalDeals, 2) : 0;
       const lastMonthRevenue = Math.max(
         seed.totalRevenue,
         Math.round(seed.totalRevenue * 0.88 + seed.renewalRevenue * 0.12 + (BASELINE_SEEDS.length - index) * 1800)
@@ -415,7 +413,7 @@ function parseReport(rawText, options = {}) {
     const dailyTicket = Object.prototype.hasOwnProperty.call(metrics, 'dailyTicket')
       ? metrics.dailyTicket
       : metrics.renewalDeals > 0
-      ? round(dailyReceived / metrics.renewalDeals, 2)
+      ? round(metrics.renewalRevenue / metrics.renewalDeals, 2)
       : 0;
 
     parsedRows.push({
@@ -581,6 +579,7 @@ function auditReport(parsed) {
 function metricValue(person, key) {
   if (key === 'dailyTicket') return toNumber(person.dailyTicket);
   if (key === 'dailyReceived') return toNumber(person.dailyReceived);
+  if (key === 'totalRevenue') return toNumber(person.totalRevenue);
   if (key === 'currentMonthRevenue') return toNumber(person.currentMonthRevenue);
   if (key === 'lastMonthRevenue') return toNumber(person.lastMonthRevenue);
   if (key === 'overallTicket') return toNumber(person.overallTicket);
@@ -632,10 +631,10 @@ function scoreReport(parsed) {
 }
 
 function groupKey(rank) {
-  // 正式分組規則：A1 (1-4), A2 (5-10), B (11-17), C (18+)
+  // 正式分組規則：A1 (1-4), A2 (5-11), B (12-18), C (19+)
   if (rank <= 4) return 'A1';
-  if (rank <= 10) return 'A2';
-  if (rank <= 17) return 'B';
+  if (rank <= 11) return 'A2';
+  if (rank <= 18) return 'B';
   return 'C';
 }
 
@@ -647,11 +646,13 @@ function groupLabel(group) {
 }
 
 function compareRankPeople(left, right) {
-  // 正式規格排序：總業績 > 續單金額 > 追單件數 > AI 評分
-  if (right.totalRevenue !== left.totalRevenue) return right.totalRevenue - left.totalRevenue;
-  if (right.renewalRevenue !== left.renewalRevenue) return right.renewalRevenue - left.renewalRevenue;
-  if (right.renewalDeals !== left.renewalDeals) return right.renewalDeals - left.renewalDeals;
+  // AI比例原則永久鎖死版排序。
   if (right.totalScore !== left.totalScore) return right.totalScore - left.totalScore;
+  if (right.dailyReceived !== left.dailyReceived) return right.dailyReceived - left.dailyReceived;
+  if (right.renewalRevenue !== left.renewalRevenue) return right.renewalRevenue - left.renewalRevenue;
+  if (right.totalRevenue !== left.totalRevenue) return right.totalRevenue - left.totalRevenue;
+  if (right.dailyTicket !== left.dailyTicket) return right.dailyTicket - left.dailyTicket;
+  if (right.renewalDeals !== left.renewalDeals) return right.renewalDeals - left.renewalDeals;
   return left.inputOrder - right.inputOrder;
 }
 
@@ -1671,7 +1672,7 @@ function parseReport(rawText, options = {}) {
     const dailyTicket = Object.prototype.hasOwnProperty.call(metrics, 'dailyTicket')
       ? metrics.dailyTicket
       : metrics.renewalDeals > 0
-      ? round(dailyReceived / metrics.renewalDeals, 2)
+      ? round(metrics.renewalRevenue / metrics.renewalDeals, 2)
       : 0;
 
     parsedRows.push({

@@ -1,11 +1,17 @@
 const GROUP_KEYS = Object.freeze(['A1', 'A2', 'B', 'C']);
+const GROUP_RANK_POLICY = Object.freeze({
+  A1: { min: 1, max: 4, label: '🔴 A1｜高優先主力' },
+  A2: { min: 5, max: 11, label: '🟠 A2｜次主力追進' },
+  B: { min: 12, max: 18, label: '🟡 B組｜一般量單' },
+  C: { min: 19, max: 999, label: '🟢 C組｜補位／觀察' }
+});
 const RANKING_METRICS = Object.freeze([
   '正式權重分數',
   '實收',
-  '總業績',
   '續單金額',
-  '追續成交總數',
-  '派單成交總通數'
+  '總業績',
+  '追續客單價',
+  '追續成交總數'
 ]);
 const AUDIT_METRICS = Object.freeze([
   '累積總派單數',
@@ -37,18 +43,43 @@ const SERVICE_NAME = 'AI 派單公告系統 API';
 const API_VERSION = 'v1';
 const TIMEZONE = 'Asia/Taipei';
 const DEFAULT_AUDIT_RULE = '先審計，後排序，再派單';
-const SORT_RULE_TEXT = 'AI 權重分數 (比例原則) → 總業績 → 續單金額 → 追續成交總數 → 派單成交總通數';
+const SORT_RULE_TEXT = '正式權重分數 → 實收總業績 → 追續單金額 → 全部總金額 → 追續客單價 → 追續單數量';
 const WEIGHTING_POLICY = Object.freeze({
-  title: 'AI 權重分數（比例原則）',
+  title: 'AI比例原則永久鎖死版',
   description: '依當日結算業績計算；每個項目依全員最高值換算比例分數，再加總（滿分 10000）。',
+  locked: true,
+  maxScore: 10000,
   weights: Object.freeze([
-    { key: '實收總業績', label: '實收總業績', weight: 3000 },
-    { key: '追續單金額', label: '追續單金額', weight: 2500 },
-    { key: '全部總金額', label: '全部總金額', weight: 1500 },
+    { key: '實收', label: '實收總業績', weight: 3000 },
+    { key: '續單金額', label: '追續單金額', weight: 2500 },
+    { key: '總業績', label: '全部總金額', weight: 1500 },
     { key: '追續客單價', label: '追續客單價', weight: 1500 },
-    { key: '追續單數量', label: '追續單數量', weight: 1500 }
+    { key: '追續成交總數', label: '追續單數量', weight: 1500 }
   ]),
-  formula: '正式權重分數 = 各項個人數值 ÷ 全員最高值 × 該項權重，再加總（滿分 10000）'
+  formula: '正式權重分數 = 各項個人數值 ÷ 全員最高值 × 該項權重，再加總（滿分 10000）',
+  safeguards: Object.freeze([
+    '全員最高值為 0 時，該項所有人分數一律記 0。',
+    '追續單數量為 0 時，追續客單價一律記 0。',
+    '不可出現除以 0、NaN、Infinity。',
+    '已離職只列審計，不進正式排名。',
+    '不得人工手改排名。'
+  ]),
+  requiredInputFields: Object.freeze([
+    '姓名',
+    '是否離職',
+    '是否新人',
+    '實收總業績',
+    '追續單金額',
+    '全部總金額',
+    '追續單數量'
+  ]),
+  requiredOutputFields: Object.freeze([
+    '審計結果',
+    '整合總盤',
+    '正式名次',
+    '正式權重分數',
+    '派單順序'
+  ])
 });
 const FRONTEND_LOCK_RULES = Object.freeze([
   '後端唯一真實來源。',
@@ -59,6 +90,12 @@ const FRONTEND_LOCK_RULES = Object.freeze([
   '姓名必須完全正確，徐華妤禁止錯寫。',
   '任何前端畫面都不得與後端資料不一致。'
 ]);
+const TROPHY_POLICY = Object.freeze({
+  threshold: 7000,
+  icon: '🏆',
+  label: '榮耀金獎',
+  description: '正式權重分數達 7000 分以上自動授獎'
+});
 const BANNED_NAME_PATTERNS = Object.freeze([
   {
     field: 'name',
@@ -69,6 +106,7 @@ const BANNED_NAME_PATTERNS = Object.freeze([
 
 module.exports = {
   GROUP_KEYS,
+  GROUP_RANK_POLICY,
   RANKING_METRICS,
   AUDIT_METRICS,
   SUMMARY_METRICS,
@@ -81,5 +119,6 @@ module.exports = {
   SORT_RULE_TEXT,
   WEIGHTING_POLICY,
   FRONTEND_LOCK_RULES,
+  TROPHY_POLICY,
   BANNED_NAME_PATTERNS
 };

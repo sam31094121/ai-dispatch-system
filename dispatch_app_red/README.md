@@ -1,45 +1,49 @@
-# 兆櫃 AI 派單系統
+# 兆櫃 AI 派單公告系統｜AI 比例原則鎖死版
 
-`dispatch_app_red` is the single canonical application directory for this repo.
+本系統已全面完成「AI 比例原則」硬化與自動化重構。
 
-## Local start
+## 核心營運規則 (憲法)
+本系統之排名與派單邏輯嚴禁人工修改，必須嚴格遵守以下流程：
+**合併 -> 審計 -> 計算 -> 排序 -> 輸出**
 
-```bash
-cd dispatch_app_red
-copy .env.example .env
+### 1. 權重計分 (10,000 分制)
+- **實收總業績**：3,000 分 (權重 30%)
+- **追續單金額**：2,500 分 (權重 25%)
+- **全部總業績**：1,500 分 (權重 15%)
+- **追續客單價**：1,500 分 (權重 15%)
+- **追續單數量**：1,500 分 (權重 15%)
+
+### 2. 六層過濾鐵律 (Tie-break Rule)
+同分情況下，依序比對以下指標：
+1. 權重總分 -> 2. 實收金額 -> 3. 續單金額 -> 4. 總業績 -> 5. 客單價 -> 6. 續單數
+
+### 3. 派單分級
+- **🔴 A1**：第 1-4 名 (核心主力)
+- **🟠 A2**：第 5-11 名 (次主力)
+- **🟡 B組**：第 12-18 名 (一般量單)
+- **🟢 C組**：第 19 名以後 (補位觀察)
+
+---
+
+## 開發者/維護手冊
+### 系統架構
+- **Bible (規則中心)**：`src/constants/dispatchRules.js`
+- **Engine (核心引擎)**：`src/services/dispatchBuild.service.js`
+- **Data Source (數據真值)**：`data/dispatch-reports-v1/latest.json`
+
+### 啟動指令
+```powershell
 npm install
-npm start
+npm run dev
 ```
 
-Open `http://localhost:3000`.
+### 獎盃觸發門檻
+正式權重分數達 **7,000 分** 以上者，系統自動在手機端賦予「榮耀獎盃」與「動態流光」特效。
 
-The server now opens the browser automatically after startup. If you want to disable that behavior, set `AUTO_OPEN_BROWSER=0` before running `npm start`.
+### 維護規範
+1. **不得修改權重比例**：任何權重修改必須經由正式提案，嚴禁私自在 `calculateWeightedScores` 中變動。
+2. **防禦性編程**：所有數據計算必須經過 `toNumber()` 與 `Number.isFinite()` 檢查，防止 `NaN` 污染前端。
+3. **前端鎖死**：手機端 (`mobile.js`) 僅負責渲染，嚴禁執行任何業務邏輯計算。
 
-## Validation
-
-```bash
-npm run check
-```
-
-The regression check covers the dispatch API plus routing behavior for unknown API paths and SPA fallbacks.
-
-## Gemini integration
-
-- `GEMINI_API_KEY` is read on the backend only.
-- Ranking, grouping, and consistency checks stay deterministic in `shared/dispatch-engine.js`.
-- Gemini runs after a snapshot passes audit and confirmation, then overlays:
-  - `aiInsights`
-  - `announcement`
-- If Gemini is unavailable, the app keeps the rule-based content and reports `aiProvider.status = fallback`.
-- The default REST API version is `v1beta`, which supports the structured generation fields used by this backend.
-
-## Deploy
-
-This app is an Express server, so GitHub Pages is not an appropriate deployment target.
-
-Use Render instead:
-
-1. Create a new Render Web Service from this repo.
-2. Keep the repo root and let Render read `render.yaml`.
-3. Set `GEMINI_API_KEY` in Render environment variables.
-4. Deploy and verify `GET /api/health`.
+---
+*Last Updated: 2026-05-03*

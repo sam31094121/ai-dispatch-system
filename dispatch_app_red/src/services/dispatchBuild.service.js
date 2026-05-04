@@ -4,6 +4,7 @@ const {
   DEFAULT_AUDIT_RULE,
   FRONTEND_LOCK_RULES,
   GROUP_KEYS,
+  GROUP_RANK_POLICY,
   PLATFORM_NAME_TO_KEY,
   RANKING_METRICS,
   RESERVED_AUDIT_KEYS,
@@ -313,9 +314,9 @@ function compareRankingRows(left, right) {
 }
 
 function resolveGroupByRank(rank) {
-  if (rank <= 4) return 'A1';
-  if (rank <= 10) return 'A2';
-  if (rank <= 17) return 'B';
+  if (rank >= GROUP_RANK_POLICY.A1.min && rank <= GROUP_RANK_POLICY.A1.max) return 'A1';
+  if (rank >= GROUP_RANK_POLICY.A2.min && rank <= GROUP_RANK_POLICY.A2.max) return 'A2';
+  if (rank >= GROUP_RANK_POLICY.B.min && rank <= GROUP_RANK_POLICY.B.max) return 'B';
   return 'C';
 }
 
@@ -370,47 +371,36 @@ function calculateWeightedScores(rankings) {
   const people = rankings.filter((r) => r.name);
   if (people.length === 0) return rankings;
 
-  const hasNewMetrics = people.some((r) => Number(r.metrics?.實收 || 0) > 0);
+  const weights = Object.fromEntries(WEIGHTING_POLICY.weights.map((item) => [item.key, item.weight]));
+  const maxes = Object.fromEntries(
+    WEIGHTING_POLICY.weights.map((item) => [
+      item.key,
+      Math.max(...people.map((row) => Number(row.metrics?.[item.key] || 0)), 0)
+    ])
+  );
 
-  if (hasNewMetrics) {
-    // [AI 比例原則] 5 指標 10000 分制：實收3000＋追續金額2500＋全部總業績1500＋追續客單價1500＋追續單數1500
-    const maxes = {
-      實收: Math.max(...people.map((r) => Number(r.metrics?.實收 || 0)), 1),
-      續單金額: Math.max(...people.map((r) => Number(r.metrics?.續單金額 || 0)), 1),
-      總業績: Math.max(...people.map((r) => Number(r.metrics?.總業績 || 0)), 1),
-      追續客單價: Math.max(...people.map((r) => Number(r.metrics?.追續客單價 || 0)), 1),
-      追續成交總數: Math.max(...people.map((r) => Number(r.metrics?.追續成交總數 || 0)), 1)
-    };
-    people.forEach((row) => {
-      const m = row.metrics || {};
-      const score =
-        (maxes.實收 > 0 ? (Number(m.實收 || 0) / maxes.實收) * 3000 : 0) +
-        (maxes.續單金額 > 0 ? (Number(m.續單金額 || 0) / maxes.續單金額) * 2500 : 0) +
-        (maxes.總業績 > 0 ? (Number(m.總業績 || 0) / maxes.總業績) * 1500 : 0) +
-        (maxes.追續客單價 > 0 ? (Number(m.追續客單價 || 0) / maxes.追續客單價) * 1500 : 0) +
-        (maxes.追續成交總數 > 0 ? (Number(m.追續成交總數 || 0) / maxes.追續成交總數) * 1500 : 0);
-
-      m.正式權重分數 = isFinite(score) ? Number(score.toFixed(2)) : 0;
-    });
-    return rankings;
-  }
-
-  const maxes = {
-    總業績: Math.max(...people.map((r) => Number(r.metrics?.總業績 || 0)), 1),
-    續單金額: Math.max(...people.map((r) => Number(r.metrics?.續單金額 || 0)), 1),
-    追續成交總數: Math.max(...people.map((r) => Number(r.metrics?.追續成交總數 || 0)), 1),
-    派單成交總通數: Math.max(...people.map((r) => Number(r.metrics?.派單成交總通數 || 0)), 1)
-  };
-  const weights = { 總業績: 300, 續單金額: 250, 追續成交總數: 200, 派單成交總通數: 150, base: 100 };
   people.forEach((row) => {
     const m = row.metrics || {};
-    const total = weights.base +
-      (Number(m.總業績 || 0) / maxes.總業績) * weights.總業績 +
-      (Number(m.續單金額 || 0) / maxes.續單金額) * weights.續單金額 +
-      (Number(m.追續成交總數 || 0) / maxes.追續成交總數) * weights.追續成交總數 +
-      (Number(m.派單成交總通數 || 0) / maxes.派單成交總通數) * weights.派單成交總通數;
-    row.metrics.正式權重分數 = parseFloat(total.toFixed(2));
+    m.追續客單價 = Number(m.追續成交總數 || 0) > 0
+      ? Number((Number(m.續單金額 || 0) / Number(m.追續成交總數 || 0)).toFixed(2))
+      : 0;
   });
+
+  maxes.追續客單價 = Math.max(...people.map((row) => Number(row.metrics?.追續客單價 || 0)), 0);
+
+  people.forEach((row) => {
+    const m = row.metrics || {};
+    const total = WEIGHTING_POLICY.weights.reduce((sum, item) => {
+      const maxValue = maxes[item.key] || 0;
+      if (maxValue <= 0) return sum;
+      // 防禦性處理：確保數值有效且非負
+      const val = Math.max(0, Number(m[item.key] || 0));
+      const score = (val / maxValue) * weights[item.key];
+      return sum + (Number.isFinite(score) ? score : 0);
+    }, 0);
+    m.正式權重分數 = Number.isFinite(total) ? Number(total.toFixed(2)) : 0;
+  });
+
   return rankings;
 }
 
@@ -468,18 +458,18 @@ function buildProportionalAdvice(row, rankings, index) {
     : '實收業績';
 
   if (row.rank === 1) {
-    return `目前權重分數第一，與第二名差距 ${gapDown || '0%'}。今天繼續把${mainMetric}補厚，才能穩住 4/24 派單優先權。`;
+    return `目前權重分數第一，與第二名差距 ${gapDown || '0%'}。今天繼續把${mainMetric}補厚，才能穩住派單優先權。`;
   }
-  if (row.rank <= 4) {
-    return `你在 A1 前段，距前一名 ${gapUp}。今天主攻${mainMetric}，一筆有效成交就能把權重分數再往前推。`;
+  if (row.rank <= GROUP_RANK_POLICY.A1.max) {
+    return `${GROUP_RANK_POLICY.A1.label}，距前一名 ${gapUp}。今天主攻${mainMetric}，一筆有效成交就能把權重分數再往前推。`;
   }
-  if (row.rank <= 10) {
-    return `你在 A2 主力區，距前一名 ${gapUp}，後方差距 ${gapDown || '尚穩'}。今天用${mainMetric}守位並爭取前壓。`;
+  if (row.rank <= GROUP_RANK_POLICY.A2.max) {
+    return `${GROUP_RANK_POLICY.A2.label}，距前一名 ${gapUp}，後方差距 ${gapDown || '尚穩'}。今天用${mainMetric}守位並爭取前壓。`;
   }
-  if (row.rank <= 17) {
-    return `你在 B 組競爭帶，距前一名 ${gapUp}。今天先把${mainMetric}做出明顯增量，權重分數才會動。`;
+  if (row.rank <= GROUP_RANK_POLICY.B.max) {
+    return `${GROUP_RANK_POLICY.B.label}，距前一名 ${gapUp}。今天先把${mainMetric}做出明顯增量，權重分數才會動。`;
   }
-  return `你在 C 組補位區，今天先讓數字落地。從${mainMetric}補一筆開始，比例分數就會往上。`;
+  return `${GROUP_RANK_POLICY.C.label}，今天先讓數字落地。從${mainMetric}補一筆開始，比例分數就會往上。`;
 }
 
 function resolveTitle(explicitTitle, fallbackTitle, settlementDate, dispatchDate) {

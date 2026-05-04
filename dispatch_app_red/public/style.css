@@ -54,6 +54,337 @@
   --gold-4:    #B8860B;   /* 暗金   */
 }
 
+/* ── Oil Announcement Reskin · 5/2 Formal Dispatch ───────── */
+body.oil-announcement {
+  --bg-main: #1b120a;
+  --bg-panel: rgba(58, 35, 17, 0.82);
+  --bg-strong: rgba(35, 23, 13, 0.94);
+  --bg-glass: rgba(255, 239, 203, 0.08);
+  --text: #fff6df;
+  --text-sub: #d7b983;
+  --text-dim: #967348;
+  --cyan: #d99b45;
+  --cyan-2: #ffd58a;
+  --emerald: #4f8f65;
+  --purple: #67354a;
+  --teal: #6f9a70;
+  --blue: #314f73;
+  --azure: #557091;
+  --pass: #d7a849;
+  --pass-2: #8f6a24;
+  --fail: #a93535;
+  --warn: #d9822b;
+  --a1-c: #9d1f1f;
+  --a2-c: #c96a1b;
+  --b-c: #d4a338;
+  --c-c: #277a4a;
+  --shadow: 0 24px 60px rgba(10, 5, 1, 0.72), 0 0 0 1px rgba(255, 215, 139, 0.08);
+  background-color: #1b120a;
+  background-image:
+    linear-gradient(115deg, rgba(80, 28, 20, 0.28), transparent 34%),
+    radial-gradient(circle at 18% 18%, rgba(207, 130, 43, 0.26), transparent 32%),
+    radial-gradient(circle at 82% 12%, rgba(50, 77, 86, 0.24), transparent 34%),
+    radial-gradient(circle at 58% 88%, rgba(37, 95, 64, 0.20), transparent 36%),
+    linear-gradient(180deg, #2b180d 0%, #130c08 100%);
+}
+
+body.oil-announcement::before {
+  background-image:
+    repeating-linear-gradient(101deg, rgba(255, 231, 181, 0.045) 0 2px, transparent 2px 13px),
+    repeating-linear-gradient(8deg, rgba(55, 22, 10, 0.18) 0 1px, transparent 1px 9px);
+  background-size: auto;
+  mask-image: none;
+  opacity: 0.78;
+  mix-blend-mode: soft-light;
+}
+
+body.oil-announcement::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.24;
+  background:
+    radial-gradient(ellipse at 10% 22%, rgba(255, 220, 145, 0.20), transparent 24%),
+    radial-gradient(ellipse at 88% 74%, rgba(42, 95, 67, 0.28), transparent 28%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='oil'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.045' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='table' tableValues='0 .45'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23oil)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+.oil-announcement .page-shell {
+  width: min(1480px, calc(100vw - 28px));
+  gap: 20px;
+}
+
+.oil-announcement .hero,
+.oil-announcement .panel {
+  border-radius: 10px;
+  background:
+    linear-gradient(138deg, rgba(255, 234, 190, 0.08), transparent 24%),
+    linear-gradient(166deg, rgba(72, 43, 20, 0.92), rgba(26, 17, 10, 0.98) 64%),
+    radial-gradient(circle at 8% 0%, rgba(210, 139, 50, 0.22), transparent 38%),
+    radial-gradient(circle at 92% 100%, rgba(41, 98, 71, 0.20), transparent 38%);
+  border: 1px solid rgba(235, 186, 104, 0.28);
+  backdrop-filter: blur(8px) saturate(130%);
+  box-shadow:
+    var(--shadow),
+    inset 0 1px 0 rgba(255, 230, 180, 0.14),
+    inset 0 -20px 44px rgba(32, 16, 5, 0.28);
+}
+
+.oil-announcement .hero::before,
+.oil-announcement .panel::before {
+  left: 0;
+  width: 100%;
+  background:
+    repeating-linear-gradient(94deg, rgba(255, 235, 186, 0.035) 0 3px, transparent 3px 16px),
+    linear-gradient(90deg, transparent, rgba(255, 190, 89, 0.08), transparent);
+  animation: none;
+  opacity: 0.65;
+  mix-blend-mode: overlay;
+}
+
+.oil-announcement .vfx-layer::before {
+  display: none;
+}
+
+.oil-announcement .vfx-layer::after {
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+}
+
+.oil-announcement .hero {
+  order: 0;
+  min-height: 360px;
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.8fr);
+  align-items: end;
+  padding: clamp(28px, 5vw, 64px);
+  background:
+    linear-gradient(180deg, rgba(23, 13, 7, 0.10), rgba(23, 13, 7, 0.88)),
+    radial-gradient(circle at 22% 18%, rgba(255, 210, 125, 0.30), transparent 22%),
+    radial-gradient(circle at 78% 28%, rgba(58, 91, 112, 0.38), transparent 26%),
+    linear-gradient(135deg, #5f2f1a 0%, #1f130d 42%, #17351f 100%);
+}
+
+.oil-announcement #performance-panel { order: 1; }
+.oil-announcement .screen-first { order: 2; }
+.oil-announcement .screen-second { order: 3; }
+.oil-announcement .screen-third { order: 4; }
+.oil-announcement .screen-fourth { order: 5; }
+.oil-announcement .workspace { order: 20; }
+.oil-announcement .feedback-grid { order: 21; }
+
+.oil-announcement .hero-kicker,
+.oil-announcement .eyebrow {
+  color: #f2c56f;
+  font-family: "Noto Sans TC", "Sora", sans-serif;
+  letter-spacing: 0.18em;
+  text-shadow: 0 2px 10px rgba(45, 18, 4, 0.8);
+}
+
+.oil-announcement .hero h1 {
+  max-width: 900px;
+  color: #fff0c9;
+  background: linear-gradient(102deg, #fff4d7 0%, #e3a846 48%, #c7462d 100%);
+  -webkit-background-clip: text;
+  text-shadow: 0 12px 34px rgba(0, 0, 0, 0.38);
+}
+
+.oil-announcement .hero-subtitle {
+  max-width: 72ch;
+  color: #efd6a3;
+  font-size: 17px;
+}
+
+.oil-announcement .optimization-badge,
+.oil-announcement .badge {
+  border-radius: 7px;
+  animation: none;
+  font-family: "Noto Sans TC", "Sora", sans-serif;
+  letter-spacing: 0.08em;
+}
+
+.oil-announcement .optimization-badge {
+  color: #321a0c;
+  background: linear-gradient(135deg, #f6d084, #b76822);
+  border-color: rgba(255, 232, 177, 0.55);
+  box-shadow: 0 8px 28px rgba(122, 61, 15, 0.36);
+}
+
+.oil-announcement .status-card,
+.oil-announcement .metric-chip,
+.oil-announcement .summary-card,
+.oil-announcement .perf-metric,
+.oil-announcement .perf-product,
+.oil-announcement .dispatch-order-row,
+.oil-announcement .perf-group-card,
+.oil-announcement .perf-advice-row,
+.oil-announcement .group-card,
+.oil-announcement .leader-row,
+.oil-announcement .advice-card,
+.oil-announcement .prop-card,
+.oil-announcement .scoring-weight-card {
+  border-radius: 8px;
+  border-color: rgba(230, 177, 89, 0.28);
+  background:
+    linear-gradient(155deg, rgba(255, 236, 190, 0.06), transparent 38%),
+    rgba(38, 24, 14, 0.82);
+  box-shadow:
+    0 12px 28px rgba(11, 6, 2, 0.42),
+    inset 0 1px 0 rgba(255, 221, 150, 0.10);
+}
+
+.oil-announcement .status-card strong,
+.oil-announcement .summary-card strong,
+.oil-announcement .metric-chip strong,
+.oil-announcement .dispatch-score,
+.oil-announcement .score-value,
+.oil-announcement .col-score {
+  color: #f1bb57 !important;
+  text-shadow: 0 2px 12px rgba(120, 64, 18, 0.72) !important;
+}
+
+.oil-announcement .badge-pass,
+.oil-announcement .audit-pass {
+  color: #2d1909;
+  background: linear-gradient(135deg, #f2c56f, #b87324);
+  border-color: rgba(255, 226, 161, 0.60);
+  box-shadow: 0 12px 30px rgba(144, 79, 25, 0.35);
+  text-shadow: none;
+  animation: none;
+}
+
+.oil-announcement .audit-hero {
+  border-radius: 8px;
+  letter-spacing: 0.08em;
+}
+
+.oil-announcement .screen-head {
+  padding: 0 4px;
+}
+
+.oil-announcement .screen-head h2,
+.oil-announcement .panel h2 {
+  color: #fff0c9;
+}
+
+.oil-announcement .performance-panel {
+  border: 1px solid rgba(242, 197, 111, 0.38);
+  background:
+    linear-gradient(165deg, rgba(98, 55, 21, 0.88), rgba(24, 16, 9, 0.98) 58%),
+    radial-gradient(circle at 12% 10%, rgba(210, 128, 44, 0.22), transparent 28%),
+    radial-gradient(circle at 90% 20%, rgba(50, 90, 76, 0.20), transparent 28%);
+}
+
+.oil-announcement .spotlight-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.oil-announcement .spotlight-card {
+  border-radius: 9px;
+  border-color: rgba(235, 185, 96, 0.30);
+  background:
+    linear-gradient(135deg, rgba(255, 225, 158, 0.10), transparent 42%),
+    linear-gradient(180deg, rgba(80, 44, 18, 0.86), rgba(30, 18, 10, 0.97));
+}
+
+.oil-announcement .spotlight-card.rank-1 {
+  grid-column: span 2;
+  min-height: 300px;
+  background:
+    radial-gradient(circle at 20% 12%, rgba(255, 223, 128, 0.33), transparent 32%),
+    linear-gradient(145deg, rgba(121, 58, 22, 0.94), rgba(33, 19, 9, 0.98));
+}
+
+.oil-announcement .spotlight-card h3,
+.oil-announcement .announcement-title {
+  color: #fff1c7;
+  background: none;
+  -webkit-text-fill-color: currentColor;
+}
+
+.oil-announcement .leader-row:nth-child(9),
+.oil-announcement .leader-row:nth-child(10) {
+  border-color: rgba(242, 197, 111, 0.55);
+}
+
+.oil-announcement .group-A1 .group-head strong,
+.oil-announcement .group-A1 .advice-group-tag,
+.oil-announcement .group-A1 .prop-group-tag { color: #ff8c74; }
+.oil-announcement .group-A2 .group-head strong,
+.oil-announcement .group-A2 .advice-group-tag,
+.oil-announcement .group-A2 .prop-group-tag { color: #f2a34f; }
+.oil-announcement .group-B .group-head strong,
+.oil-announcement .group-B .advice-group-tag,
+.oil-announcement .group-B .prop-group-tag { color: #e0c15d; }
+.oil-announcement .group-C .group-head strong,
+.oil-announcement .group-C .advice-group-tag,
+.oil-announcement .group-C .prop-group-tag { color: #73b37b; }
+
+.oil-announcement textarea,
+.oil-announcement .compact-output {
+  border-radius: 8px;
+  border-color: rgba(226, 178, 92, 0.30);
+  background: rgba(24, 16, 10, 0.92);
+  color: #fff1c7;
+}
+
+.oil-announcement .btn {
+  border-radius: 7px;
+  font-family: "Noto Sans TC", "Sora", sans-serif;
+}
+
+.oil-announcement .btn-primary {
+  color: #2e1607;
+  background: linear-gradient(135deg, #f1bf61, #a95f22);
+  box-shadow: 0 10px 26px rgba(138, 72, 20, 0.34);
+}
+
+.oil-announcement .btn-secondary {
+  color: #ffe2a2;
+  background: rgba(127, 68, 24, 0.34);
+  border-color: rgba(232, 176, 86, 0.32);
+}
+
+.oil-announcement .btn-ghost {
+  color: #d7b983;
+  border-color: rgba(226, 178, 92, 0.24);
+}
+
+.oil-announcement .table-wrap {
+  border-radius: 8px;
+}
+
+.oil-announcement .ranking-table th {
+  color: #f2c56f;
+}
+
+@media (max-width: 1180px) {
+  .oil-announcement .spotlight-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .oil-announcement .spotlight-card.rank-1 {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 760px) {
+  .oil-announcement .page-shell {
+    width: min(100vw - 18px, 720px);
+    margin-top: 10px;
+  }
+  .oil-announcement .hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+  .oil-announcement .spotlight-grid,
+  .oil-announcement .spotlight-card.rank-1 {
+    grid-template-columns: 1fr;
+    grid-column: auto;
+  }
+}
+
 /* ── 2. Reset ───────────────────────────────────────────── */
 * { box-sizing: border-box; }
 
@@ -2796,5 +3127,158 @@ textarea,
   }
   .perf-advice-text {
     grid-column: 1 / -1;
+  }
+}
+
+/* Oil reskin final overrides: keep these at file end. */
+body.oil-announcement {
+  background-color: #1b120a;
+  background-image:
+    linear-gradient(115deg, rgba(80, 28, 20, 0.28), transparent 34%),
+    radial-gradient(circle at 18% 18%, rgba(207, 130, 43, 0.26), transparent 32%),
+    radial-gradient(circle at 82% 12%, rgba(50, 77, 86, 0.24), transparent 34%),
+    radial-gradient(circle at 58% 88%, rgba(37, 95, 64, 0.20), transparent 36%),
+    linear-gradient(180deg, #2b180d 0%, #130c08 100%);
+}
+
+.oil-announcement .hero,
+.oil-announcement .panel,
+.oil-announcement .performance-panel {
+  border-radius: 10px;
+  border: 1px solid rgba(235, 186, 104, 0.30);
+  background:
+    linear-gradient(138deg, rgba(255, 234, 190, 0.08), transparent 24%),
+    linear-gradient(166deg, rgba(72, 43, 20, 0.92), rgba(26, 17, 10, 0.98) 64%),
+    radial-gradient(circle at 8% 0%, rgba(210, 139, 50, 0.22), transparent 38%),
+    radial-gradient(circle at 92% 100%, rgba(41, 98, 71, 0.20), transparent 38%);
+  box-shadow:
+    0 24px 60px rgba(10, 5, 1, 0.72),
+    inset 0 1px 0 rgba(255, 230, 180, 0.14),
+    inset 0 -20px 44px rgba(32, 16, 5, 0.28);
+}
+
+.oil-announcement .hero {
+  order: 0;
+  min-height: 360px;
+  background:
+    linear-gradient(180deg, rgba(23, 13, 7, 0.10), rgba(23, 13, 7, 0.88)),
+    radial-gradient(circle at 22% 18%, rgba(255, 210, 125, 0.30), transparent 22%),
+    radial-gradient(circle at 78% 28%, rgba(58, 91, 112, 0.38), transparent 26%),
+    linear-gradient(135deg, #5f2f1a 0%, #1f130d 42%, #17351f 100%);
+}
+
+.oil-announcement #performance-panel { order: 1; }
+.oil-announcement .screen-first { order: 2; }
+.oil-announcement .screen-second { order: 3; }
+.oil-announcement .screen-third { order: 4; }
+.oil-announcement .screen-fourth { order: 5; }
+.oil-announcement .workspace { order: 20; }
+.oil-announcement .feedback-grid { order: 21; }
+
+.oil-announcement .hero h1,
+.oil-announcement .announcement-title {
+  color: #fff1c7;
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  text-shadow: 0 10px 34px rgba(0, 0, 0, 0.42);
+}
+
+.oil-announcement .hero-kicker,
+.oil-announcement .eyebrow,
+.oil-announcement .ranking-table th {
+  color: #f2c56f;
+  text-shadow: 0 2px 10px rgba(45, 18, 4, 0.8);
+}
+
+.oil-announcement .hero-subtitle,
+.oil-announcement .perf-advice-text,
+.oil-announcement .rule-list,
+.oil-announcement .panel-head span {
+  color: #efd6a3;
+}
+
+.oil-announcement .status-card,
+.oil-announcement .metric-chip,
+.oil-announcement .summary-card,
+.oil-announcement .perf-metric,
+.oil-announcement .perf-product,
+.oil-announcement .dispatch-order-row,
+.oil-announcement .perf-group-card,
+.oil-announcement .perf-advice-row,
+.oil-announcement .group-card,
+.oil-announcement .leader-row,
+.oil-announcement .advice-card,
+.oil-announcement .prop-card,
+.oil-announcement .scoring-weight-card {
+  border-radius: 8px;
+  border-color: rgba(230, 177, 89, 0.28);
+  background:
+    linear-gradient(155deg, rgba(255, 236, 190, 0.06), transparent 38%),
+    rgba(38, 24, 14, 0.82);
+}
+
+.oil-announcement .status-card strong,
+.oil-announcement .summary-card strong,
+.oil-announcement .metric-chip strong,
+.oil-announcement .dispatch-score,
+.oil-announcement .score-value,
+.oil-announcement .col-score {
+  color: #f1bb57 !important;
+  text-shadow: 0 2px 12px rgba(120, 64, 18, 0.72) !important;
+}
+
+.oil-announcement .badge-pass,
+.oil-announcement .audit-pass,
+.oil-announcement .btn-primary {
+  color: #2d1909;
+  background: linear-gradient(135deg, #f2c56f, #b87324);
+  border-color: rgba(255, 226, 161, 0.60);
+  box-shadow: 0 12px 30px rgba(144, 79, 25, 0.35);
+  text-shadow: none;
+  animation: none;
+}
+
+.oil-announcement .spotlight-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.oil-announcement .spotlight-card {
+  border-radius: 9px;
+  border-color: rgba(235, 185, 96, 0.30);
+  background:
+    linear-gradient(135deg, rgba(255, 225, 158, 0.10), transparent 42%),
+    linear-gradient(180deg, rgba(80, 44, 18, 0.86), rgba(30, 18, 10, 0.97));
+}
+
+.oil-announcement .spotlight-card.rank-1 {
+  grid-column: span 2;
+  min-height: 300px;
+  background:
+    radial-gradient(circle at 20% 12%, rgba(255, 223, 128, 0.33), transparent 32%),
+    linear-gradient(145deg, rgba(121, 58, 22, 0.94), rgba(33, 19, 9, 0.98));
+}
+
+.oil-announcement textarea,
+.oil-announcement .compact-output {
+  border-radius: 8px;
+  border-color: rgba(226, 178, 92, 0.30);
+  background: rgba(24, 16, 10, 0.92);
+  color: #fff1c7;
+}
+
+@media (max-width: 1180px) {
+  .oil-announcement .spotlight-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .oil-announcement .spotlight-card.rank-1 {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 760px) {
+  .oil-announcement .spotlight-grid,
+  .oil-announcement .spotlight-card.rank-1 {
+    grid-template-columns: 1fr;
+    grid-column: auto;
   }
 }

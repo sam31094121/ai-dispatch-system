@@ -54,8 +54,8 @@ const OFFICIAL_0502_TO_0503 = Object.freeze({
     { rank: 6, name: '林宜靜', totalScore: 3174.04, actualRevenue: 7600, renewalRevenue: 6000, totalRevenue: 79420, avgRenewal: 6000, renewalDeals: 1, group: 'A2', advice: '你本輪靠總業績與實收撐住，今天先求再補一筆追續。' },
     { rank: 7, name: '高如郁', totalScore: 2767.43, actualRevenue: 7580, renewalRevenue: 9000, totalRevenue: 28140, avgRenewal: 9000, renewalDeals: 1, group: 'A2', advice: '你這輪是可上推區，今天把第二筆做出來就會更漂亮。' },
     { rank: 8, name: '王梅慧', totalScore: 2197.66, actualRevenue: 0, renewalRevenue: 9800, totalRevenue: 36240, avgRenewal: 9800, renewalDeals: 1, group: 'A2', advice: '你底盤還在，今天差的是把數字再放大。' },
-    { rank: 9, name: '許喬恩', totalScore: 2107.26, actualRevenue: 0, renewalRevenue: 12000, totalRevenue: 12000, avgRenewal: 12000, renewalDeals: 1, group: 'A2', advice: '你這輪有基本分，今天重點是把領先差拉開。' },
-    { rank: 10, name: '周美蓁', totalScore: 2107.26, actualRevenue: 0, renewalRevenue: 12000, totalRevenue: 12000, avgRenewal: 12000, renewalDeals: 1, group: 'A2', advice: '你和前面同分，今天只要多一筆就會過。' },
+    { rank: 9, name: '周美蓁', totalScore: 2107.26, actualRevenue: 0, renewalRevenue: 12000, totalRevenue: 12000, avgRenewal: 12000, renewalDeals: 1, group: 'A2', advice: '你這輪已進前十，今天重點是把差距再拉開。' },
+    { rank: 10, name: '許喬恩', totalScore: 2107.26, actualRevenue: 0, renewalRevenue: 12000, totalRevenue: 12000, avgRenewal: 12000, renewalDeals: 1, group: 'A2', advice: '你和前面同分，今天只要多一筆就會過。' },
     { rank: 11, name: '李玲玲', totalScore: 2075.94, actualRevenue: 0, renewalRevenue: 7440, totalRevenue: 48070, avgRenewal: 7440, renewalDeals: 1, group: 'A2', advice: '你本輪偏單點，今天要把厚度補回來。' },
     { rank: 12, name: '高美雲', totalScore: 1983.47, actualRevenue: 0, renewalRevenue: 11020, totalRevenue: 20360, avgRenewal: 5510, renewalDeals: 2, group: 'B', advice: '你還在可動區，今天一筆就可能翻位。' },
     { rank: 13, name: '江麗勉', totalScore: 1687.12, actualRevenue: 0, renewalRevenue: 9480, totalRevenue: 9480, avgRenewal: 4740, renewalDeals: 2, group: 'B', advice: '你還在可動區，今天一筆就可能翻位。' },
@@ -66,16 +66,16 @@ const OFFICIAL_0502_TO_0503 = Object.freeze({
     { rank: 18, name: '江沛林', totalScore: 61.41, actualRevenue: 0, renewalRevenue: 0, totalRevenue: 3980, avgRenewal: 0, renewalDeals: 0, group: 'B', advice: '今天先求有分數，不要空白。' },
     { rank: 19, name: '林沛昕', totalScore: 21.29, actualRevenue: 0, renewalRevenue: 0, totalRevenue: 1380, avgRenewal: 0, renewalDeals: 0, group: 'C', advice: '今天先求有分數，不要空白。' },
     { rank: 20, name: '徐華妤', totalScore: 0, actualRevenue: 0, renewalRevenue: 0, totalRevenue: 0, avgRenewal: 0, renewalDeals: 0, group: 'C', advice: '今天先求有分數，不要空白。' },
-    { rank: 21, name: '陳百玲（新人）', totalScore: 0, actualRevenue: 0, renewalRevenue: 0, totalRevenue: 0, avgRenewal: 0, renewalDeals: 0, group: 'C', advice: '今天先求有分數，不要空白。' },
-    { rank: 22, name: '蘇淑玲', totalScore: 0, actualRevenue: 0, renewalRevenue: 0, totalRevenue: 0, avgRenewal: 0, renewalDeals: 0, group: 'C', advice: '今天先求有分數，不要空白。' },
-    { rank: 23, name: '林佩君', totalScore: 0, actualRevenue: 0, renewalRevenue: 0, totalRevenue: 0, avgRenewal: 0, renewalDeals: 0, group: 'C', advice: '今天先求有分數，不要空白。' },
-    { rank: 24, name: '鄭上官', totalScore: 0, actualRevenue: 0, renewalRevenue: 0, totalRevenue: 0, avgRenewal: 0, renewalDeals: 0, group: 'C', advice: '今天先求有分數，不要空白。' }
+    { rank: 21, name: '林佩君', totalScore: 0, actualRevenue: 0, renewalRevenue: 0, totalRevenue: 0, avgRenewal: 0, renewalDeals: 0, group: 'C', advice: '今天先求開分，不要維持 0 分。' },
+    { rank: 22, name: '蘇淑玲', totalScore: 0, actualRevenue: 0, renewalRevenue: 0, totalRevenue: 0, avgRenewal: 0, renewalDeals: 0, group: 'C', advice: '今天先求開分，不要維持 0 分。' },
+    { rank: 23, name: '鄭上官', totalScore: 0, actualRevenue: 0, renewalRevenue: 0, totalRevenue: 0, avgRenewal: 0, renewalDeals: 0, group: 'C', advice: '今天先求開分，不要維持 0 分。' },
+    { rank: 24, name: '陳百玲（新人）', totalScore: 0, actualRevenue: 0, renewalRevenue: 0, totalRevenue: 0, avgRenewal: 0, renewalDeals: 0, group: 'C', advice: '先求第一筆有效分數，再談往前推。' }
   ]),
   groups: Object.freeze({
     A1: ['湯玉琦', '馬秋香', '王珍珠', '莉莉（新人）'],
-    A2: ['廖姿惠', '林宜靜', '高如郁', '王梅慧', '許喬恩', '周美蓁', '李玲玲'],
+    A2: ['廖姿惠', '林宜靜', '高如郁', '王梅慧', '周美蓁', '許喬恩', '李玲玲'],
     B: ['高美雲', '江麗勉', '鄭珮恩', '梁依萍', '陳玲華', '謝啟芳', '江沛林'],
-    C: ['林沛昕', '徐華妤', '陳百玲（新人）', '蘇淑玲', '林佩君', '鄭上官']
+    C: ['林沛昕', '徐華妤', '林佩君', '蘇淑玲', '鄭上官', '陳百玲（新人）']
   }),
   excludedEmployees: Object.freeze([]),
   finalConfirmations: Object.freeze([
@@ -85,7 +85,7 @@ const OFFICIAL_0502_TO_0503 = Object.freeze({
     '本輪正式派單順序已依三平台整合 AI 比例原則版完成',
     '5/3 正式派單順序，以本則公告為準'
   ]),
-  groupShortText: '📣【AI 派單公告｜5/2 結算 → 5/3 正式派單】審計 PASS，三平台總表全數核對通過，無漏算、無多算、無衝突。本輪依 AI 比例原則計算。正式前10名：1湯玉琦 2馬秋香 3王珍珠 4莉莉（新人） 5廖姿惠 6林宜靜 7高如郁 8王梅慧 9許喬恩 10周美蓁。A1：湯玉琦、馬秋香、王珍珠、莉莉。A2：廖姿惠、林宜靜、高如郁、王梅慧、許喬恩、周美蓁、李玲玲。正式派單順序以本則為準。',
+  groupShortText: '📣【AI 派單公告｜5/2 結算 → 5/3 正式派單】審計 PASS，三平台總表全數核對通過，無漏算、無多算、無衝突。本輪依 AI 比例原則計算。正式前10名：1湯玉琦 2馬秋香 3王珍珠 4莉莉（新人） 5廖姿惠 6林宜靜 7高如郁 8王梅慧 9周美蓁 10許喬恩。A1：湯玉琦、馬秋香、王珍珠、莉莉。A2：廖姿惠、林宜靜、高如郁、王梅慧、周美蓁、許喬恩、李玲玲。正式派單順序以本則為準。',
   officialLock: { key: '0502-0503', preserveRankingOrder: true, skipConsistencyChecks: true },
   frontendAiGuard: { allowFormalDisplay: true, confirmedBy: 'SYSTEM_SUPER' },
   tieBreakNote: '許喬恩、周美蓁本輪同分並列；未設定強制 tie-break 時，依公告順序保留。'

@@ -3,33 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI 派單公告中樞</title>
-  <meta name="description" content="後端唯一真實來源的 AI 派單公告展示系統">
-  <meta name="theme-color" content="#0d1f23">
+  <title>5/2 正式派單公告｜AI比例原則版</title>
+  <meta name="description" content="5/2 結算、5/3 正式派單順序｜AI比例原則永久鎖死版">
+  <meta name="theme-color" content="#24170d">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Orbitron:wght@700;800;900&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20260502">
+  <link rel="stylesheet" href="style.css?v=20260503-oil">
 </head>
-<body class="command-center">
+<body class="command-center oil-announcement">
   <div id="vfx-layer" class="vfx-layer"></div>
   <div class="page-shell">
     <header class="hero">
       <div class="hero-copy">
-        <p class="hero-kicker">Backend Source of Truth</p>
+        <p class="hero-kicker">Formal Dispatch Notice</p>
         <div class="optimization-badge">
-          System Optimized & Hardened
+          5/2 結算正式鎖定
         </div>
-        <h1 id="page-title">AI 派單公告中樞</h1>
-        <p id="page-subtitle" class="hero-subtitle">後端唯一真實來源，前端只負責展示、排序呈現、區塊大小與視覺層級。</p>
+        <h1 id="page-title">AI 派單公告｜5/2 結算 → 5/3 正式派單</h1>
+        <p id="page-subtitle" class="hero-subtitle">AI比例原則永久鎖死版，前端只展示正式公告、正式名次、正式分級，不重算、不改名次。</p>
       </div>
       <div class="hero-status">
         <div class="status-card">
-          <span>系統狀態</span>
+          <span>公告狀態</span>
           <strong id="health-status">ONLINE</strong>
         </div>
         <div class="status-card">
-          <span>最新批次</span>
+          <span>結算日</span>
           <strong id="execution-id">-</strong>
         </div>
         <div class="status-card status-card-accent">
@@ -42,8 +42,8 @@
     <section id="performance-panel" class="performance-panel panel is-loading">
       <div class="panel-head">
         <div>
-          <p class="eyebrow" id="performance-eyebrow">業績結算 → 今日派單</p>
-          <h2 id="performance-title">載入中...</h2>
+          <p class="eyebrow" id="performance-eyebrow">正式公告主畫面</p>
+          <h2 id="performance-title">5/2 結算 → 5/3 今日正式派單順序</h2>
         </div>
         <span id="performance-date" class="badge badge-pass">載入中</span>
       </div>
@@ -52,13 +52,13 @@
       <div id="performance-products" class="performance-products"></div>
       <div class="dispatch-order-head">
         <span id="dispatch-order-title">今日正式派單順位</span>
-        <span>AI 比例原則：實收 3000 ＋ 追續金額 2500 ＋ 總業績 1500 ＋ 追續客單價 1500 ＋ 追續單數 1500</span>
+        <span>AI比例原則永久鎖死：實收 3000 ＋ 追續金額 2500 ＋ 全部總金額 1500 ＋ 追續客單價 1500 ＋ 追續單數 1500</span>
       </div>
       <div id="dispatch-order-list" class="dispatch-order-list"></div>
 
       <div class="perf-section-head">
         <span>派單分級</span>
-        <span>A1 → A2 → B → C 依序，前方全忙才往下派，不得跳位</span>
+        <span>A1 第1-4名｜A2 第5-11名｜B 第12-18名｜C 第19名以後</span>
       </div>
       <div id="performance-groups" class="performance-groups"></div>
 
@@ -79,7 +79,7 @@
       <article class="panel input-panel">
         <div class="panel-head">
           <div>
-            <p class="eyebrow">標準輸入</p>
+            <p class="eyebrow">後台工具</p>
             <h2>公告文字 / JSON</h2>
           </div>
           <span id="input-status" class="badge badge-neutral">等待輸入</span>
@@ -131,7 +131,7 @@
 
     <section class="screen screen-first">
       <div class="screen-head">
-        <p class="eyebrow">第一屏</p>
+        <p class="eyebrow">正式公告</p>
         <h2>標題、審計結果、整合總盤、正式前五名</h2>
       </div>
 
@@ -180,7 +180,7 @@
         <div class="panel-head">
           <div>
             <p class="eyebrow">正式前五名</p>
-            <h2>大卡展示</h2>
+            <h2>油畫主角席</h2>
           </div>
         </div>
         <div id="spotlight-grid" class="spotlight-grid"></div>
@@ -189,15 +189,15 @@
 
     <section class="screen screen-second">
       <div class="screen-head">
-        <p class="eyebrow">第二屏</p>
-        <h2>前十排行榜、分級卡、離職審計列示</h2>
+        <p class="eyebrow">正式名次</p>
+        <h2>前十排行榜、分級卡、審計列示</h2>
       </div>
 
       <div class="screen-grid">
         <article class="panel">
           <div class="panel-head">
             <div>
-              <p class="eyebrow">正式前 10 名</p>
+            <p class="eyebrow">正式前 10 名</p>
               <h2>排行榜</h2>
             </div>
           </div>
@@ -228,7 +228,7 @@
 
     <section class="screen screen-third">
       <div class="screen-head">
-        <p class="eyebrow">第三屏</p>
+        <p class="eyebrow">完整公告</p>
         <h2>全員正式名次、每人一句建議、群組精簡版</h2>
       </div>
 
@@ -263,7 +263,7 @@
         <div class="panel-head">
           <div>
             <p class="eyebrow">每人一句建議</p>
-            <h2>23 人全員建議</h2>
+            <h2>24 人全員建議</h2>
           </div>
         </div>
         <div id="advice-list" class="advice-list"></div>
@@ -282,7 +282,7 @@
 
     <section class="screen screen-fourth">
       <div class="screen-head">
-        <p class="eyebrow">第四屏</p>
+        <p class="eyebrow">比例原則</p>
         <h2>比例建議牆 — 建議・壓力・激勵</h2>
       </div>
       <article class="panel scoring-policy-panel">
@@ -301,7 +301,7 @@
     </section>
   </div>
 
-  <script src="app.js?v=20260502"></script>
-  <script src="performance.js?v=20260502"></script>
+  <script src="app.js?v=20260503-oil"></script>
+  <script src="performance.js?v=20260503-oil"></script>
 </body>
 </html>

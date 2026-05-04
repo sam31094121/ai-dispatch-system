@@ -46,10 +46,10 @@ const refs = {
 const LOCKED_RULES = [
   '後端唯一真實來源。',
   '前端只做顯示，不做運算。',
-  '排序固定：正式權重分數 (AI) → 總業績 → 續單金額。',
+  '排序固定：正式權重分數 → 實收總業績 → 追續單金額 → 全部總金額 → 追續客單價 → 追續單數量。',
   'AI 計分核心：10000 分制比例原則 (3000/2500/1500/1500/1500)。',
   '已離職只列審計，不入正式派單。',
-  'A1 / A2 / B / C 必須與正式名次完全一致。',
+  'A1 第1-4名，A2 第5-11名，B 第12-18名，C 第19名以後。',
   '姓名辨識度必須完全正確，禁止錯寫。',
   '群組精簡版、排行榜、分組卡、建議卡只能來自同一份後端資料。'
 ];
@@ -283,10 +283,10 @@ function renderHero(data, snapshot) {
   refs.cancellationChip.textContent = `取消退貨 ${fmt(data?.整合總盤?.當日取消退貨 || 0)}`;
 
   refs.healthStatus.textContent = 'ONLINE';
-  refs.executionId.textContent = snapshot?.executionId || '-';
+  refs.executionId.textContent = dates.結算日 || snapshot?.executionId || '-';
   refs.persistStatus.textContent = snapshot?.persisted ? '正式版' : '預覽中';
   refs.pageSubtitle.textContent = snapshot?.persisted
-    ? `目前展示的是後端正式版資料，完成時間 ${snapshot.completedAt || '-'}。`
+    ? `正式公告已鎖定：${dates.結算日 || '5/2'} 結算，${dates.派單日 || '5/3'} 正式派單。前端僅呈現後端正式快照。`
     : '目前展示的是預覽結果，尚未寫入正式版。';
 }
 
@@ -504,8 +504,8 @@ function renderLeaderboard(rows) {
 }
 
 const GROUP_META = {
-  A1: { emoji: '🔴', label: 'A1 高單主力' },
-  A2: { emoji: '🟠', label: 'A2 續單收割' },
+  A1: { emoji: '🔴', label: 'A1 高優先主力' },
+  A2: { emoji: '🟠', label: 'A2 次主力追進' },
   B:  { emoji: '🟡', label: 'B 組 一般量單' },
   C:  { emoji: '🟢', label: 'C 組 補位觀察' }
 };

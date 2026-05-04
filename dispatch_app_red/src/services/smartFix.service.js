@@ -101,8 +101,8 @@ function buildSummaryBoardFromPlatforms(platforms, previousSummaryBoard = {}) {
 
 function resolveGroupByRank(rank) {
   if (rank <= 4) return 'A1';
-  if (rank <= 10) return 'A2';
-  if (rank <= 17) return 'B';
+  if (rank <= 11) return 'A2';
+  if (rank <= 18) return 'B';
   return 'C';
 }
 

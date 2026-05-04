@@ -29,6 +29,30 @@ function closeServer(server) {
   });
 }
 
+function metric(row, key) {
+  return Number(row?.metrics?.[key] ?? row?.[key] ?? 0);
+}
+
+function sortedByPermanentAiPolicy(rows) {
+  return [...rows].sort((left, right) => {
+    const keys = ['正式權重分數', '實收', '續單金額', '總業績', '追續客單價', '追續成交總數'];
+    for (const key of keys) {
+      const delta = metric(right, key) - metric(left, key);
+      if (delta !== 0) return delta;
+    }
+    return Number(left.rank ?? left.名次 ?? 0) - Number(right.rank ?? right.名次 ?? 0);
+  });
+}
+
+function expectedGroupsFromNames(names) {
+  return {
+    A1: names.slice(0, 4),
+    A2: names.slice(4, 11),
+    B: names.slice(11, 18),
+    C: names.slice(18)
+  };
+}
+
 async function requestJson(baseUrl, endpoint, init = {}) {
   const response = await fetch(`${baseUrl}${endpoint}`, init);
   const text = await response.text();
@@ -121,26 +145,33 @@ async function main() {
 
     assert.equal(report.status, 200);
     assert.equal(report.body.data.rankings[0].name, '王梅慧');
-    assert.equal(report.body.data.rankings[10].name, '許喬恩');
+    assert.deepEqual(
+      report.body.data.rankings.map((entry) => entry.name),
+      sortedByPermanentAiPolicy(report.body.data.rankings).map((entry) => entry.name)
+    );
+    assert.ok(report.body.data.rankings.every((entry) => Number.isFinite(metric(entry, '正式權重分數'))));
 
     assert.equal(top10.status, 200);
     assert.deepEqual(
       top10.body.data.items.map((entry) => entry.name),
-      ['王梅慧', '王珍珠', '馬秋香', '湯玉琦', '李玲玲', '林沛昕', '林宜靜', '鄭上官', '徐華妤', '廖姿惠']
+      report.body.data.rankings.slice(0, 10).map((entry) => entry.name)
     );
 
     assert.equal(groups.status, 200);
-    assert.deepEqual(groups.body.data.A1, ['王梅慧', '王珍珠', '馬秋香', '湯玉琦']);
-    assert.deepEqual(groups.body.data.A2, ['李玲玲', '林沛昕', '林宜靜', '鄭上官', '徐華妤', '廖姿惠']);
-    assert.deepEqual(groups.body.data.B, ['許喬恩', '高美雲', '高如郁', '梁依萍', '江麗勉', '蘇淑玲', '鄭珮恩']);
+    assert.deepEqual(groups.body.data, {
+      reportId,
+      ...expectedGroupsFromNames(report.body.data.rankings.map((entry) => entry.name))
+    });
 
     assert.equal(shortText.status, 200);
     assert.match(shortText.body.data.text, /已離職：陳旭宜，只列審計不入派單/);
-    assert.match(shortText.body.data.text, /正式前10名：1王梅慧 2王珍珠 3馬秋香 4湯玉琦 5李玲玲 6林沛昕 7林宜靜 8鄭上官 9徐華妤 10廖姿惠/);
+    const top10ShortText = report.body.data.rankings.slice(0, 10).map((entry) => `${entry.rank}${entry.name}`).join(' ');
+    assert.match(shortText.body.data.text, new RegExp(`正式前10名：${top10ShortText}`));
 
     assert.equal(current.status, 200);
     assert.equal(current.body.data.audit.status, 'PASS');
     assert.equal(current.body.data.ranking[0].name, '王梅慧');
+    assert.equal(current.body.data.scoringPolicy.title, 'AI比例原則永久鎖死版');
 
     const missingApiRoute = await requestJson(apiBaseUrl, '/does-not-exist');
     assert.equal(missingApiRoute.status, 404);
@@ -232,16 +263,9 @@ async function main() {
     assert.equal(reviewAudit.status, 200);
     assert.equal(reviewAudit.body.data.validation.status, 'PASS');
     assert.equal(reviewAudit.body.data.validation.errors.length, 0);
-    assert.deepEqual(reviewAudit.body.data.standardData.分級.A2, [
-      '林宜靜',
-      '湯玉琦',
-      '林沛昕',
-      '鄭上官',
-      '徐華妤',
-      '廖姿惠'
-    ]);
-    assert.equal(reviewAudit.body.data.standardData.分級.B[0], '許喬恩');
-    assert.match(reviewAudit.body.data.standardData.群組超精簡版, /B組：許喬恩、梁依萍、高如郁、高美雲、江麗勉、鄭珮恩、蘇淑玲。/);
+    const reviewNames = reviewAudit.body.data.standardData.正式名次.map((entry) => entry.姓名);
+    assert.deepEqual(reviewNames, sortedByPermanentAiPolicy(reviewAudit.body.data.standardData.正式名次).map((entry) => entry.姓名));
+    assert.deepEqual(reviewAudit.body.data.standardData.分級, expectedGroupsFromNames(reviewNames));
 
     const reviewSmartFix = await requestJson(apiBaseUrl, '/smart-fix', {
       method: 'POST',
@@ -259,23 +283,10 @@ async function main() {
     assert.ok(reviewSmartFix.body.data.fixes.some((fix) => fix.field === 'finalConfirmations'));
 
     const fixedReviewPayload = JSON.parse(reviewSmartFix.body.data.fixedJson);
-    assert.deepEqual(fixedReviewPayload.分級.A2, [
-      '林宜靜',
-      '湯玉琦',
-      '林沛昕',
-      '鄭上官',
-      '徐華妤',
-      '廖姿惠'
-    ]);
-    assert.equal(fixedReviewPayload.分級.B[0], '許喬恩');
-    assert.doesNotMatch(
-      fixedReviewPayload.群組超精簡版,
-      /A2：林宜靜、林沛昕、鄭上官、徐華妤、湯玉琦、許喬恩、梁依萍。/
-    );
-    assert.match(
-      fixedReviewPayload.群組超精簡版,
-      /A2：林宜靜、湯玉琦、林沛昕、鄭上官、徐華妤、廖姿惠。/
-    );
+    const fixedReviewNames = fixedReviewPayload.正式名次.map((entry) => entry.姓名);
+    assert.deepEqual(fixedReviewNames, sortedByPermanentAiPolicy(fixedReviewPayload.正式名次).map((entry) => entry.姓名));
+    assert.deepEqual(fixedReviewPayload.分級, expectedGroupsFromNames(fixedReviewNames));
+    assert.match(fixedReviewPayload.群組超精簡版, new RegExp(`A2：${fixedReviewPayload.分級.A2.join('、')}。`));
 
     console.log('Dispatch API regression check passed.');
   } finally {

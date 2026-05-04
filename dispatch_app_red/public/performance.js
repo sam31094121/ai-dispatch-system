@@ -5,10 +5,10 @@
   const esc = (v) => String(v || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
   const TIERS = [
-    { key: 'A1', label: 'A1｜高單主力',  color: '#ef4444' },
-    { key: 'A2', label: 'A2｜續追主力',  color: '#f97316' },
+    { key: 'A1', label: 'A1｜高優先主力', color: '#9d1f1f' },
+    { key: 'A2', label: 'A2｜次主力追進', color: '#c96a1b' },
     { key: 'B',  label: 'B 組｜一般量單', color: '#eab308' },
-    { key: 'C',  label: 'C 組｜補位觀察', color: '#22c55e' }
+    { key: 'C',  label: 'C 組｜補位觀察', color: '#277a4a' }
   ];
   const TIER_COLOR = Object.fromEntries(TIERS.map((t) => [t.key, t.color]));
 
@@ -135,12 +135,12 @@
 
       const titleEl = document.getElementById('performance-title');
       if (titleEl) {
-        titleEl.textContent = `${data.displayDate} 業績結算 → ${data.nextDispatchDisplayDate} 今日正式派單順序`;
+        titleEl.textContent = `${data.displayDate} 結算 → ${data.nextDispatchDisplayDate} 正式派單順序`;
       }
 
       const dateEl = document.getElementById('performance-date');
       if (dateEl) {
-        dateEl.textContent = `${data.displayDate} 業績 → ${data.nextDispatchDisplayDate} 今日派單`;
+        dateEl.textContent = `${data.displayDate} 結算 → ${data.nextDispatchDisplayDate} 正式派單`;
         dateEl.className = 'badge badge-pass';
       }
 

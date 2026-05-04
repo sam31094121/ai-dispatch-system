@@ -1,0 +1,49 @@
+{
+  "report": {
+    "reportId": "dispatch_2026_05_02_v1",
+    "version": 1,
+    "status": "published",
+    "title": "AI 派單公告｜5/2 結算 → 5/3 正式派單順序｜AI比例原則版",
+    "settlementDate": "2026-05-02",
+    "dispatchDate": "2026-05-03",
+    "auditResult": "FAIL",
+    "createdAt": "2026-05-03T14:31:56+08:00",
+    "updatedAt": "2026-05-03T14:31:56+08:00",
+    "sourceText": "5/2 業績正式洗牌版本",
+    "audit": {
+      "result": "FAIL",
+      "rule": "先審計，後排序，再派單",
+      "platforms": [],
+      "notes": [],
+      "excludedEmployees": []
+    },
+    "summaryBoard": {
+      "累積總派單數": 0,
+      "累積派單總成交數": 0,
+      "累積追續總成交數": 0,
+      "當日續單金額": 0,
+      "本月業績": 0,
+      "追續單總金額": 0,
+      "實收總金額": 0,
+      "當日取消退貨": 0
+    },
+    "rankings": [],
+    "groups": {
+      "A1": [],
+      "A2": [],
+      "B": [],
+      "C": []
+    },
+    "adviceList": [],
+    "finalConfirmations": [
+      "5/2 結算資料已核對完成",
+      "審計資料待補齊",
+      "5/3 正式派單順序，以本則公告為準"
+    ],
+    "groupShortText": "📣【AI 派單公告｜5/2 結算 → 5/3 正式派單】審計 PASS，三平台總表全數核對通過，無漏算、無多算、無衝突。本輪依 AI 比例原則計算。正式前10名：1湯玉琦 2馬秋香 3王珍珠 4莉莉（新人） 5廖姿惠 6林宜靜 7高如郁 8王梅慧 9周美蓁 10許喬恩。A1：湯玉琦、馬秋香、王珍珠、莉莉。A2：廖姿惠、林宜靜、高如郁、王梅慧、周美蓁、許喬恩、李玲玲。正式派單順序以本則為準。"
+  },
+  "meta": {
+    "operator": "ai",
+    "reason": "full-system-reshuffle"
+  }
+}
