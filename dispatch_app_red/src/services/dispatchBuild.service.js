@@ -393,7 +393,6 @@ function calculateWeightedScores(rankings) {
     const total = WEIGHTING_POLICY.weights.reduce((sum, item) => {
       const maxValue = maxes[item.key] || 0;
       if (maxValue <= 0) return sum;
-      // 防禦性處理：確保數值有效且非負
       const val = Math.max(0, Number(m[item.key] || 0));
       const score = (val / maxValue) * weights[item.key];
       return sum + (Number.isFinite(score) ? score : 0);
@@ -520,7 +519,7 @@ function buildGroupShortText(report) {
 
   const noteText = buildCompactAuditNotes(report.audit.notes || []);
   const excludedEmps = report.audit.excludedEmployees || [];
-  const excluded = excludedEmps.length
+  const excludedLine = excludedEmps.length
     ? `已離職：${excludedEmps.map((entry) => entry.name).join('、')}，只列審計不入派單。`
     : '本輪無離職列示。';
   const auditStatusText = buildAuditStatusText(report);
