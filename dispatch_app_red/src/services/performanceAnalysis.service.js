@@ -7,7 +7,7 @@ const LATEST = latestKey ? officialLocks[latestKey] : null;
 
 if (!LATEST) throw new Error('[performanceAnalysis] No OFFICIAL_ data found in official-locks.js');
 
-// Derive Gregorian dates from ROC reportDate (e.g. '115/05/01' → '2026-05-01')
+// Derive Gregorian dates from ROC reportDate (e.g. '115/05/03' -> '2026-05-03')
 function rocToGregorian(rocStr) {
   const parts = String(rocStr || '').split('/');
   if (parts.length !== 3) return rocStr || '';

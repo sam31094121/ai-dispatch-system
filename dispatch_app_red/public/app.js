@@ -1,3 +1,19 @@
+
+const PREV_RANK_MAP = {
+  '湯玉琦': 1, '馬秋香': 2, '王珍珠': 3, '莉莉（新人）': 4, '廖姿惠': 5,
+  '林宜靜': 6, '高如郁': 7, '王梅慧': 8, '周美蓁': 9, '許喬恩': 10,
+  '李玲玲': 11, '高美雲': 12, '江麗勉': 13, '鄭珮恩': 14, '梁依萍': 15,
+  '陳玲華': 16, '謝啟芳': 17, '江沛林': 18, '林沛昕': 19, '徐華妤': 20,
+  '林佩君': 21, '蘇淑玲': 22, '鄭上官': 23, '陳百玲（新人）': 24
+};
+
+function getMovement(name, currentRank) {
+  const prevRank = PREV_RANK_MAP[name];
+  if (!prevRank) return { class: 'flat', arrow: '＝' };
+  if (currentRank < prevRank) return { class: 'up', arrow: '↑' };
+  if (currentRank > prevRank) return { class: 'down', arrow: '↓' };
+  return { class: 'flat', arrow: '＝' };
+}
 const numberFormatter = new Intl.NumberFormat('zh-TW');
 const $ = (id) => document.getElementById(id);
 
@@ -35,6 +51,7 @@ const refs = {
   adviceList: $('advice-list'),
   propAdviceGrid: $('prop-advice-grid'),
   compactOutput: $('compact-output'),
+  pageTitle: $('page-title'),
   pageSubtitle: $('page-subtitle'),
   scoringPolicyTitle: $('scoring-policy-title'),
   scoringPolicyDate: $('scoring-policy-date'),
@@ -55,8 +72,18 @@ const LOCKED_RULES = [
 ];
 
 const state = {
-  current: null
+  current: null,
+  busy: false
 };
+
+const actionButtons = [
+  refs.btnLoad,
+  refs.btnAudit,
+  refs.btnSave,
+  refs.btnFix,
+  refs.btnClear,
+  refs.btnCopyCompact
+].filter(Boolean);
 
 function fmt(value) {
   return numberFormatter.format(Number(value || 0));
@@ -112,8 +139,47 @@ function badgeClass(status) {
 }
 
 function setBadge(node, status, text = status) {
+  if (!node) return;
   node.className = badgeClass(status);
   node.textContent = text;
+}
+
+function setBusy(isBusy) {
+  state.busy = isBusy;
+  document.body.classList.toggle('is-busy', isBusy);
+  actionButtons.forEach((button) => {
+    button.disabled = isBusy;
+    button.setAttribute('aria-busy', String(isBusy));
+  });
+}
+
+async function runAction(task) {
+  if (state.busy) return;
+  setBusy(true);
+  try {
+    await task();
+  } catch (error) {
+    console.error('[UI Action]', error);
+    setBadge(refs.inputStatus, 'FAIL', error?.message || '操作失敗，請稍後再試');
+  } finally {
+    setBusy(false);
+  }
+}
+
+function asArray(value) {
+  return Array.isArray(value) ? value : [];
+}
+
+function normalizePersonName(row) {
+  return row?.姓名 || row?.name || '';
+}
+
+function renderEmpty(container, message, className = 'empty-state') {
+  if (!container) return;
+  const empty = document.createElement('div');
+  empty.className = className;
+  empty.textContent = message;
+  container.replaceChildren(empty);
 }
 
 function safeHtml(value) {
@@ -174,26 +240,43 @@ function setupLiveAudit() {
       }
       
       AudioManager.click();
-      const { ok, payload } = await request('/api/smart-audit', {
+      const { ok, payload } = await request('/api/audit', {
         method: 'POST',
-        body: JSON.stringify({ raw: content })
+        body: JSON.stringify({ rawText: content })
       });
       
-      if (ok && payload.data) {
+      if (payload.data) {
         renderValidation(payload.data);
         refs.inputStatus.textContent = payload.data.validation.status === 'PASS' ? '掃描通過' : '結構異常';
         refs.inputStatus.className = badgeClass(payload.data.validation.status);
+      } else if (!ok) {
+        refs.inputStatus.textContent = payload.message || '即時審計失敗';
+        refs.inputStatus.className = badgeClass('FAIL');
       }
     }, 800);
   });
 }
 
 async function request(url, options = {}) {
-  const response = await fetch(url, {
-    cache: 'no-store',
-    headers: { 'Content-Type': 'application/json' },
-    ...options
-  });
+  let response;
+  try {
+    response = await fetch(url, {
+      cache: 'no-store',
+      headers: { 'Content-Type': 'application/json' },
+      ...options
+    });
+  } catch (error) {
+    return {
+      ok: false,
+      status: 0,
+      payload: {
+        success: false,
+        message: '無法連線到後端服務，請確認系統是否啟動。',
+        data: null
+      },
+      error
+    };
+  }
 
   const payload = await response.json().catch(() => ({
     success: false,
@@ -271,6 +354,9 @@ function renderHero(data, snapshot) {
   const dates = data?.日期資訊 || {};
 
   refs.announcementTitle.textContent = data?.公告標題 || snapshot?.title || '尚未載入公告';
+  if (refs.pageTitle) {
+    refs.pageTitle.textContent = data?.公告標題 || snapshot?.title || 'AI 派單公告';
+  }
   refs.dateRange.textContent = `${dates.結算日 || '-'} 結算 → ${dates.派單日 || '-'} 正式派單`;
   refs.auditResult.textContent = result;
   refs.auditResult.className = `audit-hero ${result === 'PASS' ? 'audit-pass' : 'audit-fail'}`;
@@ -392,7 +478,11 @@ function renderSummaryCards(cards) {
 }
 
 function renderSpotlight(rows) {
-  if (!rows || !rows.length) return;
+  rows = asArray(rows);
+  if (!rows.length) {
+    renderEmpty(refs.spotlightGrid, '尚無前段排行榜資料');
+    return;
+  }
   const top1Score = getMetrics(rows[0]).AI分數 || 0;
 
   refs.spotlightGrid.replaceChildren(
@@ -476,6 +566,11 @@ function renderSpotlight(rows) {
 }
 
 function renderLeaderboard(rows) {
+  rows = asArray(rows);
+  if (!rows.length) {
+    renderEmpty(refs.leaderboard, '尚無排行榜資料');
+    return;
+  }
   refs.leaderboard.replaceChildren(
     ...rows.map((row) => {
       const m = getMetrics(row);
@@ -535,6 +630,7 @@ function renderGroups(groups, rankMap = {}) {
 }
 
 function renderRetired(retired) {
+  retired = asArray(retired);
   refs.retiredList.replaceChildren(
     ...(retired.length
       ? retired.map((entry) => {
@@ -554,13 +650,23 @@ function renderRetired(retired) {
 }
 
 function renderRankingTable(rows) {
+  rows = asArray(rows);
+  if (!rows.length) {
+    refs.rankingTableBody.innerHTML = '<tr><td colspan="9" class="table-empty">尚無正式名次資料</td></tr>';
+    return;
+  }
   refs.rankingTableBody.innerHTML = rows.map((row) => {
     const m = getMetrics(row);
     const score = Number(m.AI分數 || 0);
     const scoreStyle = score >= 3000 ? 'style="color: var(--cyan); font-weight: bold; text-shadow: 0 0 8px var(--cyan);"' : '';
     return `
       <tr class="row-${safeHtml(row.分級 || row.group)}">
-        <td>${safeHtml(String(row.名次 || row.rank))}</td>
+        <td class="col-rank">
+          <div class="rank-box">
+            <span>${safeHtml(String(row.名次 || row.rank))}</span>
+            <span class="move-arrow move-${row.movement || 'flat'}">${row.movement === 'up' ? '↑' : row.movement === 'down' ? '↓' : '＝'}</span>
+          </div>
+        </td>
         <td>
           <div class="table-name">
             <span>${safeHtml(row.姓名 || row.name)}</span>
@@ -580,6 +686,11 @@ function renderRankingTable(rows) {
 }
 
 function renderAdvice(rows) {
+  rows = asArray(rows);
+  if (!rows.length) {
+    renderEmpty(refs.adviceList, '尚無個人建議資料');
+    return;
+  }
   refs.adviceList.replaceChildren(
     ...rows.map((row) => {
       const card = document.createElement('article');
@@ -724,22 +835,26 @@ function render(snapshot) {
   state.current = snapshot;
   const data = snapshot?.standardData || {};
   const presentation = snapshot?.presentation || {};
-  const retired = presentation.retired || data?.審計結論?.['審計列示不入派單'] || [];
+  const rankingRows = asArray(data?.正式名次 || snapshot?.report?.rankings);
+  const retired = asArray(presentation.retired || data?.審計結論?.['審計列示不入派單']);
 
   renderValidation(snapshot);
   renderHero(data, snapshot);
   renderOfficialLock(snapshot);
   renderSummaryCards(presentation.summaryCards || data?.整合總盤 || snapshot?.report?.audit?.summaryBoard || []);
-  renderSpotlight(presentation.top5 || data?.正式名次 || snapshot?.report?.rankings || []);
-  renderLeaderboard(presentation.top10 || data?.正式名次 || snapshot?.report?.rankings || []);
+  renderSpotlight(presentation.top5 || rankingRows);
+  renderLeaderboard(presentation.top10 || rankingRows);
   const rankMap = {};
-  (data?.正式名次 || snapshot?.report?.rankings || []).forEach(row => { if (row?.姓名 || row?.name) rankMap[row.姓名 || row.name] = row.名次 || row.rank; });
+  rankingRows.forEach(row => {
+    const name = normalizePersonName(row);
+    if (name) rankMap[name] = row.名次 || row.rank;
+  });
   renderGroups(data?.分級 || snapshot?.report?.groups || {}, rankMap);
   renderRetired(retired);
-  renderRankingTable(data?.正式名次 || snapshot?.report?.rankings || []);
-  renderAdvice(data?.正式名次 || snapshot?.report?.rankings || []);
+  renderRankingTable(rankingRows);
+  renderAdvice(rankingRows);
   renderScoringPolicy(snapshot);
-  renderProportionalAdvice(data?.正式名次 || snapshot?.report?.rankings || []);
+  renderProportionalAdvice(rankingRows);
   refs.compactOutput.value = buildPasteReadyAnnouncement(snapshot) || data?.群組超精簡版 || '';
 }
 
@@ -758,6 +873,10 @@ async function loadCurrent() {
 }
 
 async function auditCurrentInput(options = {}) {
+  if (!refs.rawInput.value.trim()) {
+    setBadge(refs.inputStatus, 'FAIL', '請先貼上公告或 JSON 後再審計');
+    return;
+  }
   if (!options.suppressPending) {
     setBadge(refs.inputStatus, 'PENDING', '後端審計中');
   }
@@ -788,6 +907,10 @@ async function auditCurrentInput(options = {}) {
 }
 
 async function saveCurrentInput() {
+  if (!refs.rawInput.value.trim()) {
+    setBadge(refs.inputStatus, 'FAIL', '請先貼上公告或 JSON 後再存檔');
+    return;
+  }
   setBadge(refs.inputStatus, 'PENDING', '存檔中');
   const { ok, payload } = await request('/api/save', {
     method: 'POST',
@@ -810,7 +933,12 @@ async function copyCompactText() {
     return;
   }
 
-  await navigator.clipboard.writeText(text);
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+  } else {
+    refs.compactOutput.select();
+    document.execCommand('copy');
+  }
   setBadge(refs.inputStatus, 'PASS', '群組精簡版已複製');
 }
 
@@ -828,6 +956,10 @@ async function init() {
 
 async function smartFixInput() {
   const rawText = refs.rawInput.value.trim();
+  if (!rawText) {
+    setBadge(refs.inputStatus, 'FAIL', '請先貼上需要修復的公告或 JSON');
+    return;
+  }
   setBadge(refs.inputStatus, 'PENDING', '智慧掃描中...');
   AudioManager.sweep();
   refs.rawInput.classList.add('ai-scanning', 'ai-glow');
@@ -936,13 +1068,13 @@ function renderFixReport(fixData) {
 }
 
 
-refs.btnLoad.addEventListener('click', loadCurrent);
-refs.btnAudit.addEventListener('click', auditCurrentInput);
-refs.btnSave.addEventListener('click', saveCurrentInput);
-refs.btnFix.addEventListener('click', smartFixInput);
+refs.btnLoad.addEventListener('click', () => runAction(loadCurrent));
+refs.btnAudit.addEventListener('click', () => runAction(auditCurrentInput));
+refs.btnSave.addEventListener('click', () => runAction(saveCurrentInput));
+refs.btnFix.addEventListener('click', () => runAction(smartFixInput));
 refs.btnClear.addEventListener('click', clearInputOnly);
 refs.btnCopyCompact.addEventListener('click', () => {
-  copyCompactText().catch(() => {
+  runAction(copyCompactText).catch(() => {
     setBadge(refs.inputStatus, 'FAIL', '複製失敗');
   });
 });

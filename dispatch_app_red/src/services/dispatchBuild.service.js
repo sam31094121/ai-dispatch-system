@@ -260,6 +260,8 @@ function normalizeRankingRow(row = {}, index = 0) {
         ? row.isNew
         : tagged.isNew || marker.includes('新人'),
     group: cleanText(row.group || row.分級).toUpperCase(),
+    prevRank: toNumber(firstDefined(row, ['prevRank', '上期名次', 'previousRank'])),
+    movement: cleanText(row.movement || row.move || row.異動 || 'flat').toLowerCase(),
     metrics: {
       正式權重分數: toNumber(firstDefined(metricsSource, ['正式權重分數', 'weightedScore', 'totalScore'])),
       實收: toNumber(firstDefined(metricsSource, ['實收', '實收總金額', '實收總業績', 'actualRevenue'])),

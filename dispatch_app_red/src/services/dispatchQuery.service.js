@@ -179,6 +179,10 @@ function buildStorageIndex(records, latestRecord = null) {
     }
   });
 
+  if (latestRecord?.report?.reportId && !latestById.has(latestRecord.report.reportId)) {
+    latestById.set(latestRecord.report.reportId, latestRecord);
+  }
+
   return {
     hydrated: true,
     records: sortedRecords,
@@ -219,7 +223,8 @@ function scanStoredRecords() {
 }
 
 function hydrateStorageCache() {
-  if (storageCache.hydrated) return storageCache;
+  // [AI Optimization] 移除強制快取，確保解鎖版能即時讀取最新 latest.json
+  // if (storageCache.hydrated) return storageCache;
 
   ensureStorageDirs();
   const latestRecord = readJson(storagePaths.latestFile);

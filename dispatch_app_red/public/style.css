@@ -841,6 +841,14 @@ textarea,
 
 .btn:hover { transform: translateY(-2px); }
 
+.btn:disabled,
+.btn[aria-busy="true"] {
+  cursor: wait;
+  opacity: 0.58;
+  transform: none;
+  box-shadow: none;
+}
+
 .btn-primary {
   color: #021408;
   background: linear-gradient(135deg, var(--pass), var(--teal));
@@ -861,6 +869,22 @@ textarea,
   color: var(--text-sub);
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.empty-state,
+.table-empty {
+  width: 100%;
+  padding: 18px;
+  border: 1px dashed rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-sm);
+  color: var(--text-sub);
+  background: rgba(255, 255, 255, 0.035);
+  text-align: center;
+  font-size: 14px;
+}
+
+.table-empty {
+  display: table-cell;
 }
 
 /* ── 12. Lists ───────────────────────────────────────────── */
@@ -2151,6 +2175,18 @@ textarea,
   .ranking-table td {
     padding: 10px 8px;
   }
+
+  .panel-head,
+  .screen-head,
+  .toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .toolbar .btn {
+    width: 100%;
+    min-height: 42px;
+  }
 }
 
 /* ── 比例建議牆 ─────────────────────────────────────────────── */
@@ -3282,3 +3318,20 @@ body.oil-announcement {
     grid-column: auto;
   }
 }
+
+/* 名次異動指示器 - 電腦版 */
+.rank-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+.move-arrow {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.move-arrow.move-up { color: var(--pass); }
+.move-arrow.move-down { color: var(--fail); }
+.move-arrow.move-flat { color: var(--text-dim); opacity: 0.5; }

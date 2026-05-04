@@ -1,10 +1,26 @@
+
+const PREV_RANK_MAP = {
+  '湯玉琦': 1, '馬秋香': 2, '王珍珠': 3, '莉莉（新人）': 4, '廖姿惠': 5,
+  '林宜靜': 6, '高如郁': 7, '王梅慧': 8, '周美蓁': 9, '許喬恩': 10,
+  '李玲玲': 11, '高美雲': 12, '江麗勉': 13, '鄭珮恩': 14, '梁依萍': 15,
+  '陳玲華': 16, '謝啟芳': 17, '江沛林': 18, '林沛昕': 19, '徐華妤': 20,
+  '林佩君': 21, '蘇淑玲': 22, '鄭上官': 23, '陳百玲（新人）': 24
+};
+
+function getMovement(name, currentRank) {
+  const prevRank = PREV_RANK_MAP[name];
+  if (!prevRank) return { class: 'flat', arrow: '＝' };
+  if (currentRank < prevRank) return { class: 'up', arrow: '↑' };
+  if (currentRank > prevRank) return { class: 'down', arrow: '↓' };
+  return { class: 'flat', arrow: '＝' };
+}
 /**
  * 兆櫃 AI 派單終端 V2 - 全線解鎖版
  * 專為極致視覺與 AI 比例原則設計
  */
 
 const CONFIG = {
-  API_URL: '/api/dispatch-reports/latest',
+  API_URL: '/api/current',
   TROPHY_THRESHOLD: 7000,
   MAX_SCORE: 10000,
   LABEL_MAP: {
@@ -74,6 +90,11 @@ function setupEventListeners() {
     handleLookup(e.target.value);
   });
 
+  refs.lookupResults.addEventListener('click', (e) => {
+    const target = e.target.closest('[data-lookup-key]');
+    if (target) scrollToCard(target.dataset.lookupKey);
+  });
+
   // 複製功能
   refs.copyBroadcast.addEventListener('click', () => {
     copyToClipboard(refs.broadcastOutput.innerText, '精簡版文字已複製');
@@ -87,12 +108,82 @@ async function fetchData() {
   try {
     const res = await fetch(`${CONFIG.API_URL}?t=${Date.now()}`);
     const data = await res.json();
-    state.report = data.data || data.report || data;
+    if (!res.ok || data.success === false) throw new Error(data.message || '公告資料讀取失敗');
+    state.report = normalizeReport(data.data || data.report || data);
     renderAll();
   } catch (err) {
     console.error('Fetch Error:', err);
     showToast('連線異常，請稍後再試');
+    renderErrorState(err.message || '公告資料讀取失敗');
   }
+}
+
+function normalizeReport(source) {
+  const standardData = source?.standardData || {};
+  const dates = standardData?.日期資訊 || {};
+  const rankingSource = standardData?.正式名次 || source?.rankings || source?.report?.rankings || [];
+  const rankings = rankingSource.map((row) => {
+    const metrics = row.metrics || {};
+    const rank = row.rank || row.名次 || 0;
+    const prevRank = row.prevRank || row.上期名次 || 0;
+    let movement = row.movement || 'flat';
+    if (prevRank > 0) {
+      if (rank < prevRank) movement = 'up';
+      else if (rank > prevRank) movement = 'down';
+      else movement = 'flat';
+    }
+
+    return {
+      rank,
+      name: row.name || row.姓名 || '',
+      group: row.group || row.分級 || '',
+      movement,
+      isNew: row.isNew || String(row.姓名 || row.name || '').includes('新人'),
+      metrics: {
+        正式權重分數: row.weightedScore || row.totalScore || row.正式權重分數 || metrics.正式權重分數 || 0,
+        實收: row.actualRevenue || row.實收 || metrics.實收 || 0,
+        續單金額: row.renewalRevenue || row.追續金額 || metrics.追續金額 || metrics.續單金額 || 0,
+        總業績: row.totalRevenue || row.全部總業績 || metrics.全部總業績 || metrics.總業績 || 0,
+        追續客單價: row.averageRenewal || row.追續客單價 || metrics.追續客單價 || 0,
+        追續成交總數: row.renewalDeals || row.追續單數 || metrics.追續單數 || metrics.追續成交總數 || 0
+      },
+      advice: row.advice || row.建議 || ''
+    };
+  });
+
+  const summary = standardData?.整合總盤 || source?.summaryBoard || source?.report?.audit?.summaryBoard || {};
+  const audit = source?.audit || {
+    notes: source?.auditNotes || source?.validation?.warnings || [],
+    excludedEmployees: standardData?.審計結論?.['審計列示不入派單'] || []
+  };
+
+  return {
+    title: source?.title || standardData?.公告標題 || 'AI 派單公告',
+    settlementDate: source?.settlementDate || source?.reportDate || dates.結算日 || '--',
+    dispatchDate: source?.dispatchDate || dates.派單日 || '--',
+    auditResult: source?.auditResult || source?.validation?.status || source?.status || 'PASS',
+    summaryBoard: {
+      實收總金額: summary.實收總金額 || summary.實收 || 0,
+      追續單總金額: summary.追續單總金額 || summary.追續單金額 || summary.追續金額 || 0,
+      本月業績: summary.本月業績 || summary.全部總業績 || 0,
+      累積追續總成交數: summary.累積追續總成交數 || summary.追續單成交 || summary.追續單數 || 0
+    },
+    rankings,
+    groups: source?.groups || standardData?.分級 || source?.report?.groups || {},
+    audit,
+    groupShortText: source?.groupShortText || standardData?.群組超精簡版 || source?.broadcastText || ''
+  };
+}
+
+function renderErrorState(message) {
+  refs.title.innerText = 'AI 派單公告';
+  refs.auditResult.innerText = 'ERROR';
+  refs.activeCount.innerText = '0';
+  refs.summaryGrid.innerHTML = `<div class="empty-state">${escapeHtml(message)}</div>`;
+  refs.rankingList.innerHTML = `<div class="empty-state">目前無法載入排行榜。</div>`;
+  refs.groupsGrid.innerHTML = '';
+  refs.auditNotes.innerHTML = '';
+  refs.excludedList.innerHTML = '';
 }
 
 function renderAll() {
@@ -131,6 +222,11 @@ function renderSummary(board) {
 }
 
 function renderRankings(rankings) {
+  rankings = rankings || [];
+  if (!rankings.length) {
+    refs.rankingList.innerHTML = '<div class="empty-state">尚無排行榜資料。</div>';
+    return;
+  }
   const matchedKey = state.matchedName ? normalizeNameKey(state.matchedName) : '';
 
   refs.rankingList.innerHTML = (rankings || []).map(item => {
@@ -141,13 +237,16 @@ function renderRankings(rankings) {
 
     return `
       <article class="ranking-card ${isGold ? 'gold-card' : ''} ${matchKey === matchedKey && matchedKey ? 'is-match' : ''}" id="card-${matchKey}">
-        <span class="card-rank">#${item.rank}</span>
+        <div class="card-rank-wrap">
+        <span class="card-rank">#${escapeHtml(item.rank)}</span>
+          <span class="move-indicator move-${item.movement || 'flat'}">${item.movement === 'up' ? '↑' : item.movement === 'down' ? '↓' : '＝'}</span>
+        </div>
         ${isGold ? '<span class="trophy-badge">🏆</span>' : ''}
         
         <div class="card-header">
-          <p class="card-name">${item.name}</p>
+          <p class="card-name">${escapeHtml(item.name)}</p>
           <div class="badges">
-            <span class="badge group-${item.group}">${item.group}</span>
+            <span class="badge group-${escapeHtml(item.group)}">${escapeHtml(item.group)}</span>
             ${item.isNew ? '<span class="badge" style="background:#fff;color:#000">新人</span>' : ''}
           </div>
         </div>
@@ -172,7 +271,7 @@ function renderRankings(rankings) {
           `).join('')}
         </div>
 
-        <div class="advice-text">「 ${item.advice || '保持穩定，精進業績。'} 」</div>
+        <div class="advice-text">「 ${escapeHtml(item.advice || '保持穩定，精進業績。')} 」</div>
       </article>
     `;
   }).join('');
@@ -190,7 +289,7 @@ function renderGroups(groups, rankings) {
         <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;">
           ${members.map(name => `
             <span style="font-size:12px; background:rgba(255,255,255,0.05); padding:2px 8px; border-radius:4px; border:1px solid rgba(255,255,255,0.1)">
-              <small style="opacity:0.5; margin-right:4px;">#${rankMap.get(name) || '-'}</small>${name}
+              <small style="opacity:0.5; margin-right:4px;">#${escapeHtml(rankMap.get(name) || '-')}</small>${escapeHtml(name)}
             </span>
           `).join('')}
         </div>
@@ -201,13 +300,15 @@ function renderGroups(groups, rankings) {
 
 function renderAudit(audit) {
   const notes = audit?.notes || [];
-  refs.auditNotes.innerHTML = notes.map(n => `<div class="mini-item" style="margin-bottom:8px"><span>${n}</span></div>`).join('');
+  refs.auditNotes.innerHTML = notes.length
+    ? notes.map(n => `<div class="mini-item" style="margin-bottom:8px"><span>${escapeHtml(n)}</span></div>`).join('')
+    : '<div class="mini-item"><span>目前無審計提醒。</span></div>';
   
   const excluded = audit?.excludedEmployees || [];
   refs.excludedList.innerHTML = excluded.map(e => `
     <div class="mini-item" style="border-color:var(--fail)">
-      <span style="color:var(--fail)">${e.name}</span>
-      <strong>${e.reason}</strong>
+      <span style="color:var(--fail)">${escapeHtml(e.name || e.姓名 || e)}</span>
+      <strong>${escapeHtml(e.reason || e.原因 || '已離職')}</strong>
     </div>
   `).join('');
 }
@@ -223,14 +324,14 @@ function handleLookup(query) {
     return;
   }
 
-  const matches = state.report.rankings.filter(r => normalizeNameKey(r.name).includes(q));
+  const matches = (state.report?.rankings || []).filter(r => normalizeNameKey(r.name).includes(q));
   
   refs.lookupResults.innerHTML = matches.map(m => `
-    <div class="mini-item" style="margin-bottom:8px; padding:12px; cursor:pointer;" onclick="scrollToCard('${normalizeNameKey(m.name)}')">
-      <span>#${m.rank} ${m.name}</span>
-      <strong>${m.metrics?.正式權重分數} 分</strong>
-    </div>
-  `).join('');
+    <button class="mini-item lookup-result" type="button" data-lookup-key="${escapeHtml(normalizeNameKey(m.name))}">
+      <span>#${escapeHtml(m.rank)} ${escapeHtml(m.name)}</span>
+      <strong>${escapeHtml(m.metrics?.正式權重分數)} 分</strong>
+    </button>
+  `).join('') || '<div class="mini-item"><span>找不到符合的人員</span></div>';
 }
 
 window.scrollToCard = (key) => {

@@ -228,6 +228,7 @@ h2 {
   background: rgba(255,255,255,0.02);
   border: 1px solid rgba(255,255,255,0.06);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-wrap: anywhere;
 }
 
 .ranking-card.is-match {
@@ -250,11 +251,16 @@ h2 {
   font-size: 14px;
 }
 
+.card-rank-wrap .card-rank {
+  position: static;
+}
+
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
+  gap: 12px;
 }
 
 .card-name {
@@ -266,6 +272,8 @@ h2 {
 .badges {
   display: flex;
   gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .badge {
@@ -339,10 +347,12 @@ h2 {
 .mini-item {
   display: flex;
   justify-content: space-between;
+  gap: 10px;
   font-size: 11px;
   background: rgba(255,255,255,0.03);
   padding: 6px 10px;
   border-radius: 6px;
+  overflow-wrap: anywhere;
 }
 
 .mini-item span { color: var(--text-dim); }
@@ -472,6 +482,34 @@ input {
 
 .bottom-safe-buffer { height: 60px; }
 
+/* 異動指示器 */
+.card-rank-wrap {
+  position: absolute;
+  top: -10px; left: 16px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.move-indicator {
+  font-size: 10px;
+  font-weight: 900;
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+
+.move-up { color: var(--pass); text-shadow: 0 0 5px var(--pass); }
+.move-down { color: var(--fail); text-shadow: 0 0 5px var(--fail); }
+.move-flat { color: var(--text-dim); opacity: 0.5; }
+
+.lookup-result {
+  width: 100%;
+  border: 0;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
 /* Toast */
 .toast {
   position: fixed;
@@ -486,4 +524,32 @@ input {
   transition: opacity 0.3s;
   pointer-events: none;
   z-index: 2000;
+}
+
+.empty-state {
+  width: 100%;
+  padding: 18px;
+  border: 1px dashed rgba(255,255,255,0.14);
+  border-radius: 12px;
+  color: var(--text-dim);
+  background: rgba(255,255,255,0.035);
+  text-align: center;
+  font-size: 13px;
+}
+
+@media (max-width: 420px) {
+  .card-header,
+  .score-label,
+  .mini-item {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .badges {
+    justify-content: flex-start;
+  }
+
+  .metric-mini-grid {
+    grid-template-columns: 1fr;
+  }
 }
