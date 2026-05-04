@@ -33,7 +33,16 @@ function buildMeta(official) {
 }
 
 function buildProducts(official) {
-  const p = official.platforms || {};
+  const p = official.audit?.platforms || official.platforms || [];
+  if (Array.isArray(p)) {
+    return p.map((data) => ({
+      name: data.platformName || data.name,
+      renewalDeals: data.metrics?.追續單成交 || data.cumulativeRenewalDeals || 0,
+      totalRevenue: data.metrics?.全部總業績 || data.monthlyRevenue || 0,
+      renewalRevenue: data.metrics?.追續單金額 || data.totalRenewalAmount || 0,
+      cashRevenue: data.metrics?.實收總金額 || data.actualRevenue || 0
+    }));
+  }
   return Object.entries(p).map(([name, data]) => ({
     name,
     renewalDeals: data.cumulativeRenewalDeals || 0,
@@ -72,6 +81,16 @@ const _analysis = (() => {
   totals.averageRenewal = totals.renewalDeals > 0
     ? Math.round(totals.renewalRevenue / totals.renewalDeals)
     : 0;
+  
+  // 核心修正：若產品列表為空，從 summaryBoard 提取總計
+  if (totals.totalRevenue === 0 && official.summaryBoard) {
+    const sb = official.summaryBoard;
+    totals.renewalDeals = sb.追續單成交 || sb.累積追續總成交數 || 0;
+    totals.totalRevenue = sb.全部總業績 || sb.本月業績 || 0;
+    totals.renewalRevenue = sb.追續單金額 || sb.追續單總金額 || 0;
+    totals.cashRevenue = sb.實收總金額 || 0;
+    totals.averageRenewal = totals.renewalDeals > 0 ? Math.round(totals.renewalRevenue / totals.renewalDeals) : 0;
+  }
 
   const byTier = (t) => people.filter((p) => p.tier === t);
   const retired = (LATEST.excludedEmployees || []).map((e) => e.name);

@@ -13,11 +13,7 @@ const refs = {
   groupsGrid: document.getElementById('groups-grid'),
   auditNotes: document.getElementById('audit-notes'),
   excludedList: document.getElementById('excluded-list'),
-  broadcastOutput: document.getElementById('broadcast-output'),
-  copyBroadcast: document.getElementById('copy-broadcast'),
-  shareBroadcast: document.getElementById('share-broadcast'),
-  lineShare: document.getElementById('line-share'),
-  refreshData: document.getElementById('refresh-data'),
+  refreshData: document.getElementById('refresh-data') || document.body, // Fallback
   searchOpen: document.getElementById('search-open'),
   searchClose: document.getElementById('search-close'),
   searchModal: document.getElementById('search-modal'),
@@ -93,11 +89,11 @@ function normalizeRanking(row) {
     movement,
     isNew: Boolean(row.isNew) || name.includes('新人'),
     score: num(get(row, ['weightedScore', 'totalScore', '正式權重分數'], get(metrics, ['正式權重分數'], 0))),
-    actualRevenue: num(get(row, ['actualRevenue', '實收'], get(metrics, ['實收'], 0))),
-    renewalRevenue: num(get(row, ['renewalRevenue', '追續金額'], get(metrics, ['追續金額'], 0))),
-    totalRevenue: num(get(row, ['totalRevenue', '全部總業績'], get(metrics, ['全部總業績'], 0))),
+    actualRevenue: num(get(row, ['actualRevenue', '實收', '實收總金額'], get(metrics, ['實收', '實收總金額'], 0))),
+    renewalRevenue: num(get(row, ['renewalRevenue', '續單金額', '追續金額', '追續單金額'], get(metrics, ['續單金額', '追續金額', '追續單金額'], 0))),
+    totalRevenue: num(get(row, ['totalRevenue', '總業績', '全部總業績'], get(metrics, ['總業績', '全部總業績'], 0))),
     avgRenewal: num(get(row, ['avgRenewal', 'averageRenewal', '追續客單價'], get(metrics, ['追續客單價'], 0))),
-    renewalDeals: num(get(row, ['renewalDeals', '追續單數'], get(metrics, ['追續單數'], 0))),
+    renewalDeals: num(get(row, ['renewalDeals', '追續成交總數', '追續單數'], get(metrics, ['追續成交總數', '追續單數'], 0))),
     advice: get(row, ['advice', '建議'], '')
   };
 }
@@ -171,7 +167,6 @@ function render(report) {
   renderRankings(report.ranking);
   renderGroups(report.groups, report.ranking);
   renderAudit(report.auditNotes, report.excludedEmployees);
-  renderSendText(report.sendText);
 }
 
 function renderSummary(summary) {

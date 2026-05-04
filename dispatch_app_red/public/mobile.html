@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#09111f">
-  <title>兆櫃 AI 派單終端｜5/5 正式派單</title>
+  <title>兆櫃 AI 派單終端｜5/5 正式派單 (精英版)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -17,7 +17,10 @@
         <p class="kicker">Zhaogui AI Dispatch</p>
         <h1 id="main-title">AI 派單公告</h1>
       </div>
-      <span id="audit-result" class="status-badge">--</span>
+      <div class="topbar-actions">
+        <button id="refresh-data" class="icon-button" type="button" aria-label="重新整理">↻</button>
+        <span id="audit-result" class="status-badge">--</span>
+      </div>
     </header>
 
     <section class="date-strip" aria-label="日期">
@@ -36,21 +39,6 @@
     </section>
 
     <main>
-      <section class="panel send-panel" id="send">
-        <div class="section-head">
-          <div>
-            <p class="kicker">Unified Send</p>
-            <h2>統一傳送</h2>
-          </div>
-          <button id="refresh-data" class="icon-button" type="button" aria-label="重新整理">↻</button>
-        </div>
-        <div class="send-actions">
-          <button id="copy-broadcast" class="primary-button" type="button">複製公告</button>
-          <button id="share-broadcast" class="secondary-button" type="button">系統分享</button>
-          <a id="line-share" class="secondary-button" href="#" target="_blank" rel="noopener">LINE 傳送</a>
-        </div>
-        <textarea id="broadcast-output" class="broadcast-box" readonly aria-label="公告傳送文字"></textarea>
-      </section>
 
       <section class="panel" id="summary">
         <div class="section-head">
@@ -96,7 +84,6 @@
     </main>
 
     <nav class="bottom-nav" aria-label="主要導覽">
-      <a href="#send">傳送</a>
       <a href="#summary">總盤</a>
       <a href="#ranking">名次</a>
       <a href="#groups">分級</a>

@@ -485,7 +485,7 @@ function renderSpotlight(rows) {
       const rank = index + 1;
       const scoreGap = rank > 1 && top1Score > 0 ? (top1Score - (m.AI分數 || 0)) : 0;
       const card = document.createElement('article');
-      card.className = `spotlight-card rank-${rank} group-${row.分級}`;
+      card.className = `spotlight-card rank-${rank} group-${row.分級 || row.group}`;
 
       const championBanner = rank === 1 ? `
         <div class="spotlight-champion-banner">
@@ -508,6 +508,10 @@ function renderSpotlight(rows) {
       const titleData = titles[rank];
       const titleHtml = titleData ? `<span class="prestige-title ${titleData.class}">${titleData.text}</span>` : '';
 
+      const metricsHTML = `
+          <div class="spotlight-stats">
+            <div><span>實收業績</span><strong>${safeHtml(fmt(m.實收 || m.全部總業績))}</strong></div>
+            <div><span>追續金額</span><strong>${safeHtml(fmt(m.追續金額 || m.續單金額))}</strong></div>
             <div><span>追續客單價</span><strong>${safeHtml(fmt(m.追續客單價))}</strong></div>
           </div>
           <div class="spotlight-renewal-row">
@@ -523,8 +527,8 @@ function renderSpotlight(rows) {
           </div>`
         : '';
 
-      const adviceHTML = rank <= 3 && row.建議
-        ? `<p class="spotlight-advice-text">${safeHtml(row.建議)}</p>`
+      const adviceHTML = rank <= 3 && (row.建議 || row.advice)
+        ? `<p class="spotlight-advice-text">${safeHtml(row.建議 || row.advice)}</p>`
         : '';
 
       card.innerHTML = `
@@ -720,9 +724,9 @@ function autoProportionalAdvice(rows) {
     const gapDown = below ? ((ws - below._ws) / ws * 100).toFixed(1) : null;
     const wsr = wsRankOf[row.姓名 || row.name];
     const trank = row.名次 || row.rank;
-    const rc = m.追續金額 * 2500;
-    const ac = m.實收 * 3000;
-    const dc = m.追續單數 * 1500;
+    const rc = (m.追續金額 || 0) * 2500;
+    const ac = (m.實收 || 0) * 3000;
+    const dc = (m.追續單數 || 0) * 1500;
     const tot = rc + ac + dc || 1;
     const mainMetric = ac/tot > 0.45 ? '實收' : (rc/tot > 0.35 ? '追續金額' : '追續單數');
     const dealCnt = m.追續單數;
@@ -731,7 +735,7 @@ function autoProportionalAdvice(rows) {
       const lead = gapDown || '0';
       advice = `你穩在榜首，但與第二名差距只有 ${lead}%，不算絕對安全。今天把${mainMetric}再補一筆，差距才能繼續拉開。榜首的位置靠守不住，靠今天繼續進攻才能穩。`;
     } else if (trank <= 4) {
-      const rival = above ? above.姓名 : '';
+      const rival = above ? (above.姓名 || above.name) : '';
       const threat = parseFloat(gapDown || '100') < 15 ? `下面距你只有 ${gapDown}%，有被追上的壓力。` : `下面距你 ${gapDown}%，位置尚穩。`;
       advice = `你跟${rival}差距 ${gapUp}%，${threat}今天把${mainMetric}當主方向，一筆有效成交就能縮短差距。前三不是你的終點，往前壓才是今天的任務。`;
     } else if (trank <= 10) {
@@ -851,7 +855,13 @@ async function loadCurrent() {
   const snapshot = payload.data;
   refs.rawInput.value = '';
   render(snapshot);
-  setBadge(refs.inputStatus, 'PASS', '已載入正式版');
+  setBadge(refs.inputStatus, 'PASS', '已載入正式版 (5/4-5/5)');
+  
+  // 顯示成功效果
+  if (refs.healthStatus) {
+    refs.healthStatus.textContent = 'ONLINE (v' + (snapshot.report?.version || 'LATEST') + ')';
+    refs.healthStatus.style.color = 'var(--pass)';
+  }
 }
 
 async function auditCurrentInput(options = {}) {
@@ -877,235 +887,65 @@ async function auditCurrentInput(options = {}) {
   }
 
   render(payload.data);
-  if (options.fixData) {
-    renderFixReport(options.fixData);
+  if (options.successBadge) {
+    setBadge(refs.inputStatus, options.successBadge.status, options.successBadge.text);
+  } else {
+    setBadge(refs.inputStatus, 'PASS', '審計完成');
   }
-  if (options.overrideBadge) {
-    setBadge(refs.inputStatus, options.overrideBadge.status, options.overrideBadge.text);
-    return;
-  }
-
-  setBadge(refs.inputStatus, ok ? 'PASS' : 'FAIL', payload.message || (ok ? '審計通過' : '審計失敗'));
+  AudioManager.success();
 }
 
-async function saveCurrentInput() {
-  if (!refs.rawInput.value.trim()) {
-    setBadge(refs.inputStatus, 'FAIL', '請先貼上公告或 JSON 後再存檔');
+async function saveCurrentReport() {
+  if (!state.current) {
+    setBadge(refs.inputStatus, 'FAIL', '請先進行審計後再儲存');
     return;
   }
-  setBadge(refs.inputStatus, 'PENDING', '存檔中');
+  if (!state.current.validation?.ok) {
+    setBadge(refs.inputStatus, 'FAIL', '審計未通過，無法儲存正式版');
+    return;
+  }
+
+  setBadge(refs.inputStatus, 'PENDING', '正在儲存至系統...');
   const { ok, payload } = await request('/api/save', {
     method: 'POST',
-    body: JSON.stringify({ rawText: refs.rawInput.value })
+    body: JSON.stringify({
+      report: state.current.report || state.current,
+      operator: 'admin',
+      reason: 'manual-update'
+    })
   });
 
-  if (!payload.data) {
-    setBadge(refs.inputStatus, 'FAIL', payload.message || '存檔失敗');
+  if (!ok) {
+    setBadge(refs.inputStatus, 'FAIL', payload.message || '儲存失敗');
     return;
   }
 
-  render(payload.data);
-  setBadge(refs.inputStatus, ok ? 'PASS' : 'FAIL', payload.message || (ok ? '正式版已存檔' : '驗證未通過'));
+  await loadCurrent();
+  AudioManager.sweep();
 }
 
-async function copyCompactText() {
-  const text = refs.compactOutput.value.trim();
-  if (!text) {
-    setBadge(refs.inputStatus, 'FAIL', '目前沒有可複製的群組精簡版');
-    return;
-  }
-
-  if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(text);
-  } else {
-    refs.compactOutput.select();
-    document.execCommand('copy');
-  }
-  setBadge(refs.inputStatus, 'PASS', '群組精簡版已複製');
-}
-
-function clearInputOnly() {
-  refs.rawInput.value = '';
-  setBadge(refs.inputStatus, 'PENDING', '輸入區已清空');
-}
-
-async function init() {
-  console.log("%c Zhaogui AI System %c Optimized Entry Sequence Activated ", "background: #00F2FF; color: #000; font-weight: bold; border-radius: 3px 0 0 3px; padding: 2px 4px;", "background: #111; color: #00F2FF; border-radius: 0 3px 3px 0; padding: 2px 4px; border: 1px solid #00F2FF;");
+function setup() {
   renderRules();
   setupLiveAudit();
-  await loadCurrent();
-}
-
-async function smartFixInput() {
-  const rawText = refs.rawInput.value.trim();
-  if (!rawText) {
-    setBadge(refs.inputStatus, 'FAIL', '請先貼上需要修復的公告或 JSON');
-    return;
-  }
-  setBadge(refs.inputStatus, 'PENDING', '智慧掃描中...');
-  AudioManager.sweep();
-  refs.rawInput.classList.add('ai-scanning', 'ai-glow');
-
-  try {
-    const { payload } = await request('/api/smart-fix', {
-      method: 'POST',
-      body: JSON.stringify({ rawText })
-    });
-    
-    refs.rawInput.classList.remove('ai-scanning', 'ai-glow');
-
-    const fixData = payload.data;
-    if (!fixData) {
-      setBadge(refs.inputStatus, 'FAIL', payload.message || '修復失敗');
-      return;
-    }
-
-    if (fixData.fixedJson) {
-      refs.rawInput.value = fixData.fixedJson;
-    }
-
-    const fixCount = fixData.fixCount || 0;
-    const remaining = fixData.remainingErrors || 0;
-    let badgeStatus = 'FAIL';
-    let badgeText = `未能自動修復，尚餘 ${remaining} 個錯誤`;
-    if (remaining === 0 && fixCount > 0) {
-      badgeStatus = 'PASS';
-      badgeText = `已修復 ${fixCount} 項，審計通過`;
-    } else if (remaining === 0) {
-      badgeStatus = 'PASS';
-      badgeText = '資料結構正常，無需修復';
-    } else if (fixCount > 0) {
-      badgeText = `已修復 ${fixCount} 項，尚餘 ${remaining} 個錯誤`;
-    }
-
-    await auditCurrentInput({
-      suppressPending: true,
-      fixData,
-      overrideBadge: {
-        status: badgeStatus,
-        text: badgeText
-      }
-    });
-  } catch (error) {
-    console.error('[SmartFix] 前端呼叫異常:', error);
-    refs.rawInput.classList.remove('ai-scanning', 'ai-glow');
-    setBadge(refs.inputStatus, 'FAIL', '智慧修復過程發生錯誤');
-  }
-}
-
-function renderFixReport(fixData) {
-  const fixes = fixData.fixes || [];
-  const validation = fixData.validation || {};
-  const beforeValidation = fixData.beforeValidation || {};
-  const resolvedErrors = fixData.resolvedErrors || [];
-  const manualActions = fixData.manualActions || [];
-
-  const summaryHtml = `
-    <div class="fix-report-header">
-      <span class="fix-report-title">🔧 智慧修復報告</span>
-      <span class="badge ${fixes.length > 0 ? 'badge-pass' : 'badge-neutral'}">${fixes.length} 項修復</span>
-      <span class="badge ${resolvedErrors.length > 0 ? 'badge-pass' : 'badge-neutral'}">${resolvedErrors.length} 項矛盾解除</span>
-    </div>
-    <div class="fix-item">
-      <span class="fix-field">修復前</span>
-      <span class="fix-action">${safeHtml(beforeValidation.status || 'PENDING')}</span>
-      <span class="fix-detail">${safeHtml(String((beforeValidation.errors || []).length))} 個錯誤 / ${safeHtml(String((beforeValidation.warnings || []).length))} 個警告</span>
-    </div>
-    <div class="fix-item">
-      <span class="fix-field">修復後</span>
-      <span class="fix-action">${safeHtml(validation.status || 'PENDING')}</span>
-      <span class="fix-detail">${safeHtml(String((validation.errors || []).length))} 個錯誤 / ${safeHtml(String((validation.warnings || []).length))} 個警告</span>
-    </div>
-  `;
-
-  const fixListHtml = fixes.length > 0
-    ? fixes.map(fix => `
-        <div class="fix-item">
-          <span class="fix-field">${safeHtml(fix.field)}</span>
-          <span class="fix-action">${safeHtml(fix.action)}</span>
-          <span class="fix-detail">${safeHtml(fix.detail)}</span>
-        </div>
-      `).join('')
-    : '<div class="fix-item fix-empty">所有欄位均已通過結構驗證，無需修復。</div>';
-
-  const remainingHtml = (validation.errors || []).length > 0
-    ? `<div class="fix-remaining">
-        <span class="fix-remaining-label">⚠ 剩餘 ${validation.errors.length} 個錯誤需手動處理：</span>
-        ${(validation.errors || []).map(err =>
-          `<div class="issue-row fail"><span class="issue-label">MANUAL</span> <span class="issue-text">${safeHtml(err)}</span></div>`
-        ).join('')}
-       </div>`
-    : '';
-
-  const manualActionsHtml = manualActions.length > 0
-    ? `<div class="fix-remaining">
-        <span class="fix-remaining-label">🛠 建議下一步：</span>
-        ${manualActions.map((item) =>
-          `<div class="issue-row warn"><span class="issue-label">TODO</span> <span class="issue-text">${safeHtml(item.reason)} → ${safeHtml(item.suggestion)}</span></div>`
-        ).join('')}
-       </div>`
-    : '';
-
-  refs.validationIssues.innerHTML = summaryHtml + fixListHtml + remainingHtml + manualActionsHtml;
-}
-
-
-refs.btnLoad.addEventListener('click', () => runAction(loadCurrent));
-refs.btnAudit.addEventListener('click', () => runAction(auditCurrentInput));
-refs.btnSave.addEventListener('click', () => runAction(saveCurrentInput));
-refs.btnFix.addEventListener('click', () => runAction(smartFixInput));
-refs.btnClear.addEventListener('click', clearInputOnly);
-refs.btnCopyCompact.addEventListener('click', () => {
-  runAction(copyCompactText).catch(() => {
-    setBadge(refs.inputStatus, 'FAIL', '複製失敗');
+  
+  refs.btnLoad?.addEventListener('click', () => runAction(loadCurrent));
+  refs.btnAudit?.addEventListener('click', () => runAction(() => auditCurrentInput()));
+  refs.btnSave?.addEventListener('click', () => runAction(saveCurrentReport));
+  refs.btnClear?.addEventListener('click', () => {
+    refs.rawInput.value = '';
+    refs.inputStatus.textContent = '等待輸入';
+    refs.inputStatus.className = 'badge badge-neutral';
   });
-});
-
-init().catch(() => {
-  setBadge(refs.inputStatus, 'FAIL', '初始化失敗');
-});
-
-
-function initDynamicAesthetics() {
-  document.addEventListener('mousemove', (e) => {
-    const cards = document.querySelectorAll('.panel, .spotlight-card');
-    cards.forEach(card => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const px = x / rect.width * 100;
-      const py = y / rect.height * 100;
-      card.style.setProperty('--mouse-x', `${px}%`);
-      card.style.setProperty('--mouse-y', `${py}%`);
-      if (x > -50 && x < rect.width + 50 && y > -50 && y < rect.height + 50) {
-        const tiltX = (0.5 - (y / rect.height)) * 8;
-        const tiltY = ((x / rect.width) - 0.5) * 8;
-        card.style.setProperty('--rx', `${tiltX}deg`);
-        card.style.setProperty('--ry', `${tiltY}deg`);
-      } else {
-        card.style.setProperty('--rx', '0deg');
-        card.style.setProperty('--ry', '0deg');
-      }
-    });
+  
+  refs.btnCopyCompact?.addEventListener('click', () => {
+    refs.compactOutput.select();
+    document.execCommand('copy');
+    const oldText = refs.btnCopyCompact.textContent;
+    refs.btnCopyCompact.textContent = '已複製！';
+    setTimeout(() => { refs.btnCopyCompact.textContent = oldText; }, 2000);
   });
 
-  const applyStaggerEntrance = () => {
-    const panels = document.querySelectorAll('.panel:not(.stagger-enter), .spotlight-card:not(.stagger-enter)');
-    panels.forEach((panel, index) => {
-      panel.style.animationDelay = `${Math.min(index * 0.035, 0.35)}s`;
-      panel.classList.add('stagger-enter');
-    });
-  };
-
-  const observer = new MutationObserver(() => {
-    applyStaggerEntrance();
-  });
-  observer.observe(document.body, { childList: true, subtree: true });
-  applyStaggerEntrance();
+  loadCurrent();
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initDynamicAesthetics);
-} else {
-  initDynamicAesthetics();
-}
+document.addEventListener('DOMContentLoaded', setup);

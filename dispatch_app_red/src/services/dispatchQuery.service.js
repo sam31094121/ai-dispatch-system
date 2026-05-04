@@ -223,13 +223,10 @@ function scanStoredRecords() {
 }
 
 function hydrateStorageCache() {
-  // [AI Optimization] 移除強制快取，確保解鎖版能即時讀取最新 latest.json
-  // if (storageCache.hydrated) return storageCache;
-
+  // [AI PRO MODE] 強制繞過快取，確保解鎖版能即時讀取磁碟上的最新 latest.json
   ensureStorageDirs();
   const latestRecord = readJson(storagePaths.latestFile);
-
-  // [AI Optimization] 唯一範本強制化：摧毀所有歷史與自動同步，以後只會有這一個版本
+  resetDerivedCache(); // 每次讀取都清空衍生快取
   return applyStorageIndex(buildStorageIndex([], latestRecord));
 }
 

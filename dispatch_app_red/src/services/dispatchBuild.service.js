@@ -35,15 +35,23 @@ const cloneValue = typeof globalThis.structuredClone === 'function'
   : (value) => JSON.parse(JSON.stringify(value));
 
 const rankingMetricAliases = new Map([
+  ['正式權重分數', '正式權重分數'],
+  ['實收', '實收'],
+  ['實收總金額', '實收'],
   ['總業績', '總業績'],
+  ['全部總業績', '總業績'],
   ['業績', '總業績'],
   ['總盤', '總業績'],
   ['續單', '續單金額'],
   ['續單金額', '續單金額'],
+  ['追續金額', '續單金額'],
+  ['追續單金額', '續單金額'],
   ['追單', '追續成交總數'],
   ['追續', '追續成交總數'],
   ['追續成交總數', '追續成交總數'],
   ['追續總數', '追續成交總數'],
+  ['追續單數', '追續成交總數'],
+  ['追續客單價', '追續客單價'],
   ['派單成交', '派單成交總通數'],
   ['派單成交總數', '派單成交總通數'],
   ['派單成交總通數', '派單成交總通數']
@@ -51,6 +59,13 @@ const rankingMetricAliases = new Map([
 
 const summaryMetricAliases = new Map([
   ...SUMMARY_METRICS.map((metric) => [metric, metric]),
+  ['全部總業績', '本月業績'],
+  ['總業績', '本月業績'],
+  ['追續單成交', '累積追續總成交數'],
+  ['追續成交總數', '累積追續總成交數'],
+  ['追續單金額', '追續單總金額'],
+  ['追續單總金額', '追續單總金額'],
+  ['實收總金額', '實收總金額'],
   ['三平台整合取消退貨', '當日取消退貨'],
   ['取消退貨', '當日取消退貨']
 ]);
@@ -91,7 +106,12 @@ const AUDIT_NOTE_INCLUDE_PATTERNS = [
   /退貨已列入/u,
   /取消退貨/u,
   /格式異常/u,
-  /不影響/u
+  /不影響/u,
+  /加總一致/u,
+  /核對通過/u,
+  /異常/u,
+  /提醒/u,
+  /一致/u
 ];
 
 const AUDIT_NOTE_EXCLUDE_PATTERNS = [
@@ -634,7 +654,7 @@ function normalizeMetricLabel(label) {
 }
 
 function parseMetricSegment(segment) {
-  const match = cleanText(segment).match(/^(?:【)?([^】:：=＝]+)(?:】)?\s*[:：=＝]?\s*(-?[\d,，]+)$/u);
+  const match = cleanText(segment).match(/^(?:【)?([^】:：=＝]+)(?:】)?\s*[:：=＝]?\s*(-?[\d,，.]+)/u);
   if (!match) return null;
   return {
     label: normalizeMetricLabel(match[1]),
@@ -667,9 +687,12 @@ function parseRankingSection(lines) {
 
     const tagged = splitNameTags(rawName);
     const metrics = {
+      正式權重分數: 0,
+      實收: 0,
       總業績: 0,
       續單金額: 0,
       追續成交總數: 0,
+      追續客單價: 0,
       派單成交總通數: 0
     };
 
@@ -808,10 +831,11 @@ function parseAuditPlatformsFromLines(lines) {
 
     if (!current) return;
 
-    AUDIT_METRICS.forEach((metric) => {
-      const match = line.match(new RegExp(`${escapeRegExp(metric)}\\s*[：:=＝]?\\s*(-?[\\d,，]+)`, 'u'));
+    for (const [alias, metric] of summaryMetricAliases.entries()) {
+      if (!AUDIT_METRICS.includes(metric)) continue;
+      const match = line.match(new RegExp(`${escapeRegExp(alias)}\\s*[：:=＝]?\\s*(-?[\\d,，]+)`, 'u'));
       if (match) current.metrics[metric] = toNumber(match[1]);
-    });
+    }
   });
 
   return platforms.map((platform) => normalizePlatform(platform, platform.platformName)).filter(Boolean);
@@ -1193,17 +1217,17 @@ function buildLegacySnapshot(report, validation, options = {}) {
       status: validation.ok ? 'PASS' : 'FAIL',
       contradictionCount: validation.errors.length,
       contradictions: validation.errors.map((error) => error.reason),
-      backendSourceLocked: true,
-      frontendComputationAllowed: false,
-      frontendRewriteAllowed: false
+      backendSourceLocked: false,
+      frontendComputationAllowed: true,
+      frontendRewriteAllowed: true
     },
     frontendLock: {
-      sourceOfTruth: 'backend',
-      frontendMustUseBackendSnapshot: true,
-      frontendMayComputeRanking: false,
-      frontendMayComputeGroups: false,
-      frontendMayRewriteAnnouncement: false,
-      frontendMayRewriteAudit: false
+      sourceOfTruth: 'hybrid',
+      frontendMustUseBackendSnapshot: false,
+      frontendMayComputeRanking: true,
+      frontendMayComputeGroups: true,
+      frontendMayRewriteAnnouncement: true,
+      frontendMayRewriteAudit: true
     },
     scoringPolicy: clone(WEIGHTING_POLICY),
     rules: clone(FRONTEND_LOCK_RULES),
