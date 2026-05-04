@@ -1,4 +1,4 @@
-const OFFICIAL_0502_TO_0503 = Object.freeze({
+const OFFICIAL_0502_TO_0503 = {
   reportDate: '115/05/02',
   dispatchDate: '115/05/03',
   title: 'AI 派單公告｜5/2 結算 → 5/3 正式派單順序',
@@ -25,7 +25,7 @@ const OFFICIAL_0502_TO_0503 = Object.freeze({
     actualRevenue: 58540,
     cancellations: 0
   },
-  platforms: Object.freeze({
+  platforms: {
     '三立奕心': {
       cumulativeRenewalDeals: 16,
       monthlyRevenue: 255980,
@@ -44,8 +44,8 @@ const OFFICIAL_0502_TO_0503 = Object.freeze({
       totalRenewalAmount: 31980,
       actualRevenue: 0
     }
-  }),
-  ranking: Object.freeze([
+  },
+  ranking: [
     { rank: 1, name: '湯玉琦', totalScore: 7246.64, actualRevenue: 28500, renewalRevenue: 29500, totalRevenue: 67120, avgRenewal: 14750, renewalDeals: 2, group: 'A1', advice: '你這輪靠實收直接衝第一，今天重點是把優勢守住。' },
     { rank: 2, name: '馬秋香', totalScore: 7000.00, actualRevenue: 0, renewalRevenue: 65930, totalRevenue: 97210, avgRenewal: 16482.5, renewalDeals: 4, group: 'A1', advice: '你整體比例最完整，今天只差把實收補強就會更穩。' },
     { rank: 3, name: '王珍珠', totalScore: 3818.03, actualRevenue: 0, renewalRevenue: 18370, totalRevenue: 93270, avgRenewal: 6123.33, renewalDeals: 3, group: 'A1', advice: '你總業績很硬，今天重點是把追續再轉成更高實收。' },
@@ -70,25 +70,25 @@ const OFFICIAL_0502_TO_0503 = Object.freeze({
     { rank: 22, name: '蘇淑玲', totalScore: 0, actualRevenue: 0, renewalRevenue: 0, totalRevenue: 0, avgRenewal: 0, renewalDeals: 0, group: 'C', advice: '今天先求開分，不要維持 0 分。' },
     { rank: 23, name: '鄭上官', totalScore: 0, actualRevenue: 0, renewalRevenue: 0, totalRevenue: 0, avgRenewal: 0, renewalDeals: 0, group: 'C', advice: '今天先求開分，不要維持 0 分。' },
     { rank: 24, name: '陳百玲（新人）', totalScore: 0, actualRevenue: 0, renewalRevenue: 0, totalRevenue: 0, avgRenewal: 0, renewalDeals: 0, group: 'C', advice: '先求第一筆有效分數，再談往前推。' }
-  ]),
-  groups: Object.freeze({
+  ],
+  groups: {
     A1: ['湯玉琦', '馬秋香', '王珍珠', '莉莉（新人）'],
     A2: ['廖姿惠', '林宜靜', '高如郁', '王梅慧', '周美蓁', '許喬恩', '李玲玲'],
     B: ['高美雲', '江麗勉', '鄭珮恩', '梁依萍', '陳玲華', '謝啟芳', '江沛林'],
     C: ['林沛昕', '徐華妤', '林佩君', '蘇淑玲', '鄭上官', '陳百玲（新人）']
-  }),
-  excludedEmployees: Object.freeze([]),
-  finalConfirmations: Object.freeze([
+  },
+  excludedEmployees: [],
+  finalConfirmations: [
     '5/2 結算資料已核對完成',
     '三平台總表全部核對通過',
     '無漏算、無多算、無總盤衝突',
     '本輪正式派單順序已依三平台整合 AI 比例原則版完成',
     '5/3 正式派單順序，以本則公告為準'
-  ]),
+  ],
   groupShortText: '📣【AI 派單公告｜5/2 結算 → 5/3 正式派單】審計 PASS，三平台總表全數核對通過，無漏算、無多算、無衝突。本輪依 AI 比例原則計算。正式前10名：1湯玉琦 2馬秋香 3王珍珠 4莉莉（新人） 5廖姿惠 6林宜靜 7高如郁 8王梅慧 9周美蓁 10許喬恩。A1：湯玉琦、馬秋香、王珍珠、莉莉。A2：廖姿惠、林宜靜、高如郁、王梅慧、周美蓁、許喬恩、李玲玲。正式派單順序以本則為準。',
   officialLock: { key: '0502-0503', preserveRankingOrder: true, skipConsistencyChecks: true },
   frontendAiGuard: { allowFormalDisplay: true, confirmedBy: 'SYSTEM_SUPER' },
   tieBreakNote: '許喬恩、周美蓁本輪同分並列；未設定強制 tie-break 時，依公告順序保留。'
-});
+};
 
 module.exports = { OFFICIAL_0502_TO_0503 };
