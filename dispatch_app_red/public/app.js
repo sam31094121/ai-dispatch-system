@@ -855,7 +855,7 @@ function render(snapshot) {
   renderAdvice(rankingRows);
   renderScoringPolicy(snapshot);
   renderProportionalAdvice(rankingRows);
-  refs.compactOutput.value = buildPasteReadyAnnouncement(snapshot) || data?.群組超精簡版 || '';
+  refs.compactOutput.value = snapshot?.report?.groupShortText || snapshot?.groupShortText || buildPasteReadyAnnouncement(snapshot) || data?.群組超精簡版 || '';
 }
 
 async function loadCurrent() {
