@@ -264,6 +264,18 @@ const groups = {
   C: rankings.filter((row) => row.group === 'C').map((row) => row.name)
 };
 
+const compactTop10 = rankings
+  .slice(0, 10)
+  .map((row) => `${row.rank}${row.name}`)
+  .join(' ');
+const compactLockText = [
+  `正式前10名：${compactTop10}。`,
+  `A1：${groups.A1.join('、')}。`,
+  `A2：${groups.A2.join('、')}。`,
+  `B組：${groups.B.join('、')}。`,
+  `C組：${groups.C.join('、')}。`
+].join('\n');
+
 const adviceList = rankings.map((row) => ({
   name: row.name,
   rank: row.rank,
@@ -336,7 +348,7 @@ const report = {
     '三平台總表核對通過。',
     '正式名次、分級與公告文字以本資料為準。'
   ],
-  groupShortText: GROUP_SHORT_TEXT
+  groupShortText: `${GROUP_SHORT_TEXT}\n\n${compactLockText}`
 };
 
 const storedRecord = {
@@ -368,7 +380,7 @@ const standardData = {
   })),
   分級: groups,
   每人一句建議: adviceList,
-  群組超精簡版: GROUP_SHORT_TEXT,
+  群組超精簡版: report.groupShortText,
   preserveRankingOrder: true,
   officialLock: {
     preserveRankingOrder: true,
