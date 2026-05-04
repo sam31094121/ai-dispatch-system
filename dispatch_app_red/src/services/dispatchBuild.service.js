@@ -1027,22 +1027,22 @@ function toLegacyStandardData(report) {
   });
   
   const ranking = report.rankings.map((row) => ({
-      名次: row.rank,
-      姓名: row.name,
-      ...(row.isNew ? { 標記: '新人' } : {}),
-      正式權重分數: row.metrics.正式權重分數 || 0,
-      實收: row.metrics.實收 || 0,
-      全部總業績: row.metrics.總業績,
-      總業績: row.metrics.總業績,
-      追續金額: row.metrics.續單金額,
-      續單金額: row.metrics.續單金額,
-      追續單數: row.metrics.追續成交總數,
-      追續成交總數: row.metrics.追續成交總數,
-      追續客單價: row.metrics.追續客單價 || 0,
-      派單成交總通數: row.metrics.派單成交總通數,
-      分級: row.group,
-      建議: row.advice
-    }));
+    名次: row.rank,
+    姓名: row.name,
+    ...(row.isNew ? { 標記: '新人' } : {}),
+    正式權重分數: row.metrics.正式權重分數 || 0,
+    實收: row.metrics.實收 || 0,
+    全部總業績: row.metrics.總業績,
+    總業績: row.metrics.總業績,
+    追續金額: row.metrics.續單金額,
+    續單金額: row.metrics.續單金額,
+    追續單數: row.metrics.追續成交總數,
+    追續成交總數: row.metrics.追續成交總數,
+    追續客單價: row.metrics.追續客單價 || 0,
+    派單成交總通數: row.metrics.派單成交總通數,
+    分級: row.group,
+    建議: row.advice
+  }));
 
   ranking.sort((a, b) => {
     if ((b.正式權重分數 || 0) !== (a.正式權重分數 || 0)) {

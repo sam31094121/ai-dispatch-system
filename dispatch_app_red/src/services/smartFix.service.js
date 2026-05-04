@@ -15,6 +15,10 @@ function safeArray(value) {
   return Array.isArray(value) ? value : [];
 }
 
+function rocDateString(date) {
+  return `${date.getFullYear() - 1911}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
+}
+
 function arraysEqual(left, right) {
   if (left.length !== right.length) return false;
   return left.every((value, index) => value === right[index]);
@@ -228,16 +232,9 @@ function repairReport(report) {
   }
 
   const extractedDates = extractDatesFromTitle(repairedReport.title);
-  
-  // 進階優化：日期自動推導邏輯 (Today -> Tomorrow)
   const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth() + 1;
-  const day = now.getDate();
-  const todayROC = `${year - 1911}/${String(month).padStart(2, '0')}/${String(day).padStart(2, '0')}`;
-  
-  const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-  const tomorrowROC = `${tomorrow.getFullYear() - 1911}/${String(tomorrow.getMonth() + 1).padStart(2, '0')}/${String(tomorrow.getDate()).padStart(2, '0')}`;
+  const todayROC = rocDateString(now);
+  const tomorrowROC = rocDateString(new Date(now.getTime() + 86400000));
 
   if (!repairedReport.settlementDate) {
     repairedReport.settlementDate = todayROC;
@@ -568,12 +565,10 @@ function collectReportFixes(originalReport, repairedReport, fixes) {
 function smartFixRawInput(rawText) {
   const text = String(rawText || '').trim();
   
-  // 優化：若為空，自動生成今日模板
   if (!text) {
     const now = new Date();
-    const today = `${now.getFullYear() - 1911}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}`;
-    const tomorrow = new Date(now.getTime() + 86400000);
-    const tomorrowStr = `${tomorrow.getFullYear() - 1911}/${String(tomorrow.getMonth() + 1).padStart(2, '0')}/${String(tomorrow.getDate()).padStart(2, '0')}`;
+    const today = rocDateString(now);
+    const tomorrowStr = rocDateString(new Date(now.getTime() + 86400000));
     
     const template = {
       公告標題: `AI 派單公告｜${today} 結算 → ${tomorrowStr} 正式派單順序`,

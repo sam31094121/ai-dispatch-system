@@ -3021,6 +3021,7 @@ function repairOfficial0429Snapshot({ snapshot }) {
 const { OFFICIAL_0430_TO_0501 } = require('./official-0430-to-0501');
 const { OFFICIAL_0501_TO_0502 } = require('./official-0501-to-0502');
 const { OFFICIAL_0502_TO_0503 } = require('./official-0502-to-0503');
+const { OFFICIAL_0503_TO_0504 } = require('./official-0503-to-0504');
 
 module.exports = {
   OFFICIAL_0408_TO_0409,
@@ -3038,6 +3039,7 @@ module.exports = {
   OFFICIAL_0430_TO_0501,
   OFFICIAL_0501_TO_0502,
   OFFICIAL_0502_TO_0503,
+  OFFICIAL_0503_TO_0504,
   isPlaceholderText,
   hasQuestionBlock,
   countRankChangeEntries,
