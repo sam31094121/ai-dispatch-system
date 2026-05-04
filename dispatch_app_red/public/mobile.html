@@ -1,133 +1,121 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>AI 派單終端｜5/4 正式版</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#09111f">
+  <title>兆櫃 AI 派單終端｜5/5 正式派單</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Sora:wght@300;400;600;800&family=Noto+Sans+TC:wght@300;500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/mobile.css?v=0504-purge-lock">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/mobile.css?v=0505-unified-send">
 </head>
 <body>
-  <div id="app" class="cyber-layout">
-    <!-- 背景光效 -->
-    <div class="bg-glow"></div>
-    <div class="bg-grid"></div>
-
-    <!-- 頂部英雄區 -->
-    <header class="hero-section">
-      <div class="system-status">
-        <span class="status-dot pulsing"></span>
-        <span class="status-text">AI CORE ONLINE</span>
+  <div id="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="kicker">Zhaogui AI Dispatch</p>
+        <h1 id="main-title">AI 派單公告</h1>
       </div>
-      <h1 id="main-title">AI 派單公告</h1>
-      <div class="date-tags">
-        <span id="settlement-date-tag" class="tag">結算 --/--</span>
-        <span class="tag-arrow">→</span>
-        <span id="dispatch-date-tag" class="tag primary">派單 --/--</span>
-      </div>
-      
-      <div class="hero-stats">
-        <div class="stat-pill" data-status="PASS">
-          <label>審計結果</label>
-          <strong id="audit-result">-</strong>
-        </div>
-        <div class="stat-pill">
-          <label>正式人數</label>
-          <strong id="active-count">-</strong>
-        </div>
-      </div>
+      <span id="audit-result" class="status-badge">--</span>
     </header>
 
-    <!-- 個人查詢區 (浮動按鈕觸發) -->
-    <div class="search-trigger" id="search-open">
-      <span class="icon">🔍</span>
-      <span class="text">快速查詢</span>
-    </div>
+    <section class="date-strip" aria-label="日期">
+      <div>
+        <span>結算</span>
+        <strong id="settlement-date-tag">--</strong>
+      </div>
+      <div>
+        <span>派單</span>
+        <strong id="dispatch-date-tag">--</strong>
+      </div>
+      <div>
+        <span>人數</span>
+        <strong id="active-count">--</strong>
+      </div>
+    </section>
 
-    <!-- 主內容區 -->
-    <main class="content-container">
-      
-      <!-- 戰報總盤 -->
+    <main>
+      <section class="panel send-panel" id="send">
+        <div class="section-head">
+          <div>
+            <p class="kicker">Unified Send</p>
+            <h2>統一傳送</h2>
+          </div>
+          <button id="refresh-data" class="icon-button" type="button" aria-label="重新整理">↻</button>
+        </div>
+        <div class="send-actions">
+          <button id="copy-broadcast" class="primary-button" type="button">複製公告</button>
+          <button id="share-broadcast" class="secondary-button" type="button">系統分享</button>
+          <a id="line-share" class="secondary-button" href="#" target="_blank" rel="noopener">LINE 傳送</a>
+        </div>
+        <textarea id="broadcast-output" class="broadcast-box" readonly aria-label="公告傳送文字"></textarea>
+      </section>
+
       <section class="panel" id="summary">
-        <div class="panel-header">
-          <span class="eyebrow">Overall Stats</span>
-          <h2>整合總盤數據</h2>
+        <div class="section-head">
+          <div>
+            <p class="kicker">Overall Stats</p>
+            <h2>整合總盤</h2>
+          </div>
         </div>
-        <div id="summary-grid" class="summary-grid">
-          <!-- JS 動態插入 -->
-        </div>
+        <div id="summary-grid" class="summary-grid"></div>
       </section>
 
-      <!-- 名次大榜 (核心) -->
       <section class="panel" id="ranking">
-        <div class="panel-header">
-          <span class="eyebrow">Elite Ranking</span>
-          <h2>正式派單排行榜</h2>
+        <div class="section-head">
+          <div>
+            <p class="kicker">Official Ranking</p>
+            <h2>正式派單名次</h2>
+          </div>
+          <button id="search-open" class="icon-button" type="button" aria-label="搜尋姓名">⌕</button>
         </div>
-        <div id="ranking-list" class="ranking-list">
-          <!-- JS 動態插入 -->
-        </div>
+        <div id="ranking-list" class="ranking-list"></div>
       </section>
 
-      <!-- 派單分級 -->
       <section class="panel" id="groups">
-        <div class="panel-header">
-          <span class="eyebrow">Tier Distribution</span>
-          <h2>A1 / A2 / B / C 分級</h2>
+        <div class="section-head">
+          <div>
+            <p class="kicker">Tier Distribution</p>
+            <h2>A1 / A2 / B / C 分級</h2>
+          </div>
         </div>
-        <div id="groups-grid" class="groups-grid">
-          <!-- JS 動態插入 -->
-        </div>
+        <div id="groups-grid" class="groups-grid"></div>
       </section>
 
-      <!-- 審計說明 -->
       <section class="panel" id="audit">
-        <div class="panel-header">
-          <span class="eyebrow">Audit Log</span>
-          <h2>審計異常與提醒</h2>
+        <div class="section-head">
+          <div>
+            <p class="kicker">Audit Log</p>
+            <h2>審計提醒</h2>
+          </div>
         </div>
         <div id="audit-notes" class="audit-notes"></div>
         <div id="excluded-list" class="excluded-list"></div>
       </section>
-
-      <!-- 群組精簡版 -->
-      <section class="panel" id="broadcast">
-        <div class="panel-header">
-          <span class="eyebrow">Broadcast Text</span>
-          <h2>群組超精簡版</h2>
-          <button id="copy-broadcast" class="btn-icon">📋</button>
-        </div>
-        <div id="broadcast-output" class="broadcast-box"></div>
-      </section>
-
-      <!-- 底部安全緩衝區 -->
-      <div class="bottom-safe-buffer"></div>
     </main>
 
-    <!-- 底部導航欄 -->
-    <nav class="bottom-nav">
-      <a href="#summary" class="nav-item">總盤</a>
-      <a href="#ranking" class="nav-item active">排行</a>
-      <a href="#groups" class="nav-item">分級</a>
-      <a href="#broadcast" class="nav-item">轉發</a>
+    <nav class="bottom-nav" aria-label="主要導覽">
+      <a href="#send">傳送</a>
+      <a href="#summary">總盤</a>
+      <a href="#ranking">名次</a>
+      <a href="#groups">分級</a>
     </nav>
 
-    <!-- 查詢彈窗 -->
-    <div id="search-modal" class="modal">
-      <div class="modal-content">
-        <h3>快速定位成員</h3>
-        <input type="text" id="lookup-input" placeholder="輸入姓名或姓氏..." autofocus>
+    <div id="search-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="search-title">
+      <div class="modal-panel">
+        <div class="section-head">
+          <h2 id="search-title">搜尋姓名</h2>
+          <button id="search-close" class="icon-button" type="button" aria-label="關閉">×</button>
+        </div>
+        <input id="lookup-input" type="search" placeholder="輸入姓名，例如：馬秋香" autocomplete="off">
         <div id="lookup-results" class="lookup-results"></div>
-        <button id="search-close" class="btn-close">關閉</button>
       </div>
     </div>
 
-    <!-- 全局提示 -->
-    <div id="toast" class="toast"></div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
   </div>
 
-  <script src="/mobile.js?v=0504-purge-lock"></script>
+  <script src="/mobile.js?v=0505-unified-send"></script>
 </body>
 </html>
