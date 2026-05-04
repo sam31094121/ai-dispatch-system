@@ -9,7 +9,7 @@ const envCache = new Map();
 const DEFAULT_MODEL = 'gemini-2.0-flash';
 const DEFAULT_API_VERSION = 'v1beta';
 const DEFAULT_BASE_URL = 'https://generativelanguage.googleapis.com';
-const PASS_STATUSES = new Set(['通過', 'PASS', 'done', '??']);
+const PASS_STATUSES = new Set(['通過', 'PASS', 'done', 'published', '??']);
 const VALID_TONES = new Set(['green', 'red', 'cyan', 'orange', 'gold', 'violet']);
 
 function deepClone(value) {
@@ -115,8 +115,8 @@ function buildFacts(snapshot) {
       status: snapshot.confirmation?.status || '',
       message: snapshot.confirmation?.message || ''
     },
-    ranking: Array.isArray(snapshot.ranking)
-      ? snapshot.ranking.map((person) => ({
+    ranking: Array.isArray(snapshot.ranking || snapshot.rankings)
+      ? (snapshot.ranking || snapshot.rankings).map((person) => ({
           rank: person.rank,
           name: person.name,
           totalScore: person.totalScore,
@@ -316,8 +316,8 @@ async function enhanceSnapshotWithGemini(snapshot, options = {}) {
     isPassStatus(snapshot.status) &&
     isPassStatus(snapshot.audit?.status) &&
     isPassStatus(snapshot.confirmation?.status) &&
-    Array.isArray(snapshot.ranking) &&
-    snapshot.ranking.length > 0;
+    Array.isArray(snapshot.ranking || snapshot.rankings) &&
+    (snapshot.ranking || snapshot.rankings).length > 0;
 
   if (!ready) {
     return {
