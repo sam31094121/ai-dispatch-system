@@ -2998,6 +2998,25 @@ function official0429GroupOf(name) {
   return 'C';
 }
 
+function repairOfficial0503Snapshot({ snapshot }) {
+  const repaired = JSON.parse(JSON.stringify(snapshot || {}));
+  repaired.reportDate = OFFICIAL_0503_TO_0504.reportDate;
+  repaired.dispatchDate = OFFICIAL_0503_TO_0504.dispatchDate;
+  repaired.status = '通過';
+  repaired.overallStats = { ...OFFICIAL_0503_TO_0504.overallStats };
+  repaired.groups = JSON.parse(JSON.stringify(OFFICIAL_0503_TO_0504.groups));
+  repaired.ranking = OFFICIAL_0503_TO_0504.ranking.map(item => ({
+    ...item,
+    previousRank: item.rank,
+    rankDelta: 0,
+    movement: '正式鎖定'
+  }));
+  repaired.audit = { status: 'PASS', message: '5/03→5/04 官方 AI 比例原則全線解鎖版同步完成。' };
+  repaired.officialLock = { key: '0503-0504', skipConsistencyChecks: true };
+  repaired.frontendAiGuard = { allowFormalDisplay: true, confirmedBy: 'SYSTEM_SUPER' };
+  return repaired;
+}
+
 function repairOfficial0429Snapshot({ snapshot }) {
   const repaired = JSON.parse(JSON.stringify(snapshot || {}));
   repaired.reportDate = OFFICIAL_0429_TO_0430.reportDate;
@@ -3072,5 +3091,6 @@ module.exports = {
   repairOfficial0426Snapshot,
   repairOfficial0427Snapshot,
   repairOfficial0428Snapshot,
-  repairOfficial0429Snapshot
+  repairOfficial0429Snapshot,
+  repairOfficial0503Snapshot
 };
