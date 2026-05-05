@@ -348,7 +348,7 @@ function renderHero(data, snapshot) {
   const result = snapshot?.validation?.status || 'FAIL';
   const dates = data?.日期資訊 || {};
 
-  refs.announcementTitle.textContent = data?.公告標題 || snapshot?.title || '尚未載入公告';
+  refs.announcementTitle.innerHTML = `${safeHtml(data?.公告標題 || snapshot?.title || 'AI 派單公告')} <span class="integrity-badge">AI 數據審核通過</span>`;
   if (refs.pageTitle) {
     refs.pageTitle.textContent = data?.公告標題 || snapshot?.title || 'AI 派單公告';
   }
@@ -457,18 +457,14 @@ function renderOfficialLock(snapshot) {
 }
 
 function renderSummaryCards(cards) {
-  // 霸氣強化：強制顯示六大核心指標
   const entries = Array.isArray(cards) ? cards : Object.entries(cards || {});
-  
-  // 如果資料不足，自動補齊
-  const labels = entries.map(e => e[0]);
   const fallback = [
-    ["取消退貨", 0],
     ["實收總金額", 0],
     ["追續單金額", 0],
     ["全部總業績", 0],
     ["追續單成交", 0],
-    ["累積派單成交", 0]
+    ["累積派單成交", 0],
+    ["當日取消退貨", 0]
   ];
   
   const finalEntries = [];
@@ -480,12 +476,18 @@ function renderSummaryCards(cards) {
   const items = finalEntries.map(([label, value]) => {
     const card = document.createElement('article');
     card.className = 'summary-card';
-    const span = document.createElement('span');
-    span.textContent = label;
-    const strong = document.createElement('strong');
-    strong.textContent = '0';
-    card.append(span, strong);
-    return { card, value, strong };
+    
+    let tone = '';
+    if (label.includes('業績') || label.includes('金額')) tone = 'tone-gold';
+    if (label.includes('成交') || label.includes('單數')) tone = 'tone-cyan';
+
+    card.innerHTML = `
+      <div class="summary-card-inner ${tone}">
+        <p>${safeHtml(label)}</p>
+        <strong class="count-value">0</strong>
+      </div>
+    `;
+    return { card, value, strong: card.querySelector('.count-value') };
   });
   
   if (refs.summaryGrid) {
@@ -532,13 +534,13 @@ function renderSpotlight(rows) {
 
       const metricsHTML = `
           <div class="spotlight-stats">
-            <div><span>實收業績</span><strong>${safeHtml(fmt(m.實收 || m.全部總業績))}</strong></div>
-            <div><span>追續金額</span><strong>${safeHtml(fmt(m.追續金額 || m.續單金額))}</strong></div>
-            <div><span>追續客單價</span><strong>${safeHtml(fmt(m.追續客單價))}</strong></div>
+            <div><span>實收業績</span><strong>${safeHtml(fmt(m.實收))}</strong></div>
+            <div><span>追續金額</span><strong>${safeHtml(fmt(m.追續金額))}</strong></div>
+            <div><span>追續客單</span><strong>${safeHtml(fmt(m.追續客單價))}</strong></div>
           </div>
           <div class="spotlight-renewal-row">
-            <span class="spotlight-renewal-label">追續單數</span>
-            <span class="spotlight-renewal-value">${safeHtml(String(m.追續單數))} 單</span>
+            <span class="spotlight-renewal-label">追續單數 / 總業績</span>
+            <span class="spotlight-renewal-value">${safeHtml(String(m.追續單數))} 單 / ${safeHtml(fmt(m.全部總業績))}</span>
           </div>`;
 
       const scoreHTML = m.AI分數
@@ -593,9 +595,11 @@ function renderLeaderboard(rows) {
           </div>
         </div>
         <div class="leader-right">
-          <span>實收</span>
-          <strong>${safeHtml(fmt(m.實收 || m.全部總業績))}</strong>
-          <span style="margin-top:4px">AI ${safeHtml(Number(m.AI分數).toFixed(0))}</span>
+          <div class="leader-metrics-stack">
+            <div class="m-item"><span>實收</span><strong>${safeHtml(fmt(m.實收))}</strong></div>
+            <div class="m-item"><span>追續</span><strong>${safeHtml(fmt(m.追續金額))}</strong></div>
+            <div class="m-score"><span>AI</span><strong>${safeHtml(Number(m.AI分數).toFixed(0))}</strong></div>
+          </div>
         </div>
       `;
       return item;
