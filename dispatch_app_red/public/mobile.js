@@ -8,6 +8,7 @@ const refs = {
   settlementDate: document.getElementById('settlement-date-tag'),
   dispatchDate: document.getElementById('dispatch-date-tag'),
   activeCount: document.getElementById('active-count'),
+  a1HeroGrid: document.getElementById('a1-hero-grid'),
   summaryGrid: document.getElementById('summary-grid'),
   rankingList: document.getElementById('ranking-list'),
   groupsGrid: document.getElementById('groups-grid'),
