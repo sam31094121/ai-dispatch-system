@@ -74,102 +74,116 @@ const rawText = `📣【AI 派單公告｜5/4 結算 → 5/5 正式派單順序�
 14、王梅慧｜【正式權重分數】1742.81｜【實收】0｜【追續金額】20,800｜【全部總業績】52,600｜【追續客單價】5,200.00｜【追續單數】4
 15、梁依萍｜【正式權重分數】1486.55｜【實收】0｜【追續金額】14,280｜【全部總業績】47,640｜【追續客單價】14,280.00｜【追續單數】1
 16、林佩君｜【正式權重分數】1312.99｜【實收】0｜【追續金額】14,700｜【全部總業績】14,700｜【追續客單價】14,700.00｜【追續單數】1
-17、江麗勉｜【正式權重分數】898.95｜【實收】0｜【追續金額】9,480｜【全部總業績】13,460｜【追續客單價】4,740.00｜【追續單數】2
-18、陳百玲（新人）｜【正式權重分數】756.90｜【實收】0｜【追續金額】6,980｜【全部總業績】6,980｜【追續客單價】3,490.00｜【追續單數】2
-19、鄭珮恩｜【正式權重分數】752.80｜【實收】0｜【追續金額】5,750｜【全部總業績】14,500｜【追續客單價】2,875.00｜【追續單數】2
-20、謝啟芳｜【正式權重分數】518.85｜【實收】0｜【追續金額】2,980｜【全部總業績】16,300｜【追續客單價】2,980.00｜【追續單數】1
-21、陳玲華｜【正式權重分數】158.14｜【實收】0｜【追續金額】0｜【全部總業績】25,740｜【追續客單價】0｜【追續單數】0
-22、江沛林｜【正式權重分數】91.85｜【實收】0｜【追續金額】0｜【全部總業績】14,950｜【追續客單價】0｜【追續單數】0
-23、蘇淑玲｜【正式權重分數】0｜【實收】0｜【追續金額】0｜【全部總業績】0｜【追續客單價】0｜【追續單數】0
-24、鄭上官｜【正式權重分數】0｜【實收】0｜【追續金額】0｜【全部總業績】0｜【追續客單價】0｜【追續單數】0
+1    const ranking = rankingLines.map((line) => {
+    const parts = line.split('｜');
+    if (parts.length < 7) return null;
+    
+    const rankMatch = parts[0].match(/^(\d+)、(.*)/);
+    const rank = parseInt(rankMatch[1]);
+    const name = rankMatch[2].trim();
+    
+    const getNum = (str) => parseFloat(String(str).replace(/[^0-9.-]/g, '')) || 0;
+    
+    const score = getNum(parts[1]);
+    const realRevenue = getNum(parts[2]);
+    const continuationAmt = getNum(parts[3]);
+    const totalRev = getNum(parts[4]);
+    const ticketAvg = getNum(parts[5]);
+    const count = getNum(parts[6]);
 
-五、名次異動
+    let advice = "";
+    const advLine = adviceLines.find(al => al.startsWith(rank + '、' + name));
+    if (advLine) advice = advLine.split('：')[1].trim();
 
-以上一輪 5/3 正式派單名次對照，本輪異動如下：
+    let movement = "flat";
+    let prevRank = rank;
+    
+    const mLines = movementSection.split('\n');
+    for (let ml of mLines) {
+      if (ml.includes(name) && ml.includes('→')) {
+        const mm = ml.match(/(\d+)\s*→\s*(\d+)/);
+        if (mm) {
+          prevRank = parseInt(mm[1]);
+          if (ml.includes('↑')) movement = "up";
+          else if (ml.includes('↓')) movement = "down";
+        }
+      }
+    }
 
-上升
-馬秋香：2 → 1 ↑
-林沛昕：4 → 3 ↑
-廖姿惠：9 → 4 ↑
-高美雲：13 → 7 ↑
-徐華妤：21 → 11 ↑
-梁依萍：18 → 15 ↑
-林佩君：22 → 16 ↑
+    let group = "C";
+    if (groupsSection.includes('🔴 A1') && groupsSection.split('🔴 A1')[1].split('🟠 A2')[0].includes(name)) group = "A1";
+    else if (groupsSection.includes('🟠 A2') && groupsSection.split('🟠 A2')[1].split('🟡 B組')[0].includes(name)) group = "A2";
+    else if (groupsSection.includes('🟡 B組') && groupsSection.split('🟡 B組')[1].split('🟢 C組')[0].includes(name)) group = "B";
 
-下降
-湯玉琦：1 → 2 ↓
-林宜靜：3 → 6 ↓
-周美蓁：6 → 8 ↓
-許喬恩：7 → 9 ↓
-莉莉（新人）：8 → 10 ↓
-高如郁：10 → 12 ↓
-李玲玲：11 → 13 ↓
-王梅慧：12 → 14 ↓
-江麗勉：14 → 17 ↓
-陳百玲（新人）：17 → 18 ↓
-鄭珮恩：16 → 19 ↓
-謝啟芳：15 → 20 ↓
-陳玲華：20 → 21 ↓
-江沛林：19 → 22 ↓
+    return {
+      rank,
+      name,
+      group,
+      prevRank,
+      movement,
+      metrics: {
+        "正式權重分數": score,
+        "實收": realRevenue,
+        "總業績": totalRev,
+        "續單金額": continuationAmt,
+        "追續成交總數": count,
+        "追續客單價": ticketAvg,
+        "派單成交總通數": 0
+      },
+      advice,
+      isNew: name.includes("新人")
+    };
+  }).filter(Boolean);
 
-持平
-王珍珠：5 → 5 ＝
-蘇淑玲：23 → 23 ＝
-鄭上官：24 → 24 ＝
-
-六、A1／A2／B／C 分級
-
-🔴 A1｜高優先主力
-馬秋香
-湯玉琦
-林沛昕
-廖姿惠
-
-🟠 A2｜次主力追進
-王珍珠
-林宜靜
-高美雲
-周美蓁
-許喬恩
-莉莉（新人）
-徐華妤
-高如郁
-
-🟡 B組｜一般量單
-李玲玲
-王梅慧
-梁依萍
-林佩君
-江麗勉
-陳百玲（新人）
-鄭珮恩
-謝啟芳
-
-🟢 C組｜補位／觀察
-陳玲華
-江沛林
-蘇淑玲
-鄭上官
-
-七、每人一句建議
-
-1、馬秋香：你這輪靠追續金額、總業績與客單價全面拉高，今天重點是把實收補上。
-2、湯玉琦：你實收仍是全場第一，今天只要再補追續量就能穩住前段。
-3、林沛昕：你追續單數與實收都有撐住，今天是繼續往前推的關鍵。
-4、廖姿惠：你這輪客單價與追續金額明顯拉升，今天要把實收接起來。
-5、王珍珠：你單數有量、總業績有底，今天差的是把金額與實收再拉高。
-6、林宜靜：你有實收支撐，今天補上追續成交就能再往前。
-7、高美雲：你這輪名次明顯上升，今天要把成交穩定度延續。
-8、周美蓁：你有乾淨實收，今天只要再補一筆就能再動名次。
-9、許喬恩：你跟周美蓁分數相同，今天補單就能拉開差距。
-10、莉莉（新人）：你有實收亮點，今天先求穩定再往前推。
-11、徐華妤：你客單價很漂亮，今天關鍵是把實收補起來。
-12、高如郁：你有實收基礎，今天再補追續金額就能上推。
-13、李玲玲：你有單數但分數偏散，今天要提高追續金額。
-14、王梅慧：你單數有基本盤，今天差的是更高客單與實收。
-15、梁依萍：你有高客單切入點，今天先把下一筆成交接起來。
-16、林佩君：你這輪有有效分數，今天要把單數補上。
-17、江麗勉：你有追續成交，今天再補一筆就能拉高排序。
+  const snapshot = {
+    reportId: 'dispatch_2026_05_04_v1',
+    title: 'AI 派單公告｜5/4 結算 → 5/5 正式派單',
+    settlementDate: '2026-05-04',
+    dispatchDate: '2026-05-05',
+    status: 'published',
+    auditResult: 'PASS',
+    sourceText: rawText,
+    rankings: ranking,
+    audit: {
+        result: 'PASS',
+        rule: '先審計，後運算，後排序，再派單',
+        platforms: [
+            { platformName: "三立奕心", passed: true, metrics: { "累積追續總成交數": 45, "本月業績": 717358, "追續單總金額": 575440, "實收總金額": 60460 } },
+            { platformName: "民視", passed: true, metrics: { "累積追續總成交數": 12, "本月業績": 490000, "追續單總金額": 80590, "實收總金額": 18160 } },
+            { platformName: "公司產品", passed: true, metrics: { "累積追續總成交數": 4, "本月業績": 45710, "追續單總金額": 43230, "實收總金額": 35250 } }
+        ],
+        notes: ["本輪三平台總表與個別明細加總一致。", "無漏算、無多算、無總盤衝突。"],
+        excludedEmployees: []
+    },
+    summaryBoard: {
+        "累積追續總成交數": 61,
+        "本月業績": 1253068,
+        "追續單總金額": 699260,
+        "實收總金額": 113870,
+        "當日取消退貨": 0
+    },
+    groups: {
+        A1: ranking.filter(r => r.group === 'A1').map(r => r.name),
+        A2: ranking.filter(r => r.group === 'A2').map(r => r.name),
+        B: ranking.filter(r => r.group === 'B').map(r => r.name),
+        C: ranking.filter(r => r.group === 'C').map(r => r.name)
+    },
+    presentation: {
+      summaryCards: [
+        ['實收總金額', 113870],
+        ['追續單金額', 699260],
+        ['全部總業績', 1253068],
+        ['追續單成交', 61]
+      ],
+      top10: ranking.slice(0, 10).map(r => ({
+        rank: r.rank,
+        name: r.name,
+        group: r.group,
+        weightedScore: r.metrics["正式權重分數"],
+        movement: r.movement
+      }))
+    }
+  };序。
 18、陳百玲（新人）：你有累積，不急著衝，先把成交穩定做出來。
 19、鄭珮恩：你分數差距不大，今天先把追續金額補強。
 20、謝啟芳：你有成交但分數偏低，今天要先提高客單。
