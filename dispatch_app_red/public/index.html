@@ -57,7 +57,7 @@
       <div id="spotlight-grid" class="spotlight-grid"></div>
 
       <div id="performance-summary" class="performance-summary"></div>
-      <p id="performance-recommendation" class="performance-recommendation">業績分析載入中...</p>
+      <p id="performance-recommendation" class="performance-recommendation" hidden></p>
       <div id="performance-products" class="performance-products"></div>
       <div class="dispatch-order-head">
         <span id="dispatch-order-title">今日正式派單順位</span>
@@ -137,25 +137,18 @@
         </div>
         <div id="validation-issues" class="issue-list"></div>
       </article>
-    </section>
 
-    <section class="screen screen-first">
-      <div class="screen-head">
-        <p class="eyebrow">正式公告</p>
-        <h2>標題、審計結果、整合總盤、正式前五名</h2>
-      </div>
-
-      <article class="panel title-panel">
-        <div class="title-wrap">
+      <article class="panel" style="grid-column: 1 / -1;">
+        <div class="panel-head">
           <div>
-            <p id="announcement-title" class="announcement-title">尚未載入公告</p>
-            <p id="date-range" class="announcement-date">-</p>
+            <p class="eyebrow">群組超精簡版</p>
+            <h2>完整公告文字 · 可直接複製傳送</h2>
           </div>
-          <div id="audit-result" class="audit-hero audit-pass">PASS</div>
         </div>
+        <textarea id="compact-output" class="compact-output" readonly></textarea>
       </article>
 
-      <article id="official-lock-panel" class="panel official-lock-panel">
+      <article id="official-lock-panel" class="panel official-lock-panel" style="grid-column: 1 / -1;">
         <div class="official-lock-head">
           <div>
             <p class="eyebrow">Official Dispatch Lock</p>
@@ -172,6 +165,23 @@
             <span class="official-lock-label">A1 / A2 / B / C</span>
             <p id="official-lock-groups" class="official-lock-text">-</p>
           </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="screen screen-first">
+      <div class="screen-head">
+        <p class="eyebrow">正式公告</p>
+        <h2>標題、審計結果、整合總盤、正式前五名</h2>
+      </div>
+
+      <article class="panel title-panel">
+        <div class="title-wrap">
+          <div>
+            <p id="announcement-title" class="announcement-title">尚未載入公告</p>
+            <p id="date-range" class="announcement-date">-</p>
+          </div>
+          <div id="audit-result" class="audit-hero audit-pass">PASS</div>
         </div>
       </article>
 
@@ -270,15 +280,6 @@
         <div id="advice-list" class="advice-list"></div>
       </article>
 
-      <article class="panel">
-        <div class="panel-head">
-          <div>
-            <p class="eyebrow">可複製區</p>
-            <h2>群組超精簡版</h2>
-          </div>
-        </div>
-        <textarea id="compact-output" class="compact-output" readonly></textarea>
-      </article>
     </section>
 
     <section class="screen screen-fourth">
@@ -300,6 +301,7 @@
       </article>
       <div id="prop-advice-grid" class="prop-advice-grid"></div>
     </section>
+
   </div>
 
   <script src="app.js?v=0504-purge-lock"></script>
