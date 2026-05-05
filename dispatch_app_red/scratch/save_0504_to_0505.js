@@ -3,57 +3,110 @@ process.chdir(path.resolve(__dirname, '..'));
 
 const { saveNewReport, saveReportVersion } = require('../src/services/dispatchQuery.service');
 
+const rankings = [
+  { rank:1,  name:'馬秋香', group:'A1', isNew:false, advice:'重返第一！追續金額傲視群雄，今日請補足實收，展現全能戰鬥力。',     metrics:{ 正式權重分數:7000.00, 實收:27200, 續單金額:209200, 總業績:244400, 追續客單價:12306, 追續成交總數:17, 派單成交總通數:0 } },
+  { rank:2,  name:'湯玉琦', group:'A1', isNew:false, advice:'實收依然全場第一，穩住派單優先權，今天補齊追續量即可反攻。',       metrics:{ 正式權重分數:6253.76, 實收:33600, 續單金額:127190, 總業績:167640, 追續客單價:9784,  追續成交總數:13, 派單成交總通數:0 } },
+  { rank:3,  name:'林沛昕', group:'A1', isNew:false, advice:'單數與實收表現穩定，目前正處於上升氣流，繼續保持。',               metrics:{ 正式權重分數:6073.93, 實收:18000, 續單金額:163390, 總業績:189640, 追續客單價:10212, 追續成交總數:16, 派單成交總通數:0 } },
+  { rank:4,  name:'廖姿惠', group:'A1', isNew:false, advice:'名次大幅躍進！客單價優勢明顯，今天請接住實收，穩住 A1 位置。',     metrics:{ 正式權重分數:3661.65, 實收:7000,  續單金額:72600,  總業績:83700,  追續客單價:18150, 追續成交總數:4,  派單成交總通數:0 } },
+  { rank:5,  name:'王珍珠', group:'A2', isNew:false, advice:'量能充足，但客單價與實收尚有空間，加油。',                         metrics:{ 正式權重分數:3188.03, 實收:8500,  續單金額:52200,  總業績:68650,  追續客單價:8700,  追續成交總數:6,  派單成交總通數:0 } },
+  { rank:6,  name:'林宜靜', group:'A2', isNew:false, advice:'實收有底氣，只要成交一筆追續，排名就能立刻回升。',                 metrics:{ 正式權重分數:3077.17, 實收:9410,  續單金額:42000,  總業績:56910,  追續客單價:10500, 追續成交總數:4,  派單成交總通數:0 } },
+  { rank:7,  name:'高美雲', group:'A2', isNew:false, advice:'異動幅度亮眼，證明穩定度在提升，請繼續保持。',                     metrics:{ 正式權重分數:2930.50, 實收:5200,  續單金額:62480,  總業績:74180,  追續客單價:10413, 追續成交總數:6,  派單成交總通數:0 } },
+  { rank:8,  name:'周美蓁', group:'A2', isNew:false, advice:'有乾淨實收，距離前一名僅一步之遙，單數落地即超車。',               metrics:{ 正式權重分數:2292.29, 實收:4900,  續單金額:38640,  總業績:49640,  追續客單價:9660,  追續成交總數:4,  派單成交總通數:0 } },
+  { rank:9,  name:'許喬恩', group:'A2', isNew:false, advice:'與周美蓁同分競逐，今日誰先出單誰就領先。',                         metrics:{ 正式權重分數:2292.29, 實收:4900,  續單金額:38640,  總業績:49640,  追續客單價:9660,  追續成交總數:4,  派單成交總通數:0 } },
+  { rank:10, name:'莉莉',   group:'A2', isNew:true,  advice:'展現極佳潛力，實收亮眼，請先求穩再求進。',                         metrics:{ 正式權重分數:2271.51, 實收:5000,  續單金額:36680,  總業績:47680,  追續客單價:9170,  追續成交總數:4,  派單成交總通數:0 } },
+  { rank:11, name:'徐華妤', group:'A2', isNew:false, advice:'客單價極具優勢，關鍵在於補齊實收，前進前十。',                     metrics:{ 正式權重分數:2105.03, 實收:2500,  續單金額:40880,  總業績:49380,  追續客單價:13627, 追續成交總數:3,  派單成交總通數:0 } },
+  { rank:12, name:'高如郁', group:'A2', isNew:false, advice:'有實收基礎，再接再厲提高追續金額。',                               metrics:{ 正式權重分數:2039.76, 實收:4000,  續單金額:33040,  總業績:42240,  追續客單價:8260,  追續成交總數:4,  派單成交總通數:0 } },
+  { rank:13, name:'李玲玲', group:'B',  isNew:false, advice:'單數雖多但分數分散，今日重點在於拉高追續金額。',                   metrics:{ 正式權重分數:1842.52, 實收:3500,  續單金額:28600,  總業績:38100,  追續客單價:7150,  追續成交總數:4,  派單成交總通數:0 } },
+  { rank:14, name:'王梅慧', group:'B',  isNew:false, advice:'基本盤穩固，需要更高客單價來衝破瓶頸。',                           metrics:{ 正式權重分數:1742.81, 實收:3200,  續單金額:27040,  總業績:35940,  追續客單價:6760,  追續成交總數:4,  派單成交總通數:0 } },
+  { rank:15, name:'梁依萍', group:'B',  isNew:false, advice:'高客單切入點正確，請保持節奏。',                                   metrics:{ 正式權重分數:1486.55, 實收:2000,  續單金額:21360,  總業績:27560,  追續客單價:10680, 追續成交總數:2,  派單成交總通數:0 } },
+  { rank:16, name:'林佩君', group:'B',  isNew:false, advice:'已脫離後段班，請把單數接起來。',                                   metrics:{ 正式權重分數:1312.99, 實收:1800,  續單金額:18360,  總業績:24060,  追續客單價:9180,  追續成交總數:2,  派單成交總通數:0 } },
+  { rank:17, name:'江麗勉', group:'B',  isNew:false, advice:'有追續成交，再接再厲。',                                           metrics:{ 正式權重分數:898.95,  實收:1000,  續單金額:11880,  總業績:16180,  追續客單價:11880, 追續成交總數:1,  派單成交總通數:0 } },
+  { rank:18, name:'陳百玲', group:'B',  isNew:true,  advice:'不急著衝量，先把成交穩定性做出來。',                               metrics:{ 正式權重分數:756.90,  實收:800,   續單金額:9880,   總業績:13480,  追續客單價:9880,  追續成交總數:1,  派單成交總通數:0 } },
+  { rank:19, name:'鄭珮恩', group:'B',  isNew:false, advice:'分數差距極小，一筆追續即可大幅動排名。',                           metrics:{ 正式權重分數:752.80,  實收:800,   續單金額:9800,   總業績:13600,  追續客單價:9800,  追續成交總數:1,  派單成交總通數:0 } },
+  { rank:20, name:'謝啟芳', group:'B',  isNew:false, advice:'單數有落地，請嘗試提高單筆成交金額。',                             metrics:{ 正式權重分數:518.85,  實收:500,   續單金額:6400,   總業績:8900,   追續客單價:6400,  追續成交總數:1,  派單成交總通數:0 } },
+  { rank:21, name:'陳玲華', group:'C',  isNew:false, advice:'總業績有底，但缺追續分數，請主攻有效追單。',                       metrics:{ 正式權重分數:158.14,  實收:0,     續單金額:0,      總業績:25740,  追續客單價:0,     追續成交總數:0,  派單成交總通數:0 } },
+  { rank:22, name:'江沛林', group:'C',  isNew:false, advice:'先求追續與實收破零。',                                             metrics:{ 正式權重分數:91.85,   實收:0,     續單金額:0,      總業績:14950,  追續客單價:0,     追續成交總數:0,  派單成交總通數:0 } },
+  { rank:23, name:'蘇淑玲', group:'C',  isNew:false, advice:'今日目標：破零落地。',                                             metrics:{ 正式權重分數:0,       實收:0,     續單金額:0,      總業績:0,      追續客單價:0,     追續成交總數:0,  派單成交總通數:0 } },
+  { rank:24, name:'鄭上官', group:'C',  isNew:false, advice:'解除空白狀態，啟動排名引擎。',                                     metrics:{ 正式權重分數:0,       實收:0,     續單金額:0,      總業績:0,      追續客單價:0,     追續成交總數:0,  派單成交總通數:0 } }
+];
+
+function buildGroups(rankings) {
+  const g = { A1: [], A2: [], B: [], C: [] };
+  rankings.forEach(r => { if (g[r.group]) g[r.group].push(r.name); });
+  return g;
+}
+
 const report = {
   reportId: 'dispatch_2026_05_04_v1',
   title: 'AI 派單公告｜5/4 結算 → 5/5 派單順序',
   settlementDate: '2026-05-04',
   dispatchDate: '2026-05-05',
   status: 'published',
-  confirmation: { status: 'PASS', message: '官方核定通過' },
-  audit: { status: 'PASS', result: 'PASS' },
+  auditResult: 'PASS',
+  audit: {
+    result: 'PASS',
+    rule: '先審計，後排序，再派單',
+    notes: ['3平台總表（三立、民視、公司）核對通過，無漏算、無多算、無總盤衝突'],
+    excludedEmployees: [],
+    platforms: [
+      {
+        platformName: '三立奕心',
+        passed: true,
+        metrics: {
+          累積總派單數: 0,
+          累積派單總成交數: 45,
+          累積追續總成交數: 45,
+          當日續單金額: 575440,
+          本月業績: 717358,
+          追續單總金額: 575440,
+          實收總金額: 60460
+        }
+      },
+      {
+        platformName: '民視',
+        passed: true,
+        metrics: {
+          累積總派單數: 0,
+          累積派單總成交數: 12,
+          累積追續總成交數: 12,
+          當日續單金額: 80590,
+          本月業績: 490000,
+          追續單總金額: 80590,
+          實收總金額: 18160
+        }
+      },
+      {
+        platformName: '公司產品',
+        passed: true,
+        metrics: {
+          累積總派單數: 0,
+          累積派單總成交數: 4,
+          累積追續總成交數: 4,
+          當日續單金額: 43230,
+          本月業績: 45710,
+          追續單總金額: 43230,
+          實收總金額: 35250
+        }
+      }
+    ]
+  },
   summaryBoard: {
+    累積總派單數: 0,
+    累積派單總成交數: 61,
     累積追續總成交數: 61,
+    當日續單金額: 699260,
     本月業績: 1253068,
     追續單總金額: 699260,
     實收總金額: 113870,
-    三立奕心成交: 45,
-    三立奕心總業績: 717358,
-    三立奕心追續: 575440,
-    三立奕心實收: 60460,
-    民視成交: 12,
-    民視總業績: 490000,
-    民視追續: 80590,
-    民視實收: 18160,
-    公司產品成交: 4,
-    公司產品總業績: 45710,
-    公司產品追續: 43230,
-    公司產品實收: 35250
+    當日取消退貨: 0
   },
-  rankings: [
-    { rank: 1,  name: '馬秋香',  group: 'A1', isNew: false, advice: '重返第一！追續金額傲視群雄，今日請補足實收，展現全能戰鬥力。',          metrics: { 正式權重分數: 7000.00, 實收: 27200, 追續金額: 209200, 全部總業績: 244400, 追續單數: 17, 追續客單價: 12306 } },
-    { rank: 2,  name: '湯玉琦',  group: 'A1', isNew: false, advice: '實收依然全場第一，穩住派單優先權，今天補齊追續量即可反攻。',            metrics: { 正式權重分數: 6253.76, 實收: 33600, 追續金額: 127190, 全部總業績: 167640, 追續單數: 13, 追續客單價: 9784 } },
-    { rank: 3,  name: '林沛昕',  group: 'A1', isNew: false, advice: '單數與實收表現穩定，目前正處於上升氣流，繼續保持。',                    metrics: { 正式權重分數: 6073.93, 實收: 18000, 追續金額: 163390, 全部總業績: 189640, 追續單數: 16, 追續客單價: 10212 } },
-    { rank: 4,  name: '廖姿惠',  group: 'A1', isNew: false, advice: '名次大幅躍進！客單價優勢明顯，今天請接住實收，穩住 A1 位置。',          metrics: { 正式權重分數: 3661.65, 實收: 7000, 追續金額: 72600, 全部總業績: 83700, 追續單數: 4, 追續客單價: 18150 } },
-    { rank: 5,  name: '王珍珠',  group: 'A2', isNew: false, advice: '量能充足，但客單價與實收尚有空間，加油。',                              metrics: { 正式權重分數: 3188.03, 實收: 8500, 追續金額: 52200, 全部總業績: 68650, 追續單數: 6, 追續客單價: 8700 } },
-    { rank: 6,  name: '林宜靜',  group: 'A2', isNew: false, advice: '實收有底氣，只要成交一筆追續，排名就能立刻回升。',                      metrics: { 正式權重分數: 3077.17, 實收: 9410, 追續金額: 42000, 全部總業績: 56910, 追續單數: 4, 追續客單價: 10500 } },
-    { rank: 7,  name: '高美雲',  group: 'A2', isNew: false, advice: '異動幅度亮眼，證明穩定度在提升，請繼續保持。',                          metrics: { 正式權重分數: 2930.50, 實收: 5200, 追續金額: 62480, 全部總業績: 74180, 追續單數: 6, 追續客單價: 10413 } },
-    { rank: 8,  name: '周美蓁',  group: 'A2', isNew: false, advice: '有乾淨實收，距離前一名僅一步之遙，單數落地即超車。',                    metrics: { 正式權重分數: 2292.29, 實收: 4900, 追續金額: 38640, 全部總業績: 49640, 追續單數: 4, 追續客單價: 9660 } },
-    { rank: 9,  name: '許喬恩',  group: 'A2', isNew: false, advice: '與周美蓁同分競逐，今日誰先出單誰就領先。',                              metrics: { 正式權重分數: 2292.29, 實收: 4900, 追續金額: 38640, 全部總業績: 49640, 追續單數: 4, 追續客單價: 9660 } },
-    { rank: 10, name: '莉莉',    group: 'A2', isNew: true,  advice: '展現極佳潛力，實收亮眼，請先求穩再求進。',                              metrics: { 正式權重分數: 2271.51, 實收: 5000, 追續金額: 36680, 全部總業績: 47680, 追續單數: 4, 追續客單價: 9170 } },
-    { rank: 11, name: '徐華妤',  group: 'A2', isNew: false, advice: '客單價極具優勢，關鍵在於補齊實收，前進前十。',                          metrics: { 正式權重分數: 2105.03, 實收: 2500, 追續金額: 40880, 全部總業績: 49380, 追續單數: 3, 追續客單價: 13627 } },
-    { rank: 12, name: '高如郁',  group: 'A2', isNew: false, advice: '有實收基礎，再接再厲提高追續金額。',                                    metrics: { 正式權重分數: 2039.76, 實收: 4000, 追續金額: 33040, 全部總業績: 42240, 追續單數: 4, 追續客單價: 8260 } },
-    { rank: 13, name: '李玲玲',  group: 'B',  isNew: false, advice: '單數雖多但分數分散，今日重點在於拉高追續金額。',                        metrics: { 正式權重分數: 1842.52, 實收: 3500, 追續金額: 28600, 全部總業績: 38100, 追續單數: 4, 追續客單價: 7150 } },
-    { rank: 14, name: '王梅慧',  group: 'B',  isNew: false, advice: '基本盤穩固，需要更高客單價來衝破瓶頸。',                                metrics: { 正式權重分數: 1742.81, 實收: 3200, 追續金額: 27040, 全部總業績: 35940, 追續單數: 4, 追續客單價: 6760 } },
-    { rank: 15, name: '梁依萍',  group: 'B',  isNew: false, advice: '高客單切入點正確，請保持節奏。',                                        metrics: { 正式權重分數: 1486.55, 實收: 2000, 追續金額: 21360, 全部總業績: 27560, 追續單數: 2, 追續客單價: 10680 } },
-    { rank: 16, name: '林佩君',  group: 'B',  isNew: false, advice: '已脫離後段班，請把單數接起來。',                                        metrics: { 正式權重分數: 1312.99, 實收: 1800, 追續金額: 18360, 全部總業績: 24060, 追續單數: 2, 追續客單價: 9180 } },
-    { rank: 17, name: '江麗勉',  group: 'B',  isNew: false, advice: '有追續成交，再接再厲。',                                                metrics: { 正式權重分數: 898.95, 實收: 1000, 追續金額: 11880, 全部總業績: 16180, 追續單數: 1, 追續客單價: 11880 } },
-    { rank: 18, name: '陳百玲',  group: 'B',  isNew: true,  advice: '不急著衝量，先把成交穩定性做出來。',                                    metrics: { 正式權重分數: 756.90, 實收: 800, 追續金額: 9880, 全部總業績: 13480, 追續單數: 1, 追續客單價: 9880 } },
-    { rank: 19, name: '鄭珮恩',  group: 'B',  isNew: false, advice: '分數差距極小，一筆追續即可大幅動排名。',                                metrics: { 正式權重分數: 752.80, 實收: 800, 追續金額: 9800, 全部總業績: 13600, 追續單數: 1, 追續客單價: 9800 } },
-    { rank: 20, name: '謝啟芳',  group: 'B',  isNew: false, advice: '單數有落地，請嘗試提高單筆成交金額。',                                  metrics: { 正式權重分數: 518.85, 實收: 500, 追續金額: 6400, 全部總業績: 8900, 追續單數: 1, 追續客單價: 6400 } },
-    { rank: 21, name: '陳玲華',  group: 'C',  isNew: false, advice: '總業績有底，但缺追續分數，請主攻有效追單。',                            metrics: { 正式權重分數: 158.14, 實收: 0, 追續金額: 0, 全部總業績: 25740, 追續單數: 0, 追續客單價: 0 } },
-    { rank: 22, name: '江沛林',  group: 'C',  isNew: false, advice: '先求追續與實收破零。',                                                  metrics: { 正式權重分數: 91.85, 實收: 0, 追續金額: 0, 全部總業績: 14950, 追續單數: 0, 追續客單價: 0 } },
-    { rank: 23, name: '蘇淑玲',  group: 'C',  isNew: false, advice: '今日目標：破零落地。',                                                  metrics: { 正式權重分數: 0.00, 實收: 0, 追續金額: 0, 全部總業績: 0, 追續單數: 0, 追續客單價: 0 } },
-    { rank: 24, name: '鄭上官',  group: 'C',  isNew: false, advice: '解除空白狀態，啟動排名引擎。',                                          metrics: { 正式權重分數: 0.00, 實收: 0, 追續金額: 0, 全部總業績: 0, 追續單數: 0, 追續客單價: 0 } }
+  rankings,
+  groups: buildGroups(rankings),
+  adviceList: rankings.map(r => ({ name: r.name, rank: r.rank, group: r.group, text: r.advice })),
+  finalConfirmations: [
+    '5/4 結算資料已核對完成',
+    '3平台總表（三立、民視、公司）核對通過，無漏算、無多算、無總盤衝突',
+    '5/5 正式派單順序，以本則公告為準'
   ],
   groupShortText: '🔴A1主力：馬秋香、湯玉琦、林沛昕、廖姿惠｜🟠A2次主力：王珍珠、林宜靜、高美雲、周美蓁、許喬恩、莉莉、徐華妤、高如郁｜🟡B組：李玲玲、王梅慧、梁依萍、林佩君、江麗勉、陳百玲、鄭珮恩、謝啟芳｜🟢C組：陳玲華、江沛林、蘇淑玲、鄭上官',
   announcement: `【AI 派單公告｜5/4 結算 → 5/5 派單順序】
@@ -169,13 +222,16 @@ const report = {
     console.log('結算日:', result.report.settlementDate);
     console.log('派單日:', result.report.dispatchDate);
     console.log('排行數:', result.report.rankings?.length);
-    console.log('審計:', result.validation?.ok ? 'PASS' : 'FAIL');
+    console.log('審計:', result.validation?.ok ? 'PASS ✅' : `FAIL ❌ (${result.validation?.errors?.length} errors)`);
     if (!result.validation?.ok) {
-      console.error('驗證錯誤:', JSON.stringify(result.validation?.errors, null, 2));
+      result.validation.errors.forEach(e => console.error(' -', e.field + ':', e.reason));
+    }
+    if (result.validation?.warnings?.length) {
+      result.validation.warnings.forEach(w => console.warn(' warning:', w.field + ':', w.reason));
     }
   } catch (err) {
     console.error('❌ 儲存失敗:', err.message);
-    if (err.errors) console.error('錯誤詳情:', JSON.stringify(err.errors, null, 2));
+    if (err.errors) err.errors.forEach(e => console.error(' -', e.field + ':', e.reason));
     process.exit(1);
   }
 })();
