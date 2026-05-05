@@ -313,10 +313,12 @@ function renderAudit(notes, excluded) {
 
 function renderSendText(text) {
   state.sendText = text || '';
-  refs.broadcastOutput.value = state.sendText;
-  refs.lineShare.href = state.sendText
-    ? `https://line.me/R/share?text=${encodeURIComponent(state.sendText)}`
-    : '#';
+  if (refs.broadcastOutput) refs.broadcastOutput.value = state.sendText;
+  if (refs.lineShare) {
+    refs.lineShare.href = state.sendText
+      ? `https://line.me/R/share?text=${encodeURIComponent(state.sendText)}`
+      : '#';
+  }
 }
 
 function renderError(error) {
@@ -331,36 +333,28 @@ function renderError(error) {
 }
 
 async function copyText() {
-  const text = refs.broadcastOutput.value.trim();
-  if (!text) {
-    showToast('沒有可傳送的公告文字');
-    return;
-  }
-
+  const text = state.sendText.trim();
+  if (!text) { showToast('沒有可傳送的公告文字'); return; }
   if (navigator.clipboard?.writeText) {
     await navigator.clipboard.writeText(text);
   } else {
-    refs.broadcastOutput.select();
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
     document.execCommand('copy');
+    document.body.removeChild(ta);
   }
   showToast('公告已複製');
 }
 
 async function shareText() {
-  const text = refs.broadcastOutput.value.trim();
-  if (!text) {
-    showToast('沒有可分享的公告文字');
-    return;
-  }
-
+  const text = state.sendText.trim();
+  if (!text) { showToast('沒有可分享的公告文字'); return; }
   if (navigator.share) {
-    await navigator.share({
-      title: state.report?.title || 'AI 派單公告',
-      text
-    });
+    await navigator.share({ title: state.report?.title || 'AI 派單公告', text });
     return;
   }
-
   await copyText();
 }
 
@@ -410,8 +404,6 @@ function showToast(message) {
 }
 
 function bindEvents() {
-  refs.copyBroadcast.addEventListener('click', () => copyText().catch(() => showToast('複製失敗')));
-  refs.shareBroadcast.addEventListener('click', () => shareText().catch(() => showToast('分享已取消')));
   refs.refreshData.addEventListener('click', loadData);
   refs.searchOpen.addEventListener('click', openSearch);
   refs.searchClose.addEventListener('click', closeSearch);
