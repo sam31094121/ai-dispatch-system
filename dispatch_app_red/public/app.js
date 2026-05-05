@@ -76,7 +76,8 @@ const actionButtons = [
   refs.btnSave,
   refs.btnFix,
   refs.btnClear,
-  refs.btnCopyCompact
+  refs.btnCopyCompact,
+  $('btn-send-line')
 ].filter(Boolean);
 
 function fmt(value) {
@@ -360,7 +361,7 @@ function renderHero(data, snapshot) {
   refs.executionId.textContent = dates.結算日 || snapshot?.executionId || '-';
   refs.persistStatus.textContent = snapshot?.persisted ? '正式版' : '預覽中';
   refs.pageSubtitle.textContent = snapshot?.persisted
-    ? `數據已生效：${dates.結算日 || '5/2'} 結算，${dates.派單日 || '5/3'} 正式派單。系統正以最優化模式運行。`
+    ? `數據已生效：${dates.結算日 || '5/4'} 結算，${dates.派單日 || '5/5'} 正式派單。系統正以最優化模式運行。`
     : '目前展示的是預覽結果，可直接存為正式版。';
 }
 
@@ -456,8 +457,27 @@ function renderOfficialLock(snapshot) {
 }
 
 function renderSummaryCards(cards) {
+  // 霸氣強化：強制顯示六大核心指標
   const entries = Array.isArray(cards) ? cards : Object.entries(cards || {});
-  const items = entries.map(([label, value]) => {
+  
+  // 如果資料不足，自動補齊
+  const labels = entries.map(e => e[0]);
+  const fallback = [
+    ["取消退貨", 0],
+    ["實收總金額", 0],
+    ["追續單金額", 0],
+    ["全部總業績", 0],
+    ["追續單成交", 0],
+    ["累積派單成交", 0]
+  ];
+  
+  const finalEntries = [];
+  fallback.forEach(([fLabel, fVal]) => {
+    const found = entries.find(e => e[0].includes(fLabel) || fLabel.includes(e[0]));
+    finalEntries.push(found || [fLabel, fVal]);
+  });
+
+  const items = finalEntries.map(([label, value]) => {
     const card = document.createElement('article');
     card.className = 'summary-card';
     const span = document.createElement('span');
@@ -467,8 +487,11 @@ function renderSummaryCards(cards) {
     card.append(span, strong);
     return { card, value, strong };
   });
-  refs.summaryGrid.replaceChildren(...items.map(i => i.card));
-  items.forEach(({ strong, value }) => countUp(strong, value, 800));
+  
+  if (refs.summaryGrid) {
+    refs.summaryGrid.replaceChildren(...items.map(i => i.card));
+    items.forEach(({ strong, value }) => countUp(strong, value, 1000));
+  }
 }
 
 function renderSpotlight(rows) {
@@ -499,14 +522,13 @@ function renderSpotlight(rows) {
         : '';
 
       const titles = {
-        1: { text: '王者 KING', class: 'title-champion' },
-        2: { text: '頂尖 ELITE', class: 'title-elite' },
-        3: { text: '豪傑 HERO', class: 'title-elite' },
-        4: { text: '強襲 STRIKER', class: 'title-striker' },
-        5: { text: '破軍 VANGUARD', class: 'title-striker' }
+        1: { text: '🏆 至尊王者 SUPREME', class: 'title-champion' },
+        2: { text: '💎 鑽石戰神 ELITE', class: 'title-elite' },
+        3: { text: '🥇 黃金統帥 COMMANDER', class: 'title-elite' },
+        4: { text: '🥈 白銀先鋒 VANGUARD', class: 'title-striker' }
       };
       const titleData = titles[rank];
-      const titleHtml = titleData ? `<span class="prestige-title ${titleData.class}">${titleData.text}</span>` : '';
+      const titleHtml = titleData ? `<div class="prestige-title-wrap"><span class="prestige-title ${titleData.class}">${titleData.text}</span></div>` : '';
 
       const metricsHTML = `
           <div class="spotlight-stats">
@@ -821,14 +843,14 @@ function render(snapshot) {
   state.current = snapshot;
   const data = snapshot?.standardData || {};
   const presentation = snapshot?.presentation || {};
-  const rankingRows = asArray(data?.正式名次 || snapshot?.report?.rankings);
+  const rankingRows = asArray(data?.正式名次 || snapshot?.rankings || snapshot?.report?.rankings);
   const retired = asArray(presentation.retired || data?.審計結論?.['審計列示不入派單']);
 
   renderValidation(snapshot);
   renderHero(data, snapshot);
   renderOfficialLock(snapshot);
   renderSummaryCards(presentation.summaryCards || data?.整合總盤 || snapshot?.report?.audit?.summaryBoard || []);
-  renderSpotlight(presentation.top5 || rankingRows);
+  renderSpotlight((presentation.top5 || rankingRows).slice(0, 4));
   renderLeaderboard(presentation.top10 || rankingRows);
   const rankMap = {};
   rankingRows.forEach(row => {
@@ -841,7 +863,7 @@ function render(snapshot) {
   renderAdvice(rankingRows);
   renderScoringPolicy(snapshot);
   renderProportionalAdvice(rankingRows);
-  refs.compactOutput.value = snapshot?.report?.groupShortText || snapshot?.groupShortText || buildPasteReadyAnnouncement(snapshot) || data?.群組超精簡版 || '';
+  refs.compactOutput.value = snapshot?.announcement || data?.群組超精簡版 || snapshot?.groupShortText || buildPasteReadyAnnouncement(snapshot) || '';
 }
 
 async function loadCurrent() {
@@ -855,11 +877,12 @@ async function loadCurrent() {
   const snapshot = payload.data;
   refs.rawInput.value = '';
   render(snapshot);
-  setBadge(refs.inputStatus, 'PASS', '已載入正式版 (5/4-5/5)');
-  
-  // 顯示成功效果
+  const dates = snapshot?.standardData?.日期資訊 || {};
+  const dateLabel = (dates.結算日 && dates.派單日) ? `${dates.結算日}→${dates.派單日}` : 'LATEST';
+  setBadge(refs.inputStatus, 'PASS', `已載入正式版 (${dateLabel})`);
+
   if (refs.healthStatus) {
-    refs.healthStatus.textContent = 'ONLINE (v' + (snapshot.report?.version || 'LATEST') + ')';
+    refs.healthStatus.textContent = 'ONLINE';
     refs.healthStatus.style.color = 'var(--pass)';
   }
 }
@@ -943,6 +966,49 @@ function setup() {
     const oldText = refs.btnCopyCompact.textContent;
     refs.btnCopyCompact.textContent = '已複製！';
     setTimeout(() => { refs.btnCopyCompact.textContent = oldText; }, 2000);
+  });
+  
+  const btnSendLine = $('btn-send-line');
+  btnSendLine?.addEventListener('click', async () => {
+    let userId = localStorage.getItem('MY_LINE_USER_ID');
+    if (!userId) {
+      userId = prompt('請輸入您的 LINE User ID (U開頭字串) 以便傳送派單訊息至您的手機：\n(只需輸入一次，後續會自動記住)');
+      if (!userId) return;
+      localStorage.setItem('MY_LINE_USER_ID', userId.trim());
+    }
+    
+    const url = window.location.href;
+    const isLocal = url.includes('localhost') || url.includes('127.0.0.1');
+    const warning = isLocal ? '\n\n⚠️ 注意：目前網址為 localhost，手機若非同一 WiFi 可能無法開啟。若要在手機查看，建議傳送正式的伺服器網址 (如 Render 或您的本機 IP)。' : '';
+    
+    const text = `🔥 【AI 派單戰情室已更新】\n\n最新的 AI 大數據排名、分級與專屬建議已出爐！\n👉 請立即點擊下方專屬連結，進入「至尊指揮中心」查看前四名榮耀榜與完整面板：\n\n🔗 戰情室網址：\n${url}${warning}`;
+    
+    const oldText = btnSendLine.textContent;
+    btnSendLine.textContent = '傳送中...';
+    btnSendLine.disabled = true;
+    
+    try {
+      const res = await fetch('/api/line/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: userId, text: text })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        btnSendLine.textContent = '✅ 已傳送至您的 LINE';
+      } else {
+        btnSendLine.textContent = '❌ 傳送失敗';
+        alert('傳送失敗：' + (data.error || '未知的錯誤'));
+      }
+    } catch (e) {
+      btnSendLine.textContent = '❌ 連線失敗';
+      alert('連線失敗：' + e.message);
+    } finally {
+      setTimeout(() => { 
+        btnSendLine.textContent = oldText;
+        btnSendLine.disabled = false;
+      }, 3000);
+    }
   });
 
   loadCurrent();

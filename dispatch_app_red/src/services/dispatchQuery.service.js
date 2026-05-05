@@ -223,11 +223,16 @@ function scanStoredRecords() {
 }
 
 function hydrateStorageCache() {
+  if (storageCache.hydrated) {
+    return storageCache;
+  }
+
   // [AI PRO MODE] 強制繞過快取，確保解鎖版能即時讀取磁碟上的最新 latest.json
   ensureStorageDirs();
   const latestRecord = readJson(storagePaths.latestFile);
   resetDerivedCache(); // 每次讀取都清空衍生快取
-  return applyStorageIndex(buildStorageIndex([], latestRecord));
+  const records = scanStoredRecords();
+  return applyStorageIndex(buildStorageIndex(records, latestRecord));
 }
 
 function listAllStoredRecords() {

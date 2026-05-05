@@ -60,3 +60,4 @@ const server = app.listen(appConfig.port, async () => {
 
 
 });
+// Trigger nodemon restart

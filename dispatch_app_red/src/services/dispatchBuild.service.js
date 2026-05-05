@@ -1,4 +1,3 @@
-const defaultAnnouncement = require('../../shared/default-announcement.json');
 const {
   AUDIT_METRICS,
   DEFAULT_AUDIT_RULE,
@@ -28,11 +27,51 @@ const {
   splitNameTags,
   toNumber
 } = require('../utils/name.util');
+const fs = require('fs');
+const path = require('path');
 
 const numberFormatter = new Intl.NumberFormat('zh-TW');
 const cloneValue = typeof globalThis.structuredClone === 'function'
   ? (value) => globalThis.structuredClone(value)
   : (value) => JSON.parse(JSON.stringify(value));
+
+const DEFAULT_ANNOUNCEMENT_PATH = path.join(__dirname, '..', '..', 'shared', 'default-announcement.json');
+const LATEST_REPORT_PATH = path.join(__dirname, '..', '..', 'data', 'dispatch-reports-v1', 'latest.json');
+
+function readSeedJson(filePath) {
+  try {
+    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  } catch {
+    return null;
+  }
+}
+
+function getDefaultAnnouncement() {
+  const bundled = readSeedJson(DEFAULT_ANNOUNCEMENT_PATH);
+  if (bundled) return bundled;
+
+  const latest = readSeedJson(LATEST_REPORT_PATH);
+  if (latest?.report?.sourceText) {
+    return {
+      title: latest.report.title,
+      settlementDate: latest.report.settlementDate || latest.report.reportDate,
+      dispatchDate: latest.report.dispatchDate,
+      sourceText: latest.report.sourceText
+    };
+  }
+
+  return latest?.report?.standardData || latest?.report || latest?.standardData || latest || {
+    title: 'Dispatch seed',
+    settlementDate: normalizeDateInput(new Date().toISOString().slice(0, 10)),
+    dispatchDate: normalizeDateInput(new Date(Date.now() + 86400000).toISOString().slice(0, 10)),
+    auditResult: 'PASS',
+    rankings: [],
+    groups: createEmptyGroups(),
+    summaryBoard: {},
+    adviceList: [],
+    finalConfirmations: []
+  };
+}
 
 const rankingMetricAliases = new Map([
   ['正式權重分數', '正式權重分數'],
@@ -1018,11 +1057,12 @@ function buildReportFromSource(input = {}) {
 }
 
 function createDefaultSeedInput() {
+  const defaultAnnouncement = getDefaultAnnouncement();
   return {
     title: defaultAnnouncement.公告標題,
     settlementDate: normalizeDateInput(defaultAnnouncement.日期資訊?.結算日),
     dispatchDate: normalizeDateInput(defaultAnnouncement.日期資訊?.派單日),
-    sourceText: JSON.stringify(defaultAnnouncement, null, 2)
+    sourceText: defaultAnnouncement.sourceText || JSON.stringify(defaultAnnouncement, null, 2)
   };
 }
 
@@ -1032,13 +1072,13 @@ function flattenRanking(row) {
     name: row.name,
     isNew: Boolean(row.isNew),
     group: row.group,
-    totalRevenue: row.metrics.總業績,
-    renewalRevenue: row.metrics.續單金額,
-    renewalDeals: row.metrics.追續成交總數,
-    dispatchDeals: row.metrics.派單成交總通數,
-    weightedScore: row.metrics.正式權重分數 || 0,
-    actualRevenue: row.metrics.實收 || 0,
-    avgRenewal: row.metrics.追續客單價 || 0,
+    totalRevenue: row.metrics?.總業績 || 0,
+    renewalRevenue: row.metrics?.續單金額 || 0,
+    renewalDeals: row.metrics?.追續成交總數 || 0,
+    dispatchDeals: row.metrics?.派單成交總通數 || 0,
+    weightedScore: row.metrics?.正式權重分數 || 0,
+    actualRevenue: row.metrics?.實收 || 0,
+    avgRenewal: row.metrics?.追續客單價 || 0,
     advice: row.advice
   };
 }
@@ -1054,20 +1094,20 @@ function toLegacyStandardData(report) {
     });
   }
   
-  const ranking = report.rankings.map((row) => ({
+  const ranking = (report.rankings || []).map((row) => ({
     名次: row.rank,
     姓名: row.name,
     ...(row.isNew ? { 標記: '新人' } : {}),
-    正式權重分數: row.metrics.正式權重分數 || 0,
-    實收: row.metrics.實收 || 0,
-    全部總業績: row.metrics.總業績,
-    總業績: row.metrics.總業績,
-    追續金額: row.metrics.續單金額,
-    續單金額: row.metrics.續單金額,
-    追續單數: row.metrics.追續成交總數,
-    追續成交總數: row.metrics.追續成交總數,
-    追續客單價: row.metrics.追續客單價 || 0,
-    派單成交總通數: row.metrics.派單成交總通數,
+    正式權重分數: row.metrics?.正式權重分數 || 0,
+    實收: row.metrics?.實收 || 0,
+    全部總業績: row.metrics?.總業績 || 0,
+    總業績: row.metrics?.總業績 || 0,
+    追續金額: row.metrics?.續單金額 || 0,
+    續單金額: row.metrics?.續單金額 || 0,
+    追續單數: row.metrics?.追續成交總數 || 0,
+    追續成交總數: row.metrics?.追續成交總數 || 0,
+    追續客單價: row.metrics?.追續客單價 || 0,
+    派單成交總通數: row.metrics?.派單成交總通數 || 0,
     分級: row.group,
     建議: row.advice
   }));
@@ -1102,7 +1142,7 @@ function toLegacyStandardData(report) {
       規則: report.audit.rule,
       ...auditPlatforms,
       特別說明: clone(report.audit.notes),
-      審計列示不入派單: report.audit.excludedEmployees.map((entry) => ({
+      審計列示不入派單: (report.audit?.excludedEmployees || []).map((entry) => ({
         姓名: entry.name,
         原因: entry.reason
       }))
@@ -1122,7 +1162,7 @@ function buildPresentation(report) {
     top5: legacyRanking.slice(0, 5),
     top10: legacyRanking.slice(0, 10),
     compactTable: legacyRanking.slice(10),
-    retired: report.audit.excludedEmployees.map((entry) => ({
+    retired: (report.audit?.excludedEmployees || []).map((entry) => ({
       姓名: entry.name,
       原因: entry.reason
     })),
@@ -1150,14 +1190,14 @@ function buildPresentation(report) {
 function buildSnapshotSummary(report) {
   return {
     審計結果: report.auditResult,
-    正式人數: report.rankings.length,
-    離職列示人數: report.audit.excludedEmployees.length,
+    正式人數: (report.rankings || []).length,
+    離職列示人數: (report.audit?.excludedEmployees || []).length,
     本月業績: report.summaryBoard['本月業績'] || 0,
     totalRevenue: report.summaryBoard['本月業績'] || 0,
     renewalRevenue: report.summaryBoard['追續單總金額'] || report.summaryBoard['當日續單金額'] || 0,
     renewalDeals: report.summaryBoard['累積追續總成交數'] || 0,
-    totalPeople: report.rankings.length,
-    activePeople: report.rankings.length
+    totalPeople: (report.rankings || []).length,
+    activePeople: (report.rankings || []).length
   };
 }
 
@@ -1195,7 +1235,7 @@ function buildLegacySnapshot(report, validation, options = {}) {
     validation: buildLegacyValidation(validation),
     summary: buildSnapshotSummary(snapshotReport),
     presentation: buildPresentation(snapshotReport),
-    ranking: snapshotReport.rankings.map(flattenRanking),
+    ranking: (snapshotReport.rankings || []).map(flattenRanking),
     groups: clone(snapshotReport.groups),
     audit: {
       status: snapshotReport.audit.result,
