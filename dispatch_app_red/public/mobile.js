@@ -11,9 +11,16 @@ const refs = {
   statRenewalDeals: document.getElementById('stat-renewal-deals'),
   statTotalRevenue: document.getElementById('stat-total-revenue'),
   statCashRevenue: document.getElementById('stat-cash-revenue'),
+  // legacy refs kept for compatibility
+  settlementDate: document.getElementById('settlement-date-tag'),
+  dispatchDate: document.getElementById('dispatch-date-tag'),
+  activeCount: document.getElementById('active-count'),
   a1HeroGrid: document.getElementById('a1-hero-grid'),
   summaryGrid: document.getElementById('summary-grid'),
   rankingList: document.getElementById('ranking-list'),
+  groupsGrid: document.getElementById('groups-grid'),
+  auditNotes: document.getElementById('audit-notes'),
+  excludedList: document.getElementById('excluded-list'),
   refreshData: document.getElementById('refresh-data') || document.body,
   searchOpen: document.getElementById('search-open'),
   searchClose: document.getElementById('search-close'),
@@ -210,6 +217,8 @@ function render(report) {
   renderA1Hero(report.ranking);
   renderSummary(report.summary);
   renderRankings(report.ranking);
+  renderGroups(report.groups, report.ranking);
+  renderAudit(report.auditNotes, report.excludedEmployees);
 }
 
 function renderSummary(summary) {
@@ -264,6 +273,7 @@ function renderRankings(rankings) {
           <div class="metric"><span>全部總業績</span><strong>${fmt(row.totalRevenue)}</strong></div>
           <div class="metric"><span>追續單數</span><strong>${fmt(row.renewalDeals)} 單</strong></div>
         </div>
+        <p class="advice">${escapeHtml(row.advice)}</p>
       </article>
     `;
   }).join('');
@@ -311,8 +321,12 @@ function renderSendText(text) {
 
 function renderError(error) {
   refs.auditResult.textContent = 'ERROR';
+  refs.activeCount.textContent = '0';
   refs.summaryGrid.innerHTML = `<div class="empty-state">${escapeHtml(error.message || '資料讀取失敗')}</div>`;
   refs.rankingList.innerHTML = '<div class="empty-state">請確認伺服器已啟動並重新整理</div>';
+  refs.groupsGrid.innerHTML = '';
+  refs.auditNotes.innerHTML = '';
+  renderSendText('');
   showToast('資料讀取失敗');
 }
 
