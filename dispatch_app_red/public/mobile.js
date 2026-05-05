@@ -5,6 +5,13 @@ const MAX_SCORE = 10000;
 const refs = {
   title: document.getElementById('main-title'),
   auditResult: document.getElementById('audit-result'),
+  auditResultHero: document.getElementById('audit-result-hero'),
+  heroSettlementDate: document.getElementById('hero-settlement-date'),
+  heroDispatchDate: document.getElementById('hero-dispatch-date'),
+  statRenewalDeals: document.getElementById('stat-renewal-deals'),
+  statTotalRevenue: document.getElementById('stat-total-revenue'),
+  statCashRevenue: document.getElementById('stat-cash-revenue'),
+  // legacy refs kept for compatibility
   settlementDate: document.getElementById('settlement-date-tag'),
   dispatchDate: document.getElementById('dispatch-date-tag'),
   activeCount: document.getElementById('active-count'),
@@ -14,7 +21,7 @@ const refs = {
   groupsGrid: document.getElementById('groups-grid'),
   auditNotes: document.getElementById('audit-notes'),
   excludedList: document.getElementById('excluded-list'),
-  refreshData: document.getElementById('refresh-data') || document.body, // Fallback
+  refreshData: document.getElementById('refresh-data') || document.body,
   searchOpen: document.getElementById('search-open'),
   searchClose: document.getElementById('search-close'),
   searchModal: document.getElementById('search-modal'),
@@ -156,14 +163,58 @@ function setLoading() {
   refs.summaryGrid.innerHTML = '';
 }
 
+function renderA1Hero(rankings) {
+  const a1 = rankings.filter((r) => r.group === 'A1').slice(0, 4);
+  if (!a1.length || !refs.a1HeroGrid) return;
+
+  refs.a1HeroGrid.innerHTML = a1.map((row) => {
+    const pct = Math.min(100, Math.max(0, row.score / MAX_SCORE * 100));
+    const rankClass = `rank-${row.rank}`;
+    const crown = row.rank === 1 ? '<span class="a1-hero-crown">👑</span>' : '';
+    const isFirst = row.rank === 1;
+    const metricHtml = isFirst
+      ? `<div class="a1-metric"><span>實收</span><strong>${fmt(row.actualRevenue)}</strong></div>
+         <div class="a1-metric"><span>追續金額</span><strong>${fmt(row.renewalRevenue)}</strong></div>
+         <div class="a1-metric"><span>總業績</span><strong>${fmt(row.totalRevenue)}</strong></div>`
+      : `<div class="a1-metric"><span>實收</span><strong>${fmt(row.actualRevenue)}</strong></div>
+         <div class="a1-metric"><span>追續金額</span><strong>${fmt(row.renewalRevenue)}</strong></div>`;
+    return `
+      <article class="a1-hero-card ${rankClass}">
+        ${crown}
+        <div class="a1-hero-rank">#${row.rank} ${row.isNew ? '新人' : ''}</div>
+        <div class="a1-hero-name">${escapeHtml(row.name)}</div>
+        <div class="a1-hero-score-row">
+          <span class="a1-hero-score-label">AI分</span>
+          <span class="a1-hero-score-value">${fmt(row.score, 2)}</span>
+        </div>
+        <div class="a1-hero-score-track"><div class="a1-hero-score-fill" style="width:${pct}%"></div></div>
+        <div class="a1-hero-metrics">${metricHtml}</div>
+      </article>`;
+  }).join('');
+}
+
 function render(report) {
   refs.title.textContent = report.title;
-  refs.settlementDate.textContent = report.settlementDate;
-  refs.dispatchDate.textContent = report.dispatchDate;
-  refs.activeCount.textContent = report.ranking.length;
-  refs.auditResult.textContent = report.auditResult;
-  refs.auditResult.classList.toggle('pass', String(report.auditResult).toUpperCase() === 'PASS');
+  const auditPass = String(report.auditResult).toUpperCase() === 'PASS';
 
+  // topbar badge
+  refs.auditResult.textContent = report.auditResult;
+  refs.auditResult.classList.toggle('pass', auditPass);
+
+  // hero section dates + badge
+  if (refs.heroSettlementDate) refs.heroSettlementDate.textContent = report.settlementDate;
+  if (refs.heroDispatchDate)   refs.heroDispatchDate.textContent   = report.dispatchDate;
+  if (refs.auditResultHero)    {
+    refs.auditResultHero.textContent = report.auditResult;
+    refs.auditResultHero.classList.toggle('pass', auditPass);
+  }
+
+  // quick-stat strip below hero
+  if (refs.statRenewalDeals)  refs.statRenewalDeals.textContent  = fmt(report.summary.renewalDeals) + ' 單';
+  if (refs.statTotalRevenue)  refs.statTotalRevenue.textContent  = fmt(report.summary.totalRevenue);
+  if (refs.statCashRevenue)   refs.statCashRevenue.textContent   = fmt(report.summary.actualRevenue);
+
+  renderA1Hero(report.ranking);
   renderSummary(report.summary);
   renderRankings(report.ranking);
   renderGroups(report.groups, report.ranking);

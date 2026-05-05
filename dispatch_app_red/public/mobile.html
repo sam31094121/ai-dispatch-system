@@ -8,10 +8,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/mobile.css?v=0505-unified-send">
+  <link rel="stylesheet" href="/mobile.css?v=0505-a1-hero-top">
 </head>
 <body>
   <div id="app-shell">
+
     <header class="topbar">
       <div>
         <p class="kicker">Zhaogui AI Dispatch</p>
@@ -23,30 +24,39 @@
       </div>
     </header>
 
-    <section class="date-strip" aria-label="日期">
+    <!-- ① 前4名英雄區：topbar 下方，第一眼主角 -->
+    <section id="a1-hero" aria-label="A1 高優先主力">
+      <div class="a1-hero-header">
+        <div class="a1-hero-title-block">
+          <span class="a1-hero-kicker">🔴 A1 高優先主力｜今日必派首席</span>
+          <span class="a1-hero-dates">
+            結算 <strong id="hero-settlement-date">--</strong>
+            &nbsp;→&nbsp;
+            派單 <strong id="hero-dispatch-date">--</strong>
+          </span>
+        </div>
+        <span id="audit-result-hero" class="status-badge">--</span>
+      </div>
+      <div id="a1-hero-grid" class="a1-hero-grid"></div>
+    </section>
+
+    <!-- ② 統計帶：英雄區後 -->
+    <section class="date-strip" aria-label="整合統計">
       <div>
-        <span>結算</span>
-        <strong id="settlement-date-tag">--</strong>
+        <span>追續成交</span>
+        <strong id="stat-renewal-deals">--</strong>
       </div>
       <div>
-        <span>派單</span>
-        <strong id="dispatch-date-tag">--</strong>
+        <span>總業績</span>
+        <strong id="stat-total-revenue">--</strong>
       </div>
       <div>
-        <span>人數</span>
-        <strong id="active-count">--</strong>
+        <span>實收</span>
+        <strong id="stat-cash-revenue">--</strong>
       </div>
     </section>
 
     <main>
-
-      <section id="a1-hero" aria-label="A1 高優先主力">
-        <div class="a1-hero-header">
-          <span class="a1-hero-kicker">🔴 A1 高優先主力</span>
-          <span class="a1-hero-label">今日必派首席</span>
-        </div>
-        <div id="a1-hero-grid" class="a1-hero-grid"></div>
-      </section>
 
       <section class="panel" id="summary">
         <div class="section-head">
@@ -92,6 +102,7 @@
     </main>
 
     <nav class="bottom-nav" aria-label="主要導覽">
+      <a href="#a1-hero">A1</a>
       <a href="#summary">總盤</a>
       <a href="#ranking">名次</a>
       <a href="#groups">分級</a>
@@ -111,6 +122,6 @@
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
   </div>
 
-  <script src="/mobile.js?v=0505-unified-send"></script>
+  <script src="/mobile.js?v=0505-a1-hero-top"></script>
 </body>
 </html>
