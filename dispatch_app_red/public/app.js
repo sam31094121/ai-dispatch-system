@@ -981,11 +981,17 @@ function setup() {
       localStorage.setItem('MY_LINE_USER_ID', userId.trim());
     }
     
-    const url = window.location.href;
-    const isLocal = url.includes('localhost') || url.includes('127.0.0.1');
-    const warning = isLocal ? '\n\n⚠️ 注意：目前網址為 localhost，手機若非同一 WiFi 可能無法開啟。若要在手機查看，建議傳送正式的伺服器網址 (如 Render 或您的本機 IP)。' : '';
+    // 取得伺服器根網址（去掉路徑，改導向 mobile.html）
+    const baseOrigin = window.location.origin;
+    // 每天日期當 v 參數（格式 YYYYMMDD），強制 LINE 每天重新抓取 OG 預覽，不吃舊快取
+    const today = new Date();
+    const vParam = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`;
+    const mobileUrl = `${baseOrigin}/mobile.html?v=${vParam}`;
+
+    const isLocal = baseOrigin.includes('localhost') || baseOrigin.includes('127.0.0.1');
+    const warning = isLocal ? '\n\n⚠️ 注意：目前網址為 localhost，手機若非同一 WiFi 可能無法開啟。建議使用本機 IP 或正式伺服器網址。' : '';
     
-    const text = `🔥 【AI 派單戰情室已更新】\n\n最新的 AI 大數據排名、分級與專屬建議已出爐！\n👉 請立即點擊下方專屬連結，進入「至尊指揮中心」查看前四名榮耀榜與完整面板：\n\n🔗 戰情室網址：\n${url}${warning}`;
+    const text = `🔥 【AI 派單戰情室已更新】\n\n最新的 AI 大數據排名、分級與專屬建議已出爐！\n👉 請立即點擊下方連結查看今日完整派單順序：\n\n🔗 ${mobileUrl}${warning}`;
     
     const oldText = btnSendLine.textContent;
     btnSendLine.textContent = '傳送中...';
