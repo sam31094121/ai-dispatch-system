@@ -89,70 +89,87 @@ type AnnouncementPayload = {
 /* ─────────────────────────────────────────────────────── DEMO DATA */
 
 const DEMO_PAYLOAD: AnnouncementPayload = {
-  title: 'AI 派單公告｜5/4 結算 → 5/5 正式派單順序',
+  title: 'AI 派單公告｜5/6 結算 → 5/7 正式派單順序',
   subTitle: 'AI 比例原則版',
   audit: {
     result: 'PASS',
     platformChecks: [
-      { platform: '三立奕心', followupCount: 45, totalRevenue: 717358, followupAmount: 575440, receivedAmount: 60460, isPass: true },
-      { platform: '民視產品', followupCount: 12, totalRevenue: 490000, followupAmount: 80590, receivedAmount: 18160, isPass: true },
-      { platform: '公司產品', followupCount: 4, totalRevenue: 45710, followupAmount: 43230, receivedAmount: 35250, isPass: true },
+      { platform: '三立奕心', followupCount: 64, totalRevenue: 1394188, followupAmount: 1036010, receivedAmount: 261180, isPass: true },
+      { platform: '民視產品', followupCount: 15, totalRevenue: 857020,  followupAmount: 94530,   receivedAmount: 184720, isPass: true },
+      { platform: '公司產品', followupCount: 7,  totalRevenue: 195040,  followupAmount: 190080,  receivedAmount: 48980,  isPass: true },
     ],
     warnings: ['本輪三平台總表與個別明細加總一致。', '無漏算、無多算、無總盤衝突。'],
   },
-  summary: { followupCount: 61, totalRevenue: 1253068, followupAmount: 699260, receivedAmount: 113870 },
+  summary: { followupCount: 86, totalRevenue: 2446248, followupAmount: 1320620, receivedAmount: 494880 },
   weights: { receivedWeight: 3000, followupAmountWeight: 2500, totalRevenueWeight: 1500, unitPriceWeight: 1500, followupCountWeight: 1500 },
   maxReference: {
-    maxReceivedAmount: 30480, maxFollowupAmount: 189510, maxTotalRevenue: 244150,
-    maxUnitPrice: 27072.86, maxFollowupCount: 7,
-    maxReceivedName: '湯玉琦', maxFollowupAmountName: '馬秋香', maxTotalRevenueName: '馬秋香',
-    maxUnitPriceName: '馬秋香', maxFollowupCountName: '王珍珠、馬秋香、林沛昕',
+    maxReceivedAmount: 66380, maxFollowupAmount: 304910, maxTotalRevenue: 433370,
+    maxUnitPrice: 71000, maxFollowupCount: 13,
+    maxReceivedName: '馬秋香', maxFollowupAmountName: '馬秋香', maxTotalRevenueName: '馬秋香',
+    maxUnitPriceName: '許喬恩', maxFollowupCountName: '王珍珠',
   },
   rankingList: [
-    { rank: 1, name: '馬秋香', finalScore: 7000, receivedAmount: 0, followupAmount: 189510, totalRevenue: 244150, unitPrice: 27072.86, followupCount: 7, group: 'A1', rankChange: 'up', rankChangeValue: 1, advice: '你這輪靠追續金額、總業績與客單價全面拉高，今天重點是把實收補上。' },
-    { rank: 2, name: '湯玉琦', finalScore: 6253.76, receivedAmount: 30480, followupAmount: 62860, totalRevenue: 106860, unitPrice: 12572, followupCount: 5, group: 'A1', rankChange: 'down', rankChangeValue: 1, advice: '你實收仍是全場第一，今天只要再補追續量就能穩住前段。' },
-    { rank: 3, name: '林沛昕', finalScore: 6073.93, receivedAmount: 18100, followupAmount: 95580, totalRevenue: 126148, unitPrice: 13654.29, followupCount: 7, group: 'A1', rankChange: 'up', rankChangeValue: 1, advice: '你追續單數與實收都有撐住，今天是繼續往前推的關鍵。' },
-    { rank: 4, name: '廖姿惠', finalScore: 3661.65, receivedAmount: 2980, followupAmount: 70660, totalRevenue: 97710, unitPrice: 17665, followupCount: 4, group: 'A1', rankChange: 'up', rankChangeValue: 5, advice: '你這輪客單價與追續金額明顯拉升，今天要把實收接起來。' },
-    { rank: 5, name: '王珍珠', finalScore: 3188.03, receivedAmount: 0, followupAmount: 42650, totalRevenue: 128230, unitPrice: 6092.86, followupCount: 7, group: 'A2', rankChange: 'same', advice: '你單數有量、總業績有底，今天差的是把金額與實收再拉高。' },
-    { rank: 6, name: '林宜靜', finalScore: 3077.17, receivedAmount: 7600, followupAmount: 31380, totalRevenue: 112760, unitPrice: 10460, followupCount: 3, group: 'A2', rankChange: 'down', rankChangeValue: 3, advice: '你有實收支撐，今天補上追續成交就能再往前。' },
-    { rank: 7, name: '高美雲', finalScore: 2930.5, receivedAmount: 11250, followupAmount: 26070, totalRevenue: 42490, unitPrice: 6517.5, followupCount: 4, group: 'A2', rankChange: 'up', rankChangeValue: 6, advice: '你這輪名次明顯上升，今天要把成交穩定度延續。' },
-    { rank: 8, name: '周美蓁', finalScore: 2292.29, receivedAmount: 12000, followupAmount: 12000, totalRevenue: 12000, unitPrice: 12000, followupCount: 1, group: 'A2', rankChange: 'down', rankChangeValue: 2, advice: '你有乾淨實收，今天只要再補一筆就能再動名次。' },
-    { rank: 9, name: '許喬恩', finalScore: 2292.29, receivedAmount: 12000, followupAmount: 12000, totalRevenue: 12000, unitPrice: 12000, followupCount: 1, group: 'A2', rankChange: 'down', rankChangeValue: 2, advice: '你跟周美蓁分數相同，今天補單就能拉開差距。' },
-    { rank: 10, name: '莉莉（新人）', finalScore: 2271.51, receivedAmount: 11880, followupAmount: 11880, totalRevenue: 11880, unitPrice: 11880, followupCount: 1, group: 'A2', rankChange: 'down', rankChangeValue: 2, advice: '你有實收亮點，今天先求穩定再往前推。', isNew: true },
-    { rank: 11, name: '徐華妤', finalScore: 2105.03, receivedAmount: 0, followupAmount: 35640, totalRevenue: 35640, unitPrice: 17820, followupCount: 2, group: 'A2', rankChange: 'up', rankChangeValue: 10, advice: '你客單價很漂亮，今天關鍵是把實收補起來。' },
-    { rank: 12, name: '高如郁', finalScore: 2039.76, receivedAmount: 7580, followupAmount: 15500, totalRevenue: 37640, unitPrice: 7750, followupCount: 2, group: 'A2', rankChange: 'down', rankChangeValue: 2, advice: '你有實收基礎，今天再補追續金額就能上推。' },
-    { rank: 13, name: '李玲玲', finalScore: 1842.52, receivedAmount: 0, followupAmount: 18560, totalRevenue: 78690, unitPrice: 4640, followupCount: 4, group: 'B', rankChange: 'down', rankChangeValue: 2, advice: '你有單數但分數偏散，今天要提高追續金額。' },
-    { rank: 14, name: '王梅慧', finalScore: 1742.81, receivedAmount: 0, followupAmount: 20800, totalRevenue: 52600, unitPrice: 5200, followupCount: 4, group: 'B', rankChange: 'down', rankChangeValue: 2, advice: '你單數有基本盤，今天差的是更高客單與實收。' },
-    { rank: 15, name: '梁依萍', finalScore: 1486.55, receivedAmount: 0, followupAmount: 14280, totalRevenue: 47640, unitPrice: 14280, followupCount: 1, group: 'B', rankChange: 'up', rankChangeValue: 3, advice: '你有高客單切入點，今天先把下一筆成交接起來。' },
-    { rank: 16, name: '林佩君', finalScore: 1312.99, receivedAmount: 0, followupAmount: 14700, totalRevenue: 14700, unitPrice: 14700, followupCount: 1, group: 'B', rankChange: 'up', rankChangeValue: 6, advice: '你這輪有有效分數，今天要把單數補上。' },
-    { rank: 17, name: '江麗勉', finalScore: 898.95, receivedAmount: 0, followupAmount: 9480, totalRevenue: 13460, unitPrice: 4740, followupCount: 2, group: 'B', rankChange: 'down', rankChangeValue: 3, advice: '你有追續成交，今天再補一筆就能拉高排序。' },
-    { rank: 18, name: '陳百玲（新人）', finalScore: 756.9, receivedAmount: 0, followupAmount: 6980, totalRevenue: 6980, unitPrice: 3490, followupCount: 2, group: 'B', rankChange: 'down', rankChangeValue: 1, advice: '你有累積，不急著衝，先把成交穩定做出來。', isNew: true },
-    { rank: 19, name: '鄭珮恩', finalScore: 752.8, receivedAmount: 0, followupAmount: 5750, totalRevenue: 14500, unitPrice: 2875, followupCount: 2, group: 'B', rankChange: 'down', rankChangeValue: 3, advice: '你分數差距不大，今天先把追續金額補強。' },
-    { rank: 20, name: '謝啟芳', finalScore: 518.85, receivedAmount: 0, followupAmount: 2980, totalRevenue: 16300, unitPrice: 2980, followupCount: 1, group: 'C', rankChange: 'down', rankChangeValue: 5, advice: '你有成交但分數偏低，今天要先提高客單。' },
-    { rank: 21, name: '陳玲華', finalScore: 158.14, receivedAmount: 0, followupAmount: 0, totalRevenue: 25740, unitPrice: 0, followupCount: 0, group: 'C', rankChange: 'down', rankChangeValue: 1, advice: '你有總業績但缺追續與實收，今天先求有效成交。' },
-    { rank: 22, name: '江沛林', finalScore: 91.85, receivedAmount: 0, followupAmount: 0, totalRevenue: 14950, unitPrice: 0, followupCount: 0, group: 'C', rankChange: 'down', rankChangeValue: 3, advice: '先把追續單與實收補起來，排名才有上升空間。' },
-    { rank: 23, name: '蘇淑玲', finalScore: 0, receivedAmount: 0, followupAmount: 0, totalRevenue: 0, unitPrice: 0, followupCount: 0, group: 'C', rankChange: 'same', advice: '今天先求破零，有分數才有派單空間。' },
-    { rank: 24, name: '鄭上官', finalScore: 0, receivedAmount: 0, followupAmount: 0, totalRevenue: 0, unitPrice: 0, followupCount: 0, group: 'C', rankChange: 'same', advice: '先解除空白狀態，後續才有排名意義。' },
+    { rank: 1,  name: '馬秋香',       finalScore: 8798.02, receivedAmount: 66380, followupAmount: 304910, totalRevenue: 433370, unitPrice: 30491.00, followupCount: 10, group: 'A1', rankChange: 'same',                    advice: '你這輪追續金額與總業績全面領先，今天重點是持續把實收拉高。' },
+    { rank: 2,  name: '湯玉琦',       finalScore: 6787.23, receivedAmount: 66340, followupAmount: 179140, totalRevenue: 266980, unitPrice: 22392.50, followupCount: 8,  group: 'A1', rankChange: 'same',                    advice: '你實收幾乎貼近第一，今天只要補追續量就能再逼近榜首。' },
+    { rank: 3,  name: '王珍珠',       finalScore: 5128.49, receivedAmount: 47810, followupAmount: 77880,  totalRevenue: 203000, unitPrice: 5990.77,  followupCount: 13, group: 'A1', rankChange: 'same',                    advice: '你追續單數全場最高，今天關鍵是把客單與實收再往上推。' },
+    { rank: 4,  name: '王梅慧',       finalScore: 4182.73, receivedAmount: 31140, followupAmount: 120800, totalRevenue: 201540, unitPrice: 24160.00, followupCount: 5,  group: 'A1', rankChange: 'up',   rankChangeValue: 5, advice: '你這輪靠高追續金額與高客單大幅上升，今天要延續這股衝勁。' },
+    { rank: 5,  name: '林宜靜',       finalScore: 4063.65, receivedAmount: 57900, followupAmount: 31380,  totalRevenue: 179840, unitPrice: 10460.00, followupCount: 3,  group: 'A2', rankChange: 'down',  rankChangeValue: 1, advice: '你實收穩定、總業績也有厚度，今天補成交數就能再往前。' },
+    { rank: 6,  name: '林沛昕',       finalScore: 4038.37, receivedAmount: 38100, followupAmount: 95580,  totalRevenue: 126148, unitPrice: 13654.29, followupCount: 7,  group: 'A2', rankChange: 'down',  rankChangeValue: 1, advice: '你追續金額與實收都有支撐，今天再補高客單會更有優勢。' },
+    { rank: 7,  name: '許喬恩',       finalScore: 3928.88, receivedAmount: 12000, followupAmount: 142000, totalRevenue: 142000, unitPrice: 71000.00, followupCount: 2,  group: 'A2', rankChange: 'up',   rankChangeValue: 6, advice: '你本輪客單價全場最高，今天只要補單數就能更穩。' },
+    { rank: 8,  name: '廖姿惠',       finalScore: 2914.47, receivedAmount: 20180, followupAmount: 73140,  totalRevenue: 149310, unitPrice: 14628.00, followupCount: 5,  group: 'A2', rankChange: 'down',  rankChangeValue: 2, advice: '你追續金額與客單仍在前段，今天把實收補上就能再升。' },
+    { rank: 9,  name: '李玲玲',       finalScore: 2463.24, receivedAmount: 30400, followupAmount: 18560,  totalRevenue: 109090, unitPrice: 4640.00,  followupCount: 4,  group: 'A2', rankChange: 'down',  rankChangeValue: 2, advice: '你實收表現不錯，今天要把追續金額與客單一起拉高。' },
+    { rank: 10, name: '高美雲',       finalScore: 2252.89, receivedAmount: 18710, followupAmount: 42580,  totalRevenue: 62390,  unitPrice: 7096.67,  followupCount: 6,  group: 'A2', rankChange: 'down',  rankChangeValue: 2, advice: '你這輪有穩定成交，今天重點是把實收持續接上。' },
+    { rank: 11, name: '徐華妤',       finalScore: 2213.34, receivedAmount: 3980,  followupAmount: 89620,  totalRevenue: 105100, unitPrice: 22405.00, followupCount: 4,  group: 'A2', rankChange: 'up',   rankChangeValue: 1, advice: '你客單與追續金額很亮眼，今天一定要把實收補起來。' },
+    { rank: 12, name: '高如郁',       finalScore: 1980.19, receivedAmount: 27060, followupAmount: 15500,  totalRevenue: 68080,  unitPrice: 7750.00,  followupCount: 2,  group: 'A2', rankChange: 'down',  rankChangeValue: 1, advice: '你有實收基礎，今天再補追續成交就能上推。' },
+    { rank: 13, name: '梁依萍',       finalScore: 1701.60, receivedAmount: 14020, followupAmount: 29280,  totalRevenue: 83160,  unitPrice: 14640.00, followupCount: 2,  group: 'B',  rankChange: 'down',  rankChangeValue: 3, advice: '你仍有高客單優勢，今天先求再接一筆成交。' },
+    { rank: 14, name: '江沛林',       finalScore: 1123.13, receivedAmount: 11560, followupAmount: 6980,   totalRevenue: 81070,  unitPrice: 6980.00,  followupCount: 1,  group: 'B',  rankChange: 'up',   rankChangeValue: 5, advice: '你這輪明顯往前，今天要把追續量補起來穩住名次。' },
+    { rank: 15, name: '陳玲華',       finalScore: 1116.72, receivedAmount: 12940, followupAmount: 7000,   totalRevenue: 61030,  unitPrice: 7000.00,  followupCount: 1,  group: 'B',  rankChange: 'up',   rankChangeValue: 7, advice: '你有實收與總業績，今天補追續成交就會更完整。' },
+    { rank: 16, name: '周美蓁',       finalScore: 1051.16, receivedAmount: 12000, followupAmount: 12000,  totalRevenue: 12000,  unitPrice: 12000.00, followupCount: 1,  group: 'B',  rankChange: 'down',  rankChangeValue: 2, advice: '你分數乾淨穩定，今天再補一筆就能往前推。' },
+    { rank: 17, name: '莉莉（新人）', finalScore: 1041.80, receivedAmount: 11880, followupAmount: 11880,  totalRevenue: 11880,  unitPrice: 11880.00, followupCount: 1,  group: 'B',  rankChange: 'down',  rankChangeValue: 2, advice: '你有實收亮點，今天先穩住成交節奏。', isNew: true },
+    { rank: 18, name: '江麗勉',       finalScore: 965.14,  receivedAmount: 10480, followupAmount: 9480,   totalRevenue: 23940,  unitPrice: 4740.00,  followupCount: 2,  group: 'B',  rankChange: 'same',                    advice: '你有穩定累積，今天再補高金額會更有競爭力。' },
+    { rank: 19, name: '陳百玲（新人）',finalScore: 895.69, receivedAmount: 2000,  followupAmount: 24180,  totalRevenue: 26180,  unitPrice: 8060.00,  followupCount: 3,  group: 'B',  rankChange: 'down',  rankChangeValue: 3, advice: '你有追續量，今天重點是把實收接起來。', isNew: true },
+    { rank: 20, name: '林佩君',       finalScore: 724.23,  receivedAmount: 0,     followupAmount: 18700,  totalRevenue: 41200,  unitPrice: 9350.00,  followupCount: 2,  group: 'B',  rankChange: 'down',  rankChangeValue: 3, advice: '你有有效分數，今天補實收就能讓排名更有支撐。' },
+    { rank: 21, name: '鄭珮恩',       finalScore: 534.53,  receivedAmount: 0,     followupAmount: 7050,   totalRevenue: 23380,  unitPrice: 2350.00,  followupCount: 3,  group: 'C',  rankChange: 'down',  rankChangeValue: 1, advice: '你有追續單數，今天要把追續金額與實收補強。' },
+    { rank: 22, name: '謝啟芳',       finalScore: 259.19,  receivedAmount: 0,     followupAmount: 2980,   totalRevenue: 16300,  unitPrice: 2980.00,  followupCount: 1,  group: 'C',  rankChange: 'down',  rankChangeValue: 1, advice: '你有成交但分數偏低，今天先提高客單價。' },
+    { rank: 23, name: '蘇淑玲',       finalScore: 66.66,   receivedAmount: 0,     followupAmount: 0,      totalRevenue: 19260,  unitPrice: 0,        followupCount: 0,  group: 'C',  rankChange: 'same',                    advice: '你有總業績但缺追續與實收，今天先求有效成交。' },
+    { rank: 24, name: '鄭上官',       finalScore: 0,       receivedAmount: 0,     followupAmount: 0,      totalRevenue: 0,      unitPrice: 0,        followupCount: 0,  group: 'C',  rankChange: 'same',                    advice: '先解除空白狀態，後續排名才有意義。' },
   ],
   rankChanges: {
-    up: ['馬秋香', '林沛昕', '廖姿惠', '高美雲', '徐華妤', '梁依萍', '林佩君'],
-    down: ['湯玉琦', '林宜靜', '周美蓁', '許喬恩', '莉莉（新人）', '高如郁', '李玲玲', '王梅慧', '江麗勉', '陳百玲（新人）', '鄭珮恩', '謝啟芳', '陳玲華', '江沛林'],
-    same: ['王珍珠', '蘇淑玲', '鄭上官'],
+    up:   ['王梅慧', '許喬恩', '徐華妤', '江沛林', '陳玲華'],
+    down: ['林宜靜', '林沛昕', '廖姿惠', '李玲玲', '高美雲', '高如郁', '梁依萍', '周美蓁', '莉莉（新人）', '陳百玲（新人）', '林佩君', '鄭珮恩', '謝啟芳'],
+    same: ['馬秋香', '湯玉琦', '王珍珠', '江麗勉', '蘇淑玲', '鄭上官'],
   },
   grouping: {
-    A1: ['馬秋香', '湯玉琦', '林沛昕', '廖姿惠'],
-    A2: ['王珍珠', '林宜靜', '高美雲', '周美蓁', '許喬恩', '莉莉（新人）', '徐華妤', '高如郁'],
-    B: ['李玲玲', '王梅慧', '梁依萍', '林佩君', '江麗勉', '陳百玲（新人）', '鄭珮恩', '謝啟芳'],
-    C: ['陳玲華', '江沛林', '蘇淑玲', '鄭上官'],
+    A1: ['馬秋香', '湯玉琦', '王珍珠', '王梅慧'],
+    A2: ['林宜靜', '林沛昕', '許喬恩', '廖姿惠', '李玲玲', '高美雲', '徐華妤', '高如郁'],
+    B:  ['梁依萍', '江沛林', '陳玲華', '周美蓁', '莉莉（新人）', '江麗勉', '陳百玲（新人）', '林佩君'],
+    C:  ['鄭珮恩', '謝啟芳', '蘇淑玲', '鄭上官'],
   },
   finalConfirmations: [
-    '5/4 結算資料已核對完成。',
+    '5/6 結算資料已核對完成。',
     '三平台總表全部核對通過。',
     '無漏算、無多算、無總盤衝突。',
-    '5/5 正式派單順序，以本則公告為準。',
+    '5/7 正式派單順序，以本則公告為準。',
   ],
-  fullAnnouncementText: '正式公告全文請由後端回傳。',
-  compactAnnouncementText: '精簡公告全文請由後端回傳。',
+  fullAnnouncementText: `【AI 派單公告｜5/6 結算 → 5/7 正式派單順序｜AI 比例原則版】
+
+一、審計結論：PASS
+二、整合總盤：追續86單｜總業績2,446,248｜追續金額1,320,620｜實收494,880
+
+三、正式名次
+1.馬秋香 8798.02｜2.湯玉琦 6787.23｜3.王珍珠 5128.49｜4.王梅慧 4182.73
+5.林宜靜 4063.65｜6.林沛昕 4038.37｜7.許喬恩 3928.88｜8.廖姿惠 2914.47
+9.李玲玲 2463.24｜10.高美雲 2252.89｜11.徐華妤 2213.34｜12.高如郁 1980.19
+13.梁依萍 1701.60｜14.江沛林 1123.13｜15.陳玲華 1116.72｜16.周美蓁 1051.16
+17.莉莉（新人）1041.80｜18.江麗勉 965.14｜19.陳百玲（新人）895.69｜20.林佩君 724.23
+21.鄭珮恩 534.53｜22.謝啟芳 259.19｜23.蘇淑玲 66.66｜24.鄭上官 0.00
+
+四、分級
+🔴A1：馬秋香、湯玉琦、王珍珠、王梅慧
+🟠A2：林宜靜、林沛昕、許喬恩、廖姿惠、李玲玲、高美雲、徐華妤、高如郁
+🟡B：梁依萍、江沛林、陳玲華、周美蓁、莉莉（新人）、江麗勉、陳百玲（新人）、林佩君
+🟢C：鄭珮恩、謝啟芳、蘇淑玲、鄭上官`,
+  compactAnnouncementText: '🔴A1主力：馬秋香、湯玉琦、王珍珠、王梅慧｜🟠A2次主力：林宜靜、林沛昕、許喬恩、廖姿惠、李玲玲、高美雲、徐華妤、高如郁｜🟡B組：梁依萍、江沛林、陳玲華、周美蓁、莉莉（新人）、江麗勉、陳百玲（新人）、林佩君｜🟢C組：鄭珮恩、謝啟芳、蘇淑玲、鄭上官',
 }
 
 /* ─────────────────────────────────────────────────────── CONSTANTS */
