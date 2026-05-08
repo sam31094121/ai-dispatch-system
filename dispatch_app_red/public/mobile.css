@@ -562,6 +562,87 @@ main {
   line-height: 1.5;
 }
 
+.audit-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  border: 1px solid rgba(250, 190, 50, 0.4);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  background: rgba(250, 190, 50, 0.07);
+  color: #ffd96a;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin-bottom: 4px;
+}
+
+.audit-warning-icon {
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+.dual-totals {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+@media (max-width: 480px) {
+  .dual-totals { grid-template-columns: 1fr; }
+}
+
+.dual-total-card {
+  border-radius: var(--radius);
+  padding: 12px;
+  background: #0b1521;
+  border: 1px solid var(--border);
+}
+
+.dual-total-card h4 {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin: 0 0 8px;
+  letter-spacing: 0.02em;
+}
+
+.dual-total-card.total-assignment {
+  border-color: rgba(100, 220, 140, 0.3);
+  background: rgba(100, 220, 140, 0.04);
+}
+
+.dual-total-card.total-assignment h4 {
+  color: #7eeaa0;
+}
+
+.dual-total-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 10px;
+}
+
+.dual-total-grid div {
+  display: flex;
+  flex-direction: column;
+}
+
+.dual-total-grid span {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.dual-total-grid strong {
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.dual-total-note {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin: 6px 0 0;
+  opacity: 0.75;
+}
+
 .modal {
   display: none;
   position: fixed;
