@@ -11,6 +11,19 @@
   --good: #27d17f;
   --shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
   --radius: 8px;
+
+  /* ── 3D 深度系統 ── */
+  --depth-1: 0 1px 2px rgba(0,0,0,.35), 0 4px 12px rgba(0,0,0,.25),
+             inset 0 1px 0 rgba(255,255,255,.045);
+  --depth-2: 0 2px 4px rgba(0,0,0,.4), 0 10px 28px rgba(0,0,0,.32),
+             0 1px 0 rgba(255,255,255,.055) inset;
+  --depth-3: 0 4px 8px rgba(0,0,0,.45), 0 18px 44px rgba(0,0,0,.38),
+             0 -1px 0 rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08);
+  --depth-hero: 0 0 0 1px #c8820a,
+                0 6px 16px rgba(200,130,10,.22),
+                0 20px 48px rgba(0,0,0,.5),
+                inset 0 1px 0 rgba(255,255,255,.1);
+  --perspective: 900px;
   color-scheme: dark;
 }
 
