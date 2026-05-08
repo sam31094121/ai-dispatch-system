@@ -311,7 +311,11 @@ main {
   min-width: 0;
   padding: 12px;
   border-radius: var(--radius);
-  background: var(--surface-2);
+  background: linear-gradient(145deg, #182334 0%, #111d2c 100%);
+  border: 1px solid rgba(43,58,78,0.9);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  box-shadow: var(--depth-2);
+  animation: cardEnter3D 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .summary-card strong {
