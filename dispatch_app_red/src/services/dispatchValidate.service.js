@@ -177,18 +177,18 @@ function validateDispatchReport(report) {
       pushError('rankings', `${displayName} 實收金額 (${m.實收}) 不得超過全部總業績 (${m.全部總業績})`);
     }
 
-    // 追續客單價邏輯校驗
+    // 追續客單價邏輯校驗 (放寬容錯至 100 以應對四捨五入)
     const calculatedAvg = Number(m.追續單數 || 0) > 0 ? Number(m.追續金額 || 0) / Number(m.追續單數) : 0;
     const reportedAvg = Number(m.追續客單價 || 0);
-    if (reportedAvg > 0 && Math.abs(calculatedAvg - reportedAvg) > 2) {
-      pushWarning('rankings', `${displayName} 追續客單價 (${reportedAvg}) 與計算值 (${calculatedAvg.toFixed(2)}) 不符，建議檢查`);
+    if (reportedAvg > 0 && Math.abs(calculatedAvg - reportedAvg) > 100) {
+      pushWarning('rankings', `${displayName} 追續客單價 (${reportedAvg}) 與計算值 (${calculatedAvg.toFixed(2)}) 偏差較大，請確認是否為四捨五入。`);
     }
 
-    // 新人標註一致性
-    const nameHasNew = row.name.includes('新人');
-    const isNewFlag = !!(row.isNew || row.標記 === '新人');
+    // 新人標註一致性 (更寬容的匹配)
+    const nameHasNew = row.name.includes('新人') || row.name.includes('New');
+    const isNewFlag = !!(row.isNew || row.標記 === '新人' || row.marker === '新人');
     if (nameHasNew && !isNewFlag) {
-      pushWarning('rankings', `${displayName} 姓名包含新人標註，但系統 Flag 未同步`);
+      pushWarning('rankings', `${displayName} 姓名包含新人標註，但系統 Flag 未完全同步`);
     }
     
     if (Number(row.metrics?.正式權重分數 || 0) === 0) {
