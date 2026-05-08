@@ -28,8 +28,12 @@ const refs = {
 
 const state = {
   report: null,
-  sendText: ''
+  sendText: '',
+  isFirstLoad: true
 };
+
+const CACHE_KEY = 'zhaogui_last_report';
+
 
 function get(obj, keys, fallback = '') {
   for (const key of keys) {
@@ -58,6 +62,15 @@ function escapeHtml(value) {
   div.textContent = String(value ?? '');
   return div.innerHTML;
 }
+
+function highlightText(text, query) {
+  if (!query) return escapeHtml(text);
+  const escapedText = escapeHtml(text);
+  const escapedQuery = escapeHtml(query);
+  const regex = new RegExp(`(${escapedQuery})`, 'gi');
+  return escapedText.replace(regex, '<mark>$1</mark>');
+}
+
 
 function cleanSendText(text) {
   return String(text || '')
@@ -138,6 +151,18 @@ async function requestJson(url) {
 }
 
 async function loadData() {
+  // 優先嘗試從快取讀取，達成「瞬間渲染」
+  const cached = localStorage.getItem(CACHE_KEY);
+  if (cached && state.isFirstLoad) {
+    try {
+      const data = JSON.parse(cached);
+      state.report = data;
+      render(data);
+    } catch (e) {
+      console.warn('Cache corrupted', e);
+    }
+  }
+
   setLoading();
   try {
     const [snapshot, lineOutput] = await Promise.all([
@@ -147,18 +172,39 @@ async function loadData() {
     const report = normalizeReport(snapshot, lineOutput?.text);
     state.report = report;
     state.sendText = report.sendText;
+    state.isFirstLoad = false;
+    
+    // 儲存到快取
+    localStorage.setItem(CACHE_KEY, JSON.stringify(report));
+    
     render(report);
-    showToast('資料已更新');
+    showToast('資料已同步');
     initCoinRain();
   } catch (error) {
     renderError(error);
   }
 }
 
+
 function setLoading() {
-  refs.rankingList.innerHTML = '<div class="empty-state">讀取最新派單資料中...</div>';
+  if (!state.isFirstLoad) return; // 非首次加載不顯示骨架屏，避免閃爍
+  
+  const skeletonCard = `
+    <article class="ranking-card skeleton">
+      <div class="ranking-top">
+        <div class="rank-number"></div>
+        <div class="person-name"><div class="sk-line w60"></div><div class="sk-line w40"></div></div>
+      </div>
+      <div class="score-line"><div class="sk-line w100"></div></div>
+      <div class="metrics-grid">
+        <div class="metric"></div><div class="metric"></div>
+      </div>
+    </article>
+  `;
+  refs.rankingList.innerHTML = skeletonCard.repeat(5);
   refs.summaryGrid.innerHTML = '';
 }
+
 
 function renderA1Hero(rankings) {
   const a1 = rankings.filter((r) => r.group === 'A1');
@@ -178,6 +224,7 @@ function renderA1Hero(rankings) {
     return `
       <article class="a1-hero-card ${rankClass}">
         ${crown}
+        <div class="a1-hero-gloss"></div>
         <div class="a1-hero-rank">#${row.rank} ${row.isNew ? '新人' : ''}</div>
         <div class="a1-hero-name">${escapeHtml(row.name)}</div>
         <div class="a1-hero-score-row">
@@ -187,6 +234,7 @@ function renderA1Hero(rankings) {
         <div class="a1-hero-score-track"><div class="a1-hero-score-fill" data-pct="${pct}" style="width:0%"></div></div>
         <div class="a1-hero-metrics">${metricHtml}</div>
       </article>`;
+
   }).join('');
 }
 
@@ -381,10 +429,11 @@ function handleLookup() {
   refs.lookupResults.innerHTML = matches.length
     ? matches.map((row) => `
         <button class="lookup-result" type="button" data-name="${escapeHtml(row.name)}">
-          #${row.rank} ${escapeHtml(row.name)}｜${escapeHtml(row.group)}｜${fmt(row.score, 2)}
+          #${row.rank} ${highlightText(row.name, query)}｜${escapeHtml(row.group)}｜${fmt(row.score, 2)}
         </button>
       `).join('')
     : '<div class="empty-state">找不到符合的姓名</div>';
+
 }
 
 function scrollToPerson(name) {
@@ -737,9 +786,17 @@ function initHeroTilt() {
     const rect = card.getBoundingClientRect();
     const x = ((touch.clientX - rect.left) / rect.width - 0.5) * 2;
     const y = ((touch.clientY - rect.top)  / rect.height - 0.5) * 2;
-    const tiltX = (-y * 7).toFixed(2);
-    const tiltY = ( x * 7).toFixed(2);
-    card.style.transform = `perspective(600px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(6px) scale(1.01)`;
+    const tiltX = (-y * 8).toFixed(2);
+    const tiltY = ( x * 8).toFixed(2);
+    
+    // 動態光源模擬：根據觸控位置調整 gloss 與內陰影
+    const lightX = ((x + 1) * 50).toFixed(1);
+    const lightY = ((y + 1) * 50).toFixed(1);
+    
+    card.style.transform = `perspective(600px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(8px) scale(1.02)`;
+    card.style.setProperty('--light-x', `${lightX}%`);
+    card.style.setProperty('--light-y', `${lightY}%`);
+
   }, { passive: true });
 
   grid.addEventListener('touchend', () => {

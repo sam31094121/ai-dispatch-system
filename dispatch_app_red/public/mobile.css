@@ -20,12 +20,15 @@
   --depth-3: 0 4px 8px rgba(0,0,0,.45), 0 18px 44px rgba(0,0,0,.38),
              0 -1px 0 rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08);
   --depth-hero: 0 0 0 1px #c8820a,
-                0 6px 16px rgba(200,130,10,.22),
+                0 0 24px rgba(200,130,10,.25),
                 0 20px 48px rgba(0,0,0,.5),
-                inset 0 1px 0 rgba(255,255,255,.1);
-  --perspective: 900px;
+                inset 0 1px 0 rgba(255,255,255,.15);
+  --perspective: 1000px;
+  --sk-bg: #151f2e;
+  --sk-shine: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
   color-scheme: dark;
 }
+
 
 *,
 *::before,
@@ -60,6 +63,17 @@ html {
     transform: perspective(var(--perspective)) translateY(0) rotateX(0deg) scale(1);
   }
 }
+
+@keyframes skeletonShine {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+@keyframes glossSweep {
+  0% { transform: translateX(-150%) skewX(-25deg); }
+  100% { transform: translateX(150%) skewX(-25deg); }
+}
+
 
 body {
   margin: 0;
@@ -580,6 +594,51 @@ main {
   text-align: left;
 }
 
+mark {
+  background: rgba(24, 198, 167, 0.3);
+  color: var(--accent);
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+/* ── 骨架屏 ── */
+.ranking-card.skeleton {
+  pointer-events: none;
+  border-color: transparent;
+  background: var(--sk-bg);
+}
+
+.skeleton .rank-number {
+  background: #0b1521;
+}
+
+.sk-line {
+  height: 14px;
+  background: #1c2a3f;
+  border-radius: 4px;
+  margin: 4px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.sk-line::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--sk-shine);
+  animation: skeletonShine 1.6s infinite linear;
+}
+
+.w40 { width: 40%; }
+.w60 { width: 60%; }
+.w100 { width: 100%; }
+
+.skeleton .metric {
+  height: 48px;
+  background: #111a27;
+}
+
+
 .bottom-nav {
   position: fixed;
   left: max(12px, env(safe-area-inset-left));
@@ -743,9 +802,30 @@ main {
   box-shadow: var(--depth-3);
   animation: heroEnter3D 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
   transform-style: preserve-3d;
-  transition: box-shadow 0.25s, transform 0.25s;
+  transition: box-shadow 0.25s, transform 0.25s, border-color 0.25s;
   will-change: transform;
 }
+
+.a1-hero-gloss {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--light-x, 50%) var(--light-y, 50%), 
+              rgba(255,255,255,0.08) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.a1-hero-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.05) 45%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.05) 55%, transparent 70%);
+  transform: translateX(-150%) skewX(-25deg);
+  animation: glossSweep 6s infinite ease-in-out;
+  pointer-events: none;
+  z-index: 3;
+}
+
 
 .a1-hero-card:nth-child(1) { animation-delay: 0.05s; }
 .a1-hero-card:nth-child(2) { animation-delay: 0.13s; }
