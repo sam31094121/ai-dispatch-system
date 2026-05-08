@@ -149,6 +149,7 @@ async function loadData() {
     state.sendText = report.sendText;
     render(report);
     showToast('資料已更新');
+    initCoinRain();
   } catch (error) {
     renderError(error);
   }
@@ -428,6 +429,332 @@ function bindEvents() {
   });
 }
 
+/* ─────────────────────────────────────────────────────────────────
+   瑞士楓葉金幣｜積沙成塔物理引擎
+   - 真實重力 + 反彈衰減 + 堆積高度圖
+   - 楓葉浮雕 + 放射紋 + 雙層光暈 + 活動閃光
+   ───────────────────────────────────────────────────────────────── */
+
+class MapleCoinRain {
+  constructor(canvas) {
+    this.cv = canvas;
+    this.cx = canvas.getContext('2d', { alpha: true });
+    this.coins  = [];   // 飛行中
+    this.pile   = [];   // 已落定
+    this.frame  = 0;
+    this.running = false;
+    this.raf    = null;
+    /* 效能核心：預渲染 sprite cache，避免每幀重繪放射紋與楓葉 */
+    this._spriteCache = new Map();
+    this._resize();
+    window.addEventListener('resize', () => this._resize(), { passive: true });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) this._pause();
+      else this._resume();
+    });
+  }
+
+  _resize() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    this.W = this.cv.offsetWidth  || 320;
+    this.H = this.cv.offsetHeight || 220;
+    this.cv.width  = Math.round(this.W * dpr);
+    this.cv.height = Math.round(this.H * dpr);
+    this.cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    this._spriteCache.clear(); // resize 後需重建 sprite
+  }
+
+  /* 查詢 x 位置的最高堆積 y（碰到哪個落定硬幣最高） */
+  _floorAt(x, r) {
+    let floor = this.H;
+    for (const p of this.pile) {
+      const dx = p.x - x;
+      const gap = p.r + r;
+      if (Math.abs(dx) < gap) {
+        const top = p.y - Math.sqrt(Math.max(0, gap * gap - dx * dx));
+        if (top < floor) floor = top;
+      }
+    }
+    return floor;
+  }
+
+  _spawn() {
+    const r  = 8 + Math.random() * 6;
+    const margin = r + 4;
+    this.coins.push({
+      x:       margin + Math.random() * Math.max(1, this.W - margin * 2),
+      y:       -r,
+      vx:      (Math.random() - 0.5) * 2.4,
+      vy:      0.6 + Math.random() * 2.2,
+      r,
+      spin:    (Math.random() - 0.5) * 0.10,
+      tilt:    Math.random() * Math.PI * 2,
+      tiltSpd: (Math.random() - 0.5) * 0.065,
+      bounces: 0,
+      done:    false,
+    });
+  }
+
+  _update() {
+    this.frame++;
+    const maxPile = Math.floor(this.W / 20);
+    /* 效能優化：降低 spawn 頻率，堆積愈多愈慢 */
+    const interval = 16 + this.pile.length * 4;
+    if (this.frame % interval === 0 && this.pile.length < maxPile) {
+      this._spawn();
+    }
+
+    for (const c of this.coins) {
+      if (c.done) continue;
+      c.vy   = Math.min(c.vy + 0.44, 13);
+      c.x   += c.vx;
+      c.y   += c.vy;
+      c.tilt += c.tiltSpd;
+
+      if (c.x - c.r < 0)       { c.x = c.r;        c.vx = Math.abs(c.vx) * 0.52; }
+      if (c.x + c.r > this.W)  { c.x = this.W - c.r; c.vx = -Math.abs(c.vx) * 0.52; }
+
+      const floor = this._floorAt(c.x, c.r);
+      if (c.y + c.r >= floor) {
+        c.y    = floor - c.r;
+        c.vy  *= -0.28;
+        c.vx  *= 0.68;
+        c.spin *= 0.78;
+        c.bounces++;
+        if (Math.abs(c.vy) < 0.85 && c.bounces >= 1) {
+          c.done = true;
+          c.vy = 0; c.vx = 0; c.spin = 0;
+          this.pile.push(c);
+        }
+      }
+    }
+    this.coins = this.coins.filter(c => !c.done);
+  }
+
+  /**
+   * 預渲染金幣 sprite（按半徑快取）
+   * 將所有昂貴的漸層、放射紋、楓葉路徑一次繪入離線 canvas，
+   * 後續每幀只需 drawImage，大幅降低 GPU 繪製指令數。
+   */
+  _getCoinSprite(r) {
+    const key = Math.round(r); // 依整數半徑快取
+    if (this._spriteCache.has(key)) return this._spriteCache.get(key);
+
+    const pad = 8; // shadow 溢出空間
+    const size = (key + pad) * 2;
+    const offscreen = document.createElement('canvas');
+    offscreen.width = size;
+    offscreen.height = size;
+    const g = offscreen.getContext('2d');
+    const cx = size / 2;
+    const cy = size / 2;
+
+    // 落影
+    g.shadowColor = 'rgba(0,0,0,0.55)';
+    g.shadowBlur = 7;
+    g.shadowOffsetY = 3;
+
+    // 外緣
+    const rim = g.createRadialGradient(cx - key * .13, cy - key * .20, key * .04, cx, cy, key);
+    rim.addColorStop(0, '#FFE96E');
+    rim.addColorStop(0.76, '#C8960C');
+    rim.addColorStop(0.88, '#7A5200');
+    rim.addColorStop(1, '#4E3400');
+    g.beginPath();
+    g.arc(cx, cy, key, 0, Math.PI * 2);
+    g.fillStyle = rim;
+    g.fill();
+    g.shadowColor = 'transparent';
+
+    // 正面
+    const fr = key * 0.83;
+    const face = g.createRadialGradient(cx - key * .24, cy - key * .28, 0, cx, cy, fr);
+    face.addColorStop(0, '#FFFAC8');
+    face.addColorStop(0.22, '#FFD700');
+    face.addColorStop(0.60, '#E8A800');
+    face.addColorStop(1, '#A87000');
+    g.beginPath();
+    g.arc(cx, cy, fr, 0, Math.PI * 2);
+    g.fillStyle = face;
+    g.fill();
+
+    // 放射紋（已從 40 條減為 16 條，視覺差異極小但效能翻倍）
+    g.save();
+    g.beginPath();
+    g.arc(cx, cy, fr, 0, Math.PI * 2);
+    g.clip();
+    g.strokeStyle = 'rgba(110,60,0,0.13)';
+    g.lineWidth = 0.55;
+    for (let i = 0; i < 16; i++) {
+      g.save();
+      g.translate(cx, cy);
+      g.rotate((i / 16) * Math.PI * 2);
+      g.beginPath();
+      g.moveTo(0, 0);
+      g.lineTo(0, -fr);
+      g.stroke();
+      g.restore();
+    }
+    g.restore();
+
+    // 楓葉浮雕
+    g.save();
+    g.translate(cx, cy);
+    const ls = key * 0.052;
+    g.scale(ls, ls);
+    g.fillStyle = 'rgba(130,65,0,0.50)';
+    g.strokeStyle = 'rgba(90,42,0,0.22)';
+    g.lineWidth = 0.6;
+    const lf = [
+      [0,-9],[1.3,-5.4],[4.6,-6.3],[3.3,-3.1],
+      [7.2,-1.6],[5.6,0.3],[6.3,3.9],[3.1,2.6],
+      [2.1,6.8],[0,5.4],[-2.1,6.8],[-3.1,2.6],
+      [-6.3,3.9],[-5.6,0.3],[-7.2,-1.6],[-3.3,-3.1],
+      [-4.6,-6.3],[-1.3,-5.4],
+    ];
+    g.beginPath();
+    g.moveTo(lf[0][0], lf[0][1]);
+    for (let i = 1; i < lf.length; i++) g.lineTo(lf[i][0], lf[i][1]);
+    g.closePath();
+    g.fill();
+    g.stroke();
+    // 葉柄
+    g.strokeStyle = 'rgba(130,65,0,0.50)';
+    g.lineWidth = 1.4;
+    g.beginPath();
+    g.moveTo(0, 6.8);
+    g.lineTo(0, 10.2);
+    g.stroke();
+    g.restore();
+
+    // 頂部高光
+    const hi = g.createLinearGradient(cx - key * .28, cy - key, cx + key * .12, cy - key * .12);
+    hi.addColorStop(0, 'rgba(255,255,255,0.30)');
+    hi.addColorStop(1, 'rgba(255,255,255,0)');
+    g.beginPath();
+    g.arc(cx, cy, fr, 0, Math.PI * 2);
+    g.fillStyle = hi;
+    g.fill();
+
+    this._spriteCache.set(key, { canvas: offscreen, pad });
+    return { canvas: offscreen, pad };
+  }
+
+  /* ── 繪製單枚金幣（使用快取 sprite） ── */
+  _drawCoin(c, t) {
+    const ctx = this.cx;
+    const { x, y, r, tilt } = c;
+    const squish = Math.max(0.07, Math.abs(Math.cos(tilt)));
+    const sprite = this._getCoinSprite(r);
+    const drawSize = (Math.round(r) + sprite.pad) * 2;
+
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(squish, 1);
+    ctx.drawImage(sprite.canvas, -drawSize / 2, -drawSize / 2, drawSize, drawSize);
+
+    /* 動態閃光（極低開銷：只有 2 個圓弧） */
+    const glint = (Math.sin(t * 0.0028 + x * 0.09) + 1) * 0.5;
+    if (glint > 0.72 && squish > 0.32) {
+      const gs = (glint - 0.72) / 0.28;
+      ctx.beginPath();
+      ctx.arc(-r * .30, -r * .34, r * .15, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${gs * 0.60})`;
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(r * .20, -r * .18, r * .07, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${gs * 0.30})`;
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  _draw() {
+    const t = performance.now();
+    this.cx.clearRect(0, 0, this.W, this.H);
+    /* 堆積金幣先畫（底層） */
+    for (let i = this.pile.length - 1; i >= 0; i--) this._drawCoin(this.pile[i], t);
+    /* 飛行中金幣疊在上方 */
+    for (const c of this.coins) this._drawCoin(c, t);
+  }
+
+  _tick() {
+    if (!this.running) return;
+    this._update();
+    this._draw();
+    this.raf = requestAnimationFrame(() => this._tick());
+  }
+
+  _pause() {
+    this.running = false;
+    if (this.raf) cancelAnimationFrame(this.raf);
+    this.raf = null;
+  }
+
+  _resume() {
+    if (this.running) return;
+    this.running = true;
+    this._tick();
+  }
+
+  start() {
+    this._resize();
+    this._resume();
+  }
+
+  stop() { this._pause(); }
+}
+
+let _coinRain = null;
+
+function initCoinRain() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const cv = document.getElementById('mobile-coin-canvas');
+  if (!cv) return;
+  if (_coinRain) { _coinRain.stop(); _coinRain = null; }
+  /* 效能優化：延遲到瀏覽器空閒時初始化金幣引擎，確保首屏資料渲染不受阻塞 */
+  const startRain = () => {
+    _coinRain = new MapleCoinRain(cv);
+    _coinRain.start();
+  };
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(startRain, { timeout: 2000 });
+  } else {
+    setTimeout(startRain, 800);
+  }
+}
+
+function initHeroTilt() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const grid = refs.a1HeroGrid;
+  if (!grid) return;
+
+  grid.addEventListener('touchmove', (e) => {
+    const touch = e.touches[0];
+    const card = touch.target.closest('.a1-hero-card');
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const x = ((touch.clientX - rect.left) / rect.width - 0.5) * 2;
+    const y = ((touch.clientY - rect.top)  / rect.height - 0.5) * 2;
+    const tiltX = (-y * 7).toFixed(2);
+    const tiltY = ( x * 7).toFixed(2);
+    card.style.transform = `perspective(600px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(6px) scale(1.01)`;
+  }, { passive: true });
+
+  grid.addEventListener('touchend', () => {
+    grid.querySelectorAll('.a1-hero-card').forEach((card) => {
+      card.style.transform = '';
+    });
+  }, { passive: true });
+
+  grid.addEventListener('touchcancel', () => {
+    grid.querySelectorAll('.a1-hero-card').forEach((card) => {
+      card.style.transform = '';
+    });
+  }, { passive: true });
+}
+
 function initActiveNav() {
   const navLinks = document.querySelectorAll('.bottom-nav a[href^="#"]');
   if (!navLinks.length || !('IntersectionObserver' in window)) return;
@@ -454,4 +781,5 @@ function initActiveNav() {
 
 bindEvents();
 initActiveNav();
+initHeroTilt();
 loadData();

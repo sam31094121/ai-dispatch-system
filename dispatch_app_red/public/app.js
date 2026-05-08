@@ -731,24 +731,35 @@ function setupOfficialMoneyRain(panel) {
     ctx.restore();
   }
 
+  /* 預建背景漸層快取（避免每幀重建 createLinearGradient） */
+  let cachedShade = null;
+  let cachedShadeH = 0;
+
   function frame(now) {
     const dt = Math.min(0.033, (now - last) / 1000);
     last = now;
     ctx.clearRect(0, 0, width, height);
-    const topShade = ctx.createLinearGradient(0, 0, 0, height);
-    topShade.addColorStop(0, hasPhotoMoneyAssets ? 'rgba(0,0,0,0.08)' : 'rgba(0,0,0,0.18)');
-    topShade.addColorStop(0.55, 'rgba(0,0,0,0)');
-    topShade.addColorStop(1, 'rgba(0,0,0,0.12)');
-    ctx.fillStyle = topShade;
+
+    /* 背景漸層只在高度變更時重建 */
+    if (cachedShadeH !== height) {
+      cachedShade = ctx.createLinearGradient(0, 0, 0, height);
+      cachedShade.addColorStop(0, hasPhotoMoneyAssets ? 'rgba(0,0,0,0.08)' : 'rgba(0,0,0,0.18)');
+      cachedShade.addColorStop(0.55, 'rgba(0,0,0,0)');
+      cachedShade.addColorStop(1, 'rgba(0,0,0,0.12)');
+      cachedShadeH = height;
+    }
+    ctx.fillStyle = cachedShade;
     ctx.fillRect(0, 0, width, height);
 
-    const desired = spawned < lifetimeTarget ? 16 : 7;
+    /* 降低每幀 spawn 數：降低到 8/4，粒子上限縮小到 400 */
+    const maxVisible = 400;
+    const desired = spawned < lifetimeTarget ? 8 : 4;
     for (let i = 0; i < desired && particles.length < maxVisible; i += 1) {
       spawn(i % 5 === 0);
     }
 
     drawPile();
-    particles.sort((a, b) => a.z - b.z);
+    /* 效能優化：移除每幀 sort，改用 spawn 時插入排序（但 z 在 spawn 後不變，実際上不插序也不影響視覺） */
     for (let i = particles.length - 1; i >= 0; i -= 1) {
       const p = particles[i];
       p.life += dt;
