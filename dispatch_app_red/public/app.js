@@ -188,6 +188,7 @@ function safeHtml(value) {
 const AudioManager = {
   ctx: null,
   init() { if (!this.ctx) this.ctx = new (window.AudioContext || /** @type {any} */(window).webkitAudioContext)(); },
+  resume() { this.init(); if (this.ctx.state === 'suspended') this.ctx.resume(); },
   play(freq, type = 'sine', duration = 0.1, vol = 0.1) {
     this.init();
     const osc = this.ctx.createOscillator();
@@ -218,6 +219,562 @@ const AudioManager = {
     osc.stop(this.ctx.currentTime + 0.5);
   }
 };
+
+const CoinSoundSystem = {
+  enabled: false,
+  timers: [],
+  impactPattern: [
+    { t: 0, f: 1450, v: 0.030 },
+    { t: 180, f: 1220, v: 0.022 },
+    { t: 420, f: 1760, v: 0.026 },
+    { t: 760, f: 980, v: 0.018 },
+    { t: 1060, f: 1580, v: 0.024 },
+    { t: 1380, f: 1120, v: 0.020 },
+    { t: 1720, f: 1880, v: 0.028 },
+    { t: 2140, f: 1320, v: 0.021 },
+    { t: 2540, f: 1640, v: 0.024 },
+    { t: 2920, f: 1040, v: 0.018 }
+  ],
+  playImpact(freq = 1400, vol = 0.025) {
+    AudioManager.resume();
+    const ctx = AudioManager.ctx;
+    const now = ctx.currentTime;
+    const gain = ctx.createGain();
+    const ping = ctx.createOscillator();
+    const body = ctx.createOscillator();
+    const filter = ctx.createBiquadFilter();
+
+    ping.type = 'triangle';
+    body.type = 'sine';
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(freq * 0.82, now);
+    filter.Q.setValueAtTime(8, now);
+    ping.frequency.setValueAtTime(freq, now);
+    ping.frequency.exponentialRampToValueAtTime(Math.max(360, freq * 0.38), now + 0.11);
+    body.frequency.setValueAtTime(freq * 0.52, now);
+    body.frequency.exponentialRampToValueAtTime(Math.max(220, freq * 0.22), now + 0.16);
+    gain.gain.setValueAtTime(vol, now);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+
+    ping.connect(filter);
+    body.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+    ping.start(now);
+    body.start(now + 0.008);
+    ping.stop(now + 0.18);
+    body.stop(now + 0.20);
+  },
+  start() {
+    if (this.enabled) return;
+    this.enabled = true;
+    AudioManager.resume();
+    this.scheduleLoop();
+  },
+  scheduleLoop() {
+    if (!this.enabled) return;
+    this.clear();
+    this.impactPattern.forEach((item) => {
+      this.timers.push(setTimeout(() => {
+        if (!this.enabled) return;
+        const wobble = (Math.random() - 0.5) * 140;
+        this.playImpact(item.f + wobble, item.v);
+      }, item.t));
+    });
+    this.timers.push(setTimeout(() => this.scheduleLoop(), 3300));
+  },
+  clear() {
+    this.timers.forEach((timer) => clearTimeout(timer));
+    this.timers = [];
+  },
+  stop() {
+    this.enabled = false;
+    this.clear();
+  }
+};
+
+function setupOfficialLockCoins() {
+  const panel = refs.officialLockPanel;
+  if (!panel) return;
+  setupOfficialMoneyRain(panel);
+  let armed = false;
+  const arm = () => {
+    if (armed) return;
+    armed = true;
+    panel.classList.add('official-coin-sound-on');
+    CoinSoundSystem.start();
+  };
+  panel.addEventListener('pointerenter', arm, { once: true });
+  panel.addEventListener('click', arm, { once: true });
+  panel.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') arm();
+  }, { once: true });
+}
+
+function setupOfficialMoneyRain(panel) {
+  const canvas = $('official-money-rain');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d', { alpha: true });
+  if (!ctx) return;
+
+  const particles = [];
+  const pile = [];
+  let width = 0;
+  let height = 0;
+  let dpr = 1;
+  let last = performance.now();
+  let spawned = 0;
+  const maxVisible = 840;
+  const lifetimeTarget = 10000;
+
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    width = Math.max(1, rect.width);
+    height = Math.max(1, rect.height);
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function makeSprite(widthPx, heightPx, painter) {
+    const sprite = document.createElement('canvas');
+    sprite.width = widthPx;
+    sprite.height = heightPx;
+    const spriteCtx = sprite.getContext('2d');
+    painter(spriteCtx, widthPx, heightPx);
+    return sprite;
+  }
+
+  function drawMapleRelief(targetCtx, cx, cy, scale) {
+    targetCtx.save();
+    targetCtx.translate(cx, cy);
+    targetCtx.scale(scale, scale);
+    targetCtx.beginPath();
+    targetCtx.moveTo(0, -30);
+    targetCtx.lineTo(7, -13);
+    targetCtx.lineTo(21, -22);
+    targetCtx.lineTo(17, -6);
+    targetCtx.lineTo(32, -4);
+    targetCtx.lineTo(18, 6);
+    targetCtx.lineTo(23, 21);
+    targetCtx.lineTo(7, 14);
+    targetCtx.lineTo(3, 32);
+    targetCtx.lineTo(-3, 32);
+    targetCtx.lineTo(-7, 14);
+    targetCtx.lineTo(-23, 21);
+    targetCtx.lineTo(-18, 6);
+    targetCtx.lineTo(-32, -4);
+    targetCtx.lineTo(-17, -6);
+    targetCtx.lineTo(-21, -22);
+    targetCtx.lineTo(-7, -13);
+    targetCtx.closePath();
+    targetCtx.fill();
+    targetCtx.stroke();
+    targetCtx.restore();
+  }
+
+  function createCoinSprite(seed = 0) {
+    return makeSprite(160, 160, (g, w, h) => {
+      const cx = w / 2;
+      const cy = h / 2;
+      g.clearRect(0, 0, w, h);
+
+      g.shadowColor = 'rgba(0,0,0,.46)';
+      g.shadowBlur = 14;
+      g.shadowOffsetY = 9;
+      const side = g.createLinearGradient(cx - 58, cy + 18, cx + 58, cy + 18);
+      side.addColorStop(0, '#4b2205');
+      side.addColorStop(0.18, '#b86f14');
+      side.addColorStop(0.48, '#f7c44a');
+      side.addColorStop(0.78, '#8a4308');
+      side.addColorStop(1, '#3b1a04');
+      g.fillStyle = side;
+      g.beginPath();
+      g.ellipse(cx, cy + 12, 64, 58, 0, 0, Math.PI * 2);
+      g.fill();
+      g.shadowColor = 'transparent';
+
+      const metal = g.createRadialGradient(cx - 32, cy - 34, 7, cx + 8, cy + 8, 72);
+      metal.addColorStop(0, '#fffbe0');
+      metal.addColorStop(0.13, '#fff0a5');
+      metal.addColorStop(0.27, '#d99a22');
+      metal.addColorStop(0.46, '#ffdb66');
+      metal.addColorStop(0.62, '#9b520c');
+      metal.addColorStop(0.82, '#f0b43b');
+      metal.addColorStop(1, '#5a2605');
+      g.fillStyle = metal;
+      g.beginPath();
+      g.ellipse(cx, cy, 62, 62, 0, 0, Math.PI * 2);
+      g.fill();
+
+      g.save();
+      g.beginPath();
+      g.ellipse(cx, cy, 62, 62, 0, 0, Math.PI * 2);
+      g.clip();
+      for (let i = 0; i < 110; i += 1) {
+        const a = ((i * 137 + seed * 29) % 360) * Math.PI / 180;
+        const r = 8 + ((i * 17 + seed * 11) % 54);
+        const x = cx + Math.cos(a) * r;
+        const y = cy + Math.sin(a) * r;
+        g.save();
+        g.translate(x, y);
+        g.rotate(a + Math.PI / 2);
+        g.globalAlpha = i % 4 === 0 ? 0.22 : 0.10;
+        g.strokeStyle = i % 3 === 0 ? '#fff4ba' : '#5c2605';
+        g.lineWidth = i % 5 === 0 ? 1.2 : 0.6;
+        g.beginPath();
+        g.moveTo(-4, 0);
+        g.lineTo(4 + (i % 7), 0);
+        g.stroke();
+        g.restore();
+      }
+      g.restore();
+
+      g.save();
+      g.translate(cx, cy);
+      g.rotate(seed * 0.16);
+      for (let i = 0; i < 96; i += 1) {
+        g.rotate(Math.PI * 2 / 96);
+        g.strokeStyle = i % 2 ? 'rgba(64,26,4,.76)' : 'rgba(255,244,180,.72)';
+        g.lineWidth = 1.35;
+        g.beginPath();
+        g.moveTo(0, -62);
+        g.lineTo(0, -52.5);
+        g.stroke();
+      }
+      g.restore();
+
+      g.strokeStyle = 'rgba(255,248,198,.82)';
+      g.lineWidth = 3.6;
+      g.beginPath();
+      g.ellipse(cx, cy, 50, 50, 0, 0, Math.PI * 2);
+      g.stroke();
+      g.strokeStyle = 'rgba(73,31,4,.62)';
+      g.lineWidth = 2.2;
+      g.beginPath();
+      g.ellipse(cx, cy, 42, 42, 0, 0, Math.PI * 2);
+      g.stroke();
+
+      g.fillStyle = 'rgba(70,30,4,.40)';
+      g.strokeStyle = 'rgba(255,244,178,.46)';
+      g.lineWidth = 1.35;
+      drawMapleRelief(g, cx, cy + 3, 1.08);
+
+      g.globalAlpha = 0.42;
+      g.strokeStyle = '#fff8cf';
+      g.lineWidth = 6;
+      g.beginPath();
+      g.arc(cx - 12, cy - 15, 42, Math.PI * 1.04, Math.PI * 1.54);
+      g.stroke();
+      g.globalAlpha = 1;
+
+      const glare = g.createLinearGradient(cx - 58, cy - 55, cx + 52, cy + 42);
+      glare.addColorStop(0, 'rgba(255,255,255,0)');
+      glare.addColorStop(0.34, 'rgba(255,255,255,.22)');
+      glare.addColorStop(0.42, 'rgba(255,255,255,.05)');
+      glare.addColorStop(1, 'rgba(255,255,255,0)');
+      g.fillStyle = glare;
+      g.beginPath();
+      g.ellipse(cx, cy, 61, 61, 0, 0, Math.PI * 2);
+      g.fill();
+    });
+  }
+
+  function createBillSprite(seed = 0) {
+    return makeSprite(240, 116, (g, w, h) => {
+      g.clearRect(0, 0, w, h);
+      g.save();
+      g.translate(8, 8);
+      g.shadowColor = 'rgba(0,0,0,.26)';
+      g.shadowBlur = 9;
+      g.shadowOffsetY = 5;
+      const paper = g.createLinearGradient(0, 0, w - 16, h - 16);
+      paper.addColorStop(0, '#f4f1d7');
+      paper.addColorStop(0.34, '#c9d8b9');
+      paper.addColorStop(0.62, '#edf1d8');
+      paper.addColorStop(1, '#a9c7a1');
+      g.fillStyle = paper;
+      g.beginPath();
+      g.roundRect(0, 0, w - 16, h - 16, 7);
+      g.fill();
+      g.shadowColor = 'transparent';
+      g.strokeStyle = 'rgba(37,88,52,.76)';
+      g.lineWidth = 2;
+      g.stroke();
+
+      g.save();
+      g.clip();
+      for (let i = 0; i < 90; i += 1) {
+        const x = (i * 37 + seed * 23) % (w - 16);
+        const y = (i * 19 + seed * 31) % (h - 16);
+        g.fillStyle = i % 2 ? 'rgba(28,96,53,.08)' : 'rgba(255,255,230,.18)';
+        g.fillRect(x, y, 1.3, 1);
+      }
+      g.globalAlpha = 0.13;
+      g.strokeStyle = '#245f3d';
+      g.lineWidth = 0.9;
+      for (let i = -h; i < w + h; i += 8) {
+        g.beginPath();
+        g.moveTo(i, 0);
+        g.lineTo(i - h * 0.8, h);
+        g.stroke();
+      }
+      g.globalAlpha = 1;
+      g.restore();
+
+      g.strokeStyle = 'rgba(29,92,50,.56)';
+      g.lineWidth = 1.4;
+      g.strokeRect(12, 10, w - 40, h - 36);
+      g.strokeStyle = 'rgba(29,92,50,.28)';
+      g.strokeRect(20, 18, w - 56, h - 52);
+
+      g.fillStyle = 'rgba(31,90,49,.18)';
+      g.beginPath();
+      g.ellipse((w - 16) / 2, (h - 16) / 2, 31, 38, 0, 0, Math.PI * 2);
+      g.fill();
+      g.strokeStyle = 'rgba(30,83,47,.56)';
+      g.lineWidth = 1.6;
+      g.stroke();
+      g.beginPath();
+      g.moveTo(w / 2 - 15, h / 2 + 18);
+      g.quadraticCurveTo(w / 2, h / 2 - 17, w / 2 + 15, h / 2 + 18);
+      g.stroke();
+
+      g.font = '800 23px Sora, sans-serif';
+      g.fillStyle = 'rgba(29,91,51,.82)';
+      g.textAlign = 'center';
+      g.textBaseline = 'middle';
+      g.fillText('$', w / 2 - 8, h / 2 - 1);
+      g.font = '800 14px Sora, sans-serif';
+      g.fillText('USD', 42, 28);
+      g.fillText('USD', w - 58, h - 35);
+      g.font = '700 10px Sora, sans-serif';
+      g.fillStyle = 'rgba(29,91,51,.48)';
+      g.fillText('MOTION PROP', w / 2 - 8, h - 24);
+
+      const fold = g.createLinearGradient(0, 0, w - 16, 0);
+      fold.addColorStop(0, 'rgba(255,255,255,0)');
+      fold.addColorStop(0.45, 'rgba(255,255,255,.22)');
+      fold.addColorStop(0.49, 'rgba(35,75,42,.10)');
+      fold.addColorStop(0.54, 'rgba(255,255,255,.12)');
+      fold.addColorStop(1, 'rgba(255,255,255,0)');
+      g.fillStyle = fold;
+      g.fillRect(0, 0, w - 16, h - 16);
+      g.restore();
+    });
+  }
+
+  const sprites = {
+    coins: [createCoinSprite(1), createCoinSprite(2), createCoinSprite(3), createCoinSprite(4)],
+    bills: [createBillSprite(1), createBillSprite(2), createBillSprite(3)]
+  };
+  const photoSprites = { coins: [], bills: [] };
+  let hasPhotoMoneyAssets = false;
+
+  function loadMoneyAsset(src, target) {
+    const img = new Image();
+    img.decoding = 'async';
+    img.onload = () => {
+      target.push(img);
+      hasPhotoMoneyAssets = photoSprites.coins.length > 0 || photoSprites.bills.length > 0;
+      canvas.dataset.assets = hasPhotoMoneyAssets ? 'photo' : 'fallback';
+    };
+    img.src = src;
+  }
+
+  [
+    'maple-coin-front.png',
+    'maple-coin-angle.png',
+    'maple-coin-side.png',
+    'maple-coin-front.webp',
+    'maple-coin-angle.webp',
+    'maple-coin-side.webp'
+  ].forEach((name) => loadMoneyAsset(`/assets/money/${name}`, photoSprites.coins));
+
+  [
+    'dollar-bill-front.png',
+    'dollar-bill-angle.png',
+    'dollar-bill-folded.png',
+    'dollar-bill-front.webp',
+    'dollar-bill-angle.webp',
+    'dollar-bill-folded.webp'
+  ].forEach((name) => loadMoneyAsset(`/assets/money/${name}`, photoSprites.bills));
+
+  function spawn(forceBill = false) {
+    const isBill = forceBill || Math.random() < 0.44;
+    const coinPool = photoSprites.coins.length ? photoSprites.coins : sprites.coins;
+    const billPool = photoSprites.bills.length ? photoSprites.bills : sprites.bills;
+    const sprite = isBill
+      ? billPool[Math.floor(Math.random() * billPool.length)]
+      : coinPool[Math.floor(Math.random() * coinPool.length)];
+    const size = isBill ? 48 + Math.random() * 52 : 16 + Math.random() * 24;
+    particles.push({
+      type: isBill ? 'bill' : 'coin',
+      sprite,
+      x: Math.random() * width,
+      y: -70 - Math.random() * 220,
+      z: Math.random(),
+      vx: (Math.random() - 0.5) * (isBill ? 74 : 46),
+      vy: 110 + Math.random() * (isBill ? 170 : 260),
+      gravity: isBill ? 450 : 760,
+      drag: isBill ? 0.982 : 0.993,
+      size,
+      w: isBill ? size * 1.92 : size,
+      h: isBill ? size * 0.92 : size,
+      rot: Math.random() * Math.PI * 2,
+      vr: (Math.random() - 0.5) * (isBill ? 4.8 : 13),
+      flip: Math.random() * Math.PI * 2,
+      vf: isBill ? 5 + Math.random() * 7 : 11 + Math.random() * 15,
+      floor: height - (12 + Math.random() * 76),
+      alpha: isBill ? 0.84 : 0.96,
+      trail: Math.random() < 0.38
+    });
+    spawned += 1;
+  }
+
+  function addPile(p) {
+    if (pile.length > 230) pile.shift();
+    pile.push({
+      type: p.type,
+      sprite: p.sprite,
+      x: Math.max(18, Math.min(width - 18, p.x)),
+      y: height - (4 + Math.random() * 48 + Math.min(68, pile.length * 0.12)),
+      w: p.w * (0.68 + Math.random() * 0.28),
+      h: p.h * (0.48 + Math.random() * 0.24),
+      rot: p.rot,
+      flip: 0.04 + Math.random() * 0.24,
+      alpha: 0.32 + Math.random() * 0.34
+    });
+  }
+
+  function setRenderEffects(p) {
+    if (hasPhotoMoneyAssets) {
+      ctx.filter = p.z < 0.18 ? 'blur(0.4px) saturate(1.08) contrast(1.08)' : 'saturate(1.05) contrast(1.04)';
+      return;
+    }
+    const blur = p.z < 0.18 ? 1.1 : (p.z > 0.82 ? 0.2 : 0.55);
+    const contrast = p.type === 'coin' ? 1.22 : 1.12;
+    ctx.filter = `blur(${blur}px) saturate(0.92) contrast(${contrast}) brightness(0.92)`;
+  }
+
+  function resetRenderEffects() {
+    ctx.filter = 'none';
+  }
+
+  function drawSoftShadow(x, y, w, h, alpha = 0.18) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = '#000';
+    ctx.translate(x, y + h * 0.54);
+    ctx.scale(1, 0.24);
+    ctx.beginPath();
+    ctx.ellipse(0, 0, w * 0.50, Math.max(7, h * 0.35), 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawSpriteParticle(p, alpha = p.alpha) {
+    const flipScale = p.type === 'coin'
+      ? Math.max(0.12, Math.abs(Math.cos(p.flip)))
+      : 1 + Math.sin(p.flip) * 0.10;
+    const skew = p.type === 'bill' ? Math.cos(p.flip) * 0.16 : 0;
+    const depthScale = 0.72 + p.z * 0.58;
+    const w = p.w * depthScale;
+    const h = p.h * depthScale;
+    const depthAlpha = alpha * (0.45 + p.z * 0.55);
+    drawSoftShadow(p.x, p.y, w, h, depthAlpha * (p.type === 'bill' ? 0.18 : 0.25));
+    if (p.trail && p.vy > 260) {
+      ctx.save();
+      ctx.globalAlpha = depthAlpha * 0.16;
+      ctx.strokeStyle = p.type === 'coin' ? 'rgba(255, 200, 76, 0.62)' : 'rgba(218, 241, 204, 0.38)';
+      ctx.lineWidth = Math.max(1, w * 0.08);
+      ctx.beginPath();
+      ctx.moveTo(p.x - p.vx * 0.018, p.y - p.vy * 0.032);
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+      ctx.restore();
+    }
+    ctx.save();
+    ctx.globalAlpha = depthAlpha;
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rot);
+    ctx.transform(flipScale, Math.sin(p.flip) * 0.035, skew, 1, 0, 0);
+    if (p.type === 'coin' && flipScale < 0.20) {
+      const edge = ctx.createLinearGradient(-w * 0.10, 0, w * 0.10, 0);
+      edge.addColorStop(0, '#3f1b04');
+      edge.addColorStop(0.38, '#d28b22');
+      edge.addColorStop(0.70, '#fff0a2');
+      edge.addColorStop(1, '#5d2705');
+      ctx.fillStyle = edge;
+      ctx.fillRect(-w * 0.11, -h * 0.50, w * 0.22, h);
+      ctx.strokeStyle = 'rgba(255,235,150,.34)';
+      ctx.lineWidth = 1;
+      for (let i = -4; i <= 4; i += 1) {
+        ctx.beginPath();
+        ctx.moveTo(-w * 0.11, i * h * 0.10);
+        ctx.lineTo(w * 0.11, i * h * 0.10 + 2);
+        ctx.stroke();
+      }
+    }
+    setRenderEffects(p);
+    ctx.drawImage(p.sprite, -w / 2, -h / 2, w, h);
+    resetRenderEffects();
+    ctx.restore();
+  }
+
+  function drawPile() {
+    ctx.save();
+    ctx.globalAlpha = 0.74;
+    for (const item of pile) drawSpriteParticle(item, item.alpha);
+    ctx.restore();
+  }
+
+  function frame(now) {
+    const dt = Math.min(0.033, (now - last) / 1000);
+    last = now;
+    ctx.clearRect(0, 0, width, height);
+    const topShade = ctx.createLinearGradient(0, 0, 0, height);
+    topShade.addColorStop(0, hasPhotoMoneyAssets ? 'rgba(0,0,0,0.08)' : 'rgba(0,0,0,0.18)');
+    topShade.addColorStop(0.55, 'rgba(0,0,0,0)');
+    topShade.addColorStop(1, 'rgba(0,0,0,0.12)');
+    ctx.fillStyle = topShade;
+    ctx.fillRect(0, 0, width, height);
+
+    const desired = spawned < lifetimeTarget ? 16 : 7;
+    for (let i = 0; i < desired && particles.length < maxVisible; i += 1) {
+      spawn(i % 5 === 0);
+    }
+
+    drawPile();
+    particles.sort((a, b) => a.z - b.z);
+    for (let i = particles.length - 1; i >= 0; i -= 1) {
+      const p = particles[i];
+      p.life += dt;
+      p.vy += p.gravity * dt;
+      p.vx *= p.drag;
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.rot += p.vr * dt;
+      p.flip += p.vf * dt;
+
+      if (p.y > p.floor) {
+        addPile(p);
+        if (CoinSoundSystem.enabled && Math.random() < 0.18) CoinSoundSystem.playImpact(900 + Math.random() * 900, 0.012);
+        particles.splice(i, 1);
+        continue;
+      }
+
+      drawSpriteParticle(p);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  resize();
+  for (let i = 0; i < 120; i += 1) spawn(i % 4 === 0);
+  window.addEventListener('resize', resize);
+  requestAnimationFrame(frame);
+}
 
 let auditTimeout = null;
 function setupLiveAudit() {
@@ -370,6 +927,42 @@ function groupLine(groups, key, label) {
   return `${label}：${names.join('、') || '-'}`;
 }
 
+function renderOfficialTop10(rows) {
+  if (!Array.isArray(rows) || !rows.length) return '-';
+  return rows.slice(0, 10).map((row) => `
+    <span class="official-rank-chip">
+      <span class="official-rank-no">${safeHtml(String(row.rank || row.名次 || '-'))}</span>
+      <span class="official-rank-name">${safeHtml(row.name || row.姓名 || '-')}</span>
+    </span>
+  `).join('');
+}
+
+function renderOfficialGroups(groups) {
+  const meta = [
+    ['A1', 'CORE'],
+    ['A2', 'CHASE'],
+    ['B', 'FLOW'],
+    ['C', 'WATCH']
+  ];
+
+  return meta.map(([key, tag]) => {
+    const names = Array.isArray(groups?.[key]) ? groups[key] : [];
+    const people = names.length
+      ? names.map((name) => `<span class="official-person-chip">${safeHtml(name)}</span>`).join('')
+      : '<span class="official-person-chip official-person-empty">-</span>';
+
+    return `
+      <section class="official-group-card official-group-${safeHtml(key)}">
+        <div class="official-group-title">
+          <strong>${safeHtml(key)}</strong>
+          <span>${safeHtml(tag)}</span>
+        </div>
+        <div class="official-group-people">${people}</div>
+      </section>
+    `;
+  }).join('');
+}
+
 function buildPasteReadyAnnouncement(snapshot) {
   const ranking = Array.isArray(snapshot?.ranking) ? snapshot.ranking : [];
   const groups = snapshot?.groups || {};
@@ -447,13 +1040,8 @@ function renderOfficialLock(snapshot) {
     ? `${dispatchDay} 正式派單順序已確認，可直接執行`
     : '等待正式派單順序';
   refs.officialLockDate.textContent = `${dispatchDay} LOCK`;
-  refs.officialLockTop10.textContent = top10 || '-';
-  refs.officialLockGroups.textContent = [
-    groupLine(groups, 'A1', 'A1'),
-    groupLine(groups, 'A2', 'A2'),
-    groupLine(groups, 'B', 'B'),
-    groupLine(groups, 'C', 'C')
-  ].join('｜');
+  refs.officialLockTop10.innerHTML = top10 ? renderOfficialTop10(ranking) : '-';
+  refs.officialLockGroups.innerHTML = renderOfficialGroups(groups);
 }
 
 function renderSummaryCards(cards) {
@@ -954,6 +1542,7 @@ async function saveCurrentReport() {
 function setup() {
   renderRules();
   setupLiveAudit();
+  setupOfficialLockCoins();
   
   refs.btnLoad?.addEventListener('click', () => runAction(loadCurrent));
   refs.btnAudit?.addEventListener('click', () => runAction(() => auditCurrentInput()));
