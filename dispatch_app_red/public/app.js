@@ -1278,28 +1278,35 @@ function renderRankingTable(rows) {
   refs.rankingTableBody.innerHTML = rows.map((row) => {
     const m = getMetrics(row);
     const score = Number(m.AI分數 || 0);
-    const scoreStyle = score >= 3000 ? 'style="color: var(--cyan); font-weight: bold; text-shadow: 0 0 8px var(--cyan);"' : '';
+    const scoreStyle = score >= 3000 ? 'style="color: #ff4d4d; font-weight: 800; text-shadow: 0 0 12px rgba(255, 77, 77, 0.3);"' : '';
+    
+    // 獲取名次變動類別
+    const move = getMovement(row);
+    
+    // 輔助函數：如果值為 0 則加上 is-zero 類別
+    const valClass = (v) => (Number(v || 0) === 0 ? 'class="is-zero"' : '');
+    
     return `
       <tr class="row-${safeHtml(row.分級 || row.group)}">
         <td class="col-rank">
           <div class="rank-box">
-            <span>${safeHtml(String(row.名次 || row.rank))}</span>
-            <span class="move-arrow move-${row.movement || 'flat'}">${row.movement === 'up' ? '↑' : row.movement === 'down' ? '↓' : '＝'}</span>
+            <span class="rank-number">${safeHtml(String(row.名次 || row.rank))}</span>
+            <span class="move-arrow ${move.class}">${move.arrow}${move.diff > 0 ? move.diff : ''}</span>
           </div>
         </td>
         <td>
           <div class="table-name">
-            <span>${safeHtml(row.姓名 || row.name)}</span>
+            <strong>${safeHtml(row.姓名 || row.name)}</strong>
             ${(row.標記 || row.isNew) ? `<span class="newbie-tag">${safeHtml(row.標記 || '新人')}</span>` : ''}
           </div>
         </td>
-        <td>${safeHtml(row.分級 || row.group)}</td>
-        <td class="col-score" ${scoreStyle}>${score > 0 ? safeHtml(Number(score).toFixed(2)) : '—'}</td>
-        <td>${safeHtml(fmt(m.實收))}</td>
-        <td>${safeHtml(fmt(m.追續金額))}</td>
-        <td>${safeHtml(fmt(m.全部總業績))}</td>
-        <td>${safeHtml(fmt(m.追續客單價))}</td>
-        <td>${safeHtml(String(m.追續單數))}</td>
+        <td class="col-tier"><span class="tier-badge tier-${row.分級 || row.group}">${safeHtml(row.分級 || row.group)}</span></td>
+        <td class="col-score" ${scoreStyle}>${score > 0 ? safeHtml(Number(score).toFixed(2)) : '<span class="is-zero">—</span>'}</td>
+        <td ${valClass(m.實收)}>${safeHtml(fmt(m.實收))}</td>
+        <td ${valClass(m.追續金額)}>${safeHtml(fmt(m.追續金額))}</td>
+        <td ${valClass(m.全部總業績)}>${safeHtml(fmt(m.全部總業績))}</td>
+        <td ${valClass(m.追續客單價)}>${safeHtml(fmt(m.追續客單價))}</td>
+        <td ${valClass(m.追續單數)}>${safeHtml(String(m.追續單數))}</td>
       </tr>
     `;
   }).join('');
