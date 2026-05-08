@@ -1,12 +1,16 @@
 
 function getMovement(row) {
-  const currentRank = Number(row.名次 || row.rank || 0);
-  const prevRank = Number(row.上輪名次 || row.prevRank || 0);
+  const currentRank = Number(row.rank || row.名次 || 0);
+  const prevRank = row.prevRank || row.上輪名次;
   
-  if (!prevRank || prevRank === 0) return { class: 'new', arrow: 'NEW' };
-  if (currentRank < prevRank) return { class: 'up', arrow: '↑' };
-  if (currentRank > prevRank) return { class: 'down', arrow: '↓' };
-  return { class: 'flat', arrow: '＝' };
+  if (prevRank === null || prevRank === undefined || prevRank === 0) {
+    return { class: 'new', arrow: 'NEW', diff: 0 };
+  }
+  
+  const diff = prevRank - currentRank;
+  if (diff > 0) return { class: 'up', arrow: '↑', diff: Math.abs(diff) };
+  if (diff < 0) return { class: 'down', arrow: '↓', diff: Math.abs(diff) };
+  return { class: 'flat', arrow: '＝', diff: 0 };
 }
 const numberFormatter = new Intl.NumberFormat('zh-TW');
 const $ = (id) => document.getElementById(id);
@@ -104,27 +108,27 @@ function getMetrics(row) {
   };
 }
 
-function countUp(el, target, duration = 1200) {
+function countUp(el, target, duration = 1500) {
   const numTarget = Number(target || 0);
-  if (!numTarget) { el.textContent = numberFormatter.format(0); return; }
-  const t0 = performance.now();
-  el.style.textShadow = '0 0 15px var(--cyan)';
-  el.style.transition = 'transform 0.1s ease';
-
-  function tick(now) {
-    const p = Math.min((now - t0) / duration, 1);
-    const ease = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
+  if (isNaN(numTarget)) { el.textContent = '0'; return; }
+  
+  let start = null;
+  const step = (timestamp) => {
+    if (!start) start = timestamp;
+    const progress = Math.min((timestamp - start) / duration, 1);
+    // 使用更平滑的 cubic-bezier 減速曲線
+    const ease = 1 - Math.pow(1 - progress, 3);
+    const current = Math.floor(ease * numTarget);
     
-    el.textContent = numberFormatter.format(Math.round(numTarget * ease));
+    el.textContent = numberFormatter.format(current);
     
-    if (p < 1) {
-      requestAnimationFrame(tick);
+    if (progress < 1) {
+      window.requestAnimationFrame(step);
     } else {
       el.textContent = numberFormatter.format(numTarget);
-      el.style.textShadow = 'none';
     }
-  }
-  requestAnimationFrame(tick);
+  };
+  window.requestAnimationFrame(step);
 }
 
 function badgeClass(status) {

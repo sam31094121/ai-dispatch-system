@@ -383,12 +383,40 @@ body.oil-announcement::after {
   .oil-announcement .hero {
     grid-template-columns: 1fr;
     min-height: auto;
+    padding: 24px;
   }
   .oil-announcement .spotlight-grid,
   .oil-announcement .spotlight-card.rank-1 {
     grid-template-columns: 1fr;
     grid-column: auto;
   }
+  /* 表格行動端強制橫向捲動 */
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -12px;
+    padding: 0 12px;
+  }
+  .ranking-table {
+    min-width: 800px;
+  }
+}
+
+/* ── Cyber Scrollbar ───────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(27, 18, 10, 0.4);
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--cyan), var(--pass));
+  border-radius: 3px;
+  box-shadow: 0 0 10px rgba(215, 168, 73, 0.3);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cyan-2);
 }
 
 /* ── 2. Reset ───────────────────────────────────────────── */
@@ -623,6 +651,10 @@ body::before {
   content-visibility: auto;
   contain: layout;
   contain-intrinsic-size: 100% 400px;
+  /* 硬體加速 */
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .panel:hover {
