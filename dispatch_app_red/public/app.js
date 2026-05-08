@@ -1301,9 +1301,9 @@ function renderRankingTable(rows) {
           </div>
         </td>
         <td class="col-tier"><span class="tier-badge tier-${row.分級 || row.group}">${safeHtml(row.分級 || row.group)}</span></td>
-        <td class="col-score" ${scoreStyle}>${score > 0 ? safeHtml(Number(score).toFixed(2)) : '<span class="is-zero">—</span>'}</td>
-        <td ${valClass(m.實收)}>${safeHtml(fmt(m.實收))}</td>
-        <td ${valClass(m.追續金額)}>${safeHtml(fmt(m.追續金額))}</td>
+        <td class="col-score" ${scoreStyle}>${score > 0.01 ? safeHtml(Number(score).toFixed(2)) : '<span class="status-stby">STBY</span>'}</td>
+        <td ${valClass(m.實收)}>${Number(m.實收) > 0 ? safeHtml(fmt(m.實收)) : '<span class="is-zero">0</span>'}</td>
+        <td ${valClass(m.追續金額)}>${Number(m.追續金額) > 0 ? safeHtml(fmt(m.追續金額)) : '<span class="is-zero">0</span>'}</td>
         <td ${valClass(m.全部總業績)}>${safeHtml(fmt(m.全部總業績))}</td>
         <td ${valClass(m.追續客單價)}>${safeHtml(fmt(m.追續客單價))}</td>
         <td ${valClass(m.追續單數)}>${safeHtml(String(m.追續單數))}</td>

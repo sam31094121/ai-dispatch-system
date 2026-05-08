@@ -478,6 +478,17 @@ body::before {
   font-weight: 400 !important;
 }
 
+.status-stby {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #71717a; /* 質感灰 */
+  background: rgba(113, 113, 122, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px dashed rgba(113, 113, 122, 0.3);
+}
+
 /* AI 掃描與雷射效果 */
 @keyframes laser-sweep {
   0% { top: 0%; opacity: 0; }

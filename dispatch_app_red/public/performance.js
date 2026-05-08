@@ -70,7 +70,7 @@
       <div class="dispatch-stats">
         <b>${money(row.totalRevenue)}</b>
         <span>
-          AI <strong class="dispatch-score">${Number(row.weightedScore || 0).toFixed(2)}</strong>
+          AI <strong class="dispatch-score">${Number(row.weightedScore || 0) > 0.01 ? Number(row.weightedScore).toFixed(2) : '<span class="status-stby">STBY</span>'}</strong>
           ｜成交 ${row.renewalDeals} 單｜均價 ${money(row.averageRenewal)}｜實收率 ${percent(row.collectionRate)}
         </span>
       </div>
