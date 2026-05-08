@@ -24,6 +24,7 @@
     return `<span class="dispatch-tier-tag" style="background:${color}">${esc(tier)}</span>`;
   }
 
+  /* ── 整合總盤數字 ── */
   function renderSummary(data) {
     const grid = document.getElementById('performance-summary');
     if (!grid) return;
@@ -42,6 +43,7 @@
     ));
   }
 
+  /* ── 三平台產品 ── */
   function renderProductRows(data) {
     const grid = document.getElementById('performance-products');
     if (!grid) return;
@@ -58,6 +60,7 @@
     `)));
   }
 
+  /* ── 正式派單順位（完整 24 人）── */
   function renderOrder(data) {
     const list = document.getElementById('dispatch-order-list');
     if (!list) return;
@@ -70,13 +73,14 @@
       <div class="dispatch-stats">
         <b>${money(row.totalRevenue)}</b>
         <span>
-          AI <strong class="dispatch-score">${Number(row.weightedScore || 0) > 0.01 ? Number(row.weightedScore).toFixed(2) : '<span class="status-stby">STBY</span>'}</strong>
+          AI <strong class="dispatch-score">${Number(row.weightedScore).toFixed(2)}</strong>
           ｜成交 ${row.renewalDeals} 單｜均價 ${money(row.averageRenewal)}｜實收率 ${percent(row.collectionRate)}
         </span>
       </div>
     `)));
   }
 
+  /* ── A1 / A2 / B / C 分級卡 ── */
   function renderGroups(data) {
     const grid = document.getElementById('performance-groups');
     if (!grid) return;
@@ -85,15 +89,16 @@
       return el('article', 'perf-group-card', `
         <span class="perf-group-label" style="color:${color}">${esc(label)}</span>
         <div class="perf-group-names">
-          ${members.map((name) => {
-            const p = data.dispatchOrder.find(d => d.name === name) || { rank: '?' };
-            return `<span class="perf-group-name"><span class="perf-group-rank">#${p.rank}</span>${esc(name)}</span>`;
-          }).join('')}
+          ${members.map((p) => `
+            <span class="perf-group-name">
+              <span class="perf-group-rank">#${p.rank}</span>${esc(p.name)}
+            </span>`).join('')}
         </div>
       `);
     }));
   }
 
+  /* ── 每人一句建議 ── */
   function renderAdvice(data) {
     const list = document.getElementById('performance-advice');
     if (!list) return;
@@ -104,6 +109,7 @@
     `)));
   }
 
+  /* ── 審計列示（離職）── */
   function renderRetired(data) {
     const box = document.getElementById('performance-retired');
     if (!box) return;
@@ -116,79 +122,35 @@
     ));
   }
 
+  /* ── 主載入 ── */
   async function loadPerformance() {
     const panel = document.getElementById('performance-panel');
     if (!panel) return;
 
-    const tryFetch = async (url) => {
-      const res = await fetch(url);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return res.json();
-    };
-
     try {
-      let data;
-      try {
-        const payload = await tryFetch('/api/performance/current');
-        data = payload.data;
-      } catch (apiErr) {
-        console.warn('[Performance] API failed, using fallback:', apiErr);
-        const latest = await tryFetch('/data/latest.json');
-        const report = latest.report;
-        data = {
-          displayDate: report.settlementDate,
-          nextDispatchDisplayDate: report.dispatchDate,
-          recommendation: report.notes ? report.notes[0] : '數據已更新，請參考正式公告。',
-          totals: {
-            renewalDeals: report.summaryBoard.追續單成交,
-            totalRevenue: report.summaryBoard.全部總業績,
-            renewalRevenue: report.summaryBoard.追續單金額,
-            cashRevenue: report.summaryBoard.實收總金額,
-            averageRenewal: report.summaryBoard.追續單金額 / (report.summaryBoard.追續單成交 || 1)
-          },
-          products: report.audit.platforms.map(p => ({
-            name: p.platformName,
-            renewalDeals: p.metrics.追續單成交,
-            totalRevenue: p.metrics.全部總業績,
-            renewalRevenue: p.metrics.追續單金額,
-            cashRevenue: p.metrics.實收總金額
-          })),
-          dispatchOrder: report.rankings.map(r => ({
-            rank: r.rank,
-            name: r.name,
-            tier: r.group,
-            tags: [r.group],
-            weightedScore: r.metrics.正式權重分數,
-            renewalDeals: r.metrics.追續單數,
-            averageRenewal: r.metrics.追續客單價,
-            totalRevenue: r.metrics.全部總業績,
-            collectionRate: r.metrics.實收 / (r.metrics.全部總業績 || 1),
-            advice: r.advice
-          })),
-          groups: report.groups,
-          retired: report.audit.excludedEmployees || []
-        };
-      }
-
-      if (!data) throw new Error('No data');
+      const response = await fetch('/api/performance/current');
+      const payload = await response.json();
+      const data = payload.data;
+      if (!response.ok || !data) throw new Error(payload.message || 'load failed');
 
       const titleEl = document.getElementById('performance-title');
-      if (titleEl) titleEl.textContent = `${data.displayDate} 結算 → ${data.nextDispatchDisplayDate} 正式派單順序`;
+      if (titleEl) {
+        titleEl.textContent = `${data.displayDate} 結算 → ${data.nextDispatchDisplayDate} 正式派單順序`;
+      }
 
       const dateEl = document.getElementById('performance-date');
       if (dateEl) {
-        dateEl.textContent = '數據已更新';
+        dateEl.textContent = `${data.displayDate} 結算 → ${data.nextDispatchDisplayDate} 正式派單`;
         dateEl.className = 'badge badge-pass';
       }
 
       const orderTitleEl = document.getElementById('dispatch-order-title');
-      if (orderTitleEl) orderTitleEl.textContent = `今日（${data.nextDispatchDisplayDate}）正式派單順位`;
+      if (orderTitleEl) {
+        orderTitleEl.textContent = `今日（${data.nextDispatchDisplayDate}）正式派單順位 · 完整 ${data.dispatchOrder.length} 人`;
+      }
 
       const recEl = document.getElementById('performance-recommendation');
-      if (recEl) {
-        recEl.textContent = data.recommendation;
-        recEl.hidden = false;
-      }
+      if (recEl) recEl.textContent = data.recommendation;
 
       renderSummary(data);
       renderProductRows(data);
@@ -199,9 +161,10 @@
 
       panel.classList.remove('is-loading');
     } catch (error) {
-      panel.classList.remove('is-loading');
       panel.classList.add('is-error');
-      console.error('[Performance]', error);
+      const recEl = document.getElementById('performance-recommendation');
+      if (recEl) recEl.textContent = '業績分析資料載入失敗，請重新整理或檢查後端服務。';
+      console.error('[PerformanceAnalysis]', error);
     }
   }
 

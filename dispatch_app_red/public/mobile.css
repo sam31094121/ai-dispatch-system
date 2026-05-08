@@ -19,18 +19,16 @@
              0 1px 0 rgba(255,255,255,.055) inset;
   --depth-3: 0 4px 8px rgba(0,0,0,.45), 0 18px 44px rgba(0,0,0,.38),
              0 -1px 0 rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08);
-  --depth-hero: 0 0 0 1.5px rgba(255, 215, 0, 0.4),
-                0 0 35px rgba(255, 215, 0, 0.25),
-                0 20px 48px rgba(0,0,0,0.5),
-                inset 0 1px 0 rgba(255,255,255,0.25);
-  --depth-silver: 0 0 0 1.5px rgba(192, 192, 192, 0.4),
-                  0 0 30px rgba(192, 192, 192, 0.2),
-                  0 18px 40px rgba(0,0,0,0.45),
-                  inset 0 1px 0 rgba(255,255,255,0.2);
-  --depth-bronze: 0 0 0 1.5px rgba(205, 127, 50, 0.4),
-                  0 0 25px rgba(205, 127, 50, 0.18),
-                  0 15px 35px rgba(0,0,0,0.4),
-                  inset 0 1px 0 rgba(255,255,255,0.15);
+  --depth-hero: 0 0 0 1px #c8820a,
+                0 0 24px rgba(200,130,10,.25),
+                0 20px 48px rgba(0,0,0,.5),
+                inset 0 1px 0 rgba(255,255,255,.15);
+  --depth-silver: 0 0 0 1px rgba(224,232,240,.45),
+                  0 12px 30px rgba(0,0,0,.42),
+                  inset 0 1px 0 rgba(255,255,255,.11);
+  --depth-bronze: 0 0 0 1px rgba(205,139,74,.42),
+                  0 12px 30px rgba(0,0,0,.42),
+                  inset 0 1px 0 rgba(255,255,255,.10);
   --perspective: 1000px;
   --sk-bg: #151f2e;
   --sk-shine: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
@@ -110,7 +108,7 @@ a {
 #app-shell {
   width: min(100%, 760px);
   margin: 0 auto;
-  padding: max(18px, env(safe-area-inset-top)) 14px calc(92px + env(safe-area-inset-bottom));
+  padding: max(16px, env(safe-area-inset-top)) 14px calc(104px + env(safe-area-inset-bottom));
 }
 
 .topbar {
@@ -149,8 +147,9 @@ h2 {
 }
 
 h1 {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 900;
+  overflow-wrap: anywhere;
 }
 
 h2 {
@@ -184,6 +183,13 @@ h2 {
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
   margin: 0 0 14px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 6px 0;
+  background: linear-gradient(180deg, rgba(10,15,24,.96), rgba(10,15,24,.72));
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .date-strip div,
@@ -229,7 +235,7 @@ h2 {
 
 .date-strip div {
   min-width: 0;
-  padding: 10px;
+  padding: 9px 8px;
 }
 
 .date-strip span,
@@ -245,7 +251,7 @@ h2 {
 .date-strip strong {
   display: block;
   margin-top: 2px;
-  font-size: 15px;
+  font-size: 14px;
   overflow-wrap: anywhere;
 }
 
@@ -287,13 +293,13 @@ main {
 
 .send-actions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.2fr 1fr 1fr;
   gap: 8px;
   margin-bottom: 10px;
 }
 
 .send-actions .primary-button {
-  grid-column: span 2;
+  grid-column: span 1;
 }
 
 .primary-button,
@@ -323,8 +329,8 @@ main {
 
 .broadcast-box {
   width: 100%;
-  min-height: 220px;
-  max-height: 44vh;
+  min-height: 170px;
+  max-height: 36vh;
   resize: vertical;
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -356,8 +362,9 @@ main {
 .summary-card strong {
   display: block;
   margin-top: 3px;
-  font-size: 20px;
+  font-size: 18px;
   overflow-wrap: anywhere;
+  line-height: 1.18;
 }
 
 .ranking-list {
@@ -490,6 +497,7 @@ main {
   display: block;
   margin-top: 2px;
   overflow-wrap: anywhere;
+  line-height: 1.2;
 }
 
 .advice {
@@ -654,7 +662,7 @@ mark {
   bottom: max(10px, env(safe-area-inset-bottom));
   z-index: 20;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 4px;
   width: min(calc(100% - 24px), 736px);
   margin: 0 auto;
@@ -680,7 +688,7 @@ mark {
   color: var(--muted);
   text-decoration: none;
   font-weight: 800;
-  font-size: 12px;
+  font-size: 11px;
   transition: background 0.15s, color 0.15s;
 }
 
@@ -723,6 +731,10 @@ mark {
   margin-bottom: 10px;
   overflow: hidden;
   border-radius: 12px;
+  padding: 12px;
+  border: 1px solid rgba(43,58,78,.85);
+  background: linear-gradient(155deg, #101827 0%, #0a101a 100%);
+  box-shadow: var(--depth-2);
   /* 底部金幣積堆光暈 */
   --pile-glow: radial-gradient(ellipse 80% 40% at 50% 100%,
     rgba(200,130,10,0.18) 0%, transparent 70%);
@@ -803,6 +815,7 @@ mark {
   position: relative;
   border-radius: 10px;
   padding: 14px 12px 12px;
+  min-width: 0;
   background: linear-gradient(145deg, #16200f 0%, #111a27 100%);
   border: 1px solid #3a2a10;
   border-top: 1px solid rgba(255,255,255,0.07);
@@ -853,7 +866,8 @@ mark {
 .a1-hero-card.rank-1,
 .a1-hero-card.rank-2,
 .a1-hero-card.rank-3,
-.a1-hero-card.rank-4 {
+.a1-hero-card.rank-4,
+.a1-hero-card.rank-5 {
   grid-column: span 2;
 }
 
@@ -895,23 +909,25 @@ mark {
 .a1-hero-card.rank-4 .a1-hero-rank { color: #18c6a7; }
 
 .a1-hero-name {
-  font-size: 22px;
+  font-size: 21px;
   font-weight: 900;
   color: var(--text);
   margin: 0 0 2px;
   line-height: 1.1;
+  overflow-wrap: anywhere;
 }
 
-.a1-hero-card.rank-1 .a1-hero-name { font-size: 28px; color: #fff; }
-.a1-hero-card.rank-2 .a1-hero-name { font-size: 24px; color: #f5f7fb; }
-.a1-hero-card.rank-3 .a1-hero-name { font-size: 24px; color: #f5f7fb; }
-.a1-hero-card.rank-4 .a1-hero-name { font-size: 24px; color: #f5f7fb; }
+.a1-hero-card.rank-1 .a1-hero-name {
+  font-size: 26px;
+  color: #fff;
+}
 
 .a1-hero-score-row {
   display: flex;
   align-items: baseline;
   gap: 5px;
   margin: 6px 0 10px;
+  min-width: 0;
 }
 
 .a1-hero-score-label {
@@ -921,26 +937,16 @@ mark {
 }
 
 .a1-hero-score-value {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 900;
   color: #f3c14b;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
 }
 
 .a1-hero-card.rank-1 .a1-hero-score-value {
-  font-size: 24px;
+  font-size: 22px;
   color: #ffdf6a;
-  text-shadow: 0 0 12px rgba(255, 223, 106, 0.4);
-}
-
-.a1-hero-card.rank-2 .a1-hero-score-value {
-  color: #f5f7fb;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-}
-
-.a1-hero-card.rank-3 .a1-hero-score-value {
-  color: #ffccaa;
-  text-shadow: 0 0 10px rgba(255, 204, 170, 0.3);
 }
 
 .a1-hero-score-track {
@@ -986,6 +992,25 @@ mark {
 .a1-hero-card.rank-3 .a1-hero-metrics,
 .a1-hero-card.rank-4 .a1-hero-metrics {
   grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+@media (max-width: 440px) {
+  .a1-hero-card.rank-1 .a1-hero-metrics,
+  .a1-hero-card.rank-2 .a1-hero-metrics,
+  .a1-hero-card.rank-3 .a1-hero-metrics,
+  .a1-hero-card.rank-4 .a1-hero-metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 350px) {
+  .a1-hero-card.rank-1 .a1-hero-metrics,
+  .a1-hero-card.rank-2 .a1-hero-metrics,
+  .a1-hero-card.rank-3 .a1-hero-metrics,
+  .a1-hero-card.rank-4 .a1-hero-metrics {
+    grid-template-columns: 1fr;
+  }
 }
 
 .a1-metric {
@@ -1050,14 +1075,17 @@ mark {
   }
 
   .date-strip,
-  .summary-grid,
-  .metrics-grid,
   .send-actions {
     grid-template-columns: 1fr;
   }
 
   .send-actions .primary-button {
     grid-column: span 1;
+  }
+
+  .summary-grid,
+  .metrics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .ranking-top {
@@ -1067,5 +1095,15 @@ mark {
   .ranking-top .badge {
     grid-column: 2;
     justify-self: start;
+  }
+
+  .bottom-nav {
+    gap: 3px;
+    padding: 6px;
+  }
+
+  .bottom-nav a {
+    min-height: 36px;
+    font-size: 10px;
   }
 }

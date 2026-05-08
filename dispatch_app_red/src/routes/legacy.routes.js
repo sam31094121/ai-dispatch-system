@@ -53,6 +53,10 @@ router.get('/current', (_req, res) => {
       persisted: report.status === 'published',
       source:    'legacy-bridge'
     });
+    snapshot.auditWarnings  = report.auditWarnings  || [];
+    snapshot.reportTotal    = report.reportTotal    || null;
+    snapshot.assignmentTotal = report.assignmentTotal || null;
+    snapshot.maxValues      = report.maxValues      || null;
     ok(res, '取得最新正式資料成功', snapshot);
   } catch (error) {
     fail(res, 500, error.message || '系統錯誤');

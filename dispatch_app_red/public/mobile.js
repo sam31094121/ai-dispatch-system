@@ -1,6 +1,7 @@
 const API_CURRENT = '/api/current';
 const API_LINE_OUTPUT = '/api/line-output';
 const MAX_SCORE = 10000;
+const CACHE_VERSION = 'v20260509-unified-mobile';
 
 const refs = {
   title: document.getElementById('main-title'),
@@ -23,6 +24,10 @@ const refs = {
   searchModal: document.getElementById('search-modal'),
   lookupInput: document.getElementById('lookup-input'),
   lookupResults: document.getElementById('lookup-results'),
+  broadcastOutput: document.getElementById('broadcast-output'),
+  copyLineText: document.getElementById('copy-line-text'),
+  shareLineText: document.getElementById('share-line-text'),
+  lineShare: document.getElementById('line-share'),
   toast: document.getElementById('toast')
 };
 
@@ -32,7 +37,7 @@ const state = {
   isFirstLoad: true
 };
 
-const CACHE_KEY = 'zhaogui_last_report';
+const CACHE_KEY = 'zhaogui_last_report_unified';
 
 
 function get(obj, keys, fallback = '') {
@@ -40,6 +45,30 @@ function get(obj, keys, fallback = '') {
     if (obj && obj[key] !== undefined && obj[key] !== null && obj[key] !== '') {
       return obj[key];
     }
+  }
+  return fallback;
+}
+
+function asArray(value) {
+  if (Array.isArray(value)) return value;
+  if (value === undefined || value === null || value === '') return [];
+  return [value];
+}
+
+function getDeep(obj, paths, fallback = '') {
+  for (const path of paths) {
+    const parts = path.split('.');
+    let current = obj;
+    let found = true;
+    for (const part of parts) {
+      if (current && Object.prototype.hasOwnProperty.call(current, part)) {
+        current = current[part];
+      } else {
+        found = false;
+        break;
+      }
+    }
+    if (found && current !== undefined && current !== null && current !== '') return current;
   }
   return fallback;
 }
@@ -73,16 +102,34 @@ function highlightText(text, query) {
 
 
 function cleanSendText(text) {
-  return String(text || '')
-    .replace(/\n正式前10名：[\s\S]*$/u, '')
-    .trim();
+  // 原本的過濾邏輯會切除業績數據，現已移除以確保公告完整性
+  return String(text || '').trim();
+}
+
+function normalizeTitle(snapshot, standardData, report) {
+  return getDeep(snapshot, ['title', 'broadcast.title'], '') ||
+    get(standardData, ['公告標題'], '') ||
+    get(report, ['title'], '') ||
+    'AI 派單公告';
+}
+
+function normalizeExcludedEntry(entry) {
+  if (entry && typeof entry === 'object') return entry;
+  const text = String(entry || '').trim();
+  const name = text.match(/姓名=([^;}\s]+)/u)?.[1] || text;
+  const reason = text.match(/原因=([^;}\s]+)/u)?.[1] || '';
+  return { name, reason };
 }
 
 function normalizeDate(value) {
   const raw = String(value || '').trim();
   if (!raw) return '--';
-  const match = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/u);
-  if (match) return `${Number(match[2])}/${Number(match[3])}`;
+  // 處理 2026-05-08
+  const matchIso = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/u);
+  if (matchIso) return `${Number(matchIso[2])}/${Number(matchIso[3])}`;
+  // 處理 115/05/08
+  const matchRoc = raw.match(/^(\d+)\/(\d+)\/(\d+)$/u);
+  if (matchRoc) return `${Number(matchRoc[2])}/${Number(matchRoc[3])}`;
   return raw;
 }
 
@@ -116,27 +163,49 @@ function normalizeRanking(row) {
 }
 
 function normalizeReport(snapshot, lineText) {
+  const standardData = snapshot.standardData || {};
   const report = snapshot.report || {};
-  const ranking = (snapshot.ranking || report.rankings || []).map(normalizeRanking);
-  const summary = snapshot.summary || {};
+  const rankings =
+    snapshot.ranking ||
+    standardData.正式名次 ||
+    report.rankings ||
+    [];
+  const ranking = asArray(rankings)
+    .map(normalizeRanking)
+    .filter((row) => row.rank && row.name)
+    .sort((a, b) => a.rank - b.rank);
+  const summary = snapshot.summary || standardData.整合總盤 || report.summaryBoard || {};
   const audit = snapshot.audit || report.audit || {};
-  const text = lineText || snapshot.announcement || snapshot.groupShortText || report.groupShortText || '';
+  const standardAudit = standardData.審計結論 || {};
+  const standardDates = standardData.日期資訊 || {};
+  const text =
+    lineText ||
+    getDeep(snapshot, ['broadcast.scriptText', 'broadcast.text'], '') ||
+    snapshot.announcement ||
+    report.announcement ||
+    report.groupShortText ||
+    standardData.群組超精簡版 ||
+    '';
 
   return {
-    title: snapshot.title || report.title || 'AI 派單公告',
-    settlementDate: normalizeDate(report.settlementDate || snapshot.settlementDate),
-    dispatchDate: normalizeDate(report.dispatchDate || snapshot.dispatchDate),
-    auditResult: audit.status || audit.result || report.auditResult || snapshot.validation?.status || 'PASS',
+    title: normalizeTitle(snapshot, standardData, report),
+    settlementDate: normalizeDate(standardDates.結算日 || report.settlementDate || report.reportDate || snapshot.settlementDate),
+    dispatchDate: normalizeDate(standardDates.派單日 || report.dispatchDate || snapshot.dispatchDate),
+    auditResult: audit.status || audit.result || standardAudit.結果 || report.auditResult || snapshot.validation?.status || 'PASS',
     ranking,
-    groups: snapshot.groups || report.groups || {},
+    groups: snapshot.groups || standardData.分級 || report.groups || {},
     summary: {
-      renewalDeals: num(summary.renewalDeals || report.summaryBoard?.追續單成交 || report.summaryBoard?.累積追續總成交數),
-      totalRevenue: num(summary.totalRevenue || report.summaryBoard?.全部總業績 || report.summaryBoard?.本月業績),
-      renewalRevenue: num(summary.renewalRevenue || report.summaryBoard?.追續單金額 || report.summaryBoard?.追續單總金額),
-      actualRevenue: num(report.summaryBoard?.實收總金額 || summary.actualRevenue)
+      renewalDeals: num(summary.renewalDeals || summary.追續單成交 || summary.累積追續總成交數 || summary.累積派單總成交數),
+      totalRevenue: num(summary.totalRevenue || summary.全部總業績 || summary.本月業績),
+      renewalRevenue: num(summary.renewalRevenue || summary.追續單金額 || summary.追續單總金額 || summary.當日續單金額),
+      actualRevenue: num(summary.actualRevenue || summary.實收總金額 || summary.實收)
     },
-    auditNotes: audit.notes || report.audit?.notes || [],
-    excludedEmployees: audit.excludedEmployees || report.audit?.excludedEmployees || [],
+    auditNotes: asArray(audit.notes || standardAudit.特別說明 || report.audit?.notes),
+    excludedEmployees: asArray(audit.excludedEmployees || standardAudit.審計列示不入派單 || report.audit?.excludedEmployees).map(normalizeExcludedEntry),
+    auditWarnings: asArray(snapshot.auditWarnings || report.auditWarnings),
+    reportTotal: snapshot.reportTotal || report.reportTotal || null,
+    assignmentTotal: snapshot.assignmentTotal || report.assignmentTotal || null,
+    maxValues: snapshot.maxValues || report.maxValues || null,
     sendText: cleanSendText(text)
   };
 }
@@ -156,8 +225,11 @@ async function loadData() {
   if (cached && state.isFirstLoad) {
     try {
       const data = JSON.parse(cached);
-      state.report = data;
-      render(data);
+      if (data?.version === CACHE_VERSION && data?.report) {
+        state.report = data.report;
+        state.sendText = data.report.sendText || '';
+        render(data.report);
+      }
     } catch (e) {
       console.warn('Cache corrupted', e);
     }
@@ -175,7 +247,7 @@ async function loadData() {
     state.isFirstLoad = false;
     
     // 儲存到快取
-    localStorage.setItem(CACHE_KEY, JSON.stringify(report));
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ version: CACHE_VERSION, report }));
     
     render(report);
     showToast('資料已同步');
@@ -208,7 +280,11 @@ function setLoading() {
 
 function renderA1Hero(rankings) {
   const a1 = rankings.filter((r) => r.group === 'A1');
-  if (!a1.length || !refs.a1HeroGrid) return;
+  if (!refs.a1HeroGrid) return;
+  if (!a1.length) {
+    refs.a1HeroGrid.innerHTML = '<div class="empty-state">目前沒有 A1 主力資料</div>';
+    return;
+  }
 
   refs.a1HeroGrid.innerHTML = a1.map((row) => {
     const pct = Math.min(100, Math.max(0, row.score / MAX_SCORE * 100));
@@ -261,7 +337,9 @@ function render(report) {
   renderSummary(report.summary);
   renderRankings(report.ranking);
   renderGroups(report.groups, report.ranking);
-  renderAudit(report.auditNotes, report.excludedEmployees);
+  renderAudit(report.auditNotes, report.excludedEmployees, report.auditWarnings);
+  renderDualTotals(report.reportTotal, report.assignmentTotal);
+  renderSendText(report.sendText);
   animateScoreFills();
 }
 
@@ -324,6 +402,12 @@ function renderRankings(rankings) {
 
 function renderGroups(groups, rankings) {
   const rankMap = new Map(rankings.map((row) => [row.name, row.rank]));
+  const groupMap = {
+    A1: asArray(groups.A1),
+    A2: asArray(groups.A2),
+    B: asArray(groups.B),
+    C: asArray(groups.C)
+  };
   const labels = {
     A1: '高優先主力',
     A2: '次主力追進',
@@ -332,7 +416,7 @@ function renderGroups(groups, rankings) {
   };
 
   refs.groupsGrid.innerHTML = ['A1', 'A2', 'B', 'C'].map((key) => {
-    const members = groups[key] || [];
+    const members = groupMap[key] || [];
     return `
       <article class="group-card">
         <h3>${key}｜${labels[key]}（${members.length}）</h3>
@@ -344,14 +428,45 @@ function renderGroups(groups, rankings) {
   }).join('');
 }
 
-function renderAudit(notes, excluded) {
-  refs.auditNotes.innerHTML = notes.length
+function renderAudit(notes, excluded, warnings = []) {
+  const warningHtml = warnings.length
+    ? warnings.map((w) => `<div class="audit-warning"><span class="audit-warning-icon">⚠️</span>${escapeHtml(w)}</div>`).join('')
+    : '';
+
+  const notesHtml = notes.length
     ? notes.map((note) => `<div class="audit-note">${escapeHtml(note)}</div>`).join('')
     : '<div class="empty-state">本輪無額外審計提醒</div>';
+
+  refs.auditNotes.innerHTML = warningHtml + notesHtml;
 
   refs.excludedList.innerHTML = excluded.length
     ? excluded.map((item) => `<div class="audit-note">${escapeHtml(item.name || item)} ${escapeHtml(item.reason || '')}</div>`).join('')
     : '';
+}
+
+function renderDualTotals(reportTotal, assignmentTotal) {
+  const container = document.getElementById('dual-totals');
+  if (!container) return;
+  if (!reportTotal && !assignmentTotal) { container.innerHTML = ''; return; }
+
+  const makeRow = (label, data, cls) => {
+    if (!data) return '';
+    return `
+      <article class="dual-total-card ${cls}">
+        <h4>${escapeHtml(data.label || label)}</h4>
+        <div class="dual-total-grid">
+          <div><span>追續單成交</span><strong>${fmt(data.followupCount)} 單</strong></div>
+          <div><span>全部總業績</span><strong>${fmt(data.totalRevenue)}</strong></div>
+          <div><span>追續單金額</span><strong>${fmt(data.followupAmount)}</strong></div>
+          <div><span>實收總金額</span><strong>${fmt(data.actualRevenue)}</strong></div>
+        </div>
+        ${data.excludedReason ? `<p class="dual-total-note">${escapeHtml(data.excludedReason)}</p>` : ''}
+      </article>`;
+  };
+
+  container.innerHTML =
+    makeRow('三平台報表總盤（含已離職）', reportTotal, 'total-report') +
+    makeRow('正式派單運算盤（排除已離職）', assignmentTotal, 'total-assignment');
 }
 
 function renderSendText(text) {
@@ -464,13 +579,15 @@ const debouncedLoadData = debounce(loadData, 300);
 
 function bindEvents() {
   refs.refreshData.addEventListener('click', debouncedLoadData);
-  refs.searchOpen.addEventListener('click', openSearch);
-  refs.searchClose.addEventListener('click', closeSearch);
+  refs.copyLineText?.addEventListener('click', copyText);
+  refs.shareLineText?.addEventListener('click', shareText);
+  refs.searchOpen?.addEventListener('click', openSearch);
+  refs.searchClose?.addEventListener('click', closeSearch);
   refs.searchModal.addEventListener('click', (event) => {
     if (event.target === refs.searchModal) closeSearch();
   });
-  refs.lookupInput.addEventListener('input', debouncedLookup);
-  refs.lookupResults.addEventListener('click', (event) => {
+  refs.lookupInput?.addEventListener('input', debouncedLookup);
+  refs.lookupResults?.addEventListener('click', (event) => {
     const target = event.target.closest('[data-name]');
     if (target) scrollToPerson(target.dataset.name);
   });

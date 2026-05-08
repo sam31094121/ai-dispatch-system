@@ -1,20 +1,12 @@
 
 function getMovement(row) {
-  const currentRank = Number(row.rank || row.名次 || 0);
-  const prevRank = row.prevRank || row.上輪名次;
+  const currentRank = Number(row.名次 || row.rank || 0);
+  const prevRank = Number(row.上輪名次 || row.prevRank || 0);
   
-  if (prevRank === null || prevRank === undefined || prevRank === 0) {
-    return { class: 'new', arrow: 'NEW', diff: 0 };
-  }
-  
-  const diff = prevRank - currentRank;
-  if (diff > 0) return { class: 'up', arrow: '↑', diff: Math.abs(diff) };
-  if (diff < 0) {
-    // 邏輯優化：下滑 3 名以上才用警示紅
-    const severity = Math.abs(diff) >= 3 ? 'down-severe' : 'down-light';
-    return { class: severity, arrow: '↓', diff: Math.abs(diff) };
-  }
-  return { class: 'flat', arrow: '＝', diff: 0 };
+  if (!prevRank || prevRank === 0) return { class: 'new', arrow: 'NEW' };
+  if (currentRank < prevRank) return { class: 'up', arrow: '↑' };
+  if (currentRank > prevRank) return { class: 'down', arrow: '↓' };
+  return { class: 'flat', arrow: '＝' };
 }
 const numberFormatter = new Intl.NumberFormat('zh-TW');
 const $ = (id) => document.getElementById(id);
@@ -92,21 +84,6 @@ function fmt(value) {
   return numberFormatter.format(Number(value || 0));
 }
 
-function getMetrics(row) {
-  const m = row.metrics || {};
-  return {
-    正式權重分數: Number(m.正式權重分數 || m.AI分數 || row.正式權重分數 || 0),
-    實收: Number(m.實收 || m.實收總金額 || row.實收 || 0),
-    續單金額: Number(m.續單金額 || m.追續金額 || m.追續單金額 || row.續單金額 || 0),
-    總業績: Number(m.總業績 || m.全部總業績 || row.總業績 || 0),
-    追續客單價: Number(m.追續客單價 || row.追續客單價 || 0),
-    追續成交總數: Number(m.追續成交總數 || m.追續單數 || row.追續單數 || 0)
-  };
-}
-
-const asArray = (v) => (Array.isArray(v) ? v : []);
-const safeHtml = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-
 function fieldVal(row, ...keys) {
   const metricsObj = row.metrics || {};
   for (const k of keys) {
@@ -127,27 +104,27 @@ function getMetrics(row) {
   };
 }
 
-function countUp(el, target, duration = 1500) {
+function countUp(el, target, duration = 1200) {
   const numTarget = Number(target || 0);
-  if (isNaN(numTarget)) { el.textContent = '0'; return; }
-  
-  let start = null;
-  const step = (timestamp) => {
-    if (!start) start = timestamp;
-    const progress = Math.min((timestamp - start) / duration, 1);
-    // 使用更平滑的 cubic-bezier 減速曲線
-    const ease = 1 - Math.pow(1 - progress, 3);
-    const current = Math.floor(ease * numTarget);
+  if (!numTarget) { el.textContent = numberFormatter.format(0); return; }
+  const t0 = performance.now();
+  el.style.textShadow = '0 0 15px var(--cyan)';
+  el.style.transition = 'transform 0.1s ease';
+
+  function tick(now) {
+    const p = Math.min((now - t0) / duration, 1);
+    const ease = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
     
-    el.textContent = numberFormatter.format(current);
+    el.textContent = numberFormatter.format(Math.round(numTarget * ease));
     
-    if (progress < 1) {
-      window.requestAnimationFrame(step);
+    if (p < 1) {
+      requestAnimationFrame(tick);
     } else {
       el.textContent = numberFormatter.format(numTarget);
+      el.style.textShadow = 'none';
     }
-  };
-  window.requestAnimationFrame(step);
+  }
+  requestAnimationFrame(tick);
 }
 
 function badgeClass(status) {
@@ -898,20 +875,20 @@ function renderValidation(snapshot) {
   refs.validationSummary.innerHTML = `
     <div class="metric-stack">
       <div class="metric-chip">
-        <span>報表總實收</span>
-        <strong style="color: var(--cyan)">${safeHtml(fmt(report.officialReportTotal?.實收總金額 || summary.實收總金額 || 0))}</strong>
-      </div>
-      <div class="metric-chip">
-        <span>正式派單實收</span>
-        <strong style="color: var(--emerald)">${safeHtml(fmt(summary.實收總金額 || 0))}</strong>
+        <span>審計結果</span>
+        <strong style="color: var(--${status === 'PASS' ? 'pass' : (status === 'FAIL' ? 'fail' : 'cyan')})">${safeHtml(summary.審計結果 || status)}</strong>
       </div>
       <div class="metric-chip">
         <span>正式人數</span>
-        <strong>${safeHtml(String(snapshot.rankings?.length ?? '-'))}</strong>
+        <strong>${safeHtml(String(summary.正式人數 ?? '-'))}</strong>
       </div>
       <div class="metric-chip">
-        <span>審計結果</span>
-        <strong style="color: var(--${status === 'PASS' ? 'pass' : (status === 'FAIL' ? 'fail' : 'cyan')})">${safeHtml(summary.審計結果 || status)}</strong>
+        <span>離職列示</span>
+        <strong>${safeHtml(String(summary.離職列示人數 ?? '-'))}</strong>
+      </div>
+      <div class="metric-chip">
+        <span>本月業績</span>
+        <strong>${safeHtml(fmt(summary.本月業績 || 0))}</strong>
       </div>
     </div>
   `;
@@ -1291,40 +1268,35 @@ function renderRankingTable(rows) {
     return;
   }
   refs.rankingTableBody.innerHTML = rows.map((row) => {
-    // 透過適配器獲取對齊後的指標
     const m = getMetrics(row);
-    const score = m.正式權重分數;
-    const scoreStyle = score >= 5000 ? 'style="color: #ff4d4d; font-weight: 800; text-shadow: 0 0 12px rgba(255, 77, 77, 0.3);"' : '';
-    
-    // 名次變動類別 (優先取後端，後備計算)
-    const move = getMovement(row);
-    const valClass = (v) => (Number(v || 0) === 0 ? 'class="is-zero"' : '');
-    
+    const score = Number(m.AI分數 || 0);
+    const scoreStyle = score >= 3000 ? 'style="color: var(--cyan); font-weight: bold; text-shadow: 0 0 8px var(--cyan);"' : '';
     return `
-      <tr class="row-${safeHtml(row.group)}">
+      <tr class="row-${safeHtml(row.分級 || row.group)}">
         <td class="col-rank">
           <div class="rank-box">
-            <span class="rank-number">${safeHtml(String(row.rank))}</span>
-            <span class="move-arrow ${move.class}">${move.arrow}</span>
+            <span>${safeHtml(String(row.名次 || row.rank))}</span>
+            <span class="move-arrow move-${row.movement || 'flat'}">${row.movement === 'up' ? '↑' : row.movement === 'down' ? '↓' : '＝'}</span>
           </div>
         </td>
         <td>
           <div class="table-name">
-            <strong>${safeHtml(row.name)}</strong>
-            ${row.isNew ? `<span class="newbie-tag">新人</span>` : ''}
+            <span>${safeHtml(row.姓名 || row.name)}</span>
+            ${(row.標記 || row.isNew) ? `<span class="newbie-tag">${safeHtml(row.標記 || '新人')}</span>` : ''}
           </div>
         </td>
-        <td class="col-tier"><span class="tier-badge tier-${row.group}">${safeHtml(row.group)}</span></td>
-        <td class="col-score" ${scoreStyle}>${score > 0.01 ? safeHtml(score.toFixed(2)) : '<span class="status-stby">STBY</span>'}</td>
-        <td ${valClass(m.實收)}>${Number(m.實收) > 0 ? safeHtml(fmt(m.實收)) : '<span class="is-zero">0</span>'}</td>
-        <td ${valClass(m.續單金額)}>${Number(m.續單金額) > 0 ? safeHtml(fmt(m.續單金額)) : '<span class="is-zero">0</span>'}</td>
-        <td ${valClass(m.總業績)}>${safeHtml(fmt(m.總業績))}</td>
-        <td ${valClass(m.追續客單價)}>${safeHtml(fmt(m.追續客單價))}</td>
-        <td ${valClass(m.追續成交總數)}>${safeHtml(String(m.追續成交總數))}</td>
+        <td>${safeHtml(row.分級 || row.group)}</td>
+        <td class="col-score" ${scoreStyle}>${score > 0 ? safeHtml(Number(score).toFixed(2)) : '—'}</td>
+        <td>${safeHtml(fmt(m.實收))}</td>
+        <td>${safeHtml(fmt(m.追續金額))}</td>
+        <td>${safeHtml(fmt(m.全部總業績))}</td>
+        <td>${safeHtml(fmt(m.追續客單價))}</td>
+        <td>${safeHtml(String(m.追續單數))}</td>
       </tr>
     `;
   }).join('');
 }
+
 function renderAdvice(rows) {
   rows = asArray(rows);
   if (!rows.length) {
@@ -1334,40 +1306,36 @@ function renderAdvice(rows) {
   refs.adviceList.replaceChildren(
     ...rows.map((row) => {
       const card = document.createElement('article');
-      card.className = `advice-card group-${row.group}`;
+      card.className = `advice-card group-${row.分級 || row.group}`;
       card.innerHTML = `
         <div class="advice-header">
           <div class="advice-rank-name">
-            <span class="advice-rank">#${safeHtml(String(row.rank))}</span>
-            <strong class="advice-name">${safeHtml(row.name)}</strong>
-            ${row.isNew ? `<span class="newbie-tag">新人</span>` : ''}
+            <span class="advice-rank">#${safeHtml(String(row.名次 || row.rank))}</span>
+            <strong class="advice-name">${safeHtml(row.姓名 || row.name)}</strong>
+            ${(row.標記 || row.isNew) ? `<span class="newbie-tag">${safeHtml(row.標記 || '新人')}</span>` : ''}
           </div>
-          <span class="advice-group-tag tier-${row.group}">${safeHtml(row.group)}</span>
+          <span class="advice-group-tag">${safeHtml(row.分級 || row.group)}</span>
         </div>
-        <p class="advice-text">${safeHtml(row.advice)}</p>
+        <p class="advice-text">${safeHtml(row.建議 || row.advice)}</p>
       `;
       return card;
     })
   );
 }
 
-function updateSnapshot(snapshot) {
-  if (!snapshot) return;
-  
-  // 核心數據路徑：全量使用後端結果
-  const report = snapshot.report || {};
-  const rankings = report.rankings || [];
-  
-  renderValidation(report);
-  renderSummary(report.summaryBoard, report.officialReportTotal);
-  renderRankingTable(rankings);
-  renderAdvice(rankings);
-  renderRetired(report.audit?.excludedEmployees);
-  
-  // 更新標題與日期
-  if (refs.mainTitle) refs.mainTitle.textContent = report.title || 'AI 派單系統';
-  if (refs.reportDate) refs.reportDate.textContent = report.reportDate || '-';
-}
+const GROUP_COLOR = { A1: '#FFD060', A2: '#00FFC3', B: '#0EA5E9', C: '#64748B' };
+
+function autoProportionalAdvice(rows) {
+  if (!rows.length) return rows;
+  const withWs = rows.map(r => {
+    const m = getMetrics(r);
+    return {
+      ...r,
+      _m: m,
+      _ws: (m.AI分數 > 0 ? m.AI分數 :
+        (m.追續金額 * 0.25 + m.全部總業績 * 0.15 + m.實收 * 0.30 + m.追續客單價 * 0.15 + m.追續單數 * 100 * 0.15))
+    };
+  });
   const sorted = [...withWs].sort((a, b) => b._ws - a._ws);
   const wsRankOf = {};
   sorted.forEach((p, i) => { wsRankOf[p.姓名 || p.name] = i + 1; });

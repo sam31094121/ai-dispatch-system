@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/mobile.css?v=0508-perf2">
+  <link rel="stylesheet" href="/mobile.css?v=0509-unified-mobile">
 </head>
 <body>
   <div id="app-shell">
@@ -75,6 +75,7 @@
           </div>
         </div>
         <div id="summary-grid" class="summary-grid"></div>
+        <div id="dual-totals" class="dual-totals"></div>
       </section>
 
       <section class="panel" id="ranking">
@@ -98,6 +99,21 @@
         <div id="groups-grid" class="groups-grid"></div>
       </section>
 
+      <section class="panel" id="line">
+        <div class="section-head">
+          <div>
+            <p class="kicker">Official LINE</p>
+            <h2>官方 LINE 輸出</h2>
+          </div>
+        </div>
+        <div class="send-actions">
+          <button id="copy-line-text" class="primary-button" type="button">複製公告</button>
+          <button id="share-line-text" class="secondary-button" type="button">分享</button>
+          <a id="line-share" class="secondary-button" href="#" target="_blank" rel="noopener">開啟 LINE</a>
+        </div>
+        <textarea id="broadcast-output" class="broadcast-box" readonly aria-label="官方 LINE 公告"></textarea>
+      </section>
+
       <section class="panel" id="audit">
         <div class="section-head">
           <div>
@@ -115,6 +131,7 @@
       <a href="#summary">總盤</a>
       <a href="#ranking">名次</a>
       <a href="#groups">分級</a>
+      <a href="#line">LINE</a>
       <a href="#audit">審計</a>
     </nav>
 
@@ -132,6 +149,6 @@
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
   </div>
 
-  <script src="/mobile.js?v=0508-perf2"></script>
+  <script src="/mobile.js?v=0509-unified-mobile"></script>
 </body>
 </html>
