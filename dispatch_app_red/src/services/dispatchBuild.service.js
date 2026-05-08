@@ -381,49 +381,6 @@ function resolveGroupByRank(rank) {
   return 'C';
 }
 
-function normalizeRankingOrder(rankings) {
-  return safeArray(rankings)
-    .map((row, index) => ({
-      ...row,
-      rank: Math.max(1, Math.trunc(toNumber(row.rank || index + 1)) || index + 1),
-      __sourceIndex: index
-    }))
-    .sort((left, right) => {
-      const rankingDelta = compareRankingRows(left, right);
-      if (rankingDelta !== 0) return rankingDelta;
-      if (left.rank !== right.rank) return left.rank - right.rank;
-      return left.__sourceIndex - right.__sourceIndex;
-    })
-    .map((row, index) => ({
-      ...row,
-      rank: index + 1,
-      group: resolveGroupByRank(index + 1)
-    }))
-    .map(({ __sourceIndex, ...row }) => row);
-}
-
-function normalizePreservedRankingOrder(rankings, providedGroups = {}) {
-  const groupByName = new Map();
-  GROUP_KEYS.forEach((groupKey) => {
-    safeArray(providedGroups?.[groupKey]).forEach((name) => {
-      groupByName.set(name, groupKey);
-    });
-  });
-
-  return safeArray(rankings)
-    .map((row, index) => ({
-      ...row,
-      rank: Math.max(1, Math.trunc(toNumber(row.rank || index + 1)) || index + 1),
-      __sourceIndex: index
-    }))
-    .sort((left, right) => {
-      if (left.rank !== right.rank) return left.rank - right.rank;
-      return left.__sourceIndex - right.__sourceIndex;
-    })
-    .map((row, index) => ({
-      ...row,
-      rank: index + 1,
-      group: groupByName.get(row.name) || row.group || resolveGroupByRank(index + 1)
     }))
     .map(({ __sourceIndex, ...row }) => row);
 }
