@@ -9,7 +9,11 @@ function getMovement(row) {
   
   const diff = prevRank - currentRank;
   if (diff > 0) return { class: 'up', arrow: '↑', diff: Math.abs(diff) };
-  if (diff < 0) return { class: 'down', arrow: '↓', diff: Math.abs(diff) };
+  if (diff < 0) {
+    // 邏輯優化：下滑 3 名以上才用警示紅
+    const severity = Math.abs(diff) >= 3 ? 'down-severe' : 'down-light';
+    return { class: severity, arrow: '↓', diff: Math.abs(diff) };
+  }
   return { class: 'flat', arrow: '＝', diff: 0 };
 }
 const numberFormatter = new Intl.NumberFormat('zh-TW');

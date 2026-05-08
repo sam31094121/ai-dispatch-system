@@ -74,10 +74,10 @@ body.oil-announcement {
   --pass-2: #8f6a24;
   --fail: #a93535;
   --warn: #d9822b;
-  --a1-c: #9d1f1f;
-  --a2-c: #c96a1b;
+  --a1-c: #e63946; /* 從暗紅改為明亮的榮耀紅 */
+  --a2-c: #f3a033;
   --b-c: #d4a338;
-  --c-c: #277a4a;
+  --c-c: #4a8f65;
   --shadow: 0 24px 60px rgba(10, 5, 1, 0.72), 0 0 0 1px rgba(255, 215, 139, 0.08);
   background-color: #1b120a;
   background-image:
@@ -317,7 +317,10 @@ body.oil-announcement::after {
 
 .oil-announcement .group-A1 .group-head strong,
 .oil-announcement .group-A1 .advice-group-tag,
-.oil-announcement .group-A1 .prop-group-tag { color: #ff8c74; }
+.oil-announcement .group-A1 .prop-group-tag { 
+  color: #ff4d4d; 
+  text-shadow: 0 0 10px rgba(255, 77, 77, 0.4);
+}
 .oil-announcement .group-A2 .group-head strong,
 .oil-announcement .group-A2 .advice-group-tag,
 .oil-announcement .group-A2 .prop-group-tag { color: #f2a34f; }
@@ -461,6 +464,18 @@ body::before {
   background: rgba(0, 229, 255, 0.1);
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+/* 邏輯紅色優化 */
+.up { color: var(--pass) !important; }
+.down-severe { color: #ff3333 !important; font-weight: 800; }
+.down-light { color: #ffaa33 !important; }
+.flat { color: var(--text-dim) !important; }
+
+.is-zero {
+  opacity: 0.35;
+  filter: grayscale(1);
+  font-weight: 400 !important;
 }
 
 /* AI 掃描與雷射效果 */
