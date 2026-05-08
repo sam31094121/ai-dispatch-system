@@ -469,7 +469,10 @@ main {
 
 .group-card {
   padding: 12px;
-  background: var(--surface-2);
+  background: linear-gradient(150deg, #15202f 0%, #101825 100%);
+  border-top: 1px solid rgba(255,255,255,0.05);
+  box-shadow: var(--depth-2);
+  animation: cardEnter3D 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .group-card h3 {
