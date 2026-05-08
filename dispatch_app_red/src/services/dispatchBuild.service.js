@@ -376,11 +376,6 @@ function normalizePreservedRankingOrder(rankings, providedGroups = {}) {
     .map((row, index) => ({
       ...row,
       rank: index + 1,
-      group: groupByName.get(row.name) || row.group || resolveGroupByRank(index + 1)
-    }))
-    .map(({ __sourceIndex, ...row }) => row);
-}
-
 function normalizeGroups(rawGroups = {}) {
   return Object.fromEntries(
     GROUP_KEYS.map((groupKey) => [

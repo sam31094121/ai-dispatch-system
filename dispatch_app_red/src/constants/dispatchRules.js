@@ -14,12 +14,9 @@ const RANKING_METRICS = Object.freeze([
   '追續成交總數'
 ]);
 const AUDIT_METRICS = Object.freeze([
-  '累積總派單數',
-  '累積派單總成交數',
-  '累積追續總成交數',
-  '當日續單金額',
-  '本月業績',
-  '追續單總金額',
+  '追續單成交',
+  '全部總業績',
+  '追續單金額',
   '實收總金額'
 ]);
 const SUMMARY_METRICS = Object.freeze([...AUDIT_METRICS, '當日取消退貨']);

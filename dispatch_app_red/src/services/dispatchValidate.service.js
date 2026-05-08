@@ -172,13 +172,16 @@ function validateDispatchReport(report) {
     });
 
     const m = row.metrics || {};
-    // 實收合理性
-    if (Number(m.實收 || 0) > Number(m.全部總業績 || 0)) {
-      pushError('rankings', `${displayName} 實收金額 (${m.實收}) 不得超過全部總業績 (${m.全部總業績})`);
+    // 實收合理性 (增加 undefined 檢查)
+    const totalRev = Number(m.全部總業績 || m.總業績 || 0);
+    const actualRev = Number(m.實收 || m.實收總金額 || 0);
+    if (actualRev > totalRev && totalRev > 0) {
+      pushError('rankings', `${displayName} 實收金額 (${actualRev}) 不得超過全部總業績 (${totalRev})`);
     }
 
     // 追續客單價邏輯校驗 (放寬容錯至 100 以應對四捨五入)
-    const calculatedAvg = Number(m.追續單數 || 0) > 0 ? Number(m.追續金額 || 0) / Number(m.追續單數) : 0;
+    const deals = Number(m.追續單數 || m.追續成交總數 || 0);
+    const calculatedAvg = deals > 0 ? Number(m.追續金額 || m.續單金額 || 0) / deals : 0;
     const reportedAvg = Number(m.追續客單價 || 0);
     if (reportedAvg > 0 && Math.abs(calculatedAvg - reportedAvg) > 100) {
       pushWarning('rankings', `${displayName} 追續客單價 (${reportedAvg}) 與計算值 (${calculatedAvg.toFixed(2)}) 偏差較大，請確認是否為四捨五入。`);
@@ -285,16 +288,18 @@ function validateDispatchReport(report) {
   });
   const adviceTexts = new Set();
   rankingNames.forEach((name) => {
+    const row = (report.rankings || []).find(r => r.name === name);
     const entry = (report.adviceList || []).find(e => e.name === name);
-    if (!adviceNameSet.has(name)) {
+    const text = (entry?.text || row?.advice || '').trim();
+
+    if (!text) {
       pushError('adviceList', `正式派單人員缺少建議：${name}`);
-    } else if (entry && entry.text) {
-      const cleanText = entry.text.trim();
-      if (cleanText.length < 5) pushWarning('adviceList', `${name} 的建議內容過短`);
-      if (adviceTexts.has(cleanText) && cleanText.length > 10) {
+    } else {
+      if (text.length < 5) pushWarning('adviceList', `${name} 的建議內容過短`);
+      if (adviceTexts.has(text) && text.length > 10) {
          pushWarning('adviceList', `發現重複建議內容，建議為 ${name} 提供個性化指導`);
       }
-      adviceTexts.add(cleanText);
+      adviceTexts.add(text);
     }
   });
 

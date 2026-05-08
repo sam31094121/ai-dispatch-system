@@ -883,20 +883,20 @@ function renderValidation(snapshot) {
   refs.validationSummary.innerHTML = `
     <div class="metric-stack">
       <div class="metric-chip">
-        <span>審計結果</span>
-        <strong style="color: var(--${status === 'PASS' ? 'pass' : (status === 'FAIL' ? 'fail' : 'cyan')})">${safeHtml(summary.審計結果 || status)}</strong>
+        <span>報表總實收</span>
+        <strong style="color: var(--cyan)">${safeHtml(fmt(report.officialReportTotal?.實收總金額 || summary.實收總金額 || 0))}</strong>
+      </div>
+      <div class="metric-chip">
+        <span>正式派單實收</span>
+        <strong style="color: var(--emerald)">${safeHtml(fmt(summary.實收總金額 || 0))}</strong>
       </div>
       <div class="metric-chip">
         <span>正式人數</span>
-        <strong>${safeHtml(String(summary.正式人數 ?? '-'))}</strong>
+        <strong>${safeHtml(String(snapshot.rankings?.length ?? '-'))}</strong>
       </div>
       <div class="metric-chip">
-        <span>離職列示</span>
-        <strong>${safeHtml(String(summary.離職列示人數 ?? '-'))}</strong>
-      </div>
-      <div class="metric-chip">
-        <span>本月業績</span>
-        <strong>${safeHtml(fmt(summary.本月業績 || 0))}</strong>
+        <span>審計結果</span>
+        <strong style="color: var(--${status === 'PASS' ? 'pass' : (status === 'FAIL' ? 'fail' : 'cyan')})">${safeHtml(summary.審計結果 || status)}</strong>
       </div>
     </div>
   `;
