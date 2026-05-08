@@ -96,7 +96,20 @@ a {
   align-items: flex-start;
   justify-content: space-between;
   gap: 14px;
-  padding: 8px 2px 14px;
+  padding: 8px 2px 16px;
+  border-bottom: 1px solid rgba(43,58,78,0.7);
+  margin-bottom: 4px;
+  position: relative;
+}
+
+.topbar::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(24,198,167,0.3) 40%, rgba(243,193,75,0.2) 70%, transparent 100%);
 }
 
 .kicker {
