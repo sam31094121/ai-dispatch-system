@@ -976,6 +976,41 @@ mark {
   box-shadow: 0 0 0 1.5px rgba(24, 198, 167, 0.3), 0 12px 28px rgba(0,0,0,0.35);
 }
 
+/* 3D 錢幣/美金裝飾 */
+.a1-hero-card::before {
+  content: "💰";
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  font-size: 28px;
+  filter: drop-shadow(var(--shadow-3d));
+  animation: float3D 4s ease-in-out infinite;
+  opacity: 0.6;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.a1-hero-card.rank-1::before {
+  content: "💵";
+  font-size: 36px;
+  opacity: 0.9;
+  bottom: 20px;
+  right: 20px;
+  animation-duration: 3s;
+}
+
+.a1-hero-card.rank-1::after {
+  content: "🪙";
+  position: absolute;
+  top: 40px;
+  right: 60px;
+  font-size: 24px;
+  filter: drop-shadow(var(--shadow-3d));
+  animation: float3D 5s ease-in-out infinite reverse;
+  opacity: 0.7;
+  z-index: 1;
+}
+
 .a1-hero-rank {
   font-size: 11px;
   font-weight: 900;
