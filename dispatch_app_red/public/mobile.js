@@ -11,10 +11,6 @@ const refs = {
   statRenewalDeals: document.getElementById('stat-renewal-deals'),
   statTotalRevenue: document.getElementById('stat-total-revenue'),
   statCashRevenue: document.getElementById('stat-cash-revenue'),
-  // legacy refs kept for compatibility
-  settlementDate: document.getElementById('settlement-date-tag'),
-  dispatchDate: document.getElementById('dispatch-date-tag'),
-  activeCount: document.getElementById('active-count'),
   a1HeroGrid: document.getElementById('a1-hero-grid'),
   summaryGrid: document.getElementById('summary-grid'),
   rankingList: document.getElementById('ranking-list'),
@@ -164,7 +160,7 @@ function setLoading() {
 }
 
 function renderA1Hero(rankings) {
-  const a1 = rankings.filter((r) => r.group === 'A1').slice(0, 4);
+  const a1 = rankings.filter((r) => r.group === 'A1');
   if (!a1.length || !refs.a1HeroGrid) return;
 
   refs.a1HeroGrid.innerHTML = a1.map((row) => {
@@ -187,7 +183,7 @@ function renderA1Hero(rankings) {
           <span class="a1-hero-score-label">AI分</span>
           <span class="a1-hero-score-value">${fmt(row.score, 2)}</span>
         </div>
-        <div class="a1-hero-score-track"><div class="a1-hero-score-fill" style="width:${pct}%"></div></div>
+        <div class="a1-hero-score-track"><div class="a1-hero-score-fill" data-pct="${pct}" style="width:0%"></div></div>
         <div class="a1-hero-metrics">${metricHtml}</div>
       </article>`;
   }).join('');
@@ -219,6 +215,7 @@ function render(report) {
   renderRankings(report.ranking);
   renderGroups(report.groups, report.ranking);
   renderAudit(report.auditNotes, report.excludedEmployees);
+  animateScoreFills();
 }
 
 function renderSummary(summary) {
@@ -251,7 +248,6 @@ function renderRankings(rankings) {
 
   refs.rankingList.innerHTML = rankings.map((row) => {
     const pct = Math.min(100, Math.max(0, row.score / MAX_SCORE * 100));
-    const moveClass = row.movement === 'up' ? 'move-up' : row.movement === 'down' ? 'move-down' : 'move-flat';
     const safeId = encodeURIComponent(row.name);
     return `
       <article class="ranking-card" id="person-${safeId}">
@@ -265,7 +261,7 @@ function renderRankings(rankings) {
         </div>
         <div class="score-line">
           <label><span>正式權重分數</span><strong>${fmt(row.score, 2)}</strong></label>
-          <div class="score-track"><div class="score-fill" style="width:${pct}%"></div></div>
+          <div class="score-track"><div class="score-fill" data-pct="${pct}" style="width:0%"></div></div>
         </div>
         <div class="metrics-grid">
           <div class="metric"><span>實收</span><strong>${fmt(row.actualRevenue)}</strong></div>
@@ -323,7 +319,6 @@ function renderSendText(text) {
 
 function renderError(error) {
   refs.auditResult.textContent = 'ERROR';
-  refs.activeCount.textContent = '0';
   refs.summaryGrid.innerHTML = `<div class="empty-state">${escapeHtml(error.message || '資料讀取失敗')}</div>`;
   refs.rankingList.innerHTML = '<div class="empty-state">請確認伺服器已啟動並重新整理</div>';
   refs.groupsGrid.innerHTML = '';
@@ -335,17 +330,22 @@ function renderError(error) {
 async function copyText() {
   const text = state.sendText.trim();
   if (!text) { showToast('沒有可傳送的公告文字'); return; }
-  if (navigator.clipboard?.writeText) {
+  try {
     await navigator.clipboard.writeText(text);
-  } else {
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
+    showToast('公告已複製');
+  } catch {
+    showToast('複製失敗，請長按文字手動複製');
   }
-  showToast('公告已複製');
+}
+
+function animateScoreFills() {
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      document.querySelectorAll('[data-pct]').forEach((el) => {
+        el.style.width = el.dataset.pct + '%';
+      });
+    });
+  });
 }
 
 async function shareText() {
@@ -403,19 +403,55 @@ function showToast(message) {
   toastTimer = setTimeout(() => refs.toast.classList.remove('is-visible'), 1800);
 }
 
+function debounce(fn, delay) {
+  let timer = null;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+
+const debouncedLookup = debounce(handleLookup, 180);
+const debouncedLoadData = debounce(loadData, 300);
+
 function bindEvents() {
-  refs.refreshData.addEventListener('click', loadData);
+  refs.refreshData.addEventListener('click', debouncedLoadData);
   refs.searchOpen.addEventListener('click', openSearch);
   refs.searchClose.addEventListener('click', closeSearch);
   refs.searchModal.addEventListener('click', (event) => {
     if (event.target === refs.searchModal) closeSearch();
   });
-  refs.lookupInput.addEventListener('input', handleLookup);
+  refs.lookupInput.addEventListener('input', debouncedLookup);
   refs.lookupResults.addEventListener('click', (event) => {
     const target = event.target.closest('[data-name]');
     if (target) scrollToPerson(target.dataset.name);
   });
 }
 
+function initActiveNav() {
+  const navLinks = document.querySelectorAll('.bottom-nav a[href^="#"]');
+  if (!navLinks.length || !('IntersectionObserver' in window)) return;
+
+  const sectionIds = [...navLinks].map((a) => a.getAttribute('href').slice(1));
+  const visible = new Set();
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) visible.add(entry.target.id);
+      else visible.delete(entry.target.id);
+    });
+    const active = sectionIds.find((id) => visible.has(id));
+    navLinks.forEach((a) => {
+      a.classList.toggle('is-active', a.getAttribute('href') === `#${active}`);
+    });
+  }, { threshold: 0.25 });
+
+  sectionIds.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el);
+  });
+}
+
 bindEvents();
+initActiveNav();
 loadData();

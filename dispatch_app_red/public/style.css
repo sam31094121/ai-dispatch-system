@@ -233,6 +233,9 @@ body.oil-announcement::after {
   box-shadow:
     0 12px 28px rgba(11, 6, 2, 0.42),
     inset 0 1px 0 rgba(255, 221, 150, 0.10);
+  /* 效能優化 */
+  content-visibility: auto;
+  contain-intrinsic-size: 0 60px;
 }
 
 .oil-announcement .status-card strong,
@@ -287,6 +290,9 @@ body.oil-announcement::after {
   background:
     linear-gradient(135deg, rgba(255, 225, 158, 0.10), transparent 42%),
     linear-gradient(180deg, rgba(80, 44, 18, 0.86), rgba(30, 18, 10, 0.97));
+  /* 效能優化 */
+  content-visibility: auto;
+  contain-intrinsic-size: 0 120px;
 }
 
 .oil-announcement .spotlight-card.rank-1 {
@@ -613,6 +619,10 @@ body::before {
     inset 0 1px 1px rgba(255, 255, 255, 0.05),
     inset 0 -1px 1px rgba(0, 0, 0, 0.4);
   transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  /* 效能優化 */
+  content-visibility: auto;
+  contain: layout;
+  contain-intrinsic-size: 100% 400px;
 }
 
 .panel:hover {
@@ -643,6 +653,7 @@ body::before {
   pointer-events: none;
   z-index: 0;
   opacity: 0.8;
+  will-change: transform;
 }
 
 /* 數值動畫與字型美化 */
@@ -2732,6 +2743,12 @@ textarea,
     0 0 210px rgba(0, 255, 195, 0.14),
     0 -16px 80px rgba(64, 255, 255, 0.16);
   animation: officialPanelPulse 4.8s ease-in-out infinite;
+}
+
+.merged-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(64, 255, 255, 0.25), rgba(255, 199, 73, 0.25), transparent);
+  margin: 1.5rem 0;
 }
 
 .official-lock-panel::before {

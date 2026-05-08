@@ -382,7 +382,7 @@ function A1Spotlight({ list, maxScore }: { list: RankingItem[]; maxScore: number
           <p className="mt-4 text-xs text-amber-200/70 border-t border-amber-400/20 pt-3 leading-relaxed">{r.advice}</p>
         </motion.div>
       ))}
-      {/* Ranks 2-4 grid */}
+      {/* A1 ranks 2+ grid */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {a1.filter(r => r.rank > 1).map((r, i) => (
           <motion.div
@@ -477,7 +477,7 @@ function RankingTable({ list, maxScore }: { list: RankingItem[]; maxScore: numbe
                 className="border-b border-white/[0.03] hover:bg-white/[0.03] transition-colors"
               >
                 <td className="py-2.5 pr-3">
-                  <span className={`font-black text-lg ${r.rank <= 4 ? 'text-amber-300' : r.rank <= 12 ? 'text-cyan-300' : r.rank <= 19 ? 'text-violet-300' : 'text-slate-500'}`}>
+                  <span className={`font-black text-lg ${G[r.group].text}`}>
                     {r.rank}
                   </span>
                 </td>
@@ -616,7 +616,7 @@ function AdvicePanel({ list }: { list: RankingItem[] }) {
         {list.map(r => (
           <div key={r.name} className="p-3 rounded-lg bg-white/[0.02] border border-white/[0.05]">
             <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
-              <span className={`text-sm font-black mono ${r.rank <= 4 ? 'text-amber-300' : 'text-slate-500'}`}>#{r.rank}</span>
+              <span className={`text-sm font-black mono ${G[r.group].text}`}>#{r.rank}</span>
               <span className="text-sm font-semibold">{r.name}</span>
               <GroupChip group={r.group} />
             </div>

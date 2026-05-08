@@ -649,13 +649,14 @@ function setupOfficialMoneyRain(panel) {
   }
 
   function setRenderEffects(p) {
-    if (hasPhotoMoneyAssets) {
-      ctx.filter = p.z < 0.18 ? 'blur(0.4px) saturate(1.08) contrast(1.08)' : 'saturate(1.05) contrast(1.04)';
-      return;
-    }
-    const blur = p.z < 0.18 ? 1.1 : (p.z > 0.82 ? 0.2 : 0.55);
-    const contrast = p.type === 'coin' ? 1.22 : 1.12;
-    ctx.filter = `blur(${blur}px) saturate(0.92) contrast(${contrast}) brightness(0.92)`;
+    /* 移除極度耗能的動態濾鏡以提升 FPS */
+    // if (hasPhotoMoneyAssets) {
+    //   ctx.filter = p.z < 0.18 ? 'blur(0.4px) saturate(1.08) contrast(1.08)' : 'saturate(1.05) contrast(1.04)';
+    //   return;
+    // }
+    // const blur = p.z < 0.18 ? 1.1 : (p.z > 0.82 ? 0.2 : 0.55);
+    // const contrast = p.type === 'coin' ? 1.22 : 1.12;
+    // ctx.filter = `blur(${blur}px) saturate(0.92) contrast(${contrast}) brightness(0.92)`;
   }
 
   function resetRenderEffects() {

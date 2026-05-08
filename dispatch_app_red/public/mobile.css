@@ -22,6 +22,8 @@
 
 html {
   scroll-behavior: smooth;
+  /* 強化捲動效能 */
+  overflow-y: scroll;
 }
 
 body {
@@ -45,6 +47,7 @@ textarea {
 button,
 a {
   touch-action: manipulation;
+  cursor: pointer;
 }
 
 #app-shell {
@@ -121,6 +124,14 @@ h2 {
   border-radius: var(--radius);
   background: var(--surface);
   box-shadow: var(--shadow);
+  /* 效能優化：限制佈局與繪製影響範圍 */
+  contain: layout;
+}
+
+.ranking-card {
+  /* 關鍵優化：只在進入可視區域時才渲染內容，大幅減少長列表 CPU/GPU 負擔 */
+  content-visibility: auto;
+  contain-intrinsic-size: 0 180px;
 }
 
 .date-strip div {
@@ -172,6 +183,13 @@ main {
   color: var(--text);
   font-size: 20px;
   font-weight: 800;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.icon-button:hover,
+.icon-button:focus-visible {
+  background: var(--surface);
+  border-color: var(--accent);
 }
 
 .send-actions {
@@ -349,6 +367,7 @@ main {
   height: 100%;
   width: 0%;
   background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .metrics-grid {
@@ -484,11 +503,11 @@ main {
   bottom: max(10px, env(safe-area-inset-bottom));
   z-index: 20;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
   width: min(calc(100% - 24px), 736px);
   margin: 0 auto;
-  padding: 8px;
+  padding: 7px;
   border: 1px solid var(--border);
   border-radius: 12px;
   background: rgba(17, 26, 39, 0.94);
@@ -498,7 +517,7 @@ main {
 
 .bottom-nav a {
   min-width: 0;
-  min-height: 40px;
+  min-height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -506,13 +525,19 @@ main {
   color: var(--muted);
   text-decoration: none;
   font-weight: 800;
-  font-size: 13px;
+  font-size: 12px;
+  transition: background 0.15s, color 0.15s;
 }
 
 .bottom-nav a:focus,
 .bottom-nav a:hover {
   color: var(--text);
   background: var(--surface-2);
+}
+
+.bottom-nav a.is-active {
+  color: var(--accent);
+  background: rgba(24, 198, 167, 0.1);
 }
 
 .toast {
@@ -685,11 +710,21 @@ main {
   height: 100%;
   border-radius: 999px;
   background: linear-gradient(90deg, #c8820a, #f3c14b);
+  transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .a1-hero-card.rank-1 .a1-hero-score-fill {
   background: linear-gradient(90deg, #f3c14b, #fff6c0);
   box-shadow: 0 0 8px rgba(243,193,75,0.6);
+}
+
+.a1-hero-card.rank-5,
+.a1-hero-card.rank-6 {
+  border-color: #3a3a4a;
+}
+
+.lookup-result {
+  cursor: pointer;
 }
 
 .a1-hero-metrics {
@@ -736,6 +771,16 @@ main {
   font-size: 22px;
   line-height: 1;
   opacity: 0.85;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .score-fill,
+  .a1-hero-score-fill,
+  .bottom-nav a,
+  .icon-button,
+  .toast {
+    transition: none;
+  }
 }
 
 @media (max-width: 380px) {
