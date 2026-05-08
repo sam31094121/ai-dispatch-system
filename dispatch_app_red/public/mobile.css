@@ -778,11 +778,14 @@ main {
 }
 
 .a1-hero-score-track {
-  height: 4px;
+  height: 5px;
   border-radius: 999px;
-  background: rgba(255,255,255,0.08);
+  background: rgba(0,0,0,0.45);
   margin-bottom: 10px;
   overflow: hidden;
+  box-shadow: inset 0 2px 3px rgba(0,0,0,0.6),
+              inset 0 1px 1px rgba(0,0,0,0.4),
+              0 1px 0 rgba(255,255,255,0.05);
 }
 
 .a1-hero-score-fill {
