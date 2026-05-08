@@ -174,7 +174,11 @@ function normalizeReport(snapshot, lineText) {
     .map(normalizeRanking)
     .filter((row) => row.rank && row.name)
     .sort((a, b) => a.rank - b.rank);
-  const summary = snapshot.summary || standardData.整合總盤 || report.summaryBoard || {};
+  const summary = {
+    ...(report.summaryBoard || {}),
+    ...(standardData.整合總盤 || {}),
+    ...(snapshot.summary || {})
+  };
   const audit = snapshot.audit || report.audit || {};
   const standardAudit = standardData.審計結論 || {};
   const standardDates = standardData.日期資訊 || {};
