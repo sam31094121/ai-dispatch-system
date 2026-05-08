@@ -19,10 +19,18 @@
              0 1px 0 rgba(255,255,255,.055) inset;
   --depth-3: 0 4px 8px rgba(0,0,0,.45), 0 18px 44px rgba(0,0,0,.38),
              0 -1px 0 rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08);
-  --depth-hero: 0 0 0 1px #c8820a,
-                0 0 24px rgba(200,130,10,.25),
-                0 20px 48px rgba(0,0,0,.5),
-                inset 0 1px 0 rgba(255,255,255,.15);
+  --depth-hero: 0 0 0 1.5px rgba(255, 215, 0, 0.4),
+                0 0 35px rgba(255, 215, 0, 0.25),
+                0 20px 48px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(255,255,255,0.25);
+  --depth-silver: 0 0 0 1.5px rgba(192, 192, 192, 0.4),
+                  0 0 30px rgba(192, 192, 192, 0.2),
+                  0 18px 40px rgba(0,0,0,0.45),
+                  inset 0 1px 0 rgba(255,255,255,0.2);
+  --depth-bronze: 0 0 0 1.5px rgba(205, 127, 50, 0.4),
+                  0 0 25px rgba(205, 127, 50, 0.18),
+                  0 15px 35px rgba(0,0,0,0.4),
+                  inset 0 1px 0 rgba(255,255,255,0.15);
   --perspective: 1000px;
   --sk-bg: #151f2e;
   --sk-shine: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
@@ -842,23 +850,35 @@ mark {
   pointer-events: none;
 }
 
-.a1-hero-card.rank-1 {
+.a1-hero-card.rank-1,
+.a1-hero-card.rank-2,
+.a1-hero-card.rank-3,
+.a1-hero-card.rank-4 {
   grid-column: span 2;
-  border-color: #c8820a;
-  background: linear-gradient(145deg, #1e1808 0%, #13180a 60%, #0f1520 100%);
+}
+
+.a1-hero-card.rank-1 {
+  border-color: #ffd700;
+  background: linear-gradient(145deg, #2a2208 0%, #1a1f10 50%, #0f1520 100%);
   box-shadow: var(--depth-hero);
 }
 
 .a1-hero-card.rank-2 {
-  border-color: #6e5c2e;
+  border-color: #e0e8f0;
+  background: linear-gradient(145deg, #1b222c 0%, #111a27 100%);
+  box-shadow: var(--depth-silver);
 }
 
 .a1-hero-card.rank-3 {
-  border-color: #4a5c3e;
+  border-color: #cd8b4a;
+  background: linear-gradient(145deg, #261b11 0%, #111a27 100%);
+  box-shadow: var(--depth-bronze);
 }
 
 .a1-hero-card.rank-4 {
-  border-color: #3a4a5e;
+  border-color: #18c6a7;
+  background: linear-gradient(145deg, #0e2420 0%, #111a27 100%);
+  box-shadow: 0 0 0 1.5px rgba(24, 198, 167, 0.3), 0 12px 28px rgba(0,0,0,0.35);
 }
 
 .a1-hero-rank {
@@ -869,9 +889,10 @@ mark {
   margin-bottom: 4px;
 }
 
-.a1-hero-card.rank-1 .a1-hero-rank {
-  color: #f3c14b;
-}
+.a1-hero-card.rank-1 .a1-hero-rank { color: #ffd700; }
+.a1-hero-card.rank-2 .a1-hero-rank { color: #e0e8f0; }
+.a1-hero-card.rank-3 .a1-hero-rank { color: #cd8b4a; }
+.a1-hero-card.rank-4 .a1-hero-rank { color: #18c6a7; }
 
 .a1-hero-name {
   font-size: 22px;
@@ -881,10 +902,10 @@ mark {
   line-height: 1.1;
 }
 
-.a1-hero-card.rank-1 .a1-hero-name {
-  font-size: 28px;
-  color: #fff;
-}
+.a1-hero-card.rank-1 .a1-hero-name { font-size: 28px; color: #fff; }
+.a1-hero-card.rank-2 .a1-hero-name { font-size: 24px; color: #f5f7fb; }
+.a1-hero-card.rank-3 .a1-hero-name { font-size: 24px; color: #f5f7fb; }
+.a1-hero-card.rank-4 .a1-hero-name { font-size: 24px; color: #f5f7fb; }
 
 .a1-hero-score-row {
   display: flex;
@@ -909,6 +930,17 @@ mark {
 .a1-hero-card.rank-1 .a1-hero-score-value {
   font-size: 24px;
   color: #ffdf6a;
+  text-shadow: 0 0 12px rgba(255, 223, 106, 0.4);
+}
+
+.a1-hero-card.rank-2 .a1-hero-score-value {
+  color: #f5f7fb;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.a1-hero-card.rank-3 .a1-hero-score-value {
+  color: #ffccaa;
+  text-shadow: 0 0 10px rgba(255, 204, 170, 0.3);
 }
 
 .a1-hero-score-track {
@@ -949,7 +981,10 @@ mark {
   gap: 5px;
 }
 
-.a1-hero-card.rank-1 .a1-hero-metrics {
+.a1-hero-card.rank-1 .a1-hero-metrics,
+.a1-hero-card.rank-2 .a1-hero-metrics,
+.a1-hero-card.rank-3 .a1-hero-metrics,
+.a1-hero-card.rank-4 .a1-hero-metrics {
   grid-template-columns: repeat(3, 1fr);
 }
 

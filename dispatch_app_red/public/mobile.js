@@ -214,13 +214,11 @@ function renderA1Hero(rankings) {
     const pct = Math.min(100, Math.max(0, row.score / MAX_SCORE * 100));
     const rankClass = `rank-${row.rank}`;
     const crown = row.rank === 1 ? '<span class="a1-hero-crown">👑</span>' : '';
-    const isFirst = row.rank === 1;
-    const metricHtml = isFirst
-      ? `<div class="a1-metric"><span>實收</span><strong>${fmt(row.actualRevenue)}</strong></div>
-         <div class="a1-metric"><span>追續金額</span><strong>${fmt(row.renewalRevenue)}</strong></div>
-         <div class="a1-metric"><span>總業績</span><strong>${fmt(row.totalRevenue)}</strong></div>`
-      : `<div class="a1-metric"><span>實收</span><strong>${fmt(row.actualRevenue)}</strong></div>
-         <div class="a1-metric"><span>追續金額</span><strong>${fmt(row.renewalRevenue)}</strong></div>`;
+    const metricHtml = `
+      <div class="a1-metric"><span>實收</span><strong>${fmt(row.actualRevenue)}</strong></div>
+      <div class="a1-metric"><span>追續金額</span><strong>${fmt(row.renewalRevenue)}</strong></div>
+      <div class="a1-metric"><span>總業績</span><strong>${fmt(row.totalRevenue)}</strong></div>
+    `;
     return `
       <article class="a1-hero-card ${rankClass}">
         ${crown}
