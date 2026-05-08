@@ -35,8 +35,30 @@
 
 html {
   scroll-behavior: smooth;
-  /* 強化捲動效能 */
   overflow-y: scroll;
+}
+
+/* ── 3D 入場動畫 ── */
+@keyframes cardEnter3D {
+  from {
+    opacity: 0;
+    transform: perspective(var(--perspective)) translateY(18px) rotateX(7deg) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(var(--perspective)) translateY(0) rotateX(0deg) scale(1);
+  }
+}
+
+@keyframes heroEnter3D {
+  from {
+    opacity: 0;
+    transform: perspective(var(--perspective)) translateY(24px) rotateX(10deg) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(var(--perspective)) translateY(0) rotateX(0deg) scale(1);
+  }
 }
 
 body {
