@@ -3201,6 +3201,18 @@ textarea,
 .official-group-B .official-person-chip { border-color: rgba(255, 218, 106, 0.24); }
 .official-group-C .official-person-chip { border-color: rgba(180, 132, 66, 0.24); color: rgba(255, 248, 220, 0.78); }
 
+.official-energy-core {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.42;
+  mix-blend-mode: screen;
+  filter: saturate(1.12) contrast(1.08);
+}
+
 .official-coin-field {
   position: absolute;
   inset: 0;

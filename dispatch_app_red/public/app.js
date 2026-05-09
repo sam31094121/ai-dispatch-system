@@ -296,6 +296,7 @@ const CoinSoundSystem = {
 function setupOfficialLockCoins() {
   const panel = refs.officialLockPanel;
   if (!panel) return;
+  setupOfficialEnergyCore(panel);
   setupOfficialMoneyRain(panel);
   let armed = false;
   const arm = () => {
@@ -309,6 +310,187 @@ function setupOfficialLockCoins() {
   panel.addEventListener('keydown', (event) => {
     if (event.key === 'Enter' || event.key === ' ') arm();
   }, { once: true });
+}
+
+function loadThreeRuntime() {
+  if (window.THREE) return Promise.resolve(window.THREE);
+  if (window.__officialThreeRuntimePromise) return window.__officialThreeRuntimePromise;
+
+  window.__officialThreeRuntimePromise = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/three@0.148.0/build/three.min.js';
+    script.async = true;
+    script.onload = () => resolve(window.THREE);
+    script.onerror = () => reject(new Error('Three.js failed to load'));
+    document.head.appendChild(script);
+  });
+
+  return window.__officialThreeRuntimePromise;
+}
+
+function setupOfficialEnergyCore(panel) {
+  if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+
+  const canvas = document.createElement('canvas');
+  canvas.className = 'official-energy-core';
+  canvas.setAttribute('aria-hidden', 'true');
+  panel.insertBefore(canvas, panel.firstChild);
+
+  loadThreeRuntime()
+    .then((THREE) => {
+      if (!THREE || !panel.isConnected) return;
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 1200);
+      camera.position.set(0, 0, 56);
+
+      const renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: true,
+        alpha: true,
+        powerPreference: 'high-performance'
+      });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+
+      const coreGeom = new THREE.IcosahedronGeometry(7.8, 4);
+      const coreMat = new THREE.ShaderMaterial({
+        uniforms: {
+          time: { value: 0 },
+          color1: { value: new THREE.Color(0xffb82e) },
+          color2: { value: new THREE.Color(0x22f7ff) }
+        },
+        vertexShader: `
+          varying vec3 vPos;
+          void main(){
+            vPos = position;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `,
+        fragmentShader: `
+          uniform float time;
+          uniform vec3 color1;
+          uniform vec3 color2;
+          varying vec3 vPos;
+          void main(){
+            float pulse = sin(length(vPos) * 4.8 + time * 2.2);
+            float rim = smoothstep(5.0, 8.4, length(vPos));
+            vec3 c = mix(color1, color2, pulse * 0.5 + 0.5);
+            gl_FragColor = vec4(c, 0.58 + rim * 0.32);
+          }
+        `,
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      });
+      const coreMesh = new THREE.Mesh(coreGeom, coreMat);
+      scene.add(coreMesh);
+
+      const count = 900;
+      const positions = new Float32Array(count * 3);
+      const speeds = new Float32Array(count);
+      for (let i = 0; i < count; i += 1) {
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(Math.random() * 2 - 1);
+        const r = THREE.MathUtils.randFloat(22, 42);
+        positions[i * 3] = Math.sin(phi) * Math.cos(theta) * r;
+        positions[i * 3 + 1] = Math.sin(phi) * Math.sin(theta) * r;
+        positions[i * 3 + 2] = Math.cos(phi) * r;
+        speeds[i] = Math.random() * 0.018 + 0.004;
+      }
+
+      const partGeom = new THREE.BufferGeometry();
+      partGeom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      partGeom.setAttribute('aSpeed', new THREE.BufferAttribute(speeds, 1));
+      const partMat = new THREE.ShaderMaterial({
+        uniforms: { time: { value: 0 } },
+        vertexShader: `
+          attribute float aSpeed;
+          uniform float time;
+          varying float vAlpha;
+          void main(){
+            vec3 p = position;
+            float beat = sin(time * aSpeed * 55.0 + length(position) * 0.12);
+            p += normalize(position) * beat * 1.6;
+            vAlpha = 0.28 + 0.45 * (beat * 0.5 + 0.5);
+            gl_PointSize = 2.2 + 2.4 * (beat * 0.5 + 0.5);
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+          }
+        `,
+        fragmentShader: `
+          varying float vAlpha;
+          void main(){
+            vec2 st = gl_PointCoord * 2.0 - 1.0;
+            float d = length(st);
+            float alpha = smoothstep(1.0, 0.25, d) * vAlpha;
+            vec3 c = mix(vec3(1.0, 0.68, 0.12), vec3(0.18, 0.96, 1.0), gl_PointCoord.y);
+            gl_FragColor = vec4(c, alpha);
+          }
+        `,
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      });
+      const particles = new THREE.Points(partGeom, partMat);
+      scene.add(particles);
+
+      const light = new THREE.PointLight(0xffffff, 1.4, 180);
+      light.position.set(35, 30, 46);
+      scene.add(light);
+      scene.add(new THREE.AmbientLight(0x224444, 0.55));
+
+      const pointer = { x: 0, y: 0 };
+      const onPointerMove = (event) => {
+        const rect = panel.getBoundingClientRect();
+        pointer.x = ((event.clientX - rect.left) / Math.max(1, rect.width) - 0.5) * 2;
+        pointer.y = ((event.clientY - rect.top) / Math.max(1, rect.height) - 0.5) * 2;
+      };
+      panel.addEventListener('pointermove', onPointerMove);
+
+      function resize() {
+        const rect = panel.getBoundingClientRect();
+        const width = Math.max(1, rect.width);
+        const height = Math.max(220, rect.height);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height, false);
+      }
+
+      let animationId = 0;
+      function animate(time) {
+        animationId = requestAnimationFrame(animate);
+        const t = time * 0.001;
+        coreMat.uniforms.time.value = t;
+        partMat.uniforms.time.value = t;
+
+        coreMesh.rotation.x += 0.0026 + pointer.y * 0.0009;
+        coreMesh.rotation.y += 0.0038 + pointer.x * 0.0011;
+        particles.rotation.y -= 0.0018;
+        particles.rotation.x += pointer.y * 0.0006;
+        camera.position.x += (pointer.x * 6 - camera.position.x) * 0.035;
+        camera.position.y += (-pointer.y * 4 - camera.position.y) * 0.035;
+        camera.lookAt(0, 0, 0);
+
+        renderer.render(scene, camera);
+      }
+
+      resize();
+      window.addEventListener('resize', resize);
+      animationId = requestAnimationFrame(animate);
+
+      panel.addEventListener('official:dispose-energy-core', () => {
+        cancelAnimationFrame(animationId);
+        window.removeEventListener('resize', resize);
+        panel.removeEventListener('pointermove', onPointerMove);
+        renderer.dispose();
+        coreGeom.dispose();
+        coreMat.dispose();
+        partGeom.dispose();
+        partMat.dispose();
+      }, { once: true });
+    })
+    .catch(() => {
+      canvas.remove();
+    });
 }
 
 function setupOfficialMoneyRain(panel) {
