@@ -609,26 +609,27 @@ function setupOfficialMoneyRain(panel) {
       ? billPool[Math.floor(Math.random() * billPool.length)]
       : coinPool[Math.floor(Math.random() * coinPool.length)];
     const size = isBill ? 48 + Math.random() * 52 : 16 + Math.random() * 24;
+    const z = Math.random() * 800; // 0 (near) to 800 (far)
     particles.push({
       type: isBill ? 'bill' : 'coin',
       sprite,
-      x: Math.random() * width,
-      y: -70 - Math.random() * 220,
-      z: Math.random(),
-      vx: (Math.random() - 0.5) * (isBill ? 74 : 46),
-      vy: 110 + Math.random() * (isBill ? 170 : 260),
-      gravity: isBill ? 450 : 760,
-      drag: isBill ? 0.982 : 0.993,
+      x: (Math.random() - 0.5) * width * 1.5, // Center-based spawning
+      y: -200 - Math.random() * 300,
+      z: z,
+      vx: (Math.random() - 0.5) * (isBill ? 120 : 80),
+      vy: 150 + Math.random() * (isBill ? 200 : 350),
+      gravity: isBill ? 380 : 850,
+      drag: isBill ? 0.985 : 0.995,
       size,
-      w: isBill ? size * 1.92 : size,
-      h: isBill ? size * 0.92 : size,
+      w: isBill ? size * 2.1 : size,
+      h: isBill ? size * 0.98 : size,
       rot: Math.random() * Math.PI * 2,
-      vr: (Math.random() - 0.5) * (isBill ? 4.8 : 13),
+      vr: (Math.random() - 0.5) * (isBill ? 6 : 18),
       flip: Math.random() * Math.PI * 2,
-      vf: isBill ? 5 + Math.random() * 7 : 11 + Math.random() * 15,
-      floor: height - (12 + Math.random() * 76),
-      alpha: isBill ? 0.84 : 0.96,
-      trail: Math.random() < 0.38
+      vf: isBill ? 4 + Math.random() * 8 : 12 + Math.random() * 20,
+      floor: height - (12 + Math.random() * 90),
+      alpha: isBill ? 0.88 : 0.98,
+      trail: Math.random() < 0.45
     });
     spawned += 1;
   }
@@ -676,51 +677,60 @@ function setupOfficialMoneyRain(panel) {
   }
 
   function drawSpriteParticle(p, alpha = p.alpha) {
+    const focalLength = 600;
+    const scale = focalLength / (focalLength + p.z);
+    
+    // Project 3D to 2D
+    const screenX = width / 2 + p.x * scale;
+    const screenY = p.y; // Keep vertical mostly linear for rain feel
+    
     const flipScale = p.type === 'coin'
-      ? Math.max(0.12, Math.abs(Math.cos(p.flip)))
-      : 1 + Math.sin(p.flip) * 0.10;
-    const skew = p.type === 'bill' ? Math.cos(p.flip) * 0.16 : 0;
-    const depthScale = 0.72 + p.z * 0.58;
-    const w = p.w * depthScale;
-    const h = p.h * depthScale;
-    const depthAlpha = alpha * (0.45 + p.z * 0.55);
-    drawSoftShadow(p.x, p.y, w, h, depthAlpha * (p.type === 'bill' ? 0.18 : 0.25));
-    if (p.trail && p.vy > 260) {
-      ctx.save();
-      ctx.globalAlpha = depthAlpha * 0.16;
-      ctx.strokeStyle = p.type === 'coin' ? 'rgba(255, 200, 76, 0.62)' : 'rgba(218, 241, 204, 0.38)';
-      ctx.lineWidth = Math.max(1, w * 0.08);
-      ctx.beginPath();
-      ctx.moveTo(p.x - p.vx * 0.018, p.y - p.vy * 0.032);
-      ctx.lineTo(p.x, p.y);
-      ctx.stroke();
-      ctx.restore();
-    }
+      ? Math.abs(Math.cos(p.flip))
+      : 1 + Math.sin(p.flip) * 0.12;
+      
+    const w = p.w * scale;
+    const h = p.h * scale;
+    const depthAlpha = alpha * (0.3 + (1 - p.z / 800) * 0.7);
+    
+    // Specular Highlight based on flip angle
+    const shininess = Math.pow(Math.max(0, Math.sin(p.flip + p.rot)), 3);
+    
+    drawSoftShadow(screenX, p.y, w, h, depthAlpha * 0.2);
+
     ctx.save();
     ctx.globalAlpha = depthAlpha;
-    ctx.translate(p.x, p.y);
+    ctx.translate(screenX, screenY);
     ctx.rotate(p.rot);
-    ctx.transform(flipScale, Math.sin(p.flip) * 0.035, skew, 1, 0, 0);
-    if (p.type === 'coin' && flipScale < 0.20) {
-      const edge = ctx.createLinearGradient(-w * 0.10, 0, w * 0.10, 0);
-      edge.addColorStop(0, '#3f1b04');
-      edge.addColorStop(0.38, '#d28b22');
-      edge.addColorStop(0.70, '#fff0a2');
-      edge.addColorStop(1, '#5d2705');
-      ctx.fillStyle = edge;
-      ctx.fillRect(-w * 0.11, -h * 0.50, w * 0.22, h);
-      ctx.strokeStyle = 'rgba(255,235,150,.34)';
-      ctx.lineWidth = 1;
-      for (let i = -4; i <= 4; i += 1) {
-        ctx.beginPath();
-        ctx.moveTo(-w * 0.11, i * h * 0.10);
-        ctx.lineTo(w * 0.11, i * h * 0.10 + 2);
-        ctx.stroke();
+    
+    // 3D Tilt Transformation
+    const skew = p.type === 'bill' ? Math.cos(p.flip) * 0.2 : 0;
+    ctx.transform(flipScale, skew, 0, 1, 0, 0);
+
+    // Dynamic Lighting Overlay
+    if (p.type === 'coin') {
+      if (flipScale < 0.25) {
+        // Coin Edge
+        const edge = ctx.createLinearGradient(-w * 0.15, 0, w * 0.15, 0);
+        edge.addColorStop(0, '#4a2508');
+        edge.addColorStop(0.5, '#ffd700');
+        edge.addColorStop(1, '#4a2508');
+        ctx.fillStyle = edge;
+        ctx.fillRect(-w * 0.15, -h / 2, w * 0.3, h);
       }
     }
-    setRenderEffects(p);
+
     ctx.drawImage(p.sprite, -w / 2, -h / 2, w, h);
-    resetRenderEffects();
+    
+    // Add Shininess Overlay
+    if (shininess > 0.6) {
+      ctx.globalCompositeOperation = 'screen';
+      ctx.globalAlpha = (shininess - 0.6) * 1.5 * depthAlpha;
+      ctx.fillStyle = '#fffce0';
+      ctx.beginPath();
+      ctx.ellipse(0, 0, w / 2, h / 2, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    
     ctx.restore();
   }
 
