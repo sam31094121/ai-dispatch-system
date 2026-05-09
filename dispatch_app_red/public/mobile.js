@@ -515,6 +515,9 @@ function renderSendText(text, shortText) {
 }
 
 function renderError(error) {
+  const skeleton = document.getElementById('initial-skeleton');
+  if (skeleton) skeleton.style.display = 'none';
+
   refs.auditResult.textContent = 'ERROR';
   refs.summaryGrid.innerHTML = `<div class="empty-state">${escapeHtml(error.message || '資料讀取失敗')}</div>`;
   refs.rankingList.innerHTML = '<div class="empty-state">請確認伺服器已啟動並重新整理</div>';
@@ -1187,13 +1190,17 @@ function initActiveNav() {
 
 function hideSplashScreen() {
   const splash = document.getElementById('splash-screen');
+  const skeleton = document.getElementById('initial-skeleton');
+  
+  if (skeleton) {
+    skeleton.style.display = 'none';
+  }
+
   if (!splash) return;
   
-  // 給予一小段緩衝時間，讓渲染穩定
   setTimeout(() => {
     splash.classList.add('fade-out');
-    // 動畫結束後從 DOM 移除 (0.5s 是 CSS 中的 transition 時間)
-    setTimeout(() => splash.remove(), 600);
+    setTimeout(() => splash.remove(), 800);
   }, 400);
 }
 
