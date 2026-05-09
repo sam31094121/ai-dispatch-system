@@ -321,7 +321,7 @@
           "追續客單價": 5226.67,
           "追續成交總數": 3
         },
-        "advice": "你有實收底盤，今天再補追續量就能更穩。"
+        "advice": "你有實收底盤，今天再補追續量就會比較穩。"
       },
       {
         "rank": 16,
@@ -470,7 +470,7 @@
       { "name": "陳百玲(新人)", "rank": 17, "group": "B", "text": "你有基礎分數，今天先把節奏穩住最重要。" },
       { "name": "林佩君", "rank": 18, "group": "B", "text": "你現在重點不是衝高，而是先把有效成交接穩。" },
       { "name": "鄭上官", "rank": 19, "group": "C", "text": "你有基本分，今天先求把量接起來。" },
-      { "name": "謝啟芳", "rank": 20, "group": "C", "text": "你有實收但追續偏少，今天先補一筆有效追續。" },
+      { "name": "謝啟芳", "rank": 20, "group": "C", "text": "你有實收 but 追續偏少，今天先補一筆有效追續。" },
       { "name": "陳玲華", "rank": 21, "group": "C", "text": "你有實收支撐，今天先補追續成交。" },
       { "name": "莉莉(新人)", "rank": 22, "group": "C", "text": "先把穩定度做出來，不急著衝名次。" },
       { "name": "周美蓁", "rank": 23, "group": "C", "text": "今天先求破口再接一筆，順位就會比較好看。" }
@@ -482,47 +482,11 @@
       "無漏算、無多算、無總表衝突。",
       "已離職人員蘇淑玲只列審計，不入正式派單。",
       "5/10 正式派單順序，以本則公告為準。"
-    ],
-    "officialChinese": {
-      "title": "AI 派單公告｜5/9 結算 → 5/10 正式派單順序｜AI 比例原則版",
-      "settlementDate": "2026-05-09",
-      "dispatchDate": "2026-05-10",
-      "summary": {
-        "followupDeals": 145,
-        "totalRevenue": 3324716,
-        "followupAmount": 2098930,
-        "actualRevenue": 1715208
-      },
-      "rankings": [
-        { "rank": 1, "name": "馬秋香", "group": "A1", "score": 8934.39, "actualRevenue": 353930, "followupAmount": 530590, "totalRevenue": 621230, "followupAverage": 31211.18, "followupDeals": 17, "advice": "你這輪全面壓制第一，今天重點是把領先差距再拉大。" },
-        { "rank": 2, "name": "王梅慧", "group": "A1", "score": 4677.29, "actualRevenue": 147240, "followupAmount": 253580, "totalRevenue": 382020, "followupAverage": 23052.73, "followupDeals": 11, "advice": "你高追續金額與高客單都很強，今天把實收再補厚就更穩。" },
-        { "rank": 3, "name": "王珍珠", "group": "A1", "score": 4301.95, "actualRevenue": 137490, "followupAmount": 158210, "totalRevenue": 299840, "followupAverage": 7910.5, "followupDeals": 20, "advice": "你追續單數全場最高，今天重點是把單數優勢轉成更高實收。" },
-        { "rank": 4, "name": "許喬恩", "group": "A1", "score": 3865.56, "actualRevenue": 142000, "followupAmount": 142000, "totalRevenue": 142000, "followupAverage": 71000.0, "followupDeals": 2, "advice": "你的追續客單價全場最高，今天只要補單數就能繼續往前壓。" },
-        { "rank": 5, "name": "湯玉琦", "group": "A2", "score": 3788.75, "actualRevenue": 119040, "followupAmount": 187920, "totalRevenue": 293380, "followupAverage": 17083.64, "followupDeals": 11, "advice": "你整體很完整，今天重點是把追續量再推高一層。" },
-        { "rank": 6, "name": "林沛昕", "group": "A2", "score": 3335.14, "actualRevenue": 132968, "followupAmount": 142560, "totalRevenue": 181216, "followupAverage": 12960.0, "followupDeals": 11, "advice": "你實收與追續金額都穩，今天再補一筆高客單有機會逼前五。" },
-        { "rank": 7, "name": "廖姿惠", "group": "A2", "score": 2981.75, "actualRevenue": 111190, "followupAmount": 120080, "totalRevenue": 194570, "followupAverage": 12008.0, "followupDeals": 10, "advice": "你整體厚度夠，今天重點是把高額實收接回來。" },
-        { "rank": 8, "name": "林宜靜", "group": "A2", "score": 2396.97, "actualRevenue": 122650, "followupAmount": 61380, "totalRevenue": 179660, "followupAverage": 12276.0, "followupDeals": 5, "advice": "你實收很穩，今天只差把追續成交數再補上。" },
-        { "rank": 9, "name": "李玲玲", "group": "A2", "score": 2345.75, "actualRevenue": 76870, "followupAmount": 83080, "totalRevenue": 200170, "followupAverage": 10385.0, "followupDeals": 8, "advice": "你總業績厚度不差，今天要把追續金額與實收一起補強。" },
-        { "rank": 10, "name": "徐華妤", "group": "A2", "score": 1968.25, "actualRevenue": 40960, "followupAmount": 98860, "totalRevenue": 137960, "followupAverage": 24715.0, "followupDeals": 4, "advice": "你的客單價很亮，今天關鍵是把實收再接起來。" },
-        { "rank": 11, "name": "高美雲", "group": "A2", "score": 1532.25, "actualRevenue": 42320, "followupAmount": 49490, "totalRevenue": 86830, "followupAverage": 6186.25, "followupDeals": 8, "advice": "你目前仍在可翻位區，今天再補一筆就會往前推。" },
-        { "rank": 12, "name": "梁依萍", "group": "B", "score": 1278.17, "actualRevenue": 44360, "followupAmount": 39320, "totalRevenue": 89040, "followupAverage": 13106.67, "followupDeals": 3, "advice": "你有客單優勢，今天先把成交量補足。" },
-        { "rank": 13, "name": "高如郁", "group": "B", "score": 1217.62, "actualRevenue": 37640, "followupAmount": 39260, "totalRevenue": 85410, "followupAverage": 9815.0, "followupDeals": 4, "advice": "你現在差距不大，今天穩穩補一筆就能動。" },
-        { "rank": 14, "name": "鄭珮恩", "group": "B", "score": 1141.23, "actualRevenue": 8750, "followupAmount": 41340, "totalRevenue": 67550, "followupAverage": 5167.5, "followupDeals": 8, "advice": "你這輪追續單數有量，今天要把金額與實收一起補強。" },
-        { "rank": 15, "name": "江沛林", "group": "B", "score": 1075.83, "actualRevenue": 51240, "followupAmount": 15680, "totalRevenue": 96170, "followupAverage": 5226.67, "followupDeals": 3, "advice": "你有實收底盤，今天再補追續量就會比較穩。" },
-        { "rank": 16, "name": "江麗勉", "group": "B", "score": 790.25, "actualRevenue": 13460, "followupAmount": 22480, "totalRevenue": 41520, "followupAverage": 4496.0, "followupDeals": 5, "advice": "你還在可動區，今天先把第二筆、第三筆做出來。" },
-        { "rank": 17, "name": "陳百玲(新人)", "group": "B", "score": 779.18, "actualRevenue": 5980, "followupAmount": 31140, "totalRevenue": 31140, "followupAverage": 6228.0, "followupDeals": 5, "advice": "你有基礎分數，今天先把節奏穩住最重要。" },
-        { "rank": 18, "name": "林佩君", "group": "B", "score": 693.63, "actualRevenue": 18700, "followupAmount": 18700, "totalRevenue": 41200, "followupAverage": 9350.0, "followupDeals": 2, "advice": "你現在重點不是衝高，而是先把有效成交接穩。" },
-        { "rank": 19, "name": "鄭上官", "group": "C", "score": 692.05, "actualRevenue": 16800, "followupAmount": 16800, "totalRevenue": 16800, "followupAverage": 16800.0, "followupDeals": 1, "advice": "你有基本分，今天先求把量接起來。" },
-        { "rank": 20, "name": "謝啟芳", "group": "C", "score": 675.46, "actualRevenue": 26300, "followupAmount": 12980, "totalRevenue": 43180, "followupAverage": 6490.0, "followupDeals": 2, "advice": "你有實收但追續偏少，今天先補一筆有效追續。" },
-        { "rank": 21, "name": "陳玲華", "group": "C", "score": 610.34, "actualRevenue": 28120, "followupAmount": 7000, "totalRevenue": 48090, "followupAverage": 7000.0, "followupDeals": 1, "advice": "你有實收支撐，今天先補追續成交。" },
-        { "rank": 22, "name": "莉莉(新人)", "group": "C", "score": 530.86, "actualRevenue": 11880, "followupAmount": 14480, "totalRevenue": 14480, "followupAverage": 4826.67, "followupDeals": 3, "advice": "先把穩定度做出來，不急著衝名次。" },
-        { "rank": 23, "name": "周美蓁", "group": "C", "score": 515.75, "actualRevenue": 12000, "followupAmount": 12000, "totalRevenue": 12000, "followupAverage": 12000.0, "followupDeals": 1, "advice": "今天先求破口再接一筆，順位就會比較好看。" }
-      ]
-    }
+    ]
   },
   "meta": {
     "operator": "AI Dispatcher",
-    "reason": "Settlement 5/9 Update",
+    "reason": "Settlement 5/9 Archival",
     "savedAt": "2026-05-09 22:30:00",
     "source": "AI_PRO_MODE"
   }
