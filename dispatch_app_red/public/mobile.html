@@ -9,41 +9,36 @@
   <meta name="apple-mobile-web-app-title" content="AI 派單">
   <meta name="description" content="AI 比例原則動態加權，每日正式派單順序同步更新。">
   <title>正式派單公告｜已同步最新資料</title>
-  <!-- Open Graph：控制 LINE / FB 分享預覽顯示 -->
   <meta property="og:title" content="正式派單公告｜已同步最新資料">
   <meta property="og:description" content="AI 比例原則動態加權，每日正式派單順序同步更新。">
   <meta property="og:type" content="website">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/mobile.css?v=0509-unified-mobile">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/mobile.css?v=0509-premium">
 </head>
 <body>
   <div class="ai-scan-overlay"></div>
+  
   <div id="app-shell">
-
     <header class="topbar">
       <div>
-        <p class="kicker">Zhaogui AI Dispatch <span class="precision-badge">PRECISION CERTIFIED</span></p>
+        <p class="kicker">Zhaogui AI Precision</p>
         <h1 id="main-title">AI 派單公告</h1>
       </div>
       <div class="topbar-actions">
-        <a href="/energy.html" class="icon-button" aria-label="3D 能量核心" title="3D 能量核心" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font-size:18px;">⬡</a>
-        <button id="refresh-data" class="icon-button" type="button" aria-label="重新整理">↻</button>
-        <span id="audit-result" class="status-badge">--</span>
+        <span class="precision-badge">PRECISION</span>
+        <button id="refresh-data" class="icon-button" type="button">↻</button>
       </div>
     </header>
 
-    <!-- ① 前4名英雄區：核心主角 -->
-    <section id="a1-hero" aria-label="A1 高優先主力">
-      <canvas id="mobile-coin-canvas" class="mobile-coin-canvas" aria-hidden="true"></canvas>
+    <section id="a1-hero">
+      <canvas id="mobile-coin-canvas" class="mobile-coin-canvas"></canvas>
       <div class="a1-hero-header">
         <div class="a1-hero-title-block">
-          <span class="a1-hero-kicker">🔴 A1 高優先主力｜今日必派首席</span>
+          <span class="a1-hero-kicker">🔴 A1 首席主力</span>
           <span class="a1-hero-dates">
-            結算 <strong id="hero-settlement-date">--</strong>
-            &nbsp;→&nbsp;
-            派單 <strong id="hero-dispatch-date">--</strong>
+            結算 <strong id="hero-settlement-date">--</strong> → 派單 <strong id="hero-dispatch-date">--</strong>
           </span>
         </div>
         <span id="audit-result-hero" class="status-badge">--</span>
@@ -51,48 +46,43 @@
       <div id="a1-hero-grid" class="a1-hero-grid"></div>
     </section>
 
-    <!-- ② 快速傳送區：優化順序，將傳送功能提前 -->
     <section class="panel panel-line" id="line">
       <div class="lc-card lc-card-coin">
         <div class="lc-card-top">
-          <div class="lc-badge lc-badge-coin" aria-hidden="true">
+          <div class="lc-badge lc-badge-coin">
             <span class="lc-coin-leaf">🍁</span>
             <span class="lc-coin-ring"></span>
           </div>
           <div class="lc-header">
-            <p class="kicker">Quick Reference</p>
+            <p class="kicker">Quick Send</p>
             <h3 class="lc-title">群組超精簡版</h3>
           </div>
         </div>
         <pre id="group-short-output" class="lc-short-box"></pre>
-        <div class="send-actions" style="grid-template-columns: 1fr;">
-          <button id="copy-short-text" class="lc-action-btn" type="button" style="width: 100%;">複製精簡版並傳送</button>
-        </div>
+        <button id="copy-short-text" class="lc-action-btn">複製並傳送手機</button>
       </div>
 
       <div class="lc-card lc-card-bill">
         <div class="lc-card-top">
-          <div class="lc-badge lc-badge-bill" aria-hidden="true">
+          <div class="lc-badge lc-badge-bill">
             <span class="lc-bill-denom">$</span>
             <span class="lc-bill-100">100</span>
-            <span class="lc-bill-strip"></span>
           </div>
           <div class="lc-header">
-            <p class="kicker">Official LINE</p>
+            <p class="kicker">Official Copy</p>
             <h3 class="lc-title">完整公告文字</h3>
           </div>
         </div>
         <div class="send-actions">
-          <button id="copy-line-text" class="primary-button" type="button">複製</button>
-          <button id="share-line-text" class="secondary-button" type="button">分享</button>
-          <a id="line-share" class="secondary-button" href="#" target="_blank" rel="noopener">LINE</a>
+          <button id="copy-line-text" class="primary-button">複製</button>
+          <button id="share-line-text" class="secondary-button">分享</button>
+          <a id="line-share" class="secondary-button" href="#" target="_blank">LINE</a>
         </div>
-        <textarea id="broadcast-output" class="broadcast-box" readonly aria-label="官方 LINE 公告" style="min-height: 100px;"></textarea>
+        <textarea id="broadcast-output" class="broadcast-box" readonly></textarea>
       </div>
     </section>
 
-    <!-- ③ 統計與排名區 -->
-    <section class="date-strip" aria-label="整合統計">
+    <section class="date-strip">
       <div><span>追續成交</span><strong id="stat-renewal-deals">--</strong></div>
       <div><span>總業績</span><strong id="stat-total-revenue">--</strong></div>
       <div><span>實收</span><strong id="stat-cash-revenue">--</strong></div>
@@ -101,58 +91,38 @@
     <main>
       <section class="panel" id="summary">
         <div class="section-head">
-          <div><p class="kicker">Overall Stats</p><h2>整合總盤</h2></div>
+          <div><p class="kicker">Core Stats</p><h2>整合總盤</h2></div>
         </div>
         <div id="summary-grid" class="summary-grid"></div>
-        <div id="dual-totals" class="dual-totals"></div>
       </section>
 
       <section class="panel" id="ranking">
         <div class="section-head">
-          <div><p class="kicker">Official Ranking</p><h2>正式派單名次</h2></div>
-          <button id="search-open" class="icon-button" type="button" aria-label="搜尋姓名">⌕</button>
+          <div><p class="kicker">Live Rankings</p><h2>正式派單名次</h2></div>
+          <button id="search-open" class="icon-button">⌕</button>
         </div>
         <div id="ranking-list" class="ranking-list"></div>
       </section>
 
-      <section class="panel" id="groups">
-        <div class="section-head">
-          <div><p class="kicker">Tier Distribution</p><h2>分級概覽</h2></div>
-        </div>
-        <div id="groups-grid" class="groups-grid"></div>
-      </section>
-
       <section class="panel" id="audit">
         <div class="section-head">
-          <div><p class="kicker">Audit Log</p><h2>審計提醒</h2></div>
+          <div><p class="kicker">Audit Shield</p><h2>審計提醒</h2></div>
         </div>
         <div id="audit-notes" class="audit-notes"></div>
         <div id="excluded-list" class="excluded-list"></div>
       </section>
     </main>
 
-    <nav class="bottom-nav" aria-label="主要導覽">
+    <nav class="bottom-nav">
       <a href="#a1-hero">A1</a>
       <a href="#line">傳送</a>
       <a href="#summary">總盤</a>
       <a href="#ranking">名次</a>
-      <a href="#audit">審計</a>
     </nav>
-
-    <div id="search-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="search-title">
-      <div class="modal-panel">
-        <div class="section-head">
-          <h2 id="search-title">搜尋姓名</h2>
-          <button id="search-close" class="icon-button" type="button" aria-label="關閉">×</button>
-        </div>
-        <input id="lookup-input" type="search" placeholder="輸入姓名" autocomplete="off">
-        <div id="lookup-results" class="lookup-results"></div>
-      </div>
-    </div>
-
-    <div id="toast" class="toast" role="status" aria-live="polite"></div>
   </div>
 
-  <script src="/mobile.js?v=0509-unified-mobile"></script>
+  <div id="toast" class="toast"></div>
+
+  <script src="/mobile.js?v=0509-premium"></script>
 </body>
 </html>
