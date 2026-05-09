@@ -87,70 +87,6 @@ const FRONTEND_LOCK_RULES = Object.freeze([
   '姓名必須完全正確，徐華妤禁止錯寫。',
   '任何前端畫面都不得與後端資料不一致。'
 ]);
-const UNIFIED_COMMAND_SPEC = Object.freeze({
-  sourceOfTruth: 'backend',
-  syncPolicy: 'backend_snapshot_only',
-  normalFlow: Object.freeze(['current', 'audit', 'save', 'broadcast', 'line-output']),
-  exceptionFlow: Object.freeze(['smart-fix']),
-  commands: Object.freeze({
-    current: Object.freeze({
-      method: 'GET',
-      path: '/api/current',
-      mode: 'read',
-      input: Object.freeze([]),
-      output: 'backend snapshot',
-      abnormalOnly: false
-    }),
-    audit: Object.freeze({
-      method: 'POST',
-      path: '/api/audit',
-      mode: 'preview',
-      input: Object.freeze(['rawText']),
-      output: 'backend snapshot',
-      abnormalOnly: false
-    }),
-    save: Object.freeze({
-      method: 'POST',
-      path: '/api/save',
-      mode: 'persist',
-      input: Object.freeze(['rawText']),
-      output: 'locked backend snapshot',
-      abnormalOnly: false
-    }),
-    unifiedUpdate: Object.freeze({
-      method: 'POST',
-      path: '/api/unified/update',
-      mode: 'persist',
-      input: Object.freeze(['rawText']),
-      output: 'locked backend snapshot',
-      abnormalOnly: false
-    }),
-    broadcast: Object.freeze({
-      method: 'GET',
-      path: '/api/broadcast/current',
-      mode: 'read',
-      input: Object.freeze([]),
-      output: 'backend broadcast snapshot',
-      abnormalOnly: false
-    }),
-    lineOutput: Object.freeze({
-      method: 'GET',
-      path: '/api/line-output',
-      mode: 'read',
-      input: Object.freeze([]),
-      output: 'backend line text',
-      abnormalOnly: false
-    }),
-    smartFix: Object.freeze({
-      method: 'POST',
-      path: '/api/smart-fix',
-      mode: 'repair',
-      input: Object.freeze(['rawText']),
-      output: 'repair suggestion',
-      abnormalOnly: true
-    })
-  })
-});
 const TROPHY_POLICY = Object.freeze({
   threshold: 7000,
   icon: '🏆',
@@ -180,7 +116,6 @@ module.exports = {
   SORT_RULE_TEXT,
   WEIGHTING_POLICY,
   FRONTEND_LOCK_RULES,
-  UNIFIED_COMMAND_SPEC,
   TROPHY_POLICY,
   BANNED_NAME_PATTERNS
 };

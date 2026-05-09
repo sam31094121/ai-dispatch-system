@@ -1,8 +1,5 @@
 const { BANNED_NAME_PATTERNS } = require('../constants/dispatchRules');
 
-const NEWCOMER_SUFFIX = '\uFF08\u65B0\u4EBA\uFF09';
-const NEWCOMER_TAG_PATTERN = /(?:\uFF08\u65B0\u4EBA\uFF09|\(\u65B0\u4EBA\)|\u65B0\u4EBA)$/u;
-
 function cleanText(value) {
   return String(value ?? '')
     .replace(/\u3000/g, ' ')
@@ -21,18 +18,12 @@ function normalizeName(value) {
 
 function splitNameTags(value) {
   const source = normalizeName(value);
-  const isNew = NEWCOMER_TAG_PATTERN.test(source);
-  const name = source.replace(NEWCOMER_TAG_PATTERN, '');
+  const isNew = /(?:（新人）|\(新人\)|新人)$/u.test(source);
+  const name = source.replace(/(?:（新人）|\(新人\)|新人)$/u, '');
   return {
     name: normalizeName(name),
     isNew
   };
-}
-
-function formatDisplayName(name, isNew = false) {
-  const tagged = splitNameTags(name);
-  const baseName = tagged.name;
-  return baseName && (isNew || tagged.isNew) ? `${baseName}${NEWCOMER_SUFFIX}` : baseName;
 }
 
 function normalizeStringArray(value) {
@@ -45,14 +36,23 @@ function getBannedNameViolation(value) {
 }
 
 function applyAutoFix(value) {
-  return cleanText(value).replace(/\uff0c/g, ',').replace(/\uff1a/g, ':');
+  let text = cleanText(value);
+  if (!text) return '';
+
+  // 基於 BANNED_NAME_PATTERNS 的自動修正
+  // 例如：將所有符合 /徐華(?!妤)/ 的字串替換為「徐華妤」
+  text = text.replace(/徐華(?!妤)/gu, '徐華妤');
+
+  // 其他常見格式清理（全形空格轉半形、移除不可見字元）
+  text = text.replace(/\uff0c/g, ',').replace(/\uff1a/g, ':');
+  
+  return text;
 }
 
 module.exports = {
   cleanText,
   getBannedNameViolation,
   applyAutoFix,
-  formatDisplayName,
   normalizeName,
   normalizeStringArray,
   splitNameTags,

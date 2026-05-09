@@ -7,8 +7,8 @@ function formatNumber(value) {
   return new Intl.NumberFormat('zh-TW').format(Number(value || 0));
 }
 
-// 載入最新的 5/10 業績資料 (基於 5/9 結算)
-const { OFFICIAL_0510 } = require('./official-0510');
+// 載入最新的 5/4 業績資料 (5/5 派單)
+const { report: OFFICIAL_0504_TO_0505 } = require('./official-0504-to-0505');
 
 // 輔助工具
 function isPlaceholderText(value) {

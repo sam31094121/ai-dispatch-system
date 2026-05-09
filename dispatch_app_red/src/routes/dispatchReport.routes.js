@@ -13,7 +13,6 @@ const {
   getLatestDispatchReport,
   getLineOutput,
   getPerformanceAnalysis,
-  getCommandSpec,
   parseReport,
   rebuildDispatchReport,
   handleUnifiedUpdate,
@@ -43,6 +42,5 @@ router.post('/workspace/zero', zeroWorkspace);
 router.get('/performance/2026-04-29', getPerformanceAnalysis);
 router.get('/performance/current', getPerformanceAnalysis);
 router.get('/line-output', getLineOutput);
-router.get('/commands/spec', getCommandSpec);
 
 module.exports = router;

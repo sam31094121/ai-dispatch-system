@@ -1,5 +1,5 @@
 const errorCodes = require('../constants/errorCodes');
-const { SERVICE_NAME, API_VERSION, UNIFIED_COMMAND_SPEC } = require('../constants/dispatchRules');
+const { SERVICE_NAME, API_VERSION } = require('../constants/dispatchRules');
 const { parseDispatchDraft } = require('../services/dispatchParse.service');
 const {
   getLegacySnapshot,
@@ -257,14 +257,9 @@ function getSystemMeta(_req, res) {
   res.json(
     successResponse(errorCodes.OK, '系統資訊讀取成功', {
       service: SERVICE_NAME,
-      version: API_VERSION,
-      commandSpec: UNIFIED_COMMAND_SPEC
+      version: API_VERSION
     })
   );
-}
-
-function getCommandSpec(_req, res) {
-  res.json(successResponse(errorCodes.OK, '統一指令規格讀取成功', UNIFIED_COMMAND_SPEC));
 }
 
 function getPerformanceAnalysis(_req, res) {
@@ -278,9 +273,12 @@ function getPerformanceAnalysis(_req, res) {
 function getLineOutput(_req, res) {
   try {
     const latest = getLatestReport();
-    // 優化規格一體化：強制優先使用 AI 核心精簡版文字
-    const lineText = latest.groupShortText || '';
-    
+    const snapshot = getLegacySnapshot(latest, {
+      persisted: true,
+      source: 'saved',
+      operator: 'system'
+    });
+    const lineText = snapshot?.standardData?.['群組超精簡版'] || latest.groupShortText || '';
     res.json(successResponse(errorCodes.OK, 'LINE 輸出稿讀取成功', {
       text: lineText,
       reportId: latest.reportId,
@@ -305,7 +303,6 @@ module.exports = {
   getLatestDispatchReport,
   getLineOutput,
   getPerformanceAnalysis,
-  getCommandSpec,
   getSystemMeta,
   parseReport,
   rebuildDispatchReport,
