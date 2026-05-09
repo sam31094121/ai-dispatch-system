@@ -2,121 +2,125 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>5D 賽博調度中心｜5/9 正式版整合</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>兆櫃 AI 派單戰情室｜5/8 結算 → 5/9 正式派單</title>
   <meta name="theme-color" content="#000000">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Orbitron:wght@700;800;900&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20260509-5d-core">
+  <link rel="stylesheet" href="style.css?v=20260509-official-rescue">
 </head>
 <body class="command-center-5d">
 
-  <!-- 5D 核心視覺層 (全螢幕背景) -->
+  <!-- 頂部賽博監控列 -->
+  <nav class="cyber-hud-status">
+    <div class="hud-item">SYS: STABLE</div>
+    <div class="hud-item">AI CORE: RUNNING</div>
+    <div class="hud-item">THREAT: NONE</div>
+    <div class="hud-item">VERSION: 5.9.0-ULTRA</div>
+    <div style="flex:1"></div>
+    <div id="live-clock" class="hud-item">00:00:00</div>
+  </nav>
+
   <div class="vfx-background">
-        <video id="meditation-core" class="meditation-video" autoplay loop muted playsinline poster="meditation_core_poster_1778312598478.png">
-            <source src="videos/core_8s_meditation.mp4" type="video/mp4">
-        </video>
-        
-        <!-- 5D 視覺增益層 -->
-        <div class="energy-pulse"></div>
-        <div class="scanning-line"></div>
-        <div class="mirror-overlay"></div>
-        <div class="ground-shadow"></div>
+    <video id="meditation-core" class="meditation-video" autoplay loop muted playsinline poster="meditation_core_poster_1778312598478.png">
+      <source src="videos/core_8s_meditation.mp4" type="video/mp4">
+    </video>
+    <div class="energy-pulse"></div>
+    <div class="scanning-line"></div>
+    <div class="mirror-overlay"></div>
+    <div class="ground-shadow"></div>
   </div>
 
-  <div class="page-shell">
-    
-    <!-- 戰情室核心：四張功能卡片精準整合 -->
+  <main class="page-shell">
+    <header class="hero">
+      <h1 id="page-title">AI 派單戰情室</h1>
+      <p id="page-subtitle">5/8 結算資料載入中</p>
+      <div id="date-range" class="date-range-chip">2026-05-08 → 2026-05-09</div>
+    </header>
+
     <section class="cyber-command-grid">
-      <!-- 卡片 1: 公告與 JSON (已優化) -->
       <article class="panel glass-card card-json">
         <div class="panel-head">
           <div>
-            <p class="eyebrow">已載入正式版 (5/8→5/9)</p>
+            <p class="eyebrow">5/8 正式資料</p>
             <h2>公告文字 / JSON</h2>
           </div>
           <span id="input-status" class="badge badge-neutral">等待輸入</span>
         </div>
-        <textarea id="raw-input" placeholder="請貼上完整 AI 派單公告 JSON..."></textarea>
+        <textarea id="raw-input" placeholder="貼上新的 AI 派單公告或 JSON，系統會先審計再預覽。"></textarea>
         <div class="toolbar-grid">
           <button id="btn-load" class="btn btn-secondary">載入正式版</button>
-          <button id="btn-audit" class="btn btn-secondary">先審計</button>
+          <button id="btn-audit" class="btn btn-primary btn-judge">先審計</button>
           <button id="btn-save" class="btn btn-primary">存正式版</button>
-          <button id="btn-fix" class="btn btn-fix">智慧修復</button>
           <button id="btn-clear" class="btn btn-ghost">清空</button>
-          <button id="btn-send-line" class="btn btn-line">🚀 LINE</button>
+          <button id="btn-send-line" class="btn btn-line">LINE</button>
         </div>
       </article>
 
-      <!-- 卡片 2: 責任切割規則 (固定視角) -->
+      <article class="panel glass-card card-audit">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">後端審計</p>
+            <h2>審計摘要</h2>
+          </div>
+          <span id="audit-result-badge" class="badge badge-neutral">PENDING</span>
+        </div>
+        <div id="validation-summary" class="audit-stats-grid">
+          <div class="stat-box"><span>審計結果</span><strong>-</strong></div>
+          <div class="stat-box"><span>正式人數</span><strong>-</strong></div>
+          <div class="stat-box"><span>整合總業績</span><strong>-</strong></div>
+        </div>
+      </article>
+
+      <article class="panel glass-card card-guardian">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">異常攔截</p>
+            <h2>資料守門</h2>
+          </div>
+        </div>
+        <div id="validation-issues" class="issue-list-5d">
+          <div class="issue-item pass">等待審計掃描</div>
+        </div>
+      </article>
+
       <article class="panel glass-card card-rules">
         <div class="panel-head">
           <div>
             <p class="eyebrow">鎖死規則</p>
-            <h2>前後端責任切割</h2>
+            <h2>派單責任切割</h2>
           </div>
         </div>
-        <div class="rules-content">
-          <ul class="rule-list">
-            <li><strong>後端智慧核算</strong>：支援多維度業績即時更新。</li>
-            <li><strong>排序邏輯</strong>：正式權重 → 實收總業績 → 追續金額。</li>
-            <li><strong>AI 計分</strong>：10000 分制比例原則 (3000/2500/1500/1500/1500)。</li>
-            <li><strong>版本控制</strong>：支援秒級還原。</li>
-          </ul>
-        </div>
-      </article>
-
-      <!-- 卡片 3: 後端審計結果 (動態數據) -->
-      <article class="panel glass-card card-audit">
-        <div class="panel-head">
-          <div>
-            <p class="eyebrow">驗證結果</p>
-            <h2>後端審計</h2>
-          </div>
-          <span id="audit-result-badge" class="badge badge-fail">FAIL</span>
-        </div>
-        <div id="validation-summary" class="audit-stats-grid">
-          <div class="stat-box"><span>審計結果</span><strong class="text-fail">FAIL</strong></div>
-          <div class="stat-box"><span>正式人數</span><strong>23</strong></div>
-          <div class="stat-box"><span>本月業績</span><strong>3,151,446</strong></div>
-        </div>
-      </article>
-
-      <!-- 卡片 4: 資料守門 (異常攔截) -->
-      <article class="panel glass-card card-guardian">
-        <div class="panel-head">
-          <div>
-            <p class="eyebrow">錯誤 / 警示</p>
-            <h2>資料守門</h2>
-          </div>
-          <span class="badge-guardian">ERROR</span>
-        </div>
-        <div id="validation-issues" class="issue-list-5d">
-          <div class="issue-item error">奕心 缺少 追續單成交</div>
-          <div class="issue-item error">民視 缺少 全部總業績</div>
-          <div class="issue-item warn">鄭上官 AI 權重為 0 (正常)</div>
-        </div>
+        <ul id="rules-list" class="rules-content-list"></ul>
       </article>
     </section>
 
-    <!-- 下方保留原本的數據展示區塊，但套用新樣式 -->
-    <header class="hero">
-      <div class="hero-copy">
-        <h1 id="page-title">AI 派單戰情室｜5/9 正式版</h1>
-        <p id="page-subtitle">精英大數據比例原則版。系統正以最高統治性能模式運行。</p>
+    <section class="performance-panel">
+      <div id="summary-grid" class="summary-grid"></div>
+
+      <div class="section-title"><h2>戰力前段班</h2></div>
+      <div id="spotlight-grid" class="spotlight-grid"></div>
+
+      <div class="section-title"><h2>完整排行榜</h2></div>
+      <div id="leaderboard" class="leaderboard-grid"></div>
+
+      <div class="section-title"><h2>派單分級</h2></div>
+      <div id="groups-grid" class="groups-grid"></div>
+
+      <div class="footer-meta-grid">
+        <div class="retired-box">
+          <h3>離職排除</h3>
+          <div id="retired-list"></div>
+        </div>
+        <div class="advice-box">
+          <h3>AI 專屬建議</h3>
+          <div id="advice-list"></div>
+        </div>
       </div>
-    </header>
-
-    <section id="performance-panel" class="performance-panel panel">
-       <!-- 這裡會由 app.js 渲染數據內容 -->
-       <div id="spotlight-grid" class="spotlight-grid"></div>
-       <div id="dispatch-order-list" class="dispatch-order-list"></div>
     </section>
+  </main>
 
-  </div>
-
-  <script src="app.js?v=20260509-5d-core"></script>
-  <script src="performance.js?v=20260509-5d-core"></script>
+  <script src="app.js?v=20260509-official-rescue"></script>
 </body>
 </html>
