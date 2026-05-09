@@ -4692,3 +4692,109 @@ body.oil-announcement {
     border-bottom: 1px solid rgba(255,255,255,0.1);
     pointer-events: none;
 }
+
+/* === 搶救回歸：賽博佈局校準層 === */
+.page-shell {
+    position: relative;
+    z-index: 10;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 100px 40px 40px 40px; /* 留出頂部鏡面空間 */
+    min-height: 100vh;
+}
+
+.hero {
+    text-align: center;
+    margin-bottom: 40px;
+    background: linear-gradient(180deg, rgba(0, 242, 255, 0.1), transparent);
+    padding: 30px;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 242, 255, 0.1);
+}
+
+.hero h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.8rem;
+    color: #00f2ff;
+    text-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
+    margin: 0;
+}
+
+.cyber-command-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    margin-bottom: 60px;
+}
+
+/* 確保數據面板與上方卡片對齊 */
+.performance-panel {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 24px;
+    padding: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* 修復視訊圖層，確保不遮擋點擊 */
+.vfx-background {
+    pointer-events: none;
+}
+#meditation-core {
+    pointer-events: auto; /* 僅影片可點擊觸發播放 */
+}
+
+/* 手機端搶救 */
+@media (max-width: 1024px) {
+    .page-shell { padding: 80px 20px 20px 20px; }
+    .cyber-command-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 1.8rem; }
+}
+
+/* === 功能優化：5D 交互增強 === */
+.glass-card {
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border 0.4s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-8px) scale(1.01);
+    border-color: #00f2ff !important;
+    box-shadow: 0 20px 60px rgba(0, 242, 255, 0.25) !important;
+}
+
+/* 警示標籤呼吸燈 */
+#audit-result-badge.badge-fail {
+    animation: alert-pulse 1.5s infinite;
+}
+
+@keyframes alert-pulse {
+    0%, 100% { background-color: #ff3366; box-shadow: 0 0 10px #ff3366; }
+    50% { background-color: #990022; box-shadow: 0 0 25px #ff3366; }
+}
+
+/* 輸入框優化 */
+#raw-input {
+    width: 100%;
+    min-height: 180px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 15px;
+    color: #fff;
+    font-family: monospace;
+    font-size: 13px;
+    resize: vertical;
+    transition: all 0.3s ease;
+}
+
+#raw-input:focus {
+    outline: none;
+    border-color: #00f2ff;
+    background: rgba(0, 242, 255, 0.05);
+    box-shadow: inset 0 0 20px rgba(0, 242, 255, 0.1);
+}
+
+/* 列表性能優化 */
+.performance-panel {
+    content-visibility: auto;
+    contain-intrinsic-size: 1000px;
+}
