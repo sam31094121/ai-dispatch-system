@@ -677,55 +677,67 @@ function setupOfficialMoneyRain(panel) {
   }
 
   function drawSpriteParticle(p, alpha = p.alpha) {
-    const focalLength = 600;
-    const scale = focalLength / (focalLength + p.z);
+    const focalLength = 800;
+    const zOffset = 400; // Shift world back
+    const scale = focalLength / (focalLength + p.z + zOffset);
     
-    // Project 3D to 2D
+    // 3D Projection
     const screenX = width / 2 + p.x * scale;
-    const screenY = p.y; // Keep vertical mostly linear for rain feel
+    const screenY = p.y * scale + height * (1 - scale) * 0.5;
     
-    const flipScale = p.type === 'coin'
-      ? Math.abs(Math.cos(p.flip))
-      : 1 + Math.sin(p.flip) * 0.12;
-      
     const w = p.w * scale;
     const h = p.h * scale;
-    const depthAlpha = alpha * (0.3 + (1 - p.z / 800) * 0.7);
+    const depthAlpha = alpha * (0.25 + (1 - p.z / 1200) * 0.75);
     
-    // Specular Highlight based on flip angle
-    const shininess = Math.pow(Math.max(0, Math.sin(p.flip + p.rot)), 3);
+    // 3D Orientation (Euler Angles)
+    const yaw = p.flip;   // Horizontal spin
+    const pitch = p.rot;  // Vertical tumble
+    const roll = p.vr * (p.life || 0); // Self-rotation
     
-    drawSoftShadow(screenX, p.y, w, h, depthAlpha * 0.2);
+    // Draw shadow on the 3D ground plane
+    const shadowScale = focalLength / (focalLength + p.z + zOffset + (height - p.y) * 0.5);
+    drawSoftShadow(width / 2 + p.x * shadowScale, height - 20, w * 1.2, h * 0.4, depthAlpha * 0.15);
 
     ctx.save();
     ctx.globalAlpha = depthAlpha;
     ctx.translate(screenX, screenY);
-    ctx.rotate(p.rot);
     
-    // 3D Tilt Transformation
-    const skew = p.type === 'bill' ? Math.cos(p.flip) * 0.2 : 0;
-    ctx.transform(flipScale, skew, 0, 1, 0, 0);
+    // Composite 3D Matrix (Approximation for 2D Canvas)
+    const m11 = Math.cos(yaw) * scale;
+    const m12 = Math.sin(yaw) * Math.sin(pitch) * scale;
+    const m21 = 0;
+    const m22 = Math.cos(pitch) * scale;
+    
+    ctx.transform(m11, m12, m21, m22, 0, 0);
+    ctx.rotate(roll);
 
-    // Dynamic Lighting Overlay
-    if (p.type === 'coin') {
-      if (flipScale < 0.25) {
-        // Coin Edge
-        const edge = ctx.createLinearGradient(-w * 0.15, 0, w * 0.15, 0);
-        edge.addColorStop(0, '#4a2508');
-        edge.addColorStop(0.5, '#ffd700');
-        edge.addColorStop(1, '#4a2508');
-        ctx.fillStyle = edge;
-        ctx.fillRect(-w * 0.15, -h / 2, w * 0.3, h);
-      }
+    // Dynamic Specular / Lighting
+    // The "shininess" depends on the surface normal pointing towards a virtual light source
+    const normalZ = Math.abs(Math.cos(yaw) * Math.cos(pitch));
+    
+    // Coin Edge Rendering (3D Thickness)
+    if (p.type === 'coin' && Math.abs(m11) < 0.3 * scale) {
+      const edgeWidth = w * 0.2;
+      const edge = ctx.createLinearGradient(-edgeWidth, 0, edgeWidth, 0);
+      edge.addColorStop(0, '#3a1a04');
+      edge.addColorStop(0.5, '#f7c44a');
+      edge.addColorStop(1, '#3a1a04');
+      ctx.fillStyle = edge;
+      ctx.fillRect(-edgeWidth / 2, -h / 2, edgeWidth, h);
     }
 
     ctx.drawImage(p.sprite, -w / 2, -h / 2, w, h);
     
-    // Add Shininess Overlay
-    if (shininess > 0.6) {
+    // Add 3D Specular Glint
+    if (normalZ > 0.7) {
+      const glintAlpha = (normalZ - 0.7) * 2 * depthAlpha;
       ctx.globalCompositeOperation = 'screen';
-      ctx.globalAlpha = (shininess - 0.6) * 1.5 * depthAlpha;
-      ctx.fillStyle = '#fffce0';
+      ctx.globalAlpha = glintAlpha;
+      const grad = ctx.createLinearGradient(-w, -h, w, h);
+      grad.addColorStop(0, 'rgba(255,255,255,0)');
+      grad.addColorStop(0.5, 'rgba(255,255,255,0.8)');
+      grad.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = grad;
       ctx.beginPath();
       ctx.ellipse(0, 0, w / 2, h / 2, 0, 0, Math.PI * 2);
       ctx.fill();
