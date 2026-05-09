@@ -241,8 +241,9 @@ async function auditCurrentInput() {
 }
 
 async function saveCurrentReport() {
-    if (!state.current) return;
-    const { ok } = await request('/api/save', { method: 'POST', body: JSON.stringify({ report: state.current }) });
+    const rawText = refs.rawInput.value.trim();
+    if (!rawText) return;
+    const { ok } = await request('/api/save', { method: 'POST', body: JSON.stringify({ rawText }) });
     if (ok) {
         AudioManager.sweep();
         triggerPenetrationEffect();

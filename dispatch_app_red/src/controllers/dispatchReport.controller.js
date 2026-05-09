@@ -1,5 +1,5 @@
 const errorCodes = require('../constants/errorCodes');
-const { SERVICE_NAME, API_VERSION } = require('../constants/dispatchRules');
+const { SERVICE_NAME, API_VERSION, UNIFIED_COMMAND_SPEC } = require('../constants/dispatchRules');
 const { parseDispatchDraft } = require('../services/dispatchParse.service');
 const {
   getLegacySnapshot,
@@ -257,9 +257,14 @@ function getSystemMeta(_req, res) {
   res.json(
     successResponse(errorCodes.OK, '系統資訊讀取成功', {
       service: SERVICE_NAME,
-      version: API_VERSION
+      version: API_VERSION,
+      commandSpec: UNIFIED_COMMAND_SPEC
     })
   );
+}
+
+function getCommandSpec(_req, res) {
+  res.json(successResponse(errorCodes.OK, '統一指令規格讀取成功', UNIFIED_COMMAND_SPEC));
 }
 
 function getPerformanceAnalysis(_req, res) {
@@ -300,6 +305,7 @@ module.exports = {
   getLatestDispatchReport,
   getLineOutput,
   getPerformanceAnalysis,
+  getCommandSpec,
   getSystemMeta,
   parseReport,
   rebuildDispatchReport,

@@ -10,6 +10,7 @@ const {
   SERVICE_NAME,
   API_VERSION,
   SUMMARY_METRICS,
+  UNIFIED_COMMAND_SPEC,
   WEIGHTING_POLICY
 } = require('../constants/dispatchRules');
 const { buildReportId, createDispatchReport, createEmptyGroups } = require('../models/DispatchReport');
@@ -22,6 +23,7 @@ const {
 } = require('../utils/date.util');
 const {
   cleanText,
+  formatDisplayName,
   normalizeName,
   normalizeStringArray,
   splitNameTags,
@@ -600,9 +602,60 @@ function buildGroupShortText(report) {
     .join('');
 }
 
+function syncNewcomerLabels(report) {
+  const canonicalByBaseName = new Map();
+
+  safeArray(report.rankings).forEach((row) => {
+    const tagged = splitNameTags(row.name);
+    if (!tagged.name) return;
+    const isNew = Boolean(row.isNew) || tagged.isNew;
+    const displayName = formatDisplayName(tagged.name, isNew);
+    row.name = displayName;
+    row.isNew = isNew;
+    canonicalByBaseName.set(tagged.name, displayName);
+  });
+
+  GROUP_KEYS.forEach((groupKey) => {
+    report.groups[groupKey] = safeArray(report.groups?.[groupKey])
+      .map((name) => {
+        const tagged = splitNameTags(name);
+        return canonicalByBaseName.get(tagged.name) || formatDisplayName(tagged.name, tagged.isNew);
+      })
+      .filter(Boolean);
+  });
+
+  report.adviceList = safeArray(report.adviceList).map((entry) => {
+    const tagged = splitNameTags(entry.name);
+    return {
+      ...entry,
+      name: canonicalByBaseName.get(tagged.name) || formatDisplayName(tagged.name, tagged.isNew)
+    };
+  });
+
+  return report;
+}
+
+function syncAdviceListFromRankings(report) {
+  if (safeArray(report.adviceList).length) return report;
+
+  report.adviceList = safeArray(report.rankings)
+    .map((row) => ({
+      name: row.name,
+      rank: row.rank,
+      group: row.group,
+      text: cleanText(row.advice)
+    }))
+    .filter((entry) => entry.name && entry.text);
+
+  return report;
+}
+
 function syncNarrativeFields(report) {
   if (!report || typeof report !== 'object') return report;
 
+  report.groups = report.groups || createEmptyGroups();
+  syncNewcomerLabels(report);
+  syncAdviceListFromRankings(report);
   report.audit = report.audit || {};
   report.audit.notes = collectMeaningfulAuditNotes([
     ...safeArray(report.audit.notes),
@@ -1216,9 +1269,79 @@ function buildLegacyValidation(validation) {
   };
 }
 
+function buildLockedFrontendContract(validation, syncIssues = []) {
+  const contradictions = [
+    ...(validation.errors || []).map((error) => error.reason),
+    ...syncIssues
+  ];
+
+  return {
+    consistencyGuard: {
+      status: contradictions.length === 0 ? 'PASS' : 'FAIL',
+      contradictionCount: contradictions.length,
+      contradictions,
+      backendSourceLocked: true,
+      frontendComputationAllowed: false,
+      frontendRewriteAllowed: false,
+      syncPolicy: 'backend_snapshot_only'
+    },
+    frontendLock: {
+      sourceOfTruth: 'backend',
+      frontendMustUseBackendSnapshot: true,
+      frontendMayComputeRanking: false,
+      frontendMayComputeGroups: false,
+      frontendMayRewriteAnnouncement: false,
+      frontendMayRewriteAudit: false
+    }
+  };
+}
+
+function collectSnapshotSyncIssues(snapshotReport, legacyStandardData) {
+  const issues = [];
+  const rankingNames = (snapshotReport.rankings || []).map((row) => row.name);
+  const flatRankingNames = (snapshotReport.rankings || []).map((row) => row.name);
+  const legacyRanking = Object.values(legacyStandardData).find((value) =>
+    Array.isArray(value) && value.some((entry) => entry && typeof entry === 'object')
+  ) || [];
+  const legacyNames = legacyRanking.map((row) => Object.values(row)[1]).filter(Boolean);
+
+  if (legacyNames.length && legacyNames.join('|') !== rankingNames.join('|')) {
+    issues.push('legacy standardData ranking order differs from backend rankings');
+  }
+  if (flatRankingNames.join('|') !== rankingNames.join('|')) {
+    issues.push('flat ranking order differs from backend rankings');
+  }
+
+  GROUP_KEYS.forEach((groupKey) => {
+    const expected = (snapshotReport.rankings || [])
+      .filter((row) => row.group === groupKey)
+      .map((row) => row.name);
+    const actual = snapshotReport.groups?.[groupKey] || [];
+    if (expected.join('|') !== actual.join('|')) {
+      issues.push(`${groupKey} group differs from backend rankings`);
+    }
+  });
+
+  return issues;
+}
+
+function syncLegacyStandardDataOrder(legacyStandardData) {
+  const ranking = Object.values(legacyStandardData).find((value) =>
+    Array.isArray(value) && value.some((entry) => entry && typeof entry === 'object')
+  );
+
+  if (ranking) {
+    ranking.sort((left, right) => Number(Object.values(left)[0] || 0) - Number(Object.values(right)[0] || 0));
+  }
+
+  return legacyStandardData;
+}
+
 function buildLegacySnapshot(report, validation, options = {}) {
   const snapshotReport = syncNarrativeFields(clone(report));
-  const legacyStandardData = toLegacyStandardData(snapshotReport);
+  const legacyStandardData = syncLegacyStandardDataOrder(toLegacyStandardData(snapshotReport));
+  const syncIssues = collectSnapshotSyncIssues(snapshotReport, legacyStandardData);
+  const lockedFrontendContract = buildLockedFrontendContract(validation, syncIssues);
   const executionId = buildExecutionId(snapshotReport.updatedAt || snapshotReport.createdAt);
 
   return {
@@ -1255,23 +1378,9 @@ function buildLegacySnapshot(report, validation, options = {}) {
       text: snapshotReport.groupShortText,
       scriptText: snapshotReport.groupShortText
     },
-    consistencyGuard: {
-      status: validation.ok ? 'PASS' : 'FAIL',
-      contradictionCount: validation.errors.length,
-      contradictions: validation.errors.map((error) => error.reason),
-      backendSourceLocked: false,
-      frontendComputationAllowed: true,
-      frontendRewriteAllowed: true
-    },
-    frontendLock: {
-      sourceOfTruth: 'hybrid',
-      frontendMustUseBackendSnapshot: false,
-      frontendMayComputeRanking: true,
-      frontendMayComputeGroups: true,
-      frontendMayRewriteAnnouncement: true,
-      frontendMayRewriteAudit: true
-    },
+    ...lockedFrontendContract,
     scoringPolicy: clone(WEIGHTING_POLICY),
+    commandSpec: clone(UNIFIED_COMMAND_SPEC),
     rules: clone(FRONTEND_LOCK_RULES),
     reportId: snapshotReport.reportId,
     title: snapshotReport.title

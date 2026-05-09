@@ -138,7 +138,7 @@ function normalizeDate(value) {
 }
 
 function normalizeRanking(row) {
-  const metrics = row.metrics || {};
+  const m = row.metrics || {};
   const rank = num(get(row, ['rank', '名次'], 0));
   const name = get(row, ['name', '姓名'], '');
   const prevRank = num(get(row, ['prevRank', '上輪名次'], 0));
@@ -149,6 +149,8 @@ function normalizeRanking(row) {
     else movement = 'flat';
   }
 
+  // --- UAIS 規格鎖死 ---
+  // 優先從標準 Key 讀取，若無則 fallback 到 metrics 內的舊 Key
   return {
     rank,
     name,
@@ -156,12 +158,12 @@ function normalizeRanking(row) {
     prevRank,
     movement,
     isNew: Boolean(row.isNew) || name.includes('新人'),
-    score: num(get(row, ['weightedScore', 'totalScore', '正式權重分數'], get(metrics, ['正式權重分數'], 0))),
-    actualRevenue: num(get(row, ['actualRevenue', '實收', '實收總金額'], get(metrics, ['實收', '實收總金額'], 0))),
-    renewalRevenue: num(get(row, ['renewalRevenue', '續單金額', '追續金額', '追續單金額'], get(metrics, ['續單金額', '追續金額', '追續單金額'], 0))),
-    totalRevenue: num(get(row, ['totalRevenue', '總業績', '全部總業績'], get(metrics, ['總業績', '全部總業績'], 0))),
-    avgRenewal: num(get(row, ['avgRenewal', 'averageRenewal', '追續客單價'], get(metrics, ['追續客單價'], 0))),
-    renewalDeals: num(get(row, ['renewalDeals', '追續成交總數', '追續單數'], get(metrics, ['追續成交總數', '追續單數'], 0))),
+    score: num(m.score || m.正式權重分數 || 0),
+    actualRevenue: num(m.actualRevenue || m.實收 || m.實收總金額 || 0),
+    totalRevenue: num(m.totalRevenue || m.總業績 || m.全部總業績 || 0),
+    renewalRevenue: num(m.renewalRevenue || m.續單金額 || m.追續金額 || 0),
+    renewalDeals: num(m.renewalDeals || m.追續成交總數 || m.追續單數 || 0),
+    avgRenewal: num(m.renewalAverage || m.追續客單價 || m.avgRenewal || 0),
     advice: get(row, ['advice', '建議'], '')
   };
 }
