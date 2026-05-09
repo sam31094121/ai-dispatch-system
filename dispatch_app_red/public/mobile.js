@@ -1,7 +1,7 @@
 const API_CURRENT = '/api/current';
 const API_LINE_OUTPUT = '/api/line-output';
 const MAX_SCORE = 10000;
-const CACHE_VERSION = 'v20260509-unified-mobile';
+const CACHE_VERSION = 'v20260510-production-2249';
 
 const refs = {
   title: document.getElementById('main-title'),
