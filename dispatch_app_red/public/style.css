@@ -4537,3 +4537,10 @@ body.oil-announcement {
     color: var(--text);
     font-size: 15px;
 }
+
+/* ¢w¢w 3D Stereoscopic Enhancements ¢w¢w */
+.official-lock-panel { perspective: 1200px !important; transform-style: preserve-3d !important; }
+.official-money-rain { transform: translateZ(100px); }
+.status-card { transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.status-card:hover { transform: translateZ(30px) rotateX(10deg); }
+
