@@ -431,12 +431,27 @@ function setup() {
   document.addEventListener('click', unlockPlay);
   document.addEventListener('keydown', unlockPlay);
   
-  if (video) video.play().catch(() => console.log('Autoplay blocked, waiting for interaction.'));
+  if (video) video.play().catch(() => {});
 
-  refs.btnLoad?.addEventListener('click', () => runAction(loadCurrent));
-  refs.btnAudit?.addEventListener('click', () => runAction(auditCurrentInput));
-  refs.btnSave?.addEventListener('click', () => runAction(saveCurrentReport));
-  refs.btnClear?.addEventListener('click', () => { refs.rawInput.value = ''; });
+  // 快捷鍵支援：Ctrl + Enter 審計
+  refs.rawInput?.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'Enter') {
+      e.preventDefault();
+      runAction(auditCurrentInput);
+    }
+  });
+
+  // 自動聚焦
+  refs.rawInput?.focus();
+
+  refs.btnLoad?.addEventListener('click', () => { AudioManager.click(); runAction(loadCurrent); });
+  refs.btnAudit?.addEventListener('click', () => { AudioManager.click(); runAction(auditCurrentInput); });
+  refs.btnSave?.addEventListener('click', () => { AudioManager.sweep(); runAction(saveCurrentReport); });
+  refs.btnClear?.addEventListener('click', () => { 
+    AudioManager.click();
+    refs.rawInput.value = ''; 
+    refs.inputStatus.textContent = '等待輸入';
+  });
   
   loadCurrent();
 }
