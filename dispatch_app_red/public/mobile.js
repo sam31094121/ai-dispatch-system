@@ -259,8 +259,10 @@ async function loadData() {
     render(report);
     showToast('資料已同步');
     initCoinRain();
+    hideSplashScreen();
   } catch (error) {
     renderError(error);
+    hideSplashScreen();
   }
 }
 
@@ -1158,7 +1160,29 @@ function initActiveNav() {
   });
 }
 
+function hideSplashScreen() {
+  const splash = document.getElementById('splash-screen');
+  if (!splash) return;
+  
+  // 給予一小段緩衝時間，讓渲染穩定
+  setTimeout(() => {
+    splash.classList.add('fade-out');
+    // 動畫結束後從 DOM 移除 (0.5s 是 CSS 中的 transition 時間)
+    setTimeout(() => splash.remove(), 600);
+  }, 400);
+}
+
+// ── 全線串連：自動輪詢 ──
+function initAutoRefresh() {
+  // 每 5 分鐘自動檢查一次資料更新
+  setInterval(() => {
+    console.log('[AutoRefresh] Checking for new data...');
+    loadData();
+  }, 300000); 
+}
+
 bindEvents();
 initActiveNav();
 initHeroTilt();
 loadData();
+initAutoRefresh();

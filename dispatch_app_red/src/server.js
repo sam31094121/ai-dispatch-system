@@ -41,9 +41,10 @@ const server = app.listen(appConfig.port, async () => {
   const address = server.address();
   const listenPort = typeof address === 'object' && address ? address.port : appConfig.port;
   const appUrl = `http://localhost:${listenPort}`;
+  const targetPage = process.env.OPEN_PAGE || '/mobile.html';
 
   console.log(`Dispatch app listening at ${appUrl}`);
-  scheduleBrowserOpen(`${appUrl}/mobile.html`);
+  scheduleBrowserOpen(`${appUrl}${targetPage}`);
 
   // 若設定自動通知環境變數，發送 LINE 訊息
   const { sendLineMessage } = require('./services/lineNotify.service');

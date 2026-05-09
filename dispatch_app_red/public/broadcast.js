@@ -1003,4 +1003,14 @@ function initSpeech() {
   renderSegments();
   setStatus('待命', '等待載入正式播報稿', 'gold');
   await loadSystemAnnouncement(true);
+  hideSplashScreen();
 })();
+
+function hideSplashScreen() {
+  const splash = document.getElementById('splash-screen');
+  if (!splash) return;
+  setTimeout(() => {
+    splash.classList.add('fade-out');
+    setTimeout(() => splash.remove(), 600);
+  }, 400);
+}

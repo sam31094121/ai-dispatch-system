@@ -8,8 +8,50 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Oxanium:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="broadcast.css?v=20260502">
+  <style>
+    #splash-screen {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #0a0f18; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      transition: opacity 0.5s ease, visibility 0.5s;
+      font-family: 'Oxanium', cursive, sans-serif;
+    }
+    #splash-screen.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
+    .splash-loader { position: relative; width: 80px; height: 80px; }
+    .splash-circle {
+      position: absolute; inset: 0; border: 3px solid rgba(243, 193, 75, 0.1);
+      border-top-color: #f3c14b; border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    .splash-inner-circle {
+      position: absolute; inset: 12px; border: 2px solid rgba(24, 198, 167, 0.1);
+      border-bottom-color: #18c6a7; border-radius: 50%;
+      animation: spin 1.5s linear reverse infinite;
+    }
+    .splash-logo {
+      position: absolute; inset: 0; display: flex; align-items: center;
+      justify-content: center; font-size: 24px;
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+    .splash-text {
+      margin-top: 24px; font-size: 14px; font-weight: 800;
+      letter-spacing: 0.2em; color: #f3c14b;
+      text-transform: uppercase; text-shadow: 0 0 12px rgba(243, 193, 75, 0.4);
+    }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes pulse-glow { 0%, 100% { opacity: 0.5; filter: blur(4px); } 50% { opacity: 1; filter: blur(8px); } }
+  </style>
 </head>
 <body>
+  <div id="splash-screen">
+    <div class="splash-loader">
+      <div class="splash-circle"></div>
+      <div class="splash-inner-circle"></div>
+      <div class="splash-logo">🎤</div>
+    </div>
+    <div class="splash-text">Broadcast System</div>
+  </div>
+
   <div class="broadcast-shell" id="broadcast-shell">
     <header class="broadcast-topbar">
       <div class="title-zone">

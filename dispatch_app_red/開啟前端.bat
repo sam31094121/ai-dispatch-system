@@ -1,16 +1,34 @@
 @echo off
 chcp 65001 >nul
+title 兆櫃 AI 派單系統｜快速開啟工具
 cd /d "%~dp0"
 
-rem ---- 參數說明 ----
-rem %1 : port (預設 3001)
-rem %2 : 目標頁面 (預設 /mobile.html)
-
 set "PORT=3001"
-set "PAGE=/mobile.html"
-if not "%1"=="" set "PORT=%1"
-if not "%2"=="" set "PAGE=%2"
 
+:menu
+cls
+echo ======================================================
+echo          兆櫃 AI 派單系統｜前端開啟優化版
+echo ======================================================
+echo.
+echo  [1] 開啟 行動版 (Mobile) - 預設
+echo  [2] 開啟 電腦版戰情室 (Desktop)
+echo  [3] 開啟 廣播看板 (Broadcast)
+echo  [4] 僅啟動伺服器 (不開啟網頁)
+echo  [Q] 退出
+echo.
+echo ======================================================
+set /p choice="請選擇欲開啟的項目 [1-4, Q]: "
+
+if /i "%choice%"=="1" set "PAGE=/mobile.html" & goto checkServer
+if /i "%choice%"=="2" set "PAGE=/index.html" & goto checkServer
+if /i "%choice%"=="3" set "PAGE=/broadcast.html" & goto checkServer
+if /i choice=="" set "PAGE=/mobile.html" & goto checkServer
+if /i "%choice%"=="4" set "PAGE=NONE" & goto checkServer
+if /i "%choice%"=="q" exit
+goto menu
+
+:checkServer
 rem ---- 檢查是否已有服務在此 port ----
 set "SERVER_RUNNING=no"
 for /f "tokens=5" %%a in ('netstat -ano ^| findstr :%PORT% ^| findstr LISTENING 2^>nul') do (
@@ -18,21 +36,25 @@ for /f "tokens=5" %%a in ('netstat -ano ^| findstr :%PORT% ^| findstr LISTENING 
 )
 
 if "%SERVER_RUNNING%"=="no" (
-    echo [Info] 未偵測到執行中的伺服器，啟動 Node.js 伺服器...
-    start "Zhaogui Server Engine" /min cmd /c "set AUTO_OPEN_BROWSER=0 && set PORT=%PORT% && node server.js"
-    rem 等待伺服器啟動（最長 15 秒）
-    set "WAIT=0"
-    :waitLoop
-    timeout /t 1 >nul
-    set /a WAIT+=1
-    powershell -NoProfile -Command "try { Invoke-WebRequest -Uri 'http://localhost:%PORT%/api/health' -UseBasicParsing -TimeoutSec 2 | Out-Null; exit 0 } catch { exit 1 }" >nul 2>&1
-    if not errorlevel 1 goto openPage
-    if %WAIT% geq 15 goto openPage
-    goto waitLoop
+    echo [Info] 偵測到伺服器未啟動，正在初始化環境...
+    
+    if "%PAGE%"=="NONE" (
+        start "Zhaogui Server Engine" cmd /c "set AUTO_OPEN_BROWSER=0 && set PORT=%PORT% && node server.js"
+        echo [OK] 伺服器已在背景啟動。
+    ) else (
+        echo [Info] 伺服器啟動後將自動導向至 %PAGE%
+        start "Zhaogui Server Engine" cmd /c "set AUTO_OPEN_BROWSER=1 && set PORT=%PORT% && set OPEN_PAGE=%PAGE% && node server.js"
+    )
+    timeout /t 2 >nul
 ) else (
-    echo [Info] 已偵測到執行中的伺服器，直接開啟前端。
+    echo [OK] 伺服器運行中，正在開啟網頁...
+    if not "%PAGE%"=="NONE" (
+        start "" "http://localhost:%PORT%%PAGE%"
+    )
 )
 
-:openPage
-start "" "http://localhost:%PORT%%PAGE%"
+echo.
+echo [完成] 系統已就緒。
+timeout /t 3 >nul
 exit
+

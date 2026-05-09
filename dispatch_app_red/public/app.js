@@ -1,4 +1,4 @@
-﻿
+
 function getMovement(row) {
   const currentRank = Number(row.?活 || row.rank || 0);
   const prevRank = Number(row.銝憚?活 || row.prevRank || 0);
@@ -1639,6 +1639,16 @@ function setup() {
   });
 
   loadCurrent();
+  hideSplashScreen();
+}
+
+function hideSplashScreen() {
+  const splash = document.getElementById('splash-screen');
+  if (!splash) return;
+  setTimeout(() => {
+    splash.classList.add('fade-out');
+    setTimeout(() => splash.remove(), 600);
+  }, 400);
 }
 
 document.addEventListener('DOMContentLoaded', setup);
