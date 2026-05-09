@@ -1599,11 +1599,28 @@ function setup() {
     }
     
     // ??隡箸??冽蝬脣?嚗?楝敺??孵???mobile.html嚗?
-    const baseOrigin = window.location.origin;
-    // 瘥予?交???v ?嚗撘?YYYYMMDD嚗?撘瑕 LINE 瘥予??? OG ?汗嚗???敹怠?
+    // 取得伺服器真實 LAN IP 以利手機連線
+    let realOrigin = window.location.origin;
+    try {
+      const vRes = await fetch('/api/version');
+      const vData = await vRes.json();
+      if (vData.lanIp && vData.lanIp !== 'localhost') {
+        realOrigin = `http://${vData.lanIp}:${vData.port}`;
+      }
+      
+      // 產生 QR Code (使用 Google Chart API)
+      const qrContainer = document.getElementById('qr-container');
+      if (qrContainer) {
+        const mobileLink = `${realOrigin}/mobile.html`;
+        qrContainer.innerHTML = `<img src="https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=${encodeURIComponent(mobileLink)}&choe=UTF-8" title="掃描開啟手機版">`;
+      }
+    } catch (e) {
+      console.warn('無法取得 LAN IP', e);
+    }
+
     const today = new Date();
     const vParam = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`;
-    const mobileUrl = `${baseOrigin}/mobile.html?v=${vParam}`;
+    const mobileUrl = `${realOrigin}/mobile.html?v=${vParam}`;
 
     const isLocal = baseOrigin.includes('localhost') || baseOrigin.includes('127.0.0.1');
     const warning = isLocal ? '\n\n?? 瘜冽?嚗?雯???localhost嚗?璈??銝 WiFi ?航?⊥????遣霅唬蝙?冽璈?IP ?迤撘撩?蝬脣??? : '';
