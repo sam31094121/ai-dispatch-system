@@ -206,7 +206,7 @@ function normalizeReport(snapshot, lineText) {
     summary,
     auditNotes: asArray(report.audit?.notes || report.auditNotes || []),
     excludedEmployees: asArray(report.audit?.excludedEmployees || []).map(normalizeExcludedEntry),
-    groupShortText: report.groupShortText || standardData['群組超精簡版'] || '',
+    groupShortText: String(report.groupShortText || standardData['群組超精簡版'] || '').trim(),
     sendText: cleanSendText(text)
   };
 }
@@ -526,7 +526,13 @@ async function copyShortTextFn() {
   if (!text) { showToast('沒有精簡版公告'); return; }
   try {
     await navigator.clipboard.writeText(text);
-    showToast('精簡版已複製');
+    showToast('精簡版已複製，即將跳轉...');
+    
+    // 優化：複製後自動嘗試跳轉 LINE
+    setTimeout(() => {
+      const lineUrl = `https://line.me/R/share?text=${encodeURIComponent(text)}`;
+      window.open(lineUrl, '_blank');
+    }, 800);
   } catch {
     showToast('複製失敗，請長按文字手動複製');
   }

@@ -273,12 +273,9 @@ function getPerformanceAnalysis(_req, res) {
 function getLineOutput(_req, res) {
   try {
     const latest = getLatestReport();
-    const snapshot = getLegacySnapshot(latest, {
-      persisted: true,
-      source: 'saved',
-      operator: 'system'
-    });
-    const lineText = snapshot?.standardData?.['群組超精簡版'] || latest.groupShortText || '';
+    // 優化規格一體化：強制優先使用 AI 核心精簡版文字
+    const lineText = latest.groupShortText || '';
+    
     res.json(successResponse(errorCodes.OK, 'LINE 輸出稿讀取成功', {
       text: lineText,
       reportId: latest.reportId,
