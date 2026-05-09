@@ -4264,6 +4264,197 @@ body.oil-announcement {
     transition: all 0.3s ease;
 }
 
+/* ── Compact announcement card: realistic 3D official board ───────────── */
+.compact-announcement-panel {
+  --compact-gold: #ffd77a;
+  --compact-gold-deep: #9a5219;
+  --compact-amber: #ff8a2a;
+  --compact-ink: #070911;
+  --compact-glass: rgba(16, 10, 7, 0.74);
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transform: perspective(1200px) rotateX(0deg) translateZ(0);
+  border: 1px solid rgba(255, 218, 128, 0.42) !important;
+  border-radius: 14px;
+  background:
+    radial-gradient(ellipse at 18% 0%, rgba(255, 231, 162, 0.34), transparent 34%),
+    radial-gradient(circle at 88% 16%, rgba(255, 126, 39, 0.20), transparent 28%),
+    radial-gradient(ellipse at 50% 108%, rgba(98, 46, 8, 0.72), transparent 58%),
+    linear-gradient(142deg, rgba(255, 229, 162, 0.13), rgba(255, 137, 36, 0.05) 38%, transparent 62%),
+    linear-gradient(165deg, #261004 0%, #0c0908 54%, #050912 100%) !important;
+  box-shadow:
+    0 2px 0 rgba(255, 236, 172, 0.26) inset,
+    0 -16px 34px rgba(35, 13, 2, 0.64) inset,
+    0 0 0 1px rgba(255, 147, 46, 0.18) inset,
+    0 18px 0 -10px rgba(92, 41, 8, 0.92),
+    0 34px 0 -22px rgba(35, 14, 4, 0.92),
+    0 42px 90px rgba(0, 0, 0, 0.72),
+    0 16px 48px rgba(255, 122, 28, 0.20),
+    0 0 92px rgba(255, 203, 92, 0.14) !important;
+  animation: none !important;
+}
+
+.compact-announcement-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(255, 235, 172, 0.26), transparent 18% 82%, rgba(104, 45, 6, 0.38)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.11), transparent 18%, rgba(0, 0, 0, 0.44)),
+    repeating-linear-gradient(100deg, rgba(255, 231, 166, 0.038) 0 1px, transparent 1px 15px);
+  opacity: 0.76;
+  mix-blend-mode: screen;
+  animation: none !important;
+}
+
+.compact-announcement-panel::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  z-index: 5;
+  pointer-events: none;
+  border-radius: 13px;
+  background:
+    linear-gradient(90deg, var(--compact-gold), transparent 18%, transparent 82%, var(--compact-amber)) top / 100% 2px no-repeat,
+    linear-gradient(180deg, var(--compact-gold), transparent 26%, transparent 76%, var(--compact-gold-deep)) left / 2px 100% no-repeat,
+    linear-gradient(180deg, rgba(255, 245, 198, 0.92), transparent 20%, transparent 78%, var(--compact-amber)) right / 2px 100% no-repeat,
+    linear-gradient(90deg, var(--compact-gold-deep), transparent 16%, transparent 84%, var(--compact-gold)) bottom / 100% 2px no-repeat;
+  filter:
+    drop-shadow(0 0 12px rgba(255, 210, 104, 0.68))
+    drop-shadow(0 0 28px rgba(255, 112, 24, 0.26));
+  opacity: 0.92;
+  animation: none !important;
+}
+
+.compact-announcement-panel > .compact-coin-rain,
+.compact-announcement-panel > .official-coin-field {
+  z-index: 1;
+  opacity: 0.34;
+  filter: saturate(0.95) contrast(1.05);
+}
+
+.compact-announcement-panel > .panel-head,
+.compact-announcement-panel > .compact-output,
+.compact-announcement-panel > .merged-divider,
+.compact-announcement-panel > .official-lock-head,
+.compact-announcement-panel > .official-lock-grid {
+  position: relative;
+  z-index: 3;
+}
+
+.compact-announcement-panel > .panel-head {
+  margin: 0 0 18px;
+  padding: 18px 20px;
+  border: 1px solid rgba(255, 219, 128, 0.24);
+  border-radius: 12px;
+  background:
+    radial-gradient(ellipse at 18% 0%, rgba(255, 235, 180, 0.18), transparent 50%),
+    linear-gradient(145deg, rgba(255, 218, 116, 0.13), rgba(255, 112, 24, 0.045)),
+    rgba(8, 8, 12, 0.48);
+  box-shadow:
+    0 14px 32px rgba(0, 0, 0, 0.30),
+    inset 0 1px 0 rgba(255, 245, 206, 0.16),
+    inset 0 -1px 0 rgba(79, 33, 5, 0.70);
+}
+
+.compact-announcement-panel > .panel-head .eyebrow {
+  color: #ffe9a8;
+  text-shadow: 0 0 12px rgba(255, 218, 122, 0.62);
+}
+
+.compact-announcement-panel > .panel-head h2 {
+  color: #fff7de;
+  text-shadow:
+    0 1px 0 rgba(92, 39, 6, 0.90),
+    0 0 18px rgba(255, 224, 139, 0.34);
+}
+
+.compact-announcement-panel .compact-output {
+  min-height: 230px;
+  resize: vertical;
+  border: 1px solid rgba(255, 219, 128, 0.38);
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(255, 243, 206, 0.035), rgba(255, 243, 206, 0.012)),
+    repeating-linear-gradient(0deg, rgba(255, 232, 176, 0.026) 0 1px, transparent 1px 29px),
+    linear-gradient(145deg, rgba(14, 11, 10, 0.96), rgba(5, 7, 13, 0.96));
+  color: #fff1c7;
+  caret-color: var(--compact-gold);
+  padding: 20px 22px;
+  font: 600 15px/1.88 "Noto Sans TC", "Sora", monospace;
+  letter-spacing: 0;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.55);
+  box-shadow:
+    inset 0 2px 9px rgba(0, 0, 0, 0.82),
+    inset 0 -1px 0 rgba(255, 238, 184, 0.13),
+    inset 0 0 28px rgba(255, 155, 38, 0.055),
+    0 1px 0 rgba(255, 241, 200, 0.12),
+    0 16px 34px rgba(0, 0, 0, 0.42);
+  outline: none;
+}
+
+.compact-announcement-panel .compact-output:focus {
+  border-color: rgba(255, 230, 154, 0.62);
+  box-shadow:
+    inset 0 2px 9px rgba(0, 0, 0, 0.82),
+    inset 0 0 32px rgba(255, 174, 48, 0.08),
+    0 0 0 1px rgba(255, 221, 128, 0.20),
+    0 18px 38px rgba(0, 0, 0, 0.46);
+}
+
+.compact-announcement-panel .compact-output::-webkit-scrollbar {
+  width: 10px;
+}
+
+.compact-announcement-panel .compact-output::-webkit-scrollbar-track {
+  background: rgba(8, 6, 4, 0.72);
+  border-radius: 999px;
+}
+
+.compact-announcement-panel .compact-output::-webkit-scrollbar-thumb {
+  border: 2px solid rgba(8, 6, 4, 0.72);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffe18a, #a75b18);
+}
+
+.compact-announcement-panel:hover {
+  transform: perspective(1200px) translateY(-2px) translateZ(0);
+  box-shadow:
+    0 2px 0 rgba(255, 236, 172, 0.30) inset,
+    0 -16px 34px rgba(35, 13, 2, 0.64) inset,
+    0 0 0 1px rgba(255, 177, 68, 0.24) inset,
+    0 20px 0 -10px rgba(92, 41, 8, 0.95),
+    0 38px 0 -22px rgba(35, 14, 4, 0.94),
+    0 52px 104px rgba(0, 0, 0, 0.74),
+    0 18px 56px rgba(255, 122, 28, 0.24),
+    0 0 112px rgba(255, 203, 92, 0.18) !important;
+}
+
+@media (max-width: 720px) {
+  .compact-announcement-panel {
+    border-radius: 12px;
+    box-shadow:
+      0 2px 0 rgba(255, 236, 172, 0.22) inset,
+      0 -12px 24px rgba(35, 13, 2, 0.58) inset,
+      0 14px 0 -9px rgba(92, 41, 8, 0.88),
+      0 30px 70px rgba(0, 0, 0, 0.66) !important;
+  }
+
+  .compact-announcement-panel > .panel-head {
+    padding: 14px;
+  }
+
+  .compact-announcement-panel .compact-output {
+    min-height: 210px;
+    padding: 16px;
+    font-size: 14px;
+    line-height: 1.78;
+  }
+}
+
 .summary-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 15px 40px rgba(0, 229, 255, 0.2);

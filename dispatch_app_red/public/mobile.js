@@ -25,7 +25,9 @@ const refs = {
   lookupInput: document.getElementById('lookup-input'),
   lookupResults: document.getElementById('lookup-results'),
   broadcastOutput: document.getElementById('broadcast-output'),
+  groupShortOutput: document.getElementById('group-short-output'),
   copyLineText: document.getElementById('copy-line-text'),
+  copyShortText: document.getElementById('copy-short-text'),
   shareLineText: document.getElementById('share-line-text'),
   lineShare: document.getElementById('line-share'),
   toast: document.getElementById('toast')
@@ -210,6 +212,7 @@ function normalizeReport(snapshot, lineText) {
     reportTotal: snapshot.reportTotal || report.reportTotal || null,
     assignmentTotal: snapshot.assignmentTotal || report.assignmentTotal || null,
     maxValues: snapshot.maxValues || report.maxValues || null,
+    groupShortText: snapshot.groupShortText || report.groupShortText || standardData['群組超精簡版'] || '',
     sendText: cleanSendText(text)
   };
 }
@@ -343,7 +346,7 @@ function render(report) {
   renderGroups(report.groups, report.ranking);
   renderAudit(report.auditNotes, report.excludedEmployees, report.auditWarnings);
   renderDualTotals(report.reportTotal, report.assignmentTotal);
-  renderSendText(report.sendText);
+  renderSendText(report.sendText, report.groupShortText);
   animateScoreFills();
 }
 
@@ -473,9 +476,10 @@ function renderDualTotals(reportTotal, assignmentTotal) {
     makeRow('正式派單運算盤（排除已離職）', assignmentTotal, 'total-assignment');
 }
 
-function renderSendText(text) {
+function renderSendText(text, shortText) {
   state.sendText = text || '';
   if (refs.broadcastOutput) refs.broadcastOutput.value = state.sendText;
+  if (refs.groupShortOutput) refs.groupShortOutput.textContent = shortText || '';
   if (refs.lineShare) {
     refs.lineShare.href = state.sendText
       ? `https://line.me/R/share?text=${encodeURIComponent(state.sendText)}`
@@ -499,6 +503,17 @@ async function copyText() {
   try {
     await navigator.clipboard.writeText(text);
     showToast('公告已複製');
+  } catch {
+    showToast('複製失敗，請長按文字手動複製');
+  }
+}
+
+async function copyShortTextFn() {
+  const text = (state.report?.groupShortText || '').trim();
+  if (!text) { showToast('沒有精簡版公告'); return; }
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast('精簡版已複製');
   } catch {
     showToast('複製失敗，請長按文字手動複製');
   }
@@ -584,6 +599,7 @@ const debouncedLoadData = debounce(loadData, 300);
 function bindEvents() {
   refs.refreshData.addEventListener('click', debouncedLoadData);
   refs.copyLineText?.addEventListener('click', copyText);
+  refs.copyShortText?.addEventListener('click', copyShortTextFn);
   refs.shareLineText?.addEventListener('click', shareText);
   refs.searchOpen?.addEventListener('click', openSearch);
   refs.searchClose?.addEventListener('click', closeSearch);
@@ -598,10 +614,46 @@ function bindEvents() {
 }
 
 /* ─────────────────────────────────────────────────────────────────
-   瑞士楓葉金幣｜積沙成塔物理引擎
-   - 真實重力 + 反彈衰減 + 堆積高度圖
-   - 楓葉浮雕 + 放射紋 + 雙層光暈 + 活動閃光
+   瑞士楓葉金幣 ＋ 美金鈔票｜積沙成塔物理引擎
+   金幣：多層鑄幣紋 + 楓葉浮雕貝塞爾曲線 + 光譜鏡面高光
+   美金：格紋紙紋 + 肖像橢圓 + 安全線 + 面額文字
    ───────────────────────────────────────────────────────────────── */
+
+// roundRect polyfill for older WebViews (Chrome < 99, Safari < 15.4)
+if (typeof CanvasRenderingContext2D !== 'undefined' && !CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+    const rad = Array.isArray(r) ? r[0] : (r || 0);
+    this.beginPath();
+    this.moveTo(x + rad, y);
+    this.lineTo(x + w - rad, y);
+    this.quadraticCurveTo(x + w, y, x + w, y + rad);
+    this.lineTo(x + w, y + h - rad);
+    this.quadraticCurveTo(x + w, y + h, x + w - rad, y + h);
+    this.lineTo(x + rad, y + h);
+    this.quadraticCurveTo(x, y + h, x, y + h - rad);
+    this.lineTo(x, y + rad);
+    this.quadraticCurveTo(x, y, x + rad, y);
+    this.closePath();
+  };
+}
+
+function _drawMapleLeafPath(g) {
+  g.beginPath();
+  g.moveTo(0, -9);
+  g.bezierCurveTo( 0.5, -7.6,  1.6, -6.8,  2.0, -6.2);
+  g.bezierCurveTo( 3.8, -6.8,  5.2, -6.0,  4.8, -4.6);
+  g.bezierCurveTo( 7.0, -3.6,  7.8, -1.8,  6.2, -0.7);
+  g.bezierCurveTo( 7.3,  0.8,  6.6,  2.5,  4.9,  2.0);
+  g.bezierCurveTo( 5.8,  4.2,  4.6,  5.8,  2.9,  4.8);
+  g.bezierCurveTo( 2.2,  6.5,  0.8,  7.0,  0.0,  5.8);
+  g.bezierCurveTo(-0.8,  7.0, -2.2,  6.5, -2.9,  4.8);
+  g.bezierCurveTo(-4.6,  5.8, -5.8,  4.2, -4.9,  2.0);
+  g.bezierCurveTo(-6.6,  2.5, -7.3,  0.8, -6.2, -0.7);
+  g.bezierCurveTo(-7.8, -1.8, -7.0, -3.6, -4.8, -4.6);
+  g.bezierCurveTo(-5.2, -6.0, -3.8, -6.8, -2.0, -6.2);
+  g.bezierCurveTo(-1.6, -6.8, -0.5, -7.6,  0.0, -9.0);
+  g.closePath();
+}
 
 class MapleCoinRain {
   constructor(canvas) {
@@ -647,51 +699,86 @@ class MapleCoinRain {
   }
 
   _spawn() {
-    const r  = 8 + Math.random() * 6;
-    const margin = r + 4;
-    this.coins.push({
-      x:       margin + Math.random() * Math.max(1, this.W - margin * 2),
-      y:       -r,
-      vx:      (Math.random() - 0.5) * 2.4,
-      vy:      0.6 + Math.random() * 2.2,
-      r,
-      spin:    (Math.random() - 0.5) * 0.10,
-      tilt:    Math.random() * Math.PI * 2,
-      tiltSpd: (Math.random() - 0.5) * 0.065,
-      bounces: 0,
-      done:    false,
-    });
+    if (Math.random() < 0.32) {
+      // 美金鈔票（32% 機率）
+      const bw = 28 + Math.random() * 14;
+      const bh = Math.round(bw * 0.44);
+      const margin = bw * 0.5 + 4;
+      this.coins.push({
+        type: 'bill',
+        x:   margin + Math.random() * Math.max(1, this.W - margin * 2),
+        y:   -bh,
+        vx:  (Math.random() - 0.5) * 1.6,
+        vy:  0.4 + Math.random() * 1.6,
+        r:   bh * 0.5,   // 碰撞半徑（用高度的一半）
+        bw, bh,
+        tilt:     (Math.random() - 0.5) * 0.30,
+        tiltSpd:  (Math.random() - 0.5) * 0.012,
+        flutter:  Math.random() * Math.PI * 2,
+        flutterSpd: 0.038 + Math.random() * 0.055,
+        bounces: 0, done: false,
+      });
+    } else {
+      // 楓葉金幣（68% 機率）
+      const r = 8 + Math.random() * 7;
+      const margin = r + 4;
+      this.coins.push({
+        type: 'coin',
+        x:       margin + Math.random() * Math.max(1, this.W - margin * 2),
+        y:       -r,
+        vx:      (Math.random() - 0.5) * 2.4,
+        vy:      0.6 + Math.random() * 2.2,
+        r,
+        spin:    (Math.random() - 0.5) * 0.10,
+        tilt:    Math.random() * Math.PI * 2,
+        tiltSpd: (Math.random() - 0.5) * 0.065,
+        bounces: 0, done: false,
+      });
+    }
   }
 
   _update() {
     this.frame++;
-    const maxPile = Math.floor(this.W / 20);
-    /* 效能優化：降低 spawn 頻率，堆積愈多愈慢 */
+    const maxPile = Math.floor(this.W / 18);
     const interval = 16 + this.pile.length * 4;
-    if (this.frame % interval === 0 && this.pile.length < maxPile) {
-      this._spawn();
-    }
+    if (this.frame % interval === 0 && this.pile.length < maxPile) this._spawn();
 
     for (const c of this.coins) {
       if (c.done) continue;
-      c.vy   = Math.min(c.vy + 0.44, 13);
-      c.x   += c.vx;
-      c.y   += c.vy;
-      c.tilt += c.tiltSpd;
 
-      if (c.x - c.r < 0)       { c.x = c.r;        c.vx = Math.abs(c.vx) * 0.52; }
-      if (c.x + c.r > this.W)  { c.x = this.W - c.r; c.vx = -Math.abs(c.vx) * 0.52; }
+      if (c.type === 'bill') {
+        c.vy = Math.min(c.vy + 0.22, 7);
+        c.flutter += c.flutterSpd;
+        c.vx += Math.sin(c.flutter * 1.4) * 0.09;
+        c.vx = Math.max(-2.8, Math.min(2.8, c.vx));
+        c.vx *= 0.978;
+        c.tilt += Math.sin(c.flutter * 0.8) * 0.005;
+        c.tilt = Math.max(-0.42, Math.min(0.42, c.tilt));
+      } else {
+        c.vy = Math.min(c.vy + 0.44, 13);
+        c.tilt += c.tiltSpd;
+      }
+
+      c.x += c.vx;
+      c.y += c.vy;
+
+      const hw = c.type === 'bill' ? c.bw * 0.5 : c.r;
+      if (c.x - hw < 0)       { c.x = hw;          c.vx =  Math.abs(c.vx) * 0.50; }
+      if (c.x + hw > this.W)  { c.x = this.W - hw; c.vx = -Math.abs(c.vx) * 0.50; }
 
       const floor = this._floorAt(c.x, c.r);
       if (c.y + c.r >= floor) {
-        c.y    = floor - c.r;
-        c.vy  *= -0.28;
-        c.vx  *= 0.68;
-        c.spin *= 0.78;
+        c.y   = floor - c.r;
+        c.vy *= c.type === 'bill' ? -0.18 : -0.28;
+        c.vx *= 0.65;
         c.bounces++;
-        if (Math.abs(c.vy) < 0.85 && c.bounces >= 1) {
+        if (c.type === 'bill') { c.tiltSpd = 0; }
+        else { c.spin = (c.spin || 0) * 0.75; }
+        if (Math.abs(c.vy) < 0.75 && c.bounces >= 1) {
           c.done = true;
-          c.vy = 0; c.vx = 0; c.spin = 0;
+          c.vy = 0; c.vx = 0;
+          if (c.type === 'bill') { c.tilt = 0; c.flutter = 0; }
+          else { c.spin = 0; }
           this.pile.push(c);
         }
       }
@@ -699,116 +786,213 @@ class MapleCoinRain {
     this.coins = this.coins.filter(c => !c.done);
   }
 
-  /**
-   * 預渲染金幣 sprite（按半徑快取）
-   * 將所有昂貴的漸層、放射紋、楓葉路徑一次繪入離線 canvas，
-   * 後續每幀只需 drawImage，大幅降低 GPU 繪製指令數。
-   */
   _getCoinSprite(r) {
-    const key = Math.round(r); // 依整數半徑快取
-    if (this._spriteCache.has(key)) return this._spriteCache.get(key);
+    const key = Math.round(r);
+    const cacheKey = 'coin_' + key;
+    if (this._spriteCache.has(cacheKey)) return this._spriteCache.get(cacheKey);
 
-    const pad = 8; // shadow 溢出空間
+    const pad = 10;
     const size = (key + pad) * 2;
-    const offscreen = document.createElement('canvas');
-    offscreen.width = size;
-    offscreen.height = size;
-    const g = offscreen.getContext('2d');
-    const cx = size / 2;
-    const cy = size / 2;
+    const off = document.createElement('canvas');
+    off.width = size; off.height = size;
+    const g = off.getContext('2d');
+    const cx = size / 2, cy = size / 2;
 
-    // 落影
-    g.shadowColor = 'rgba(0,0,0,0.55)';
-    g.shadowBlur = 7;
-    g.shadowOffsetY = 3;
+    // ─ 1. 落影 ─
+    g.shadowColor = 'rgba(0,0,0,0.72)';
+    g.shadowBlur = key * 0.55;
+    g.shadowOffsetX = key * 0.07;
+    g.shadowOffsetY = key * 0.20;
+    g.beginPath(); g.arc(cx, cy, key * 0.98, 0, Math.PI * 2);
+    g.fillStyle = '#000'; g.fill();
+    g.shadowColor = 'transparent'; g.shadowBlur = 0;
+    g.shadowOffsetX = 0; g.shadowOffsetY = 0;
 
-    // 外緣
-    const rim = g.createRadialGradient(cx - key * .13, cy - key * .20, key * .04, cx, cy, key);
-    rim.addColorStop(0, '#FFE96E');
-    rim.addColorStop(0.76, '#C8960C');
-    rim.addColorStop(0.88, '#7A5200');
-    rim.addColorStop(1, '#4E3400');
+    // ─ 2. 鑄幣齒邊（reeding） ─
+    const teeth = Math.max(20, Math.floor(key * 2.1));
     g.beginPath();
-    g.arc(cx, cy, key, 0, Math.PI * 2);
-    g.fillStyle = rim;
-    g.fill();
-    g.shadowColor = 'transparent';
+    for (let i = 0; i <= teeth * 2; i++) {
+      const a = (i / (teeth * 2)) * Math.PI * 2;
+      const rad = i % 2 === 0 ? key * 0.99 : key * 0.91;
+      if (i === 0) g.moveTo(cx + Math.cos(a) * rad, cy + Math.sin(a) * rad);
+      else g.lineTo(cx + Math.cos(a) * rad, cy + Math.sin(a) * rad);
+    }
+    g.closePath();
+    const edgeG = g.createRadialGradient(cx - key*0.1, cy - key*0.22, key*0.65, cx, cy, key);
+    edgeG.addColorStop(0,    '#D8A825'); edgeG.addColorStop(0.45, '#A07010');
+    edgeG.addColorStop(0.78, '#785000'); edgeG.addColorStop(1,    '#3C2200');
+    g.fillStyle = edgeG; g.fill();
 
-    // 正面
-    const fr = key * 0.83;
-    const face = g.createRadialGradient(cx - key * .24, cy - key * .28, 0, cx, cy, fr);
-    face.addColorStop(0, '#FFFAC8');
-    face.addColorStop(0.22, '#FFD700');
-    face.addColorStop(0.60, '#E8A800');
-    face.addColorStop(1, '#A87000');
-    g.beginPath();
-    g.arc(cx, cy, fr, 0, Math.PI * 2);
-    g.fillStyle = face;
-    g.fill();
+    // 頂部邊緣反光
+    g.beginPath(); g.arc(cx, cy, key * 0.985, Math.PI * 1.08, Math.PI * 1.92);
+    g.strokeStyle = 'rgba(255,230,110,0.42)'; g.lineWidth = 0.9; g.stroke();
 
-    // 放射紋（已從 40 條減為 16 條，視覺差異極小但效能翻倍）
+    // ─ 3. 正面金屬金盤 ─
+    const fr = key * 0.84;
+    const faceG = g.createRadialGradient(cx - key*0.23, cy - key*0.28, 0, cx + key*0.06, cy + key*0.08, fr*1.05);
+    faceG.addColorStop(0.00, '#FFFCE8'); faceG.addColorStop(0.06, '#FFE84A');
+    faceG.addColorStop(0.26, '#F5C000'); faceG.addColorStop(0.52, '#D49208');
+    faceG.addColorStop(0.75, '#AA6800'); faceG.addColorStop(0.91, '#784800');
+    faceG.addColorStop(1.00, '#4A2C00');
+    g.beginPath(); g.arc(cx, cy, fr, 0, Math.PI * 2);
+    g.fillStyle = faceG; g.fill();
+
+    // ─ 4. 車削同心環紋（lathe lines） ─
     g.save();
-    g.beginPath();
-    g.arc(cx, cy, fr, 0, Math.PI * 2);
-    g.clip();
-    g.strokeStyle = 'rgba(110,60,0,0.13)';
-    g.lineWidth = 0.55;
-    for (let i = 0; i < 16; i++) {
-      g.save();
-      g.translate(cx, cy);
-      g.rotate((i / 16) * Math.PI * 2);
-      g.beginPath();
-      g.moveTo(0, 0);
-      g.lineTo(0, -fr);
-      g.stroke();
-      g.restore();
+    g.beginPath(); g.arc(cx, cy, fr, 0, Math.PI * 2); g.clip();
+    const rings = Math.max(4, Math.floor(fr / 2.0));
+    for (let i = 1; i <= rings; i++) {
+      g.beginPath(); g.arc(cx, cy, (i / rings) * fr, 0, Math.PI * 2);
+      g.strokeStyle = `rgba(70,32,0,${0.038 + (i % 4 === 0 ? 0.022 : 0)})`;
+      g.lineWidth = 0.32; g.stroke();
     }
     g.restore();
 
-    // 楓葉浮雕
+    // ─ 5. 內緣浮雕環 ─
+    g.beginPath(); g.arc(cx, cy, fr * 0.938, 0, Math.PI * 2);
+    g.strokeStyle = 'rgba(255,215,55,0.22)'; g.lineWidth = 0.7; g.stroke();
+    g.beginPath(); g.arc(cx, cy, fr * 0.915, 0, Math.PI * 2);
+    g.strokeStyle = 'rgba(55,24,0,0.32)'; g.lineWidth = 0.5; g.stroke();
+
+    // ─ 6. 楓葉浮雕 ─
     g.save();
     g.translate(cx, cy);
-    const ls = key * 0.052;
+    const ls = key * 0.054;
     g.scale(ls, ls);
-    g.fillStyle = 'rgba(130,65,0,0.50)';
-    g.strokeStyle = 'rgba(90,42,0,0.22)';
-    g.lineWidth = 0.6;
-    const lf = [
-      [0,-9],[1.3,-5.4],[4.6,-6.3],[3.3,-3.1],
-      [7.2,-1.6],[5.6,0.3],[6.3,3.9],[3.1,2.6],
-      [2.1,6.8],[0,5.4],[-2.1,6.8],[-3.1,2.6],
-      [-6.3,3.9],[-5.6,0.3],[-7.2,-1.6],[-3.3,-3.1],
-      [-4.6,-6.3],[-1.3,-5.4],
-    ];
-    g.beginPath();
-    g.moveTo(lf[0][0], lf[0][1]);
-    for (let i = 1; i < lf.length; i++) g.lineTo(lf[i][0], lf[i][1]);
-    g.closePath();
-    g.fill();
-    g.stroke();
+
+    // 陰影層（偏移模擬浮雕深度）
+    g.save(); g.translate(0.55, 0.85);
+    g.fillStyle = 'rgba(44,16,0,0.58)';
+    _drawMapleLeafPath(g); g.fill(); g.restore();
+
+    // 主葉面
+    g.fillStyle = 'rgba(152,70,0,0.62)';
+    g.strokeStyle = 'rgba(210,120,0,0.25)'; g.lineWidth = 0.5;
+    _drawMapleLeafPath(g); g.fill(); g.stroke();
+
+    // 高光層（上移以示凸起受光）
+    g.save(); g.translate(-0.28, -0.50);
+    g.fillStyle = 'rgba(225,128,22,0.24)';
+    _drawMapleLeafPath(g); g.fill(); g.restore();
+
     // 葉柄
-    g.strokeStyle = 'rgba(130,65,0,0.50)';
-    g.lineWidth = 1.4;
-    g.beginPath();
-    g.moveTo(0, 6.8);
-    g.lineTo(0, 10.2);
-    g.stroke();
+    g.strokeStyle = 'rgba(148,68,0,0.58)'; g.lineWidth = 1.35; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(0, 5.8);
+    g.bezierCurveTo(0.3, 7.8, -0.15, 9.2, 0, 10.0); g.stroke();
     g.restore();
 
-    // 頂部高光
-    const hi = g.createLinearGradient(cx - key * .28, cy - key, cx + key * .12, cy - key * .12);
-    hi.addColorStop(0, 'rgba(255,255,255,0.30)');
-    hi.addColorStop(1, 'rgba(255,255,255,0)');
-    g.beginPath();
-    g.arc(cx, cy, fr, 0, Math.PI * 2);
-    g.fillStyle = hi;
-    g.fill();
+    // ─ 7. 主光源高光（左上） ─
+    const hiG = g.createRadialGradient(
+      cx - fr*0.38, cy - fr*0.42, 0,
+      cx - fr*0.12, cy - fr*0.18, fr*0.62
+    );
+    hiG.addColorStop(0.00, 'rgba(255,255,255,0.44)');
+    hiG.addColorStop(0.35, 'rgba(255,248,195,0.15)');
+    hiG.addColorStop(0.70, 'rgba(255,230,90,0.04)');
+    hiG.addColorStop(1.00, 'rgba(255,255,255,0)');
+    g.beginPath(); g.arc(cx, cy, fr, 0, Math.PI * 2);
+    g.fillStyle = hiG; g.fill();
 
-    this._spriteCache.set(key, { canvas: offscreen, pad });
-    return { canvas: offscreen, pad };
+    // ─ 8. 環境補光（右下） ─
+    const fillG = g.createRadialGradient(cx + fr*0.26, cy + fr*0.32, 0, cx, cy + fr*0.55, fr*0.52);
+    fillG.addColorStop(0.00, 'rgba(255,200,78,0.13)');
+    fillG.addColorStop(1.00, 'rgba(255,200,78,0)');
+    g.beginPath(); g.arc(cx, cy, fr, 0, Math.PI * 2);
+    g.fillStyle = fillG; g.fill();
+
+    const result = { canvas: off, pad };
+    this._spriteCache.set(cacheKey, result);
+    return result;
   }
 
-  /* ── 繪製單枚金幣（使用快取 sprite） ── */
+  _getBillSprite(bw, bh) {
+    const rw = Math.round(bw / 2) * 2;
+    const rh = Math.round(bh / 2) * 2;
+    const cacheKey = `bill_${rw}_${rh}`;
+    if (this._spriteCache.has(cacheKey)) return this._spriteCache.get(cacheKey);
+
+    const pad = 6;
+    const sw = rw + pad * 2, sh = rh + pad * 2;
+    const off = document.createElement('canvas');
+    off.width = sw; off.height = sh;
+    const g = off.getContext('2d');
+    const bx = pad, by = pad;
+
+    // ─ 1. 落影 ─
+    g.shadowColor = 'rgba(0,0,0,0.68)'; g.shadowBlur = 5;
+    g.shadowOffsetX = 1.5; g.shadowOffsetY = 3;
+    g.beginPath(); g.roundRect(bx, by, rw, rh, 2);
+    g.fillStyle = '#000'; g.fill();
+    g.shadowColor = 'transparent'; g.shadowBlur = 0;
+    g.shadowOffsetX = 0; g.shadowOffsetY = 0;
+
+    // ─ 2. 鈔票底色（聯邦綠） ─
+    const baseG = g.createLinearGradient(bx, by, bx + rw, by + rh);
+    baseG.addColorStop(0.00, '#1A5C1E'); baseG.addColorStop(0.22, '#2A7A2E');
+    baseG.addColorStop(0.52, '#1E6B22'); baseG.addColorStop(0.80, '#165018');
+    baseG.addColorStop(1.00, '#0E3810');
+    g.beginPath(); g.roundRect(bx, by, rw, rh, 2); g.fillStyle = baseG; g.fill();
+
+    // ─ 3. 紙纖維水平微線 ─
+    g.save();
+    g.beginPath(); g.roundRect(bx, by, rw, rh, 2); g.clip();
+    for (let yi = 0; yi < rh; yi += 2.1) {
+      g.beginPath(); g.moveTo(bx, by + yi); g.lineTo(bx + rw, by + yi);
+      g.strokeStyle = `rgba(${yi % 4 < 2 ? '75,155,75' : '18,78,18'},0.052)`;
+      g.lineWidth = 0.32; g.stroke();
+    }
+    g.restore();
+
+    // ─ 4. 內框裝飾線 ─
+    g.beginPath(); g.roundRect(bx + 2.5, by + 2.5, rw - 5, rh - 5, 1);
+    g.strokeStyle = 'rgba(115,215,115,0.27)'; g.lineWidth = 0.6; g.stroke();
+
+    // ─ 5. 肖像橢圓區 ─
+    const px = bx + rw * 0.5, py = by + rh * 0.5;
+    g.beginPath(); g.ellipse(px, py, rw * 0.20, rh * 0.38, 0, 0, Math.PI * 2);
+    g.fillStyle = 'rgba(10,56,12,0.52)'; g.fill();
+    g.strokeStyle = 'rgba(115,208,115,0.18)'; g.lineWidth = 0.5; g.stroke();
+    // 肖像人頭剪影
+    g.beginPath(); g.ellipse(px, py - rh * 0.06, rw * 0.08, rh * 0.24, 0, 0, Math.PI * 2);
+    g.fillStyle = 'rgba(25,88,25,0.50)'; g.fill();
+
+    // ─ 6. 安全線（金屬絲） ─
+    const sx = bx + rw * 0.68;
+    const sgrd = g.createLinearGradient(sx - 1, 0, sx + 1, 0);
+    sgrd.addColorStop(0, 'rgba(195,255,195,0)');
+    sgrd.addColorStop(0.5, 'rgba(195,255,195,0.38)');
+    sgrd.addColorStop(1, 'rgba(195,255,195,0)');
+    g.beginPath(); g.moveTo(sx, by + 3); g.lineTo(sx, by + rh - 3);
+    g.strokeStyle = sgrd; g.lineWidth = 1.6; g.stroke();
+
+    // ─ 7. 面額文字 ─
+    const fs = Math.max(4, rh * 0.30);
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillStyle = 'rgba(178,238,178,0.55)';
+    g.font = `bold ${fs * 1.1}px Georgia,serif`; g.fillText('$', px, py);
+    g.font = `bold ${fs * 0.70}px Georgia,serif`;
+    g.textAlign = 'left';
+    g.fillStyle = 'rgba(155,228,155,0.50)';
+    g.fillText('100', bx + 3.5, by + rh * 0.22);
+    g.textAlign = 'right';
+    g.fillText('100', bx + rw - 3.5, by + rh * 0.80);
+
+    // ─ 8. 紙面光澤（左上） ─
+    const paperG = g.createLinearGradient(bx, by, bx + rw * 0.55, by + rh * 0.45);
+    paperG.addColorStop(0, 'rgba(255,255,255,0.13)');
+    paperG.addColorStop(0.4, 'rgba(255,255,255,0.045)');
+    paperG.addColorStop(1, 'rgba(0,0,0,0)');
+    g.beginPath(); g.roundRect(bx, by, rw, rh, 2); g.fillStyle = paperG; g.fill();
+
+    // ─ 9. 頂部邊緣光 ─
+    g.beginPath(); g.roundRect(bx, by, rw, 1.4, [2, 2, 0, 0]);
+    g.fillStyle = 'rgba(195,255,195,0.17)'; g.fill();
+
+    const result = { canvas: off, pad };
+    this._spriteCache.set(cacheKey, result);
+    return result;
+  }
+
   _drawCoin(c, t) {
     const ctx = this.cx;
     const { x, y, r, tilt } = c;
@@ -821,29 +1005,48 @@ class MapleCoinRain {
     ctx.scale(squish, 1);
     ctx.drawImage(sprite.canvas, -drawSize / 2, -drawSize / 2, drawSize, drawSize);
 
-    /* 動態閃光（極低開銷：只有 2 個圓弧） */
+    // 動態鏡面閃光（鏡面反射掃過時的白點）
     const glint = (Math.sin(t * 0.0028 + x * 0.09) + 1) * 0.5;
-    if (glint > 0.72 && squish > 0.32) {
-      const gs = (glint - 0.72) / 0.28;
+    if (glint > 0.70 && squish > 0.30) {
+      const gs = (glint - 0.70) / 0.30;
       ctx.beginPath();
-      ctx.arc(-r * .30, -r * .34, r * .15, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255,255,255,${gs * 0.60})`;
+      ctx.arc(-r * 0.30, -r * 0.34, r * 0.13, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,240,${gs * 0.68})`;
       ctx.fill();
       ctx.beginPath();
-      ctx.arc(r * .20, -r * .18, r * .07, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255,255,255,${gs * 0.30})`;
+      ctx.arc( r * 0.18, -r * 0.20, r * 0.055, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,200,${gs * 0.32})`;
       ctx.fill();
     }
     ctx.restore();
   }
 
+  _drawBill(c, t) {
+    const ctx = this.cx;
+    const sprite = this._getBillSprite(c.bw, c.bh);
+    const sw = c.bw + sprite.pad * 2;
+    const sh = c.bh + sprite.pad * 2;
+    const flutter = c.done ? 0 : Math.sin(t * 0.0012 + c.flutter) * 0.14;
+    const squishX = Math.cos(flutter);
+
+    ctx.save();
+    ctx.translate(c.x, c.y);
+    ctx.rotate(c.tilt + flutter * 0.22);
+    ctx.scale(squishX, 1);
+    ctx.drawImage(sprite.canvas, -sw / 2, -sh / 2, sw, sh);
+    ctx.restore();
+  }
+
+  _drawItem(c, t) {
+    if (c.type === 'bill') this._drawBill(c, t);
+    else this._drawCoin(c, t);
+  }
+
   _draw() {
     const t = performance.now();
     this.cx.clearRect(0, 0, this.W, this.H);
-    /* 堆積金幣先畫（底層） */
-    for (let i = this.pile.length - 1; i >= 0; i--) this._drawCoin(this.pile[i], t);
-    /* 飛行中金幣疊在上方 */
-    for (const c of this.coins) this._drawCoin(c, t);
+    for (let i = this.pile.length - 1; i >= 0; i--) this._drawItem(this.pile[i], t);
+    for (const c of this.coins) this._drawItem(c, t);
   }
 
   _tick() {
