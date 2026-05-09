@@ -167,54 +167,46 @@ function normalizeRanking(row) {
 }
 
 function normalizeReport(snapshot, lineText) {
-  const standardData = snapshot.standardData || {};
+  // --- AI SPEC 規格一體化 ---
+  // 優先權：1. 核心 report 物件 > 2. Legacy standardData > 3. Snapshot 根層級
   const report = snapshot.report || {};
-  const rankings =
-    snapshot.ranking ||
-    standardData.正式名次 ||
-    report.rankings ||
-    [];
+  const standardData = snapshot.standardData || {};
+  
+  // 1. 名次優化：排除離職、排除無效數據
+  const rankings = report.rankings || standardData.正式名次 || snapshot.ranking || [];
   const ranking = asArray(rankings)
     .map(normalizeRanking)
     .filter((row) => row.rank && row.name)
     .sort((a, b) => a.rank - b.rank);
+
+  // 2. 統計優化：確保「總業績」與「實收」在各規格下標籤一致
+  const summarySource = report.summaryBoard || snapshot.summary || standardData.整合總盤 || {};
   const summary = {
-    ...(report.summaryBoard || {}),
-    ...(standardData.整合總盤 || {}),
-    ...(snapshot.summary || {})
+    renewalDeals: num(summarySource.renewalDeals || summarySource.追續單成交 || summarySource.累積追續總成交數),
+    totalRevenue: num(summarySource.totalRevenue || summarySource.全部總業績 || summarySource.本月業績),
+    renewalRevenue: num(summarySource.renewalRevenue || summarySource.追續單金額 || summarySource.追續單總金額 || summarySource.當日續單金額),
+    actualRevenue: num(summarySource.actualRevenue || summarySource.實收總金額 || summarySource.實收)
   };
-  const audit = snapshot.audit || report.audit || {};
-  const standardAudit = standardData.審計結論 || {};
-  const standardDates = standardData.日期資訊 || {};
+
+  // 3. 傳送文字優化：鎖定「群組超精簡版」為唯一傳送規格
   const text =
     lineText ||
-    getDeep(snapshot, ['broadcast.scriptText', 'broadcast.text'], '') ||
-    snapshot.announcement ||
-    report.announcement ||
     report.groupShortText ||
     standardData.群組超精簡版 ||
+    getDeep(snapshot, ['broadcast.scriptText', 'broadcast.text'], '') ||
     '';
 
   return {
     title: normalizeTitle(snapshot, standardData, report),
-    settlementDate: normalizeDate(standardDates.結算日 || report.settlementDate || report.reportDate || snapshot.settlementDate),
-    dispatchDate: normalizeDate(standardDates.派單日 || report.dispatchDate || snapshot.dispatchDate),
-    auditResult: audit.status || audit.result || standardAudit.結果 || report.auditResult || snapshot.validation?.status || 'PASS',
+    settlementDate: normalizeDate(report.settlementDate || standardData.日期資訊?.結算日 || snapshot.settlementDate),
+    dispatchDate: normalizeDate(report.dispatchDate || standardData.日期資訊?.派單日 || snapshot.dispatchDate),
+    auditResult: report.auditResult || report.audit?.result || snapshot.audit?.status || 'PASS',
     ranking,
-    groups: snapshot.groups || standardData.分級 || report.groups || {},
-    summary: {
-      renewalDeals: num(summary.renewalDeals || summary.追續單成交 || summary.累積追續總成交數 || summary.累積派單總成交數),
-      totalRevenue: num(summary.totalRevenue || summary.全部總業績 || summary.本月業績),
-      renewalRevenue: num(summary.renewalRevenue || summary.追續單金額 || summary.追續單總金額 || summary.當日續單金額),
-      actualRevenue: num(summary.actualRevenue || summary.實收總金額 || summary.實收)
-    },
-    auditNotes: asArray(audit.notes || standardAudit.特別說明 || report.audit?.notes),
-    excludedEmployees: asArray(audit.excludedEmployees || standardAudit.審計列示不入派單 || report.audit?.excludedEmployees).map(normalizeExcludedEntry),
-    auditWarnings: asArray(snapshot.auditWarnings || report.auditWarnings),
-    reportTotal: snapshot.reportTotal || report.reportTotal || null,
-    assignmentTotal: snapshot.assignmentTotal || report.assignmentTotal || null,
-    maxValues: snapshot.maxValues || report.maxValues || null,
-    groupShortText: snapshot.groupShortText || report.groupShortText || standardData['群組超精簡版'] || '',
+    groups: report.groups || snapshot.groups || standardData.分級 || {},
+    summary,
+    auditNotes: asArray(report.audit?.notes || report.auditNotes || []),
+    excludedEmployees: asArray(report.audit?.excludedEmployees || []).map(normalizeExcludedEntry),
+    groupShortText: report.groupShortText || standardData['群組超精簡版'] || '',
     sendText: cleanSendText(text)
   };
 }
@@ -553,10 +545,27 @@ function animateScoreFills() {
 async function shareText() {
   const text = state.sendText.trim();
   if (!text) { showToast('沒有可分享的公告文字'); return; }
+  
+  // 優先嘗試系統分享（在 iOS/Android Chrome/Safari 體驗最好）
   if (navigator.share) {
-    await navigator.share({ title: state.report?.title || 'AI 派單公告', text });
-    return;
+    try {
+      await navigator.share({ 
+        title: state.report?.title || 'AI 派單公告', 
+        text: text 
+      });
+      return;
+    } catch (e) {
+      // 用戶取消分享不顯示錯誤，其他錯誤則進入 fallback
+      if (e.name === 'AbortError') return;
+      console.warn('Share failed, using fallback', e);
+    }
   }
+  
+  // Fallback 1: 直接跳轉 LINE 分享網址（解決規格不相容問題）
+  const lineUrl = `https://line.me/R/share?text=${encodeURIComponent(text)}`;
+  window.open(lineUrl, '_blank');
+  
+  // Fallback 2: 備用複製
   await copyText();
 }
 
