@@ -324,8 +324,9 @@ function setupOfficialMoneyRain(panel) {
   let dpr = 1;
   let last = performance.now();
   let spawned = 0;
-  const maxVisible = 840;
+  const maxVisible = 180;
   const lifetimeTarget = 10000;
+  const motionScale = 0.46;
 
   function resize() {
     const rect = canvas.getBoundingClientRect();
@@ -608,24 +609,24 @@ function setupOfficialMoneyRain(panel) {
     const sprite = isBill
       ? billPool[Math.floor(Math.random() * billPool.length)]
       : coinPool[Math.floor(Math.random() * coinPool.length)];
-    const size = isBill ? 48 + Math.random() * 52 : 16 + Math.random() * 24;
+    const size = isBill ? 54 + Math.random() * 58 : 18 + Math.random() * 28;
     particles.push({
       type: isBill ? 'bill' : 'coin',
       sprite,
       x: Math.random() * width,
       y: -70 - Math.random() * 220,
       z: Math.random(),
-      vx: (Math.random() - 0.5) * (isBill ? 74 : 46),
-      vy: 110 + Math.random() * (isBill ? 170 : 260),
-      gravity: isBill ? 450 : 760,
-      drag: isBill ? 0.982 : 0.993,
+      vx: (Math.random() - 0.5) * (isBill ? 74 : 46) * motionScale,
+      vy: (110 + Math.random() * (isBill ? 170 : 260)) * motionScale,
+      gravity: (isBill ? 450 : 760) * motionScale,
+      drag: isBill ? 0.991 : 0.996,
       size,
       w: isBill ? size * 1.92 : size,
       h: isBill ? size * 0.92 : size,
       rot: Math.random() * Math.PI * 2,
-      vr: (Math.random() - 0.5) * (isBill ? 4.8 : 13),
+      vr: (Math.random() - 0.5) * (isBill ? 4.8 : 13) * motionScale,
       flip: Math.random() * Math.PI * 2,
-      vf: isBill ? 5 + Math.random() * 7 : 11 + Math.random() * 15,
+      vf: (isBill ? 5 + Math.random() * 7 : 11 + Math.random() * 15) * motionScale,
       floor: height - (12 + Math.random() * 76),
       alpha: isBill ? 0.84 : 0.96,
       trail: Math.random() < 0.38
@@ -752,8 +753,7 @@ function setupOfficialMoneyRain(panel) {
     ctx.fillRect(0, 0, width, height);
 
     /* 降低每幀 spawn 數：降低到 8/4，粒子上限縮小到 400 */
-    const maxVisible = 400;
-    const desired = spawned < lifetimeTarget ? 8 : 4;
+    const desired = spawned < lifetimeTarget ? 3 : 1;
     for (let i = 0; i < desired && particles.length < maxVisible; i += 1) {
       spawn(i % 5 === 0);
     }
@@ -783,7 +783,7 @@ function setupOfficialMoneyRain(panel) {
   }
 
   resize();
-  for (let i = 0; i < 120; i += 1) spawn(i % 4 === 0);
+  for (let i = 0; i < 54; i += 1) spawn(i % 4 === 0);
   window.addEventListener('resize', resize);
   requestAnimationFrame(frame);
 }

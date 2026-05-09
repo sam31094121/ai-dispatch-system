@@ -3217,15 +3217,15 @@ textarea,
   width: 100%;
   height: 100%;
   display: block;
-  opacity: 0.78;
+  opacity: 0.70;
   mix-blend-mode: screen;
   filter: contrast(1.08) saturate(0.96);
 }
 
 .official-money-rain[data-assets="photo"] {
-  opacity: 0.92;
+  opacity: 0.86;
   mix-blend-mode: normal;
-  filter: contrast(1.08) saturate(1.05);
+  filter: contrast(1.05) saturate(1.08) brightness(0.96);
 }
 
 .official-coin-field span {
