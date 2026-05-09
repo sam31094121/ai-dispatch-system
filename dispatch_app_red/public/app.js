@@ -1622,13 +1622,13 @@ function setup() {
     const vParam = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`;
     const mobileUrl = `${realOrigin}/mobile.html?v=${vParam}`;
 
-    const isLocal = baseOrigin.includes('localhost') || baseOrigin.includes('127.0.0.1');
-    const warning = isLocal ? '\n\n?? 瘜冽?嚗?雯???localhost嚗?璈??銝 WiFi ?航?⊥????遣霅唬蝙?冽璈?IP ?迤撘撩?蝬脣??? : '';
+    const isLocal = realOrigin.includes('localhost') || realOrigin.includes('127.0.0.1');
+    const warning = isLocal ? `\n\n⚠️ 偵測到您目前使用 localhost 訪問。若要傳給手機，建議使用掃描右上方 QR Code，或將網址改為 ${realOrigin}/mobile.html 以免他人無法開啟。` : '';
     
-    const text = `? ?I 瘣曉?唳?摰文歇?湔?n\n??啁? AI 憭扳????蝝?撠惇撱箄降撌脣??\n?? 隢??喲????寥???亦?隞摰瘣曉??嚗n\n?? ${mobileUrl}${warning}`;
+    const text = `? ?I 瘣曉?唳?摰文歇?湔?n\n?€?啁? AI 憭扳???€?蝝?撠惇撱箄降撌脣??\n?? 隢??喲????寥€???亦?隞摰瘣曉??嚗n\n?? ${mobileUrl}${warning}`;
     
     const oldText = btnSendLine.textContent;
-    btnSendLine.textContent = '?喲葉...';
+    btnSendLine.textContent = '?喲€葉...';
     btnSendLine.disabled = true;
     
     try {
