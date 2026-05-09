@@ -40,6 +40,8 @@ const state = {
 };
 
 const CACHE_KEY = 'zhaogui_last_report_unified';
+const AUTO_REFRESH_MS = 60_000;
+let _autoRefreshTimer = null;
 
 
 function get(obj, keys, fallback = '') {
@@ -259,9 +261,21 @@ async function loadData() {
     render(report);
     showToast('資料已同步');
     initCoinRain();
+    scheduleAutoRefresh();
   } catch (error) {
     renderError(error);
   }
+}
+
+function scheduleAutoRefresh() {
+  clearTimeout(_autoRefreshTimer);
+  _autoRefreshTimer = setTimeout(() => {
+    if (!document.hidden) {
+      loadData();
+    } else {
+      scheduleAutoRefresh();
+    }
+  }, AUTO_REFRESH_MS);
 }
 
 
@@ -489,12 +503,19 @@ function renderSendText(text, shortText) {
 
 function renderError(error) {
   refs.auditResult.textContent = 'ERROR';
-  refs.summaryGrid.innerHTML = `<div class="empty-state">${escapeHtml(error.message || '資料讀取失敗')}</div>`;
-  refs.rankingList.innerHTML = '<div class="empty-state">請確認伺服器已啟動並重新整理</div>';
+  refs.summaryGrid.innerHTML = `
+    <div class="empty-state error-state">
+      <div class="error-icon">⚠</div>
+      <div class="error-msg">${escapeHtml(error.message || '資料讀取失敗')}</div>
+      <button class="retry-btn" type="button" onclick="loadData()">重新連線</button>
+      <div class="error-hint">或等待 60 秒自動重試</div>
+    </div>`;
+  refs.rankingList.innerHTML = '<div class="empty-state">伺服器離線中，稍後自動重試</div>';
   refs.groupsGrid.innerHTML = '';
   refs.auditNotes.innerHTML = '';
   renderSendText('');
-  showToast('資料讀取失敗');
+  showToast('連線失敗，60 秒後自動重試');
+  scheduleAutoRefresh();
 }
 
 async function copyText() {

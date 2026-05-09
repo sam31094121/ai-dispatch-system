@@ -721,6 +721,27 @@ function stopSpeech(resetIndex = true, statusText = '播報已停止') {
   setStatus(statusText, resetIndex ? '播報流程已結束，等待重新啟動。' : '目前停在既有段落。', 'orange');
 }
 
+function updateSpeechProgress() {
+  const total = state.segments.length;
+  const idx   = state.currentIndex;
+  const bar   = document.getElementById('speech-progress-bar');
+  const label = document.getElementById('speech-progress-label');
+  const eta   = document.getElementById('speech-progress-eta');
+  if (!bar) return;
+
+  const pct = total > 0 ? ((idx + (state.speaking ? 0.5 : 0)) / total * 100) : 0;
+  bar.style.width = Math.min(100, pct).toFixed(1) + '%';
+
+  if (label) label.textContent = `${Math.min(idx + 1, total)} / ${total} 段`;
+
+  if (eta && total > 0) {
+    const rate      = Number(refs.rateRange?.value || 0.95);
+    const remaining = state.segments.slice(idx).reduce((sum, s) => sum + (s.text || '').length, 0);
+    const secLeft   = Math.round(remaining / (rate * 4.5));
+    eta.textContent = state.speaking && secLeft > 0 ? `約 ${secLeft} 秒` : '';
+  }
+}
+
 function finishSpeech() {
   state.speaking = false;
   state.paused = false;
@@ -729,6 +750,7 @@ function finishSpeech() {
   refs.btnStart.textContent = '重新播報';
   setStatus('播報完成', '所有段落已完成播報。', 'green');
   renderSegments();
+  updateSpeechProgress();
 }
 
 function speakFrom(index) {
@@ -782,6 +804,7 @@ function speakFrom(index) {
     if (token !== state.playToken) return;
     state.currentIndex = safeIndex;
     renderSegments();
+    updateSpeechProgress();
   };
 
   utterance.onend = () => {

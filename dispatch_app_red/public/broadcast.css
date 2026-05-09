@@ -490,6 +490,51 @@ input[type="range"] {
   color: var(--text);
 }
 
+/* ── 語音進度條 ── */
+.speech-progress-wrap {
+  margin-bottom: 14px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 2px;
+  position: relative;
+}
+
+.speech-progress-bar {
+  height: 8px;
+  width: 0%;
+  background: linear-gradient(90deg, #52ebff 0%, #f5cb5c 60%, #ff9ed6 100%);
+  border-radius: 8px;
+  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 0 12px rgba(82,235,255,0.5), 0 0 24px rgba(245,203,92,0.3);
+}
+
+.speech-progress-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 8px 3px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+#speech-progress-label { color: var(--cyan); }
+#speech-progress-eta   { color: var(--gold); }
+
+body.broadcast-live .speech-progress-bar {
+  animation: progressGlow 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes progressGlow {
+  from { box-shadow: 0 0 8px rgba(82,235,255,0.4), 0 0 16px rgba(245,203,92,0.2); }
+  to   { box-shadow: 0 0 18px rgba(82,235,255,0.7), 0 0 32px rgba(245,203,92,0.45); }
+}
+
+/* ─────────────────── */
+
 .teleprompter-meta {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
