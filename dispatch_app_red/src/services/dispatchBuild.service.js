@@ -1,4 +1,4 @@
-const {
+﻿const {
   AUDIT_METRICS,
   DEFAULT_AUDIT_RULE,
   FRONTEND_LOCK_RULES,
@@ -76,39 +76,39 @@ function getDefaultAnnouncement() {
 }
 
 const rankingMetricAliases = new Map([
-  ['正式權重分數', '正式權重分數'],
-  ['實收', '實收'],
-  ['實收總金額', '實收'],
-  ['總業績', '總業績'],
-  ['全部總業績', '總業績'],
-  ['業績', '總業績'],
-  ['總盤', '總業績'],
-  ['續單', '續單金額'],
-  ['續單金額', '續單金額'],
-  ['追續金額', '續單金額'],
-  ['追續單金額', '續單金額'],
-  ['追單', '追續成交總數'],
-  ['追續', '追續成交總數'],
-  ['追續成交總數', '追續成交總數'],
-  ['追續總數', '追續成交總數'],
-  ['追續單數', '追續成交總數'],
-  ['追續客單價', '追續客單價'],
-  ['派單成交', '派單成交總通數'],
-  ['派單成交總數', '派單成交總通數'],
-  ['派單成交總通數', '派單成交總通數']
+  ['甇??甈??', '甇??甈??'],
+  ['撖行', '撖行'],
+  ['撖行蝮賡?憿?, '撖行'],
+  ['蝮賣平蝮?, '蝮賣平蝮?],
+  ['?券蝮賣平蝮?, '蝮賣平蝮?],
+  ['璆剔蜀', '蝮賣平蝮?],
+  ['蝮賜', '蝮賣平蝮?],
+  ['蝥', '蝥??'],
+  ['蝥??', '蝥??'],
+  ['餈賜???', '蝥??'],
+  ['餈賜??桅?憿?, '蝥??'],
+  ['餈賢', '餈賜??漱蝮賣'],
+  ['餈賜?', '餈賜??漱蝮賣'],
+  ['餈賜??漱蝮賣', '餈賜??漱蝮賣'],
+  ['餈賜?蝮賣', '餈賜??漱蝮賣'],
+  ['餈賜??格', '餈賜??漱蝮賣'],
+  ['餈賜?摰Ｗ??, '餈賜?摰Ｗ??],
+  ['瘣曉?漱', '瘣曉?漱蝮賡'],
+  ['瘣曉?漱蝮賣', '瘣曉?漱蝮賡'],
+  ['瘣曉?漱蝮賡', '瘣曉?漱蝮賡']
 ]);
 
 const summaryMetricAliases = new Map([
   ...SUMMARY_METRICS.map((metric) => [metric, metric]),
-  ['全部總業績', '本月業績'],
-  ['總業績', '本月業績'],
-  ['追續單成交', '累積追續總成交數'],
-  ['追續成交總數', '累積追續總成交數'],
-  ['追續單金額', '追續單總金額'],
-  ['追續單總金額', '追續單總金額'],
-  ['實收總金額', '實收總金額'],
-  ['三平台整合取消退貨', '當日取消退貨'],
-  ['取消退貨', '當日取消退貨']
+  ['?券蝮賣平蝮?, '?祆?璆剔蜀'],
+  ['蝮賣平蝮?, '?祆?璆剔蜀'],
+  ['餈賜??格?鈭?, '蝝舐?餈賜?蝮賣?鈭斗'],
+  ['餈賜??漱蝮賣', '蝝舐?餈賜?蝮賣?鈭斗'],
+  ['餈賜??桅?憿?, '餈賜??桃蜇??'],
+  ['餈賜??桃蜇??', '餈賜??桃蜇??'],
+  ['撖行蝮賡?憿?, '撖行蝮賡?憿?],
+  ['銝像?唳??瘨鞎?, '?嗆???鞎?],
+  ['???鞎?, '?嗆???鞎?]
 ]);
 
 function clone(value) {
@@ -138,40 +138,40 @@ function uniqueTexts(values) {
 }
 
 const AUDIT_NOTE_INCLUDE_PATTERNS = [
-  /未發現/u,
-  /無漏算/u,
-  /無多算/u,
-  /無總盤衝突/u,
-  /無總表衝突/u,
-  /無衝突/u,
-  /退貨已列入/u,
-  /取消退貨/u,
-  /格式異常/u,
-  /不影響/u,
-  /加總一致/u,
-  /核對通過/u,
-  /異常/u,
-  /提醒/u,
-  /一致/u
+  /?芰??u,
+  /?⊥?蝞?u,
+  /?∪?蝞?u,
+  /?∠蜇?方?蝒?u,
+  /?∠蜇銵刻?蝒?u,
+  /?∟?蝒?u,
+  /?鞎典歇?/u,
+  /???鞎?u,
+  /?澆??啣虜/u,
+  /銝蔣??u,
+  /?蜇銝??u,
+  /?詨???/u,
+  /?啣虜/u,
+  /??/u,
+  /銝??u
 ];
 
 const AUDIT_NOTE_EXCLUDE_PATTERNS = [
-  /^審計結果/u,
-  /^本輪依鎖死規則/u,
-  /^排序固定/u,
-  /總表核對通過/u,
-  /^(累積總派單數|累積派單總成交數|累積追續總成交數|當日續單金額|本月業績|追續單總金額|當日取消退貨)/u,
-  /^已離職[:：]/u,
-  /^已離職人員/u,
-  /^群組超精簡版/u,
-  /^📣【/u,
-  /^本輪最終結論如下[:：]?$/u,
-  /^\d{1,2}\/\d{1,2}\s*結算資料已核對完成/u,
-  /^\d{1,2}\/\d{1,2}\s*正式派單順序，以本則公告為準/u
+  /^撖抵?蝯?/u,
+  /^?祈憚靘?甇餉???u,
+  /^???箏?/u,
+  /蝮質”?詨???/u,
+  /^(蝝舐?蝮賣晷?格|蝝舐?瘣曉蝮賣?鈭斗|蝝舐?餈賜?蝮賣?鈭斗|?嗆蝥??|?祆?璆剔蜀|餈賜??桃蜇??|?嗆???鞎?/u,
+  /^撌脤?愴:嚗/u,
+  /^撌脤?瑚犖??u,
+  /^蝢斤?頞移蝪∠?/u,
+  /^???u,
+  /^?祈憚?蝯?隢?銝:嚗?$/u,
+  /^\d{1,2}\/\d{1,2}\s*蝯?鞈?撌脫撠???u,
+  /^\d{1,2}\/\d{1,2}\s*甇??瘣曉??嚗誑?砍??砍??箸?/u
 ];
 
 function trimTrailingPunctuation(value) {
-  return cleanText(value).replace(/[。．！!？?；;]+$/u, '').trim();
+  return cleanText(value).replace(/[??嚗?嚗?嚗?]+$/u, '').trim();
 }
 
 function normalizeAuditNoteLine(value) {
@@ -188,7 +188,7 @@ function collectMeaningfulAuditNotes(values = []) {
 
 function buildCompactAuditNotes(notes = []) {
   const normalized = collectMeaningfulAuditNotes(notes).map(trimTrailingPunctuation);
-  return normalized.length ? normalized.join('；') : '無補充說明';
+  return normalized.length ? normalized.join('嚗?) : '?∟??牧??;
 }
 
 function normalizeMetricBag(source, metrics) {
@@ -201,16 +201,16 @@ function buildPlatformKey(platformName) {
 }
 
 function normalizePlatform(platformInput = {}, fallbackName = '') {
-  const platformName = cleanText(platformInput.platformName || platformInput.平台名稱 || fallbackName);
+  const platformName = cleanText(platformInput.platformName || platformInput.撟喳?迂 || fallbackName);
   if (!platformName) return null;
 
-  const metricsSource = platformInput.metrics || platformInput.數據 || platformInput;
+  const metricsSource = platformInput.metrics || platformInput.?豢? || platformInput;
   const passed =
     typeof platformInput.passed === 'boolean'
       ? platformInput.passed
-      : typeof platformInput.通過 === 'boolean'
-      ? platformInput.通過
-      : cleanText(platformInput.passed || platformInput.通過).toUpperCase() === 'PASS';
+      : typeof platformInput.?? === 'boolean'
+      ? platformInput.??
+      : cleanText(platformInput.passed || platformInput.??).toUpperCase() === 'PASS';
 
   return {
     platformKey: cleanText(platformInput.platformKey || buildPlatformKey(platformName)),
@@ -222,13 +222,13 @@ function normalizePlatform(platformInput = {}, fallbackName = '') {
 
 function normalizeOfficialPlatformMetrics(value = {}) {
   return {
-    累積總派單數: toNumber(value.cumulativeDispatch ?? value.累積總派單數),
-    累積派單總成交數: toNumber(value.cumulativeDispatchDeals ?? value.累積派單總成交數),
-    累積追續總成交數: toNumber(value.cumulativeRenewalDeals ?? value.累積追續總成交數),
-    當日續單金額: toNumber(value.dailyRenewalAmount ?? value.當日續單金額),
-    本月業績: toNumber(value.monthlyRevenue ?? value.本月業績),
-    追續單總金額: toNumber(value.totalRenewalAmount ?? value.追續單總金額),
-    實收總金額: toNumber(value.actualRevenue ?? value.實收總金額)
+    蝝舐?蝮賣晷?格: toNumber(value.cumulativeDispatch ?? value.蝝舐?蝮賣晷?格),
+    蝝舐?瘣曉蝮賣?鈭斗: toNumber(value.cumulativeDispatchDeals ?? value.蝝舐?瘣曉蝮賣?鈭斗),
+    蝝舐?餈賜?蝮賣?鈭斗: toNumber(value.cumulativeRenewalDeals ?? value.蝝舐?餈賜?蝮賣?鈭斗),
+    ?嗆蝥??: toNumber(value.dailyRenewalAmount ?? value.?嗆蝥??),
+    ?祆?璆剔蜀: toNumber(value.monthlyRevenue ?? value.?祆?璆剔蜀),
+    餈賜??桃蜇??: toNumber(value.totalRenewalAmount ?? value.餈賜??桃蜇??),
+    撖行蝮賡?憿? toNumber(value.actualRevenue ?? value.撖行蝮賡?憿?
   };
 }
 
@@ -238,7 +238,7 @@ function normalizeOfficialPlatforms(rawPlatforms = {}) {
       platformName,
       {
         ...normalizeOfficialPlatformMetrics(value),
-        通過: true
+        ??: true
       }
     ])
   );
@@ -248,8 +248,8 @@ function normalizeExcludedEmployees(value) {
   const seen = new Set();
   return safeArray(value)
     .map((item) => ({
-      name: splitNameTags(item?.name || item?.姓名).name,
-      reason: cleanText(item?.reason || item?.原因 || '已離職')
+      name: splitNameTags(item?.name || item?.憪?).name,
+      reason: cleanText(item?.reason || item?.?? || '撌脤??)
     }))
     .filter((item) => {
       if (!item.name || seen.has(item.name)) return false;
@@ -269,15 +269,15 @@ function normalizeAudit(rawAudit = {}, fallbackResult = '') {
         .map(([platformName, platformValue]) => normalizePlatform(platformValue, platformName))
         .filter(Boolean);
 
-  const explicitResult = cleanText(raw.result || raw.結果 || fallbackResult).toUpperCase();
+  const explicitResult = cleanText(raw.result || raw.蝯? || fallbackResult).toUpperCase();
   const result = explicitResult || (platforms.length > 0 && platforms.every((platform) => platform.passed) ? 'PASS' : 'FAIL');
 
   return {
     result,
-    rule: cleanText(raw.rule || raw.規則 || DEFAULT_AUDIT_RULE) || DEFAULT_AUDIT_RULE,
+    rule: cleanText(raw.rule || raw.閬? || DEFAULT_AUDIT_RULE) || DEFAULT_AUDIT_RULE,
     platforms,
-    notes: normalizeStringArray(raw.notes || raw.特別說明 || raw.備註),
-    excludedEmployees: normalizeExcludedEmployees(raw.excludedEmployees || raw['審計列示不入派單'])
+    notes: normalizeStringArray(raw.notes || raw.?孵隤芣? || raw.?酉),
+    excludedEmployees: normalizeExcludedEmployees(raw.excludedEmployees || raw['撖抵??內銝瘣曉'])
   };
 }
 
@@ -287,14 +287,14 @@ function normalizeSummaryBoard(rawSummary = {}) {
 
 function normalizeOfficialSummaryBoard(rawStats = {}) {
   return normalizeSummaryBoard({
-    累積總派單數: rawStats.totalCalls,
-    累積派單總成交數: rawStats.dispatchCalls,
-    累積追續總成交數: rawStats.renewalCalls,
-    當日續單金額: rawStats.dailyRenewalAmount,
-    本月業績: rawStats.monthlyRevenue,
-    追續單總金額: rawStats.renewalAmount,
-    實收總金額: rawStats.actualRevenue,
-    當日取消退貨: rawStats.cancellations
+    蝝舐?蝮賣晷?格: rawStats.totalCalls,
+    蝝舐?瘣曉蝮賣?鈭斗: rawStats.dispatchCalls,
+    蝝舐?餈賜?蝮賣?鈭斗: rawStats.renewalCalls,
+    ?嗆蝥??: rawStats.dailyRenewalAmount,
+    ?祆?璆剔蜀: rawStats.monthlyRevenue,
+    餈賜??桃蜇??: rawStats.renewalAmount,
+    撖行蝮賡?憿? rawStats.actualRevenue,
+    ?嗆???鞎? rawStats.cancellations
   });
 }
 
@@ -308,36 +308,36 @@ function firstDefined(source, keys) {
 }
 
 function normalizeRankingRow(row = {}, index = 0) {
-  const tagged = splitNameTags(row.name || row.姓名);
+  const tagged = splitNameTags(row.name || row.憪?);
   const metricsSource = row.metrics || row;
-  const marker = cleanText(row.標記 || row.marker);
-  const advice = cleanText(row.advice || row.建議 || row.text);
-  const isNew = typeof row.isNew === 'boolean' ? row.isNew : tagged.isNew || marker.includes('新人');
+  const marker = cleanText(row.璅? || row.marker);
+  const advice = cleanText(row.advice || row.撱箄降 || row.text);
+  const isNew = typeof row.isNew === 'boolean' ? row.isNew : tagged.isNew || marker.includes('?唬犖');
 
   return {
-    rank: Math.max(0, Math.trunc(toNumber(firstDefined(row, ['rank', '名次']) ?? index + 1))),
+    rank: Math.max(0, Math.trunc(toNumber(firstDefined(row, ['rank', '?活']) ?? index + 1))),
     name: formatDisplayName(tagged.name, isNew),
     isNew,
-    group: cleanText(row.group || row.分級).toUpperCase(),
-    prevRank: toNumber(firstDefined(row, ['prevRank', '上期名次', 'previousRank'])),
-    movement: cleanText(row.movement || row.move || row.異動 || 'flat').toLowerCase(),
+    group: cleanText(row.group || row.??).toUpperCase(),
+    prevRank: toNumber(firstDefined(row, ['prevRank', '銝??活', 'previousRank'])),
+    movement: cleanText(row.movement || row.move || row.?啣? || 'flat').toLowerCase(),
     metrics: {
-      score: toNumber(firstDefined(metricsSource, ['正式權重分數', 'weightedScore', 'totalScore', 'score'])),
-      actualRevenue: toNumber(firstDefined(metricsSource, ['實收', '實收總金額', '實收總業績', 'actualRevenue'])),
-      totalRevenue: toNumber(firstDefined(metricsSource, ['總業績', 'totalRevenue', '全部總業績'])),
-      renewalRevenue: toNumber(firstDefined(metricsSource, ['續單金額', '追續金額', '追續單金額', 'renewalRevenue'])),
-      renewalDeals: toNumber(firstDefined(metricsSource, ['追續成交總數', '追續單數', 'renewalDeals', '追單'])),
-      renewalAverage: toNumber(firstDefined(metricsSource, ['追續客單價', 'avgRenewal', 'renewalAvgPrice', 'renewalAverage'])),
-      dispatchDeals: toNumber(firstDefined(metricsSource, ['派單成交總通數', 'dispatchDeals', '派單成交'])),
+      score: toNumber(firstDefined(metricsSource, ['甇??甈??', 'weightedScore', 'totalScore', 'score'])),
+      actualRevenue: toNumber(firstDefined(metricsSource, ['撖行', '撖行蝮賡?憿?, '撖行蝮賣平蝮?, 'actualRevenue'])),
+      totalRevenue: toNumber(firstDefined(metricsSource, ['蝮賣平蝮?, 'totalRevenue', '?券蝮賣平蝮?])),
+      renewalRevenue: toNumber(firstDefined(metricsSource, ['蝥??', '餈賜???', '餈賜??桅?憿?, 'renewalRevenue'])),
+      renewalDeals: toNumber(firstDefined(metricsSource, ['餈賜??漱蝮賣', '餈賜??格', 'renewalDeals', '餈賢'])),
+      renewalAverage: toNumber(firstDefined(metricsSource, ['餈賜?摰Ｗ??, 'avgRenewal', 'renewalAvgPrice', 'renewalAverage'])),
+      dispatchDeals: toNumber(firstDefined(metricsSource, ['瘣曉?漱蝮賡', 'dispatchDeals', '瘣曉?漱'])),
       
-      // 相容舊版中文 Key
-      正式權重分數: toNumber(firstDefined(metricsSource, ['正式權重分數', 'weightedScore', 'totalScore', 'score'])),
-      實收: toNumber(firstDefined(metricsSource, ['實收', '實收總金額', '實收總業績', 'actualRevenue'])),
-      總業績: toNumber(firstDefined(metricsSource, ['總業績', 'totalRevenue', '全部總業績'])),
-      續單金額: toNumber(firstDefined(metricsSource, ['續單金額', '追續金額', '追續單金額', 'renewalRevenue'])),
-      追續成交總數: toNumber(firstDefined(metricsSource, ['追續成交總數', '追續單數', 'renewalDeals', '追單'])),
-      追續客單價: toNumber(firstDefined(metricsSource, ['追續客單價', 'avgRenewal', 'renewalAvgPrice'])),
-      派單成交總通數: toNumber(firstDefined(metricsSource, ['派單成交總通數', 'dispatchDeals', '派單成交']))
+      // ?詨捆??銝剜? Key
+      甇??甈??: toNumber(firstDefined(metricsSource, ['甇??甈??', 'weightedScore', 'totalScore', 'score'])),
+      撖行: toNumber(firstDefined(metricsSource, ['撖行', '撖行蝮賡?憿?, '撖行蝮賣平蝮?, 'actualRevenue'])),
+      蝮賣平蝮? toNumber(firstDefined(metricsSource, ['蝮賣平蝮?, 'totalRevenue', '?券蝮賣平蝮?])),
+      蝥??: toNumber(firstDefined(metricsSource, ['蝥??', '餈賜???', '餈賜??桅?憿?, 'renewalRevenue'])),
+      餈賜??漱蝮賣: toNumber(firstDefined(metricsSource, ['餈賜??漱蝮賣', '餈賜??格', 'renewalDeals', '餈賢'])),
+      餈賜?摰Ｗ?? toNumber(firstDefined(metricsSource, ['餈賜?摰Ｗ??, 'avgRenewal', 'renewalAvgPrice'])),
+      瘣曉?漱蝮賡: toNumber(firstDefined(metricsSource, ['瘣曉?漱蝮賡', 'dispatchDeals', '瘣曉?漱']))
     },
     advice
   };
@@ -357,10 +357,10 @@ function normalizeGroups(rawGroups = {}) {
 function normalizeAdviceEntries(rawAdvice = []) {
   return safeArray(rawAdvice)
     .map((entry) => ({
-      name: splitNameTags(entry?.name || entry?.姓名).name,
-      rank: Math.max(0, Math.trunc(toNumber(entry?.rank || entry?.名次))),
-      group: cleanText(entry?.group || entry?.分級).toUpperCase(),
-      text: cleanText(entry?.text || entry?.建議)
+      name: splitNameTags(entry?.name || entry?.憪?).name,
+      rank: Math.max(0, Math.trunc(toNumber(entry?.rank || entry?.?活))),
+      group: cleanText(entry?.group || entry?.??).toUpperCase(),
+      text: cleanText(entry?.text || entry?.撱箄降)
     }))
     .filter((entry) => entry.name);
 }
@@ -451,12 +451,12 @@ function calculateWeightedScores(rankings) {
 
   people.forEach((row) => {
     const m = row.metrics || {};
-    m.追續客單價 = Number(m.追續成交總數 || 0) > 0
-      ? Number((Number(m.續單金額 || 0) / Number(m.追續成交總數 || 0)).toFixed(2))
+    m.餈賜?摰Ｗ??= Number(m.餈賜??漱蝮賣 || 0) > 0
+      ? Number((Number(m.蝥?? || 0) / Number(m.餈賜??漱蝮賣 || 0)).toFixed(2))
       : 0;
   });
 
-  maxes.追續客單價 = Math.max(...people.map((row) => Number(row.metrics?.追續客單價 || 0)), 0);
+  maxes.餈賜?摰Ｗ??= Math.max(...people.map((row) => Number(row.metrics?.餈賜?摰Ｗ??|| 0)), 0);
 
   people.forEach((row) => {
     const m = row.metrics || {};
@@ -467,7 +467,7 @@ function calculateWeightedScores(rankings) {
       const score = (val / maxValue) * weights[item.key];
       return sum + (Number.isFinite(score) ? score : 0);
     }, 0);
-    m.正式權重分數 = Number.isFinite(total) ? Number(total.toFixed(2)) : 0;
+    m.甇??甈?? = Number.isFinite(total) ? Number(total.toFixed(2)) : 0;
   });
 
   return rankings;
@@ -511,43 +511,43 @@ function syncAdvice(rankings, providedAdvice) {
 function buildProportionalAdvice(row, rankings, index) {
   const above = rankings[index - 1];
   const below = rankings[index + 1];
-  const score = Number(row.metrics?.正式權重分數 || 0);
-  const aboveScore = Number(above?.metrics?.正式權重分數 || 0);
-  const belowScore = Number(below?.metrics?.正式權重分數 || 0);
+  const score = Number(row.metrics?.甇??甈?? || 0);
+  const aboveScore = Number(above?.metrics?.甇??甈?? || 0);
+  const belowScore = Number(below?.metrics?.甇??甈?? || 0);
   const gapUp = above && aboveScore > 0 ? `${((aboveScore - score) / aboveScore * 100).toFixed(1)}%` : '';
   const gapDown = below && score > 0 ? `${((score - belowScore) / score * 100).toFixed(1)}%` : '';
-  const renewal = Number(row.metrics?.續單金額 || 0);
-  const revenue = Number(row.metrics?.總業績 || 0);
-  const renewalDeals = Number(row.metrics?.追續成交總數 || 0);
-  const dispatchDeals = Number(row.metrics?.派單成交總通數 || 0);
+  const renewal = Number(row.metrics?.蝥?? || 0);
+  const revenue = Number(row.metrics?.蝮賣平蝮?|| 0);
+  const renewalDeals = Number(row.metrics?.餈賜??漱蝮賣 || 0);
+  const dispatchDeals = Number(row.metrics?.瘣曉?漱蝮賡 || 0);
   const mainMetric = renewal >= revenue * 0.55
-    ? '追續單金額'
+    ? '餈賜??桅?憿?
     : dispatchDeals >= renewalDeals
-    ? '派單成交'
-    : '實收業績';
+    ? '瘣曉?漱'
+    : '撖行璆剔蜀';
 
   if (row.rank === 1) {
-    return `目前權重分數第一，與第二名差距 ${gapDown || '0%'}。今天繼續把${mainMetric}補厚，才能穩住派單優先權。`;
+    return `?桀?甈??蝚砌?嚗?蝚砌??榆頝?${gapDown || '0%'}??憭拍匱蝥?${mainMetric}鋆?嚗??賜帘雿晷?桀???;
   }
   if (row.rank <= GROUP_RANK_POLICY.A1.max) {
-    return `你在 A1 主力區，距前一名 ${gapUp}。今天主攻${mainMetric}，一筆有效成交就能把權重分數再往前推。`;
+    return `雿 A1 銝餃??嚗?????${gapUp}??憭拐蜓??{mainMetric}嚗?蝑???鈭文停?賣?甈??????;
   }
   if (row.rank <= GROUP_RANK_POLICY.A2.max) {
-    return `你在 A2 主力區，距前一名 ${gapUp}，後方差距 ${gapDown || '尚穩'}。今天用${mainMetric}守位並爭取前壓。`;
+    return `雿 A2 銝餃??嚗?????${gapUp}嚗??孵榆頝?${gapDown || '撠帘'}??憭拍${mainMetric}摰?銝衣??憯;
   }
   if (row.rank <= GROUP_RANK_POLICY.B.max) {
-    return `你在 B 組競爭帶，距前一名 ${gapUp}。今天先把${mainMetric}做出明顯增量，權重分數才會動。`;
+    return `雿 B 蝯奎?剖葆嚗?????${gapUp}??憭拙???{mainMetric}??＊憓?嚗????豢????;
   }
-  return `你在 C 組補位區，今天先讓數字落地。從${mainMetric}補一筆開始，比例分數就會往上。`;
+  return `雿 C 蝯?雿?嚗?憭拙?霈摮?啜?${mainMetric}鋆?蝑?憪?瘥??撠望?敺銝;
 }
 
 function resolveTitle(explicitTitle, fallbackTitle, settlementDate, dispatchDate) {
   const preferred = cleanText(explicitTitle || fallbackTitle);
   if (preferred) return preferred;
   if (settlementDate && dispatchDate) {
-    return `AI 派單公告｜${formatMonthDay(settlementDate)} 結算 → ${formatMonthDay(dispatchDate)} 正式派單順序`;
+    return `AI 瘣曉?砍?嚚?{formatMonthDay(settlementDate)} 蝯? ??${formatMonthDay(dispatchDate)} 甇??瘣曉??`;
   }
-  return 'AI 派單公告';
+  return 'AI 瘣曉?砍?';
 }
 
 function buildAuditStatusText(report) {
@@ -555,29 +555,29 @@ function buildAuditStatusText(report) {
   const auditStatus = cleanText(report.auditResult || report.audit?.result).toUpperCase();
 
   if (!platformCount) {
-    return auditStatus === 'PASS' ? '審計資料已完成核對' : '審計資料待補齊';
+    return auditStatus === 'PASS' ? '撖抵?鞈?撌脣??撠? : '撖抵?鞈?敺?朣?;
   }
 
   if (auditStatus === 'PASS') {
-    return `${platformCount}平台總表全數核對通過`;
+    return `${platformCount}撟喳蝮質”?冽?詨???`;
   }
 
-  return `${platformCount}平台總表已完成核對，仍有異常待處理`;
+  return `${platformCount}撟喳蝮質”撌脣??撠?隞??啣虜敺??;
 }
 
 function buildDefaultFinalConfirmations(report) {
   const platformNote = buildAuditStatusText(report);
   const excluded = report.audit.excludedEmployees || [];
   const excludedLine = excluded.length
-    ? `已離職人員${excluded.map((entry) => entry.name).join('、')}只列審計，不入正式派單`
+    ? `撌脤?瑚犖??{excluded.map((entry) => entry.name).join('??)}?芸?撖抵?嚗??交迤撘晷?害
     : '';
 
   return uniqueTexts([
-    `${formatMonthDay(report.settlementDate)} 結算資料已核對完成`,
+    `${formatMonthDay(report.settlementDate)} 蝯?鞈?撌脫撠??,
     platformNote,
     ...(report.audit.notes || []),
     excludedLine,
-    `${formatMonthDay(report.dispatchDate)} 正式派單順序，以本則公告為準`
+    `${formatMonthDay(report.dispatchDate)} 甇??瘣曉??嚗誑?砍??砍??箸?`
   ]);
 }
 
@@ -590,20 +590,20 @@ function buildGroupShortText(report) {
   const noteText = buildCompactAuditNotes(report.audit.notes || []);
   const excludedEmps = report.audit.excludedEmployees || [];
   const excludedLine = excludedEmps.length
-    ? `已離職：${excludedEmps.map((entry) => entry.name).join('、')}，只列審計不入派單。`
-    : '本輪無離職列示。';
+    ? `撌脤?瘀?${excludedEmps.map((entry) => entry.name).join('??)}嚗?祟閮??交晷?柴
+    : '?祈憚?⊿?瑕?蝷箝?;
   const auditStatusText = buildAuditStatusText(report);
 
   return [
-    `📣【AI 派單公告｜${formatMonthDay(report.settlementDate)} 結算 → ${formatMonthDay(report.dispatchDate)} 正式派單】`,
-    `審計 ${report.auditResult}，${auditStatusText}，${noteText}。`,
+    `??I 瘣曉?砍?嚚?{formatMonthDay(report.settlementDate)} 蝯? ??${formatMonthDay(report.dispatchDate)} 甇??瘣曉?,
+    `撖抵? ${report.auditResult}嚗?{auditStatusText}嚗?{noteText}?,
     excludedLine,
-    top10Text ? `正式前10名：${top10Text}。` : '',
-    `A1：${report.groups.A1.join('、')}。`,
-    `A2：${report.groups.A2.join('、')}。`,
-    `B組：${report.groups.B.join('、')}。`,
-    `C組：${report.groups.C.join('、')}。`,
-    '正式派單順序以本則為準。'
+    top10Text ? `甇????0??${top10Text}? : '',
+    `A1嚗?{report.groups.A1.join('??)}?,
+    `A2嚗?{report.groups.A2.join('??)}?,
+    `B蝯?${report.groups.B.join('??)}?,
+    `C蝯?${report.groups.C.join('??)}?,
+    '甇??瘣曉??隞交?皞?
   ]
     .filter(Boolean)
     .join('');
@@ -706,7 +706,7 @@ function tryParseJsonPayload(sourceText) {
 
 function unwrapSourcePayload(payload) {
   if (!payload || typeof payload !== 'object') return null;
-  if (payload.title || payload.公告標題 || payload.rankings || payload.ranking || payload.正式名次 || payload.overallStats) return payload;
+  if (payload.title || payload.?砍?璅? || payload.rankings || payload.ranking || payload.甇???活 || payload.overallStats) return payload;
   if (payload.data) return unwrapSourcePayload(payload.data);
   if (payload.report) return unwrapSourcePayload(payload.report);
   if (payload.standardData) return unwrapSourcePayload(payload.standardData);
@@ -723,9 +723,9 @@ function splitSections(sourceText) {
     .split('\n')
     .forEach((line) => {
       const trimmed = cleanText(line);
-      if (!trimmed || /^[-─]{4,}$/u.test(trimmed)) return;
+      if (!trimmed || /^[-?]{4,}$/u.test(trimmed)) return;
 
-      if (/^【[^】]+】$/u.test(trimmed) || /^[一二三四五六七八九十]+、.+$/u.test(trimmed)) {
+      if (/^?^?+??/u.test(trimmed) || /^[銝鈭????凋??思??+??+$/u.test(trimmed)) {
         currentKey = trimmed;
         if (!sections.has(currentKey)) sections.set(currentKey, []);
         return;
@@ -748,12 +748,12 @@ function findSectionLines(sections, keywordSets) {
 }
 
 function normalizeMetricLabel(label) {
-  const normalized = normalizeName(String(label).replace(/[【】]/g, ''));
+  const normalized = normalizeName(String(label).replace(/[?/g, ''));
   return rankingMetricAliases.get(normalized) || summaryMetricAliases.get(normalized) || '';
 }
 
 function parseMetricSegment(segment) {
-  const match = cleanText(segment).match(/^(?:【)?([^】:：=＝]+)(?:】)?\s*[:：=＝]?\s*(-?[\d,，.]+)/u);
+  const match = cleanText(segment).match(/^(?:???([^??嚗?嚗+)(?:???\s*[:嚗?嚗?\s*(-?[\d,嚗?]+)/u);
   if (!match) return null;
   return {
     label: normalizeMetricLabel(match[1]),
@@ -765,7 +765,7 @@ function parseRankingSection(lines) {
   const rankings = [];
 
   safeArray(lines).forEach((line) => {
-    const parts = line.split(/[｜|]/u).map((part) => cleanText(part)).filter(Boolean);
+    const parts = line.split(/[嚚]/u).map((part) => cleanText(part)).filter(Boolean);
     if (!parts.length) return;
 
     let rank = 0;
@@ -777,7 +777,7 @@ function parseRankingSection(lines) {
       rawName = parts[1];
       metricParts = parts.slice(2);
     } else {
-      const headerMatch = parts[0].match(/^(\d+)\s*[、.．]?\s*(.+)$/u);
+      const headerMatch = parts[0].match(/^(\d+)\s*[??嚗?\s*(.+)$/u);
       if (!headerMatch) return;
       rank = Number(headerMatch[1]);
       rawName = headerMatch[2];
@@ -786,13 +786,13 @@ function parseRankingSection(lines) {
 
     const tagged = splitNameTags(rawName);
     const metrics = {
-      正式權重分數: 0,
-      實收: 0,
-      總業績: 0,
-      續單金額: 0,
-      追續成交總數: 0,
-      追續客單價: 0,
-      派單成交總通數: 0
+      甇??甈??: 0,
+      撖行: 0,
+      蝮賣平蝮? 0,
+      蝥??: 0,
+      餈賜??漱蝮賣: 0,
+      餈賜?摰Ｗ?? 0,
+      瘣曉?漱蝮賡: 0
     };
 
     metricParts.forEach((part) => {
@@ -821,8 +821,8 @@ function extractGroupKey(line) {
 
 function parseNamesFromText(text) {
   return cleanText(text)
-    .replace(/^\d+\s*[、.．]\s*/u, '')
-    .split(/[、,，]/u)
+    .replace(/^\d+\s*[??嚗\s*/u, '')
+    .split(/[??嚗/u)
     .map((name) => splitNameTags(name).name)
     .filter(Boolean);
 }
@@ -832,7 +832,7 @@ function parseGroupsSection(lines) {
   let currentGroup = '';
 
   safeArray(lines).forEach((line) => {
-    if (line.includes('審計列示')) {
+    if (line.includes('撖抵??內')) {
       currentGroup = '';
       return;
     }
@@ -840,7 +840,7 @@ function parseGroupsSection(lines) {
     const groupKey = extractGroupKey(line);
     if (groupKey) {
       currentGroup = groupKey;
-      const inlineMatch = cleanText(line).match(/[：:](.+)$/u);
+      const inlineMatch = cleanText(line).match(/[嚗?](.+)$/u);
       if (inlineMatch) {
         groups[currentGroup].push(...parseNamesFromText(inlineMatch[1]));
       }
@@ -878,11 +878,11 @@ function parseAdviceSection(lines) {
   }
 
   safeArray(lines).forEach((line) => {
-    const match = line.match(/^(\d+)\s*[｜|、.．]\s*(.+)$/u);
+    const match = line.match(/^(\d+)\s*[嚚??嚗\s*(.+)$/u);
     if (match) {
       flush();
       currentRank = Number(match[1]);
-      const inline = cleanText(match[2]).match(/^([^：:]+)[：:](.+)$/u);
+      const inline = cleanText(match[2]).match(/^([^嚗?]+)[嚗?](.+)$/u);
       currentName = splitNameTags(inline?.[1] || match[2]).name;
       if (inline?.[2]) {
         buffer.push(cleanText(inline[2]));
@@ -904,7 +904,7 @@ function parseSummaryBoardFromText(sectionLines, fullText) {
   const collected = {};
 
   for (const [alias, metric] of summaryMetricAliases.entries()) {
-    const match = source.match(new RegExp(`${escapeRegExp(alias)}(?:】)?\\s*[：:=＝]?\\s*(-?[\\d,，]+)`, 'u'));
+    const match = source.match(new RegExp(`${escapeRegExp(alias)}(?:???\\s*[嚗?=嚗?\\s*(-?[\\d,嚗+)`, 'u'));
     if (match) collected[metric] = toNumber(match[1]);
   }
 
@@ -917,11 +917,11 @@ function parseAuditPlatformsFromLines(lines) {
 
   safeArray(lines).forEach((line) => {
     const platformName = Object.keys(PLATFORM_NAME_TO_KEY).find((name) => line.includes(name));
-    if (platformName && line.includes('總表')) {
+    if (platformName && line.includes('蝮質”')) {
       current = {
         platformKey: PLATFORM_NAME_TO_KEY[platformName],
         platformName,
-        passed: /PASS|通過/u.test(line),
+        passed: /PASS|??/u.test(line),
         metrics: {}
       };
       platforms.push(current);
@@ -932,7 +932,7 @@ function parseAuditPlatformsFromLines(lines) {
 
     for (const [alias, metric] of summaryMetricAliases.entries()) {
       if (!AUDIT_METRICS.includes(metric)) continue;
-      const match = line.match(new RegExp(`${escapeRegExp(alias)}\\s*[：:=＝]?\\s*(-?[\\d,，]+)`, 'u'));
+      const match = line.match(new RegExp(`${escapeRegExp(alias)}\\s*[嚗?=嚗?\\s*(-?[\\d,嚗+)`, 'u'));
       if (match) current.metrics[metric] = toNumber(match[1]);
     }
   });
@@ -942,26 +942,26 @@ function parseAuditPlatformsFromLines(lines) {
 
 function sanitizeExcludedEmployeeSegment(segment) {
   return cleanText(segment)
-    .replace(/(?:只列審計|審計列示|僅列審計).*/u, '')
-    .replace(/(?:不入正式派單|不入派單).*/u, '')
-    .replace(/[。；;]+$/u, '')
-    .replace(/[，,]+$/u, '')
+    .replace(/(?:?芸?撖抵?|撖抵??內|??撖抵?).*/u, '')
+    .replace(/(?:銝甇??瘣曉|銝瘣曉).*/u, '')
+    .replace(/[??;]+$/u, '')
+    .replace(/[嚗?]+$/u, '')
     .trim();
 }
 
 function parseExcludedEmployeesFromText(text) {
   const result = [];
-  const directMatch = cleanText(text).match(/已離職[:：]\s*([^\n]+)/u);
+  const directMatch = cleanText(text).match(/撌脤?愴:嚗\s*([^\n]+)/u);
   if (directMatch) {
     parseNamesFromText(sanitizeExcludedEmployeeSegment(directMatch[1])).forEach((name) => {
-      result.push({ name, reason: '已離職' });
+      result.push({ name, reason: '撌脤?? });
     });
   }
 
-  const inlineMatch = cleanText(text).match(/已離職人員(.+?)只列審計/u);
+  const inlineMatch = cleanText(text).match(/撌脤?瑚犖??.+?)?芸?撖抵?/u);
   if (inlineMatch) {
     parseNamesFromText(sanitizeExcludedEmployeeSegment(inlineMatch[1])).forEach((name) => {
-      result.push({ name, reason: '已離職' });
+      result.push({ name, reason: '撌脤?? });
     });
   }
 
@@ -969,7 +969,7 @@ function parseExcludedEmployeesFromText(text) {
 }
 
 function parseAuditFromText(sourceText, auditLines = [], extraNoteLines = []) {
-  const resultMatch = String(sourceText || '').match(/審計結果[^A-Z]*(PASS|FAIL)/u);
+  const resultMatch = String(sourceText || '').match(/撖抵?蝯?[^A-Z]*(PASS|FAIL)/u);
 
   return {
     result: cleanText(resultMatch?.[1] || '').toUpperCase() || 'FAIL',
@@ -985,25 +985,25 @@ function parseAuditFromText(sourceText, auditLines = [], extraNoteLines = []) {
 
 function parseTextPayload(sourceText, options = {}) {
   const sections = splitSections(sourceText);
-  const auditLines = findSectionLines(sections, [['審計結論'], ['審計結果']]);
-  const rankingLines = findSectionLines(sections, [['正式名次'], ['整合名次'], ['排行榜']]);
-  const groupsLines = findSectionLines(sections, [['派單分級'], ['派單順序']]);
-  const adviceLines = findSectionLines(sections, [['每人一句'], ['建議']]);
-  const finalSectionLines = findSectionLines(sections, [['最後確認']]);
-  const summaryLines = findSectionLines(sections, [['整合總盤'], ['總盤']]);
-  const titleMatch = String(sourceText || '').match(/【([^】]*派單[^】]*)】/u);
+  const auditLines = findSectionLines(sections, [['撖抵?蝯?'], ['撖抵?蝯?']]);
+  const rankingLines = findSectionLines(sections, [['甇???活'], ['?游??活'], ['??璁?]]);
+  const groupsLines = findSectionLines(sections, [['瘣曉??'], ['瘣曉??']]);
+  const adviceLines = findSectionLines(sections, [['瘥犖銝??], ['撱箄降']]);
+  const finalSectionLines = findSectionLines(sections, [['?敺Ⅱ隤?]]);
+  const summaryLines = findSectionLines(sections, [['?游?蝮賜'], ['蝮賜']]);
+  const titleMatch = String(sourceText || '').match(/??[^?*瘣曉[^?*)??u);
 
   const extractedDates = extractDatesFromTitle(options.title || titleMatch?.[1] || '');
   const textSettlement = normalizeDateInput(options.settlementDate || extractedDates.settlementDate);
   const textDispatch = normalizeDateInput(options.dispatchDate || extractedDates.dispatchDate);
-  const shortTextIndex = finalSectionLines.findIndex((line) => line.startsWith('群組超精簡版'));
+  const shortTextIndex = finalSectionLines.findIndex((line) => line.startsWith('蝢斤?頞移蝪∠?'));
   const shortTextLine =
     shortTextIndex >= 0
-      ? cleanText(finalSectionLines[shortTextIndex].replace(/^群組超精簡版[:：]?\s*/u, '')) ||
+      ? cleanText(finalSectionLines[shortTextIndex].replace(/^蝢斤?頞移蝪∠?[:嚗?\s*/u, '')) ||
         cleanText(finalSectionLines[shortTextIndex + 1])
       : '';
   const finalConfirmations = finalSectionLines.filter(
-    (line) => !line.startsWith('群組超精簡版') && !line.startsWith('📣【')
+    (line) => !line.startsWith('蝢斤?頞移蝪∠?') && !line.startsWith('???)
   );
 
   return {
@@ -1023,47 +1023,47 @@ function parseTextPayload(sourceText, options = {}) {
 
 function buildReportFromPayload(payload, options = {}) {
   const source = payload || {};
-  const fallbackDates = extractDatesFromTitle(cleanText(options.title || source.title || source.公告標題 || ''));
+  const fallbackDates = extractDatesFromTitle(cleanText(options.title || source.title || source.?砍?璅? || ''));
   const settlementDate = normalizeDateInput(
     options.settlementDate ||
       source.reportDate ||
       source.settlementDate ||
-      source.日期資訊?.結算日 ||
+      source.?交?鞈??.蝯???||
       fallbackDates.settlementDate
   );
   const dispatchDate = normalizeDateInput(
     options.dispatchDate ||
       source.dispatchDate ||
-      source.日期資訊?.派單日 ||
+      source.?交?鞈??.瘣曉??||
       fallbackDates.dispatchDate
   );
 
   const reportId = cleanText(options.reportId || source.reportId || buildReportId(settlementDate));
   const createdAt = cleanText(options.createdAt || source.createdAt || formatTaipeiTimestamp());
   const updatedAt = cleanText(options.updatedAt || source.updatedAt || createdAt);
-  const title = resolveTitle(options.title, source.title || source.公告標題, settlementDate, dispatchDate);
+  const title = resolveTitle(options.title, source.title || source.?砍?璅?, settlementDate, dispatchDate);
 
   const auditSource = source.platforms
     ? {
-        結果: source.audit?.status || 'PASS',
-        規則: DEFAULT_AUDIT_RULE,
+        蝯?: source.audit?.status || 'PASS',
+        閬?: DEFAULT_AUDIT_RULE,
         ...normalizeOfficialPlatforms(source.platforms),
-        特別說明: ['4/23 官方鎖定資料已依比例原則完成權重計分。'],
-        審計列示不入派單: source.excludedEmployees || []
+        ?孵隤芣?: ['4/23 摰??鞈?撌脖?瘥???摰?甈?閮???],
+        撖抵??內銝瘣曉: source.excludedEmployees || []
       }
-    : source.audit || source.審計結論 || {};
+    : source.audit || source.撖抵?蝯? || {};
   const audit = normalizeAudit(auditSource, source.auditResult);
   const summaryBoard = source.overallStats
     ? normalizeOfficialSummaryBoard(source.overallStats)
-    : normalizeSummaryBoard(source.summaryBoard || source.整合總盤);
-  const initialRankings = safeArray(source.rankings || source.ranking || source.正式名次)
+    : normalizeSummaryBoard(source.summaryBoard || source.?游?蝮賜);
+  const initialRankings = safeArray(source.rankings || source.ranking || source.甇???活)
     .map(normalizeRankingRow)
     .filter((row) => row.name);
-  const normalizedGroups = normalizeGroups(source.groups || source.分級);
+  const normalizedGroups = normalizeGroups(source.groups || source.??);
   const grouped = syncGroups(initialRankings, normalizedGroups, {
-    preserveRankingOrder: Boolean(source.preserveRankingOrder || source.officialLock?.preserveRankingOrder)
+    preserveRankingOrder: false
   });
-  const normalizedAdvice = normalizeAdviceEntries(source.adviceList || source.advice || source.每人一句建議 || source.建議);
+  const normalizedAdvice = normalizeAdviceEntries(source.adviceList || source.advice || source.瘥犖銝?亙遣霅?|| source.撱箄降);
   const advised = syncAdvice(grouped.rankings, normalizedAdvice);
 
   const report = createDispatchReport({
@@ -1082,8 +1082,8 @@ function buildReportFromPayload(payload, options = {}) {
     rankings: advised.rankings,
     groups: grouped.groups,
     adviceList: advised.adviceList,
-    finalConfirmations: normalizeStringArray(source.finalConfirmations || source.最後確認),
-    groupShortText: cleanText(source.groupShortText || source.群組超精簡版)
+    finalConfirmations: normalizeStringArray(source.finalConfirmations || source.?敺Ⅱ隤?,
+    groupShortText: cleanText(source.groupShortText || source.蝢斤?頞移蝪∠?)
   });
 
   report.auditResult = report.audit.result || report.auditResult;
@@ -1098,7 +1098,7 @@ function buildReportFromPayload(payload, options = {}) {
 function buildReportFromSource(input = {}) {
   const sourceText = String(input.sourceText ?? '').replace(/\r/g, '').trim();
   if (!sourceText) {
-    throw new Error('sourceText 為必填');
+    throw new Error('sourceText ?箏?憛?);
   }
 
   const parsedJson = unwrapSourcePayload(tryParseJsonPayload(sourceText));
@@ -1119,9 +1119,9 @@ function buildReportFromSource(input = {}) {
 function createDefaultSeedInput() {
   const defaultAnnouncement = getDefaultAnnouncement();
   return {
-    title: defaultAnnouncement.公告標題,
-    settlementDate: normalizeDateInput(defaultAnnouncement.日期資訊?.結算日),
-    dispatchDate: normalizeDateInput(defaultAnnouncement.日期資訊?.派單日),
+    title: defaultAnnouncement.?砍?璅?,
+    settlementDate: normalizeDateInput(defaultAnnouncement.?交?鞈??.蝯???,
+    dispatchDate: normalizeDateInput(defaultAnnouncement.?交?鞈??.瘣曉??,
     sourceText: defaultAnnouncement.sourceText || JSON.stringify(defaultAnnouncement, null, 2)
   };
 }
@@ -1132,13 +1132,13 @@ function flattenRanking(row) {
     name: row.name,
     isNew: Boolean(row.isNew),
     group: row.group,
-    totalRevenue: row.metrics?.總業績 || 0,
-    renewalRevenue: row.metrics?.續單金額 || 0,
-    renewalDeals: row.metrics?.追續成交總數 || 0,
-    dispatchDeals: row.metrics?.派單成交總通數 || 0,
-    weightedScore: row.metrics?.正式權重分數 || 0,
-    actualRevenue: row.metrics?.實收 || 0,
-    avgRenewal: row.metrics?.追續客單價 || 0,
+    totalRevenue: row.metrics?.蝮賣平蝮?|| 0,
+    renewalRevenue: row.metrics?.蝥?? || 0,
+    renewalDeals: row.metrics?.餈賜??漱蝮賣 || 0,
+    dispatchDeals: row.metrics?.瘣曉?漱蝮賡 || 0,
+    weightedScore: row.metrics?.甇??甈?? || 0,
+    actualRevenue: row.metrics?.撖行 || 0,
+    avgRenewal: row.metrics?.餈賜?摰Ｗ??|| 0,
     advice: row.advice
   };
 }
@@ -1149,113 +1149,113 @@ function toLegacyStandardData(report) {
     report.audit.platforms.forEach((platform) => {
       auditPlatforms[platform.platformName] = {
         ...clone(platform.metrics),
-        通過: platform.passed
+        ??: platform.passed
       };
     });
   }
   
   const ranking = (report.rankings || []).map((row) => ({
-    名次: row.rank,
-    姓名: row.name,
-    ...(row.isNew ? { 標記: '新人' } : {}),
-    正式權重分數: row.metrics?.正式權重分數 || 0,
-    實收: row.metrics?.實收 || 0,
-    全部總業績: row.metrics?.總業績 || 0,
-    總業績: row.metrics?.總業績 || 0,
-    追續金額: row.metrics?.續單金額 || 0,
-    續單金額: row.metrics?.續單金額 || 0,
-    追續單數: row.metrics?.追續成交總數 || 0,
-    追續成交總數: row.metrics?.追續成交總數 || 0,
-    追續客單價: row.metrics?.追續客單價 || 0,
-    派單成交總通數: row.metrics?.派單成交總通數 || 0,
-    分級: row.group,
-    建議: row.advice
+    ?活: row.rank,
+    憪?: row.name,
+    ...(row.isNew ? { 璅?: '?唬犖' } : {}),
+    甇??甈??: row.metrics?.甇??甈?? || 0,
+    撖行: row.metrics?.撖行 || 0,
+    ?券蝮賣平蝮? row.metrics?.蝮賣平蝮?|| 0,
+    蝮賣平蝮? row.metrics?.蝮賣平蝮?|| 0,
+    餈賜???: row.metrics?.蝥?? || 0,
+    蝥??: row.metrics?.蝥?? || 0,
+    餈賜??格: row.metrics?.餈賜??漱蝮賣 || 0,
+    餈賜??漱蝮賣: row.metrics?.餈賜??漱蝮賣 || 0,
+    餈賜?摰Ｗ?? row.metrics?.餈賜?摰Ｗ??|| 0,
+    瘣曉?漱蝮賡: row.metrics?.瘣曉?漱蝮賡 || 0,
+    ??: row.group,
+    撱箄降: row.advice
   }));
 
   ranking.sort((a, b) => {
-    if ((b.正式權重分數 || 0) !== (a.正式權重分數 || 0)) {
-      return (b.正式權重分數 || 0) - (a.正式權重分數 || 0);
+    if ((b.甇??甈?? || 0) !== (a.甇??甈?? || 0)) {
+      return (b.甇??甈?? || 0) - (a.甇??甈?? || 0);
     }
-    if ((b.實收 || 0) !== (a.實收 || 0)) {
-      return (b.實收 || 0) - (a.實收 || 0);
+    if ((b.撖行 || 0) !== (a.撖行 || 0)) {
+      return (b.撖行 || 0) - (a.撖行 || 0);
     }
-    if ((b.續單金額 || 0) !== (a.續單金額 || 0)) {
-      return (b.續單金額 || 0) - (a.續單金額 || 0);
+    if ((b.蝥?? || 0) !== (a.蝥?? || 0)) {
+      return (b.蝥?? || 0) - (a.蝥?? || 0);
     }
-    if ((b.總業績 || 0) !== (a.總業績 || 0)) {
-      return (b.總業績 || 0) - (a.總業績 || 0);
+    if ((b.蝮賣平蝮?|| 0) !== (a.蝮賣平蝮?|| 0)) {
+      return (b.蝮賣平蝮?|| 0) - (a.蝮賣平蝮?|| 0);
     }
-    if ((b.追續客單價 || 0) !== (a.追續客單價 || 0)) {
-      return (b.追續客單價 || 0) - (a.追續客單價 || 0);
+    if ((b.餈賜?摰Ｗ??|| 0) !== (a.餈賜?摰Ｗ??|| 0)) {
+      return (b.餈賜?摰Ｗ??|| 0) - (a.餈賜?摰Ｗ??|| 0);
     }
-    return (b.追續成交總數 || 0) - (a.追續成交總數 || 0);
+    return (b.餈賜??漱蝮賣 || 0) - (a.餈賜??漱蝮賣 || 0);
   });
 
   return {
-    公告標題: report.title,
-    日期資訊: {
-      結算日: formatMonthDay(report.settlementDate),
-      派單日: formatMonthDay(report.dispatchDate)
+    ?砍?璅?: report.title,
+    ?交?鞈?: {
+      蝯??? formatMonthDay(report.settlementDate),
+      瘣曉?? formatMonthDay(report.dispatchDate)
     },
-    審計結論: {
-      結果: report.audit.result,
-      規則: report.audit.rule,
+    撖抵?蝯?: {
+      蝯?: report.audit.result,
+      閬?: report.audit.rule,
       ...auditPlatforms,
-      特別說明: clone(report.audit.notes),
-      審計列示不入派單: (report.audit?.excludedEmployees || []).map((entry) => ({
-        姓名: entry.name,
-        原因: entry.reason
+      ?孵隤芣?: clone(report.audit.notes),
+      撖抵??內銝瘣曉: (report.audit?.excludedEmployees || []).map((entry) => ({
+        憪?: entry.name,
+        ??: entry.reason
       }))
     },
-    整合總盤: clone(report.summaryBoard),
-    正式名次: ranking,
-    分級: clone(report.groups),
-    最後確認: clone(report.finalConfirmations),
-    群組超精簡版: report.groupShortText
+    ?游?蝮賜: clone(report.summaryBoard),
+    甇???活: ranking,
+    ??: clone(report.groups),
+    ?敺Ⅱ隤? clone(report.finalConfirmations),
+    蝢斤?頞移蝪∠?: report.groupShortText
   };
 }
 
 function buildPresentation(report) {
-  const legacyRanking = toLegacyStandardData(report).正式名次;
+  const legacyRanking = toLegacyStandardData(report).甇???活;
 
   return {
     top5: legacyRanking.slice(0, 5),
     top10: legacyRanking.slice(0, 10),
     compactTable: legacyRanking.slice(10),
     retired: (report.audit?.excludedEmployees || []).map((entry) => ({
-      姓名: entry.name,
-      原因: entry.reason
+      憪?: entry.name,
+      ??: entry.reason
     })),
-    summaryCards: report.summaryBoard['實收總金額']
+    summaryCards: report.summaryBoard['撖行蝮賡?憿?]
       ? [
-          ['實收總金額', report.summaryBoard['實收總金額']],
-          ['追續單金額', report.summaryBoard['追續單總金額'] || 0],
-          ['全部總業績', report.summaryBoard['本月業績'] || 0],
-          ['追續單成交', report.summaryBoard['累積追續總成交數'] || 0],
-          ['累積派單成交', report.summaryBoard['累積派單總成交數'] || 0],
-          ['取消退貨', report.summaryBoard['當日取消退貨'] || 0]
+          ['撖行蝮賡?憿?, report.summaryBoard['撖行蝮賡?憿?]],
+          ['餈賜??桅?憿?, report.summaryBoard['餈賜??桃蜇??'] || 0],
+          ['?券蝮賣平蝮?, report.summaryBoard['?祆?璆剔蜀'] || 0],
+          ['餈賜??格?鈭?, report.summaryBoard['蝝舐?餈賜?蝮賣?鈭斗'] || 0],
+          ['蝝舐?瘣曉?漱', report.summaryBoard['蝝舐?瘣曉蝮賣?鈭斗'] || 0],
+          ['???鞎?, report.summaryBoard['?嗆???鞎?] || 0]
         ]
       : [
-          ['累積總派單數', report.summaryBoard['累積總派單數'] || 0],
-          ['累積派單總成交數', report.summaryBoard['累積派單總成交數'] || 0],
-          ['累積追續總成交數', report.summaryBoard['累積追續總成交數'] || 0],
-          ['當日續單金額', report.summaryBoard['當日續單金額'] || 0],
-          ['本月業績', report.summaryBoard['本月業績'] || 0],
-          ['追續單總金額', report.summaryBoard['追續單總金額'] || 0]
+          ['蝝舐?蝮賣晷?格', report.summaryBoard['蝝舐?蝮賣晷?格'] || 0],
+          ['蝝舐?瘣曉蝮賣?鈭斗', report.summaryBoard['蝝舐?瘣曉蝮賣?鈭斗'] || 0],
+          ['蝝舐?餈賜?蝮賣?鈭斗', report.summaryBoard['蝝舐?餈賜?蝮賣?鈭斗'] || 0],
+          ['?嗆蝥??', report.summaryBoard['?嗆蝥??'] || 0],
+          ['?祆?璆剔蜀', report.summaryBoard['?祆?璆剔蜀'] || 0],
+          ['餈賜??桃蜇??', report.summaryBoard['餈賜??桃蜇??'] || 0]
         ],
-    cancellationAmount: report.summaryBoard['當日取消退貨'] || 0
+    cancellationAmount: report.summaryBoard['?嗆???鞎?] || 0
   };
 }
 
 function buildSnapshotSummary(report) {
   return {
-    審計結果: report.auditResult,
-    正式人數: (report.rankings || []).length,
-    離職列示人數: (report.audit?.excludedEmployees || []).length,
-    本月業績: report.summaryBoard['本月業績'] || 0,
-    totalRevenue: report.summaryBoard['本月業績'] || 0,
-    renewalRevenue: report.summaryBoard['追續單總金額'] || report.summaryBoard['當日續單金額'] || 0,
-    renewalDeals: report.summaryBoard['累積追續總成交數'] || 0,
+    撖抵?蝯?: report.auditResult,
+    甇??鈭箸: (report.rankings || []).length,
+    ?Ｚ?內鈭箸: (report.audit?.excludedEmployees || []).length,
+    ?祆?璆剔蜀: report.summaryBoard['?祆?璆剔蜀'] || 0,
+    totalRevenue: report.summaryBoard['?祆?璆剔蜀'] || 0,
+    renewalRevenue: report.summaryBoard['餈賜??桃蜇??'] || report.summaryBoard['?嗆蝥??'] || 0,
+    renewalDeals: report.summaryBoard['蝝舐?餈賜?蝮賣?鈭斗'] || 0,
     totalPeople: (report.rankings || []).length,
     activePeople: (report.rankings || []).length
   };
@@ -1271,7 +1271,7 @@ function buildLegacyValidation(validation) {
     rules: {
       sourceOfTruth: 'backend',
       frontendMustNotCompute: true,
-      rankingOrder: RANKING_METRICS.join(' → ')
+      rankingOrder: RANKING_METRICS.join(' ??')
     }
   };
 }
@@ -1376,7 +1376,7 @@ function buildLegacySnapshot(report, validation, options = {}) {
     },
     confirmation: {
       status: validation.status,
-      message: validation.ok ? '正式派單資料已通過驗證' : validation.errors[0]?.reason || '資料驗證失敗',
+      message: validation.ok ? '甇??瘣曉鞈?撌脤?撽?' : validation.errors[0]?.reason || '鞈?撽?憭望?',
       errors: validation.errors.map((error) => error.reason)
     },
     announcement: snapshotReport.groupShortText,
@@ -1401,10 +1401,10 @@ function buildTop10Data(report) {
       rank: row.rank,
       name: row.name,
       group: row.group,
-      總業績: row.metrics.總業績,
-      續單金額: row.metrics.續單金額,
-      追續成交總數: row.metrics.追續成交總數,
-      派單成交總通數: row.metrics.派單成交總通數
+      蝮賣平蝮? row.metrics.蝮賣平蝮?
+      蝥??: row.metrics.蝥??,
+      餈賜??漱蝮賣: row.metrics.餈賜??漱蝮賣,
+      瘣曉?漱蝮賡: row.metrics.瘣曉?漱蝮賡
     }))
   };
 }

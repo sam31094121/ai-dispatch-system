@@ -7,127 +7,95 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="AI 派單">
-  <meta name="description" content="AI 比例原則動態加權，每日正式派單順序同步更新。">
-  <title>正式派單公告｜已同步最新資料</title>
-  <meta property="og:title" content="正式派單公告｜已同步最新資料">
-  <meta property="og:description" content="AI 比例原則動態加權，每日正式派單順序同步更新。">
-  <meta property="og:type" content="website">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/mobile.css?v=0509-premium">
+  <meta name="description" content="AI 比例原則動態加  <title>AI 派單戰情室 v7</title>
+  <link rel="stylesheet" href="mobile.css">
 </head>
-<body>
-  <div class="ai-scan-overlay"></div>
-  <div class="glow-sphere"></div>
-  
+<body class="war-room-mode">
   <div id="app-shell">
-    <header class="topbar">
-      <div>
-        <p class="kicker">Zhaogui AI Precision</p>
-        <h1 id="main-title">AI 派單公告</h1>
+    <!-- 頂部：標題與同步 -->
+    <header class="header-main">
+      <div class="brand">
+        <h1>AI 派單戰情室</h1>
+        <span class="version-tag">5/10 派單正式版</span>
       </div>
-      <div class="topbar-actions">
-        <span class="precision-badge">PRECISION</span>
-        <button id="refresh-data" class="icon-button" type="button">↻</button>
-      </div>
+      <button id="refresh-data" class="btn-refresh">同步數據</button>
     </header>
 
-    <section id="a1-hero">
-      <canvas id="mobile-coin-canvas" class="mobile-coin-canvas"></canvas>
-      <div class="a1-hero-header">
-        <div class="a1-hero-title-block">
-          <span class="a1-hero-kicker">🔴 A1 首席主力</span>
-          <span class="a1-hero-dates">
-            結算 <strong id="hero-settlement-date">--</strong> → 派單 <strong id="hero-dispatch-date">--</strong>
-          </span>
+    <main class="content-grid">
+      <!-- 第一層：核心數據與審計 (高密度佈局) -->
+      <section class="dashboard-top">
+        <div class="card audit-card">
+          <div class="card-label">審計狀態</div>
+          <div id="audit-result" class="val-status">PENDING</div>
+          <div id="audit-notes" class="mini-notes"></div>
         </div>
-        <span id="audit-result-hero" class="status-badge">--</span>
-      </div>
-      <div id="a1-hero-grid" class="a1-hero-grid"></div>
-    </section>
-
-    <section class="panel panel-line" id="line">
-      <div class="lc-card lc-card-coin">
-        <div class="lc-card-top">
-          <div class="lc-badge lc-badge-coin">
-            <span class="lc-coin-leaf">🍁</span>
-            <span class="lc-coin-ring"></span>
-          </div>
-          <div class="lc-header">
-            <p class="kicker">Quick Send</p>
-            <h3 class="lc-title">群組超精簡版</h3>
+        <div class="card summary-card">
+          <div class="card-label">本輪整合總盤</div>
+          <div id="summary-grid" class="summary-mini-grid">
+            <!-- 實收、總額、追續、單數 -->
           </div>
         </div>
-        <pre id="group-short-output" class="lc-short-box"></pre>
-        <button id="copy-short-text" class="lc-action-btn">複製並傳送手機</button>
-      </div>
-
-      <div class="lc-card lc-card-bill">
-        <div class="lc-card-top">
-          <div class="lc-badge lc-badge-bill">
-            <span class="lc-bill-denom">$</span>
-            <span class="lc-bill-100">100</span>
-          </div>
-          <div class="lc-header">
-            <p class="kicker">Official Copy</p>
-            <h3 class="lc-title">完整公告文字</h3>
-          </div>
-        </div>
-        <div class="send-actions">
-          <button id="copy-line-text" class="primary-button">複製</button>
-          <button id="share-line-text" class="secondary-button">分享</button>
-          <a id="line-share" class="secondary-button" href="#" target="_blank">LINE</a>
-        </div>
-        <textarea id="broadcast-output" class="broadcast-box" readonly></textarea>
-      </div>
-    </section>
-
-    <section class="date-strip">
-      <div><span>追續成交</span><strong id="stat-renewal-deals">--</strong></div>
-      <div><span>總業績</span><strong id="stat-total-revenue">--</strong></div>
-      <div><span>實收</span><strong id="stat-cash-revenue">--</strong></div>
-    </section>
-
-    <main>
-      <section class="panel" id="summary">
-        <div class="section-head">
-          <div><p class="kicker">Core Stats</p><h2>整合總盤</h2></div>
-        </div>
-        <div id="summary-grid" class="summary-grid"></div>
       </section>
 
-      <section class="panel" id="ranking">
-        <div class="section-head">
-          <div><p class="kicker">Live Rankings</p><h2>正式派單名次</h2></div>
-          <button id="search-open" class="icon-button">⌕</button>
-        </div>
-        <div id="ranking-list" class="ranking-list"></div>
+      <!-- 第二層：前四名尊榮舞台 (精簡 3D) -->
+      <section class="hero-stage">
+        <div class="stage-header">TOP 4 英雄榜</div>
+        <div id="a1-hero-grid" class="hero-flex"></div>
       </section>
 
-      <section class="panel" id="audit">
-        <div class="section-head">
-          <div><p class="kicker">Audit Shield</p><h2>審計提醒</h2></div>
+      <!-- 第三層：名次總表 (高清晰表格) -->
+      <section class="table-section">
+        <div class="table-header">
+          <h3>正式名次總表</h3>
+          <button id="search-open" class="btn-search">🔍 檢索</button>
         </div>
-        <div id="audit-notes" class="audit-notes"></div>
-        <div id="excluded-list" class="excluded-list"></div>
+        <div id="ranking-list" class="ranking-v3"></div>
+      </section>
+
+      <!-- 第四層：分級與建議 (資訊流) -->
+      <section class="info-flow">
+        <div id="groups-grid" class="groups-v3"></div>
+        <div id="advice-list" class="advice-v3"></div>
+      </section>
+
+      <!-- 第五層：公告操作 (固定於底部) -->
+      <section class="footer-actions">
+        <button id="copy-line-text" class="btn-primary">複製正式版公告</button>
+        <button id="copy-short-text" class="btn-secondary">精簡版</button>
       </section>
     </main>
+  </div>
 
-    <nav class="bottom-nav">
-      <a href="#a1-hero">A1</a>
-      <a href="#line">傳送</a>
-      <a href="#summary">總盤</a>
-      <a href="#ranking">名次</a>
+  <!-- 隱藏區：數據緩存與公告 -->
+  <div hidden>
+    <textarea id="broadcast-output"></textarea>
+    <div id="group-short-output"></div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <!-- 搜尋 Modal -->
+  <div id="search-modal" class="modal">
+    <div class="modal-content">
+      <header><h3>名次檢索</h3> <button id="search-close">×</button></header>
+      <input type="text" id="lookup-input" placeholder="輸入姓名...">
+      <div id="lookup-results"></div>
+    </div>
+  </div>
+
+  <script src="mobile.js"></script>
+</body>
+</html>
     </nav>
   </div>
 
   <div id="toast" class="toast"></div>
 
+  <!-- 搜尋 Modal -->
   <div id="search-modal" class="modal">
     <div class="modal-panel">
       <div class="section-head">
-        <h2>名次搜尋</h2>
+        <h2>名次快速檢索</h2>
         <button id="search-close" class="icon-button">✕</button>
       </div>
       <input type="text" id="lookup-input" placeholder="請輸入姓名關鍵字..." autofocus>
@@ -135,6 +103,6 @@
     </div>
   </div>
 
-  <script src="/mobile.js?v=0509-premium"></script>
+  <script src="/mobile.js?v=0509-war-room"></script>
 </body>
 </html>
