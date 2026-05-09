@@ -266,6 +266,10 @@
                setData(parseSnapshot(json.data));
                setActionStatus({ type: 'pass', message: 'SYNC_COMPLETE' });
                setRawInput(json.data.rawText || "");
+               // 播放初始化完成音效
+               const audio = new Audio('https://www.soundjay.com/buttons/sounds/button-20.mp3');
+               audio.volume = 0.05;
+               audio.play().catch(() => {});
             } else { throw new Error(json.message || 'READ_FAIL'); }
           })
           .catch(err => {
