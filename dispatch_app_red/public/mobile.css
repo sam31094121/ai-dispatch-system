@@ -1,30 +1,38 @@
 :root {
-  --bg: #050a12;
-  --surface: rgba(17, 26, 39, 0.85);
-  --surface-2: rgba(23, 35, 53, 0.9);
-  --border: rgba(43, 58, 78, 0.6);
-  --text: #f8fafc;
-  --muted: #94a3b8;
-  --accent: #00f0ff;
-  --accent-2: #ffb000;
-  --danger: #ff3366;
-  --good: #00ff88;
-  --shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-  --radius: 12px;
+  --bg: #0a0f18;
+  --surface: #111a27;
+  --surface-2: #172335;
+  --border: #2b3a4e;
+  --text: #f5f7fb;
+  --muted: #9aa8ba;
+  --accent: #18c6a7;
+  --accent-2: #f3c14b;
+  --danger: #ef5b73;
+  --good: #27d17f;
+  --shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+  --radius: 8px;
 
   /* ── 3D 深度系統 ── */
-  --depth-1: 0 4px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
-  --depth-2: 0 12px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08);
-  --depth-3: 0 24px 64px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.12);
-  
-  --depth-hero: 0 0 0 1px rgba(255, 176, 0, 0.4),
-                0 0 30px rgba(255, 176, 0, 0.15),
-                0 30px 60px rgba(0,0,0,0.7),
-                inset 0 1px 0 rgba(255,255,255,0.2);
-                
-  --perspective: 1200px;
-  --sk-bg: #0f172a;
-  --sk-shine: linear-gradient(90deg, transparent, rgba(0,240,255,0.08), transparent);
+  --depth-1: 0 1px 2px rgba(0,0,0,.35), 0 4px 12px rgba(0,0,0,.25),
+             inset 0 1px 0 rgba(255,255,255,.045);
+  --depth-2: 0 2px 4px rgba(0,0,0,.4), 0 10px 28px rgba(0,0,0,.32),
+             0 1px 0 rgba(255,255,255,.055) inset;
+  --depth-3: 0 4px 8px rgba(0,0,0,.45), 0 18px 44px rgba(0,0,0,.38),
+             0 -1px 0 rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08);
+  --depth-hero: 0 0 0 1px #c8820a,
+                0 0 24px rgba(200,130,10,.25),
+                0 20px 48px rgba(0,0,0,.5),
+                inset 0 1px 0 rgba(255,255,255,.15);
+  --depth-silver: 0 0 0 1px rgba(224,232,240,.45),
+                  0 12px 30px rgba(0,0,0,.42),
+                  inset 0 1px 0 rgba(255,255,255,.11);
+  --depth-bronze: 0 0 0 1px rgba(205,139,74,.42),
+                  0 12px 30px rgba(0,0,0,0.42),
+                  inset 0 1px 0 rgba(255,255,255,0.10);
+  --shadow-3d: 0 10px 20px rgba(0,0,0,0.5), inset 0 2px 2px rgba(255,255,255,0.2);
+  --perspective: 1000px;
+  --sk-bg: #151f2e;
+  --sk-shine: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
   color-scheme: dark;
 }
 
@@ -223,8 +231,7 @@ h2 {
 .ranking-card:hover,
 .ranking-card:focus-within {
   box-shadow: var(--depth-3);
-  transform: perspective(var(--perspective)) translateY(-4px) rotateX(2deg);
-  border-color: rgba(0, 240, 255, 0.4);
+  transform: perspective(var(--perspective)) translateY(-2px);
 }
 
 .ranking-card.is-highlight {
@@ -931,48 +938,6 @@ main {
   background: #0b1521;
   color: var(--muted);
   line-height: 1.5;
-}
-
-.error-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding: 20px 16px;
-  border-color: rgba(239,91,115,0.35);
-  background: rgba(239,91,115,0.06);
-}
-
-.error-icon { font-size: 22px; }
-
-.error-msg {
-  font-size: 13px;
-  color: var(--danger);
-  font-weight: 700;
-  text-align: center;
-}
-
-.error-hint {
-  font-size: 11px;
-  color: var(--muted);
-  opacity: 0.7;
-}
-
-.retry-btn {
-  margin-top: 2px;
-  padding: 8px 22px;
-  border-radius: var(--radius);
-  border: 1px solid var(--accent);
-  background: rgba(24,198,167,0.12);
-  color: var(--accent);
-  font-size: 13px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.retry-btn:active {
-  background: rgba(24,198,167,0.26);
 }
 
 .audit-warning {

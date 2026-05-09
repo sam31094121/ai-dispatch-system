@@ -7,9 +7,6 @@
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💠</text></svg>">
 
   <script type="importmap">
     {
@@ -27,108 +24,90 @@
     @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Noto+Sans+TC:wght@400;700;900&display=swap');
     
     body { 
-      background-color: #00040a; 
+      background-color: #000205; 
       color: #e2e8f0; 
       font-family: 'Noto Sans TC', sans-serif; 
       -webkit-tap-highlight-color: transparent;
       background-image: 
-        radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.05) 0%, transparent 70%),
-        linear-gradient(rgba(0, 255, 255, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 255, 0.02) 1px, transparent 1px);
-      background-size: 100% 100%, 30px 30px, 30px 30px;
-      background-attachment: fixed;
+        linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 20px 20px;
+      background-position: center center;
     }
     
     .font-tech { font-family: 'Share Tech Mono', monospace; }
     
-    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.9); }
-    .custom-scrollbar::-webkit-scrollbar-thumb { 
-      background: linear-gradient(to bottom, #00f0ff, #7000ff); 
-      border-radius: 10px;
-    }
+    .custom-scrollbar::-webkit-scrollbar { width: 2px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.8); }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #00f0ff; }
     
     /* 霸氣銳利邊框與玻璃面板 */
     .tech-panel { 
-      background: rgba(8, 16, 28, 0.8); 
-      backdrop-filter: blur(12px); 
-      border: 1px solid rgba(0, 240, 255, 0.1); 
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+      background: rgba(4, 13, 24, 0.85); 
+      backdrop-filter: blur(10px); 
+      border: 1px solid rgba(0, 240, 255, 0.15); 
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
       position: relative;
-      overflow: hidden;
     }
-    .tech-panel::before {
-      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.5), transparent);
+    /* 面板四角的裝飾點 */
+    .tech-panel::before, .tech-panel::after {
+      content: ''; position: absolute; width: 4px; height: 4px; background: #00f0ff;
     }
+    .tech-panel::before { top: -1px; left: -1px; box-shadow: calc(100% + 2px) 0 #00f0ff; }
+    .tech-panel::after { bottom: -1px; left: -1px; box-shadow: calc(100% + 2px) 0 #00f0ff; }
 
     /* 頂級王者發光特效 (霸氣金) */
     .glory-glow-1 { 
-      border: 1px solid rgba(255, 176, 0, 0.3);
-      background: linear-gradient(135deg, rgba(255, 176, 0, 0.15) 0%, rgba(8, 16, 28, 0.9) 100%);
-      box-shadow: 0 0 20px rgba(255, 176, 0, 0.1);
+      border-left: 4px solid #ffb000;
+      border-right: 1px solid rgba(255, 176, 0, 0.3);
+      border-top: 1px solid rgba(255, 176, 0, 0.3);
+      border-bottom: 1px solid rgba(255, 176, 0, 0.3);
+      background: linear-gradient(90deg, rgba(255, 176, 0, 0.1) 0%, transparent 100%);
+      box-shadow: -4px 0 15px rgba(255, 176, 0, 0.3);
     }
     
+    /* 次級精英特效 (冷冽青) */
     .glory-glow-other { 
-      border: 1px solid rgba(0, 240, 255, 0.2);
-      background: linear-gradient(135deg, rgba(0, 240, 255, 0.1) 0%, rgba(8, 16, 28, 0.9) 100%);
+      border-left: 3px solid #00f0ff;
+      border-right: 1px solid rgba(0, 240, 255, 0.2);
+      border-top: 1px solid rgba(0, 240, 255, 0.2);
+      border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+      background: linear-gradient(90deg, rgba(0, 240, 255, 0.05) 0%, transparent 100%);
     }
 
     .neon-input {
-      background: rgba(0, 0, 0, 0.7);
-      border: 1px solid rgba(30, 41, 59, 0.5);
-      border-left: 3px solid #00f0ff;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid #1e293b;
+      border-bottom: 2px solid #00f0ff;
+      transition: all 0.2s;
     }
     .neon-input:focus {
       border-color: #00f0ff;
-      background: rgba(0, 10, 20, 0.8);
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+      box-shadow: 0 5px 15px -5px rgba(0, 240, 255, 0.3);
       outline: none;
     }
     
-    html, body { overflow-x: hidden; width: 100%; scroll-behavior: smooth; }
+    html, body { overflow-x: hidden; width: 100%; }
     
+    /* 掃描線動畫 */
     .scan-line {
-      position: absolute; top: 0; left: 0; right: 0; height: 100%;
-      background: linear-gradient(to bottom, 
-        transparent 0%, 
-        rgba(0, 240, 255, 0.03) 50%, 
-        transparent 50.1%, 
-        transparent 100%
-      );
-      background-size: 100% 4px;
-      pointer-events: none;
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #00f0ff, transparent);
       opacity: 0.5;
-      z-index: 50;
+      animation: scan 3s linear infinite;
+      pointer-events: none;
     }
-
-    .shimmer {
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-      background-size: 200% 100%;
-      animation: shimmer 2s infinite;
-    }
-    @keyframes shimmer {
-      0% { background-position: -200% 0; }
-      100% { background-position: 200% 0; }
-    }
-
-    .cyber-grid {
-      position: fixed; inset: 0;
-      background-image: 
-        linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px);
-      background-size: 40px 40px;
-      perspective: 1000px;
-      transform: rotateX(60deg) translateY(-200px);
-      transform-origin: top;
-      opacity: 0.2;
-      z-index: -1;
+    @keyframes scan {
+      0% { top: 0%; opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { top: 100%; opacity: 0; }
     }
   </style>
 </head>
 <body>
-  <div class="cyber-grid"></div>
   <div id="root"></div>
 
   <script type="text/babel" data-type="module">
@@ -142,58 +121,6 @@
 
     const nf = new Intl.NumberFormat("zh-TW", { maximumFractionDigits: 2 });
     const formatNum = (v) => nf.format(v);
-
-    const ThreeCore = ({ size = 120 }) => {
-      const containerRef = React.useRef();
-
-      React.useEffect(() => {
-        if (!containerRef.current) return;
-        const width = size, height = size;
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(width, height);
-        containerRef.current.appendChild(renderer.domElement);
-
-        const geometry = new THREE.IcosahedronGeometry(1, 2);
-        const material = new THREE.MeshPhongMaterial({
-          color: 0x00f0ff,
-          wireframe: true,
-          emissive: 0x00f0ff,
-          emissiveIntensity: 0.5,
-          transparent: true,
-          opacity: 0.8
-        });
-        const core = new THREE.Mesh(geometry, material);
-        scene.add(core);
-
-        const light = new THREE.PointLight(0x00f0ff, 2, 10);
-        light.position.set(2, 2, 2);
-        scene.add(light);
-        scene.add(new THREE.AmbientLight(0x404040));
-
-        camera.position.z = 2.5;
-
-        const animate = () => {
-          requestAnimationFrame(animate);
-          core.rotation.x += 0.01;
-          core.rotation.y += 0.01;
-          renderer.render(scene, camera);
-        };
-        animate();
-
-        return () => {
-          renderer.dispose();
-          if (containerRef.current) containerRef.current.removeChild(renderer.domElement);
-        };
-      }, [size]);
-
-      return <div ref={containerRef} style={{ width: size, height: size }} className="opacity-80" />;
-    };
-
-    const SkeletonCard = () => (
-      <div className="tech-panel p-4 h-32 shimmer bg-slate-900/50 opacity-50 border-dashed border-slate-700"></div>
-    );
 
     function AIDispatchDashboard() {
       const [data, setData] = useState(null);
@@ -266,10 +193,6 @@
                setData(parseSnapshot(json.data));
                setActionStatus({ type: 'pass', message: 'SYNC_COMPLETE' });
                setRawInput(json.data.rawText || "");
-               // 播放初始化完成音效
-               const audio = new Audio('https://www.soundjay.com/buttons/sounds/button-20.mp3');
-               audio.volume = 0.05;
-               audio.play().catch(() => {});
             } else { throw new Error(json.message || 'READ_FAIL'); }
           })
           .catch(err => {
@@ -400,25 +323,20 @@
             </div>
 
             {/* Header 戰區 (霸氣排版) */}
-            <header className="flex flex-col md:flex-row justify-between items-start md:items-end border-b-2 border-[#00f0ff]/40 pb-3 gap-2 relative overflow-visible">
-              <div className="w-full md:w-auto flex items-center gap-4">
-                <div className="hidden md:block -ml-4 -mt-2">
-                  <ThreeCore size={80} />
+            <header className="flex flex-col md:flex-row justify-between items-start md:items-end border-b-2 border-[#00f0ff]/40 pb-3 gap-2">
+              <div className="w-full md:w-auto">
+                <div className="font-tech text-[#00f0ff]/60 text-[10px] md:text-xs tracking-widest mb-1 flex items-center gap-2">
+                  <Fingerprint className="w-3 h-3" />
+                  {data.subTitle}
+                  {data.isPersisted ? 
+                    <span className="px-1 py-0.5 bg-[#00ff88]/20 text-[#00ff88] text-[9px] border border-[#00ff88]/50">SECURED</span> : 
+                    <span className="px-1 py-0.5 bg-[#ffb000]/20 text-[#ffb000] text-[9px] border border-[#ffb000]/50">UNSAFE</span>
+                  }
                 </div>
-                <div>
-                  <div className="font-tech text-[#00f0ff]/60 text-[10px] md:text-xs tracking-widest mb-1 flex items-center gap-2">
-                    <Fingerprint className="w-3 h-3" />
-                    {data.subTitle}
-                    {data.isPersisted ? 
-                      <span className="px-1 py-0.5 bg-[#00ff88]/20 text-[#00ff88] text-[9px] border border-[#00ff88]/50">SECURED</span> : 
-                      <span className="px-1 py-0.5 bg-[#ffb000]/20 text-[#ffb000] text-[9px] border border-[#ffb000]/50">UNSAFE</span>
-                    }
-                  </div>
-                  <h1 className="text-lg md:text-2xl font-black text-white tracking-wider flex items-center gap-2 truncate uppercase">
-                    <Crosshair className="w-5 h-5 text-[#ff3366] flex-shrink-0" />
-                    {data.title}
-                  </h1>
-                </div>
+                <h1 className="text-lg md:text-2xl font-black text-white tracking-wider flex items-center gap-2 truncate uppercase">
+                  <Crosshair className="w-5 h-5 text-[#ff3366] flex-shrink-0" />
+                  {data.title}
+                </h1>
               </div>
               <button
                 onClick={handleCopy}
