@@ -821,3 +821,4 @@
 {"executionId":20260413054657,"status":"通過","operator":"WEB","reportDate":"115/04/13","dispatchDate":"115/04/14","time":"2026/04/13 05:46:57","topName":"馬秋香"}
 {"executionId":20260415151754,"status":"通過","operator":"USER","reportDate":"115/04/13","dispatchDate":"115/04/14","time":"2026/04/15 15:17:54","topName":"王珍珠"}
 {"executionId":20260415152117,"status":"通過","operator":"USER","reportDate":"115/04/13","dispatchDate":"115/04/14","time":"2026/04/15 15:21:17","topName":"王珍珠"}
+{"timestamp":"2026-05-09T17:15:22.249Z","event":"PRODUCTION_SYNC","reportId":"dispatch_2026_05_09_v1","status":"LOCKED","operator":"antigravity-ai"}

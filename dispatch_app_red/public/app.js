@@ -584,21 +584,12 @@ function setupOfficialMoneyRain(panel) {
   }
 
   [
-    'maple-coin-front.png',
-    'maple-coin-angle.png',
-    'maple-coin-side.png',
-    'maple-coin-front.webp',
-    'maple-coin-angle.webp',
-    'maple-coin-side.webp'
+    'gold_front.png',
+    'gold_edge.png'
   ].forEach((name) => loadMoneyAsset(`/assets/money/${name}`, photoSprites.coins));
 
   [
-    'dollar-bill-front.png',
-    'dollar-bill-angle.png',
-    'dollar-bill-folded.png',
-    'dollar-bill-front.webp',
-    'dollar-bill-angle.webp',
-    'dollar-bill-folded.webp'
+    'usd_front.png'
   ].forEach((name) => loadMoneyAsset(`/assets/money/${name}`, photoSprites.bills));
 
   function spawn(forceBill = false) {
@@ -609,26 +600,27 @@ function setupOfficialMoneyRain(panel) {
       ? billPool[Math.floor(Math.random() * billPool.length)]
       : coinPool[Math.floor(Math.random() * coinPool.length)];
     const size = isBill ? 48 + Math.random() * 52 : 16 + Math.random() * 24;
+    const z = Math.random() * 800; // 0 (near) to 800 (far)
     particles.push({
       type: isBill ? 'bill' : 'coin',
       sprite,
-      x: Math.random() * width,
-      y: -70 - Math.random() * 220,
-      z: Math.random(),
-      vx: (Math.random() - 0.5) * (isBill ? 74 : 46),
-      vy: 110 + Math.random() * (isBill ? 170 : 260),
-      gravity: isBill ? 450 : 760,
-      drag: isBill ? 0.982 : 0.993,
+      x: (Math.random() - 0.5) * width * 1.5, // Center-based spawning
+      y: -200 - Math.random() * 300,
+      z: z,
+      vx: (Math.random() - 0.5) * (isBill ? 120 : 80),
+      vy: 150 + Math.random() * (isBill ? 200 : 350),
+      gravity: isBill ? 380 : 850,
+      drag: isBill ? 0.985 : 0.995,
       size,
-      w: isBill ? size * 1.92 : size,
-      h: isBill ? size * 0.92 : size,
+      w: isBill ? size * 2.1 : size,
+      h: isBill ? size * 0.98 : size,
       rot: Math.random() * Math.PI * 2,
-      vr: (Math.random() - 0.5) * (isBill ? 4.8 : 13),
+      vr: (Math.random() - 0.5) * (isBill ? 6 : 18),
       flip: Math.random() * Math.PI * 2,
-      vf: isBill ? 5 + Math.random() * 7 : 11 + Math.random() * 15,
-      floor: height - (12 + Math.random() * 76),
-      alpha: isBill ? 0.84 : 0.96,
-      trail: Math.random() < 0.38
+      vf: isBill ? 4 + Math.random() * 8 : 12 + Math.random() * 20,
+      floor: height - (12 + Math.random() * 90),
+      alpha: isBill ? 0.88 : 0.98,
+      trail: Math.random() < 0.45
     });
     spawned += 1;
   }
@@ -676,51 +668,75 @@ function setupOfficialMoneyRain(panel) {
   }
 
   function drawSpriteParticle(p, alpha = p.alpha) {
-    const flipScale = p.type === 'coin'
-      ? Math.max(0.12, Math.abs(Math.cos(p.flip)))
-      : 1 + Math.sin(p.flip) * 0.10;
-    const skew = p.type === 'bill' ? Math.cos(p.flip) * 0.16 : 0;
-    const depthScale = 0.72 + p.z * 0.58;
-    const w = p.w * depthScale;
-    const h = p.h * depthScale;
-    const depthAlpha = alpha * (0.45 + p.z * 0.55);
-    drawSoftShadow(p.x, p.y, w, h, depthAlpha * (p.type === 'bill' ? 0.18 : 0.25));
-    if (p.trail && p.vy > 260) {
-      ctx.save();
-      ctx.globalAlpha = depthAlpha * 0.16;
-      ctx.strokeStyle = p.type === 'coin' ? 'rgba(255, 200, 76, 0.62)' : 'rgba(218, 241, 204, 0.38)';
-      ctx.lineWidth = Math.max(1, w * 0.08);
-      ctx.beginPath();
-      ctx.moveTo(p.x - p.vx * 0.018, p.y - p.vy * 0.032);
-      ctx.lineTo(p.x, p.y);
-      ctx.stroke();
-      ctx.restore();
-    }
+    const focalLength = 800;
+    const zOffset = 400;
+    const scale = focalLength / (focalLength + p.z + zOffset);
+    
+    const screenX = width / 2 + p.x * scale;
+    const screenY = p.y * scale + height * (1 - scale) * 0.5;
+    
+    const w = p.w * scale;
+    const h = p.h * scale;
+    const depthAlpha = alpha * (0.25 + (1 - p.z / 1200) * 0.75);
+    
+    // Euler Angles + Bill Wobble
+    const yaw = p.flip + (p.type === 'bill' ? Math.sin(p.life * 4) * 0.4 : 0);
+    const pitch = p.rot + (p.type === 'bill' ? Math.cos(p.life * 3) * 0.3 : 0);
+    const roll = p.vr * (p.life || 0);
+    
+    drawSoftShadow(width / 2 + p.x * scale, height - 20, w * 1.1, h * 0.3, depthAlpha * 0.12);
+
     ctx.save();
-    ctx.globalAlpha = depthAlpha;
-    ctx.translate(p.x, p.y);
-    ctx.rotate(p.rot);
-    ctx.transform(flipScale, Math.sin(p.flip) * 0.035, skew, 1, 0, 0);
-    if (p.type === 'coin' && flipScale < 0.20) {
-      const edge = ctx.createLinearGradient(-w * 0.10, 0, w * 0.10, 0);
-      edge.addColorStop(0, '#3f1b04');
-      edge.addColorStop(0.38, '#d28b22');
-      edge.addColorStop(0.70, '#fff0a2');
-      edge.addColorStop(1, '#5d2705');
-      ctx.fillStyle = edge;
-      ctx.fillRect(-w * 0.11, -h * 0.50, w * 0.22, h);
-      ctx.strokeStyle = 'rgba(255,235,150,.34)';
-      ctx.lineWidth = 1;
-      for (let i = -4; i <= 4; i += 1) {
-        ctx.beginPath();
-        ctx.moveTo(-w * 0.11, i * h * 0.10);
-        ctx.lineTo(w * 0.11, i * h * 0.10 + 2);
-        ctx.stroke();
-      }
+    
+    // 1. Dynamic Motion Blur & DOF
+    const vel = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+    const motionBlur = Math.min(3, vel * 0.005);
+    const dofBlur = Math.abs(p.z - 400) * 0.004; // Focused at z=400
+    const totalBlur = motionBlur + dofBlur;
+    
+    if (totalBlur > 0.5) {
+      ctx.filter = `blur(${totalBlur.toFixed(2)}px)`;
     }
-    setRenderEffects(p);
+
+    ctx.globalAlpha = depthAlpha;
+    ctx.translate(screenX, screenY);
+    
+    const m11 = Math.cos(yaw) * scale;
+    const m12 = Math.sin(yaw) * Math.sin(pitch) * scale;
+    const m22 = Math.cos(pitch) * scale;
+    
+    ctx.transform(m11, m12, 0, m22, 0, 0);
+    ctx.rotate(roll);
+
+    // 2. Light Source Simulation
+    const normalZ = Math.abs(Math.cos(yaw) * Math.cos(pitch));
+    
+    // Coin Edge (Photo-realistic thickness)
+    if (p.type === 'coin' && Math.abs(m11) < 0.25 * scale) {
+      const edgeWidth = w * 0.18;
+      const edge = ctx.createLinearGradient(-edgeWidth, 0, edgeWidth, 0);
+      edge.addColorStop(0, '#3a1a04');
+      edge.addColorStop(0.5, '#f7c44a');
+      edge.addColorStop(1, '#3a1a04');
+      ctx.fillStyle = edge;
+      ctx.fillRect(-edgeWidth / 2, -h / 2, edgeWidth, h);
+    }
+
     ctx.drawImage(p.sprite, -w / 2, -h / 2, w, h);
-    resetRenderEffects();
+    
+    // 3. Ultra-realistic Specular Highlight
+    if (normalZ > 0.65) {
+      const glintAlpha = Math.pow(normalZ, 8) * 1.2 * depthAlpha;
+      ctx.globalCompositeOperation = 'screen';
+      ctx.globalAlpha = glintAlpha;
+      const glintGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, w * 0.8);
+      glintGrad.addColorStop(0, 'rgba(255,255,240,0.9)');
+      glintGrad.addColorStop(0.2, 'rgba(255,245,200,0.4)');
+      glintGrad.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = glintGrad;
+      ctx.fillRect(-w/2, -h/2, w, h);
+    }
+    
     ctx.restore();
   }
 
@@ -1626,3 +1642,13 @@ function setup() {
 }
 
 document.addEventListener('DOMContentLoaded', setup);
+
+/* ¢w¢w 3D Dashboard Parallax ¢w¢w */
+document.addEventListener('mousemove', (e) => {
+  const shell = document.querySelector('.page-shell');
+  if (!shell) return;
+  const xAxis = (window.innerWidth / 2 - e.pageX) / 45;
+  const yAxis = (window.innerHeight / 2 - e.pageY) / 45;
+  shell.style.transform = \otateY(\deg) rotateX(\deg)\;
+});
+

@@ -223,10 +223,6 @@ function scanStoredRecords() {
 }
 
 function hydrateStorageCache() {
-  if (storageCache.hydrated) {
-    return storageCache;
-  }
-
   // [AI PRO MODE] 強制繞過快取，確保解鎖版能即時讀取磁碟上的最新 latest.json
   ensureStorageDirs();
   const latestRecord = readJson(storagePaths.latestFile);
