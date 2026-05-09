@@ -312,19 +312,26 @@ function normalizeRankingRow(row = {}, index = 0) {
   const metricsSource = row.metrics || row;
   const marker = cleanText(row.標記 || row.marker);
   const advice = cleanText(row.advice || row.建議 || row.text);
+  const isNew = typeof row.isNew === 'boolean' ? row.isNew : tagged.isNew || marker.includes('新人');
 
   return {
     rank: Math.max(0, Math.trunc(toNumber(firstDefined(row, ['rank', '名次']) ?? index + 1))),
-    name: tagged.name,
-    isNew:
-      typeof row.isNew === 'boolean'
-        ? row.isNew
-        : tagged.isNew || marker.includes('新人'),
+    name: formatDisplayName(tagged.name, isNew),
+    isNew,
     group: cleanText(row.group || row.分級).toUpperCase(),
     prevRank: toNumber(firstDefined(row, ['prevRank', '上期名次', 'previousRank'])),
     movement: cleanText(row.movement || row.move || row.異動 || 'flat').toLowerCase(),
     metrics: {
-      正式權重分數: toNumber(firstDefined(metricsSource, ['正式權重分數', 'weightedScore', 'totalScore'])),
+      score: toNumber(firstDefined(metricsSource, ['正式權重分數', 'weightedScore', 'totalScore', 'score'])),
+      actualRevenue: toNumber(firstDefined(metricsSource, ['實收', '實收總金額', '實收總業績', 'actualRevenue'])),
+      totalRevenue: toNumber(firstDefined(metricsSource, ['總業績', 'totalRevenue', '全部總業績'])),
+      renewalRevenue: toNumber(firstDefined(metricsSource, ['續單金額', '追續金額', '追續單金額', 'renewalRevenue'])),
+      renewalDeals: toNumber(firstDefined(metricsSource, ['追續成交總數', '追續單數', 'renewalDeals', '追單'])),
+      renewalAverage: toNumber(firstDefined(metricsSource, ['追續客單價', 'avgRenewal', 'renewalAvgPrice', 'renewalAverage'])),
+      dispatchDeals: toNumber(firstDefined(metricsSource, ['派單成交總通數', 'dispatchDeals', '派單成交'])),
+      
+      // 相容舊版中文 Key
+      正式權重分數: toNumber(firstDefined(metricsSource, ['正式權重分數', 'weightedScore', 'totalScore', 'score'])),
       實收: toNumber(firstDefined(metricsSource, ['實收', '實收總金額', '實收總業績', 'actualRevenue'])),
       總業績: toNumber(firstDefined(metricsSource, ['總業績', 'totalRevenue', '全部總業績'])),
       續單金額: toNumber(firstDefined(metricsSource, ['續單金額', '追續金額', '追續單金額', 'renewalRevenue'])),
