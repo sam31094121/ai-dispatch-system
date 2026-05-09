@@ -1651,7 +1651,31 @@ function hideSplashScreen() {
   }, 400);
 }
 
+// ── 全線串連：SSE 即時推播 ──
+function initRealtimeSync() {
+  if (typeof (EventSource) !== "undefined") {
+    console.log('[SSE] 正在建立全線即時串連...');
+    const source = new EventSource('/api/updates/stream');
+
+    source.onmessage = function(event) {
+      const data = JSON.parse(event.data);
+      if (data.type === 'data_updated') {
+        console.log('[SSE] 收到即時更新指令，同步資料中...');
+        loadCurrent();
+      }
+    };
+
+    source.onerror = function() {
+      source.close();
+      setInterval(loadCurrent, 300000);
+    };
+  } else {
+    setInterval(loadCurrent, 300000);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', setup);
+initRealtimeSync();
 
 /* ── 3D Dashboard Parallax ── */
 document.addEventListener('mousemove', (e) => {

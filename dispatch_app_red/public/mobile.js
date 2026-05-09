@@ -1172,17 +1172,35 @@ function hideSplashScreen() {
   }, 400);
 }
 
-// ── 全線串連：自動輪詢 ──
-function initAutoRefresh() {
-  // 每 5 分鐘自動檢查一次資料更新
-  setInterval(() => {
-    console.log('[AutoRefresh] Checking for new data...');
-    loadData();
-  }, 300000); 
+// ── 全線串連：SSE 即時推播 ──
+function initRealtimeSync() {
+  if (typeof (EventSource) !== "undefined") {
+    console.log('[SSE] 正在建立全線即時串連...');
+    const source = new EventSource('/api/updates/stream');
+
+    source.onmessage = function(event) {
+      const data = JSON.parse(event.data);
+      if (data.type === 'data_updated') {
+        console.log('[SSE] 收到即時更新指令，同步資料中...');
+        showToast('🔄 偵測到新派單，即時同步中...');
+        loadData();
+      }
+    };
+
+    source.onerror = function() {
+      console.warn('[SSE] 連線中斷，改採背景輪詢備援');
+      source.close();
+      // 備援：若 SSE 失敗，退回輪詢
+      setInterval(loadData, 300000);
+    };
+  } else {
+    // 瀏覽器不支援 SSE
+    setInterval(loadData, 300000);
+  }
 }
 
 bindEvents();
 initActiveNav();
 initHeroTilt();
 loadData();
-initAutoRefresh();
+initRealtimeSync();

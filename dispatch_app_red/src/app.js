@@ -9,6 +9,7 @@ const lineNotifyRoutes = require('./routes/lineNotify.routes');
 const dispatchReportRoutes = require('./routes/dispatchReport.routes');
 const legacyRoutes = require('./routes/legacy.routes');
 const versionRoutes = require('./routes/version.routes');
+const sseService = require('./services/sse.service');
 
 const { errorResponse } = require('./utils/response.util');
 const errorCodes = require('./constants/errorCodes');
@@ -62,6 +63,18 @@ function createApp() {
   app.use('/api', legacyRoutes);
   app.use('/api', dispatchReportRoutes);
   app.use('/api/version', versionRoutes);
+
+  // SSE 即時推播路由
+  app.get('/api/updates/stream', (req, res) => {
+    const clientId = sseService.addClient(res);
+    req.on('close', () => {
+      sseService.removeClient(clientId);
+    });
+  });
+
+  // 啟動資料監看器
+  sseService.initDataWatcher(appConfig.storageRoot);
+
   app.use('/api', (_req, res) => {
     res
       .status(404)
