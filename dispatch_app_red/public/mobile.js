@@ -294,7 +294,7 @@ function setLoading() {
 
 
 function renderA1Hero(rankings) {
-  const a1 = rankings.filter((r) => r.group === 'A1');
+  const a1 = rankings.filter((r) => r.group === 'A1').slice(0, 6);
   if (!refs.a1HeroGrid) return;
   if (!a1.length) {
     refs.a1HeroGrid.innerHTML = '<div class="empty-state">目前沒有 A1 主力資料</div>';
@@ -305,25 +305,32 @@ function renderA1Hero(rankings) {
     const pct = Math.min(100, Math.max(0, row.score / MAX_SCORE * 100));
     const rankClass = `rank-${row.rank}`;
     const crown = row.rank === 1 ? '<span class="a1-hero-crown">👑</span>' : '';
-    const metricHtml = `
+    
+    // 強化版 A1 指標視圖
+    const metricsHtml = `
       <div class="a1-metric"><span>實收</span><strong>${fmt(row.actualRevenue)}</strong></div>
       <div class="a1-metric"><span>追續金額</span><strong>${fmt(row.renewalRevenue)}</strong></div>
       <div class="a1-metric"><span>總業績</span><strong>${fmt(row.totalRevenue)}</strong></div>
     `;
+
     return `
-      <article class="a1-hero-card ${rankClass}">
+      <article class="a1-hero-card ${rankClass}" data-name="${escapeHtml(row.name)}">
         ${crown}
         <div class="a1-hero-gloss"></div>
-        <div class="a1-hero-rank">#${row.rank} ${row.isNew ? '新人' : ''}</div>
+        <div class="a1-hero-rank">RANK #${row.rank} ${row.isNew ? '｜ 新人' : ''}</div>
         <div class="a1-hero-name">${escapeHtml(row.name)}</div>
+        
         <div class="a1-hero-score-row">
-          <span class="a1-hero-score-label">AI分</span>
+          <span class="a1-hero-score-label">AI 加權分</span>
           <span class="a1-hero-score-value">${fmt(row.score, 2)}</span>
         </div>
-        <div class="a1-hero-score-track"><div class="a1-hero-score-fill" data-pct="${pct}" style="width:0%"></div></div>
-        <div class="a1-hero-metrics">${metricHtml}</div>
+        
+        <div class="a1-hero-score-track">
+          <div class="a1-hero-score-fill" data-pct="${pct}" style="width:0%"></div>
+        </div>
+        
+        <div class="a1-hero-metrics">${metricsHtml}</div>
       </article>`;
-
   }).join('');
 }
 

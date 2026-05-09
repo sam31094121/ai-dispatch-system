@@ -19,6 +19,7 @@
 </head>
 <body>
   <div class="ai-scan-overlay"></div>
+  <div class="glow-sphere"></div>
   
   <div id="app-shell">
     <header class="topbar">
@@ -122,6 +123,17 @@
   </div>
 
   <div id="toast" class="toast"></div>
+
+  <div id="search-modal" class="modal">
+    <div class="modal-panel">
+      <div class="section-head">
+        <h2>名次搜尋</h2>
+        <button id="search-close" class="icon-button">✕</button>
+      </div>
+      <input type="text" id="lookup-input" placeholder="請輸入姓名關鍵字..." autofocus>
+      <div id="lookup-results" class="lookup-results"></div>
+    </div>
+  </div>
 
   <script src="/mobile.js?v=0509-premium"></script>
 </body>
