@@ -584,21 +584,12 @@ function setupOfficialMoneyRain(panel) {
   }
 
   [
-    'maple-coin-front.png',
-    'maple-coin-angle.png',
-    'maple-coin-side.png',
-    'maple-coin-front.webp',
-    'maple-coin-angle.webp',
-    'maple-coin-side.webp'
+    'gold_front.png',
+    'gold_edge.png'
   ].forEach((name) => loadMoneyAsset(`/assets/money/${name}`, photoSprites.coins));
 
   [
-    'dollar-bill-front.png',
-    'dollar-bill-angle.png',
-    'dollar-bill-folded.png',
-    'dollar-bill-front.webp',
-    'dollar-bill-angle.webp',
-    'dollar-bill-folded.webp'
+    'usd_front.png'
   ].forEach((name) => loadMoneyAsset(`/assets/money/${name}`, photoSprites.bills));
 
   function spawn(forceBill = false) {
@@ -678,10 +669,9 @@ function setupOfficialMoneyRain(panel) {
 
   function drawSpriteParticle(p, alpha = p.alpha) {
     const focalLength = 800;
-    const zOffset = 400; // Shift world back
+    const zOffset = 400;
     const scale = focalLength / (focalLength + p.z + zOffset);
     
-    // 3D Projection
     const screenX = width / 2 + p.x * scale;
     const screenY = p.y * scale + height * (1 - scale) * 0.5;
     
@@ -689,35 +679,41 @@ function setupOfficialMoneyRain(panel) {
     const h = p.h * scale;
     const depthAlpha = alpha * (0.25 + (1 - p.z / 1200) * 0.75);
     
-    // 3D Orientation (Euler Angles)
-    const yaw = p.flip;   // Horizontal spin
-    const pitch = p.rot;  // Vertical tumble
-    const roll = p.vr * (p.life || 0); // Self-rotation
+    // Euler Angles + Bill Wobble
+    const yaw = p.flip + (p.type === 'bill' ? Math.sin(p.life * 4) * 0.4 : 0);
+    const pitch = p.rot + (p.type === 'bill' ? Math.cos(p.life * 3) * 0.3 : 0);
+    const roll = p.vr * (p.life || 0);
     
-    // Draw shadow on the 3D ground plane
-    const shadowScale = focalLength / (focalLength + p.z + zOffset + (height - p.y) * 0.5);
-    drawSoftShadow(width / 2 + p.x * shadowScale, height - 20, w * 1.2, h * 0.4, depthAlpha * 0.15);
+    drawSoftShadow(width / 2 + p.x * scale, height - 20, w * 1.1, h * 0.3, depthAlpha * 0.12);
 
     ctx.save();
+    
+    // 1. Dynamic Motion Blur & DOF
+    const vel = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+    const motionBlur = Math.min(3, vel * 0.005);
+    const dofBlur = Math.abs(p.z - 400) * 0.004; // Focused at z=400
+    const totalBlur = motionBlur + dofBlur;
+    
+    if (totalBlur > 0.5) {
+      ctx.filter = `blur(${totalBlur.toFixed(2)}px)`;
+    }
+
     ctx.globalAlpha = depthAlpha;
     ctx.translate(screenX, screenY);
     
-    // Composite 3D Matrix (Approximation for 2D Canvas)
     const m11 = Math.cos(yaw) * scale;
     const m12 = Math.sin(yaw) * Math.sin(pitch) * scale;
-    const m21 = 0;
     const m22 = Math.cos(pitch) * scale;
     
-    ctx.transform(m11, m12, m21, m22, 0, 0);
+    ctx.transform(m11, m12, 0, m22, 0, 0);
     ctx.rotate(roll);
 
-    // Dynamic Specular / Lighting
-    // The "shininess" depends on the surface normal pointing towards a virtual light source
+    // 2. Light Source Simulation
     const normalZ = Math.abs(Math.cos(yaw) * Math.cos(pitch));
     
-    // Coin Edge Rendering (3D Thickness)
-    if (p.type === 'coin' && Math.abs(m11) < 0.3 * scale) {
-      const edgeWidth = w * 0.2;
+    // Coin Edge (Photo-realistic thickness)
+    if (p.type === 'coin' && Math.abs(m11) < 0.25 * scale) {
+      const edgeWidth = w * 0.18;
       const edge = ctx.createLinearGradient(-edgeWidth, 0, edgeWidth, 0);
       edge.addColorStop(0, '#3a1a04');
       edge.addColorStop(0.5, '#f7c44a');
@@ -728,19 +724,17 @@ function setupOfficialMoneyRain(panel) {
 
     ctx.drawImage(p.sprite, -w / 2, -h / 2, w, h);
     
-    // Add 3D Specular Glint
-    if (normalZ > 0.7) {
-      const glintAlpha = (normalZ - 0.7) * 2 * depthAlpha;
+    // 3. Ultra-realistic Specular Highlight
+    if (normalZ > 0.65) {
+      const glintAlpha = Math.pow(normalZ, 8) * 1.2 * depthAlpha;
       ctx.globalCompositeOperation = 'screen';
       ctx.globalAlpha = glintAlpha;
-      const grad = ctx.createLinearGradient(-w, -h, w, h);
-      grad.addColorStop(0, 'rgba(255,255,255,0)');
-      grad.addColorStop(0.5, 'rgba(255,255,255,0.8)');
-      grad.addColorStop(1, 'rgba(255,255,255,0)');
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, w / 2, h / 2, 0, 0, Math.PI * 2);
-      ctx.fill();
+      const glintGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, w * 0.8);
+      glintGrad.addColorStop(0, 'rgba(255,255,240,0.9)');
+      glintGrad.addColorStop(0.2, 'rgba(255,245,200,0.4)');
+      glintGrad.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = glintGrad;
+      ctx.fillRect(-w/2, -h/2, w, h);
     }
     
     ctx.restore();
@@ -1648,3 +1642,13 @@ function setup() {
 }
 
 document.addEventListener('DOMContentLoaded', setup);
+
+/* ¢w¢w 3D Dashboard Parallax ¢w¢w */
+document.addEventListener('mousemove', (e) => {
+  const shell = document.querySelector('.page-shell');
+  if (!shell) return;
+  const xAxis = (window.innerWidth / 2 - e.pageX) / 45;
+  const yAxis = (window.innerHeight / 2 - e.pageY) / 45;
+  shell.style.transform = \otateY(\deg) rotateX(\deg)\;
+});
+
