@@ -34,7 +34,7 @@
       </div>
     </header>
 
-    <!-- ① 前4名英雄區：topbar 下方，第一眼主角 -->
+    <!-- ① 前4名英雄區：核心主角 -->
     <section id="a1-hero" aria-label="A1 高優先主力">
       <canvas id="mobile-coin-canvas" class="mobile-coin-canvas" aria-hidden="true"></canvas>
       <div class="a1-hero-header">
@@ -51,30 +51,57 @@
       <div id="a1-hero-grid" class="a1-hero-grid"></div>
     </section>
 
-    <!-- ② 統計帶：英雄區後 -->
-    <section class="date-strip" aria-label="整合統計">
-      <div>
-        <span>追續成交</span>
-        <strong id="stat-renewal-deals">--</strong>
+    <!-- ② 快速傳送區：優化順序，將傳送功能提前 -->
+    <section class="panel panel-line" id="line">
+      <div class="lc-card lc-card-coin">
+        <div class="lc-card-top">
+          <div class="lc-badge lc-badge-coin" aria-hidden="true">
+            <span class="lc-coin-leaf">🍁</span>
+            <span class="lc-coin-ring"></span>
+          </div>
+          <div class="lc-header">
+            <p class="kicker">Quick Reference</p>
+            <h3 class="lc-title">群組超精簡版</h3>
+          </div>
+        </div>
+        <pre id="group-short-output" class="lc-short-box"></pre>
+        <div class="send-actions" style="grid-template-columns: 1fr;">
+          <button id="copy-short-text" class="lc-action-btn" type="button" style="width: 100%;">複製精簡版並傳送</button>
+        </div>
       </div>
-      <div>
-        <span>總業績</span>
-        <strong id="stat-total-revenue">--</strong>
-      </div>
-      <div>
-        <span>實收</span>
-        <strong id="stat-cash-revenue">--</strong>
+
+      <div class="lc-card lc-card-bill">
+        <div class="lc-card-top">
+          <div class="lc-badge lc-badge-bill" aria-hidden="true">
+            <span class="lc-bill-denom">$</span>
+            <span class="lc-bill-100">100</span>
+            <span class="lc-bill-strip"></span>
+          </div>
+          <div class="lc-header">
+            <p class="kicker">Official LINE</p>
+            <h3 class="lc-title">完整公告文字</h3>
+          </div>
+        </div>
+        <div class="send-actions">
+          <button id="copy-line-text" class="primary-button" type="button">複製</button>
+          <button id="share-line-text" class="secondary-button" type="button">分享</button>
+          <a id="line-share" class="secondary-button" href="#" target="_blank" rel="noopener">LINE</a>
+        </div>
+        <textarea id="broadcast-output" class="broadcast-box" readonly aria-label="官方 LINE 公告" style="min-height: 100px;"></textarea>
       </div>
     </section>
 
-    <main>
+    <!-- ③ 統計與排名區 -->
+    <section class="date-strip" aria-label="整合統計">
+      <div><span>追續成交</span><strong id="stat-renewal-deals">--</strong></div>
+      <div><span>總業績</span><strong id="stat-total-revenue">--</strong></div>
+      <div><span>實收</span><strong id="stat-cash-revenue">--</strong></div>
+    </section>
 
+    <main>
       <section class="panel" id="summary">
         <div class="section-head">
-          <div>
-            <p class="kicker">Overall Stats</p>
-            <h2>整合總盤</h2>
-          </div>
+          <div><p class="kicker">Overall Stats</p><h2>整合總盤</h2></div>
         </div>
         <div id="summary-grid" class="summary-grid"></div>
         <div id="dual-totals" class="dual-totals"></div>
@@ -82,10 +109,7 @@
 
       <section class="panel" id="ranking">
         <div class="section-head">
-          <div>
-            <p class="kicker">Official Ranking</p>
-            <h2>正式派單名次</h2>
-          </div>
+          <div><p class="kicker">Official Ranking</p><h2>正式派單名次</h2></div>
           <button id="search-open" class="icon-button" type="button" aria-label="搜尋姓名">⌕</button>
         </div>
         <div id="ranking-list" class="ranking-list"></div>
@@ -93,62 +117,14 @@
 
       <section class="panel" id="groups">
         <div class="section-head">
-          <div>
-            <p class="kicker">Tier Distribution</p>
-            <h2>A1 / A2 / B / C 分級</h2>
-          </div>
+          <div><p class="kicker">Tier Distribution</p><h2>分級概覽</h2></div>
         </div>
         <div id="groups-grid" class="groups-grid"></div>
       </section>
 
-      <section class="panel panel-line" id="line">
-
-        <!-- 群組超精簡版 — 瑞士楓葉金幣主題 -->
-        <div class="lc-card lc-card-coin">
-          <div class="lc-card-top">
-            <div class="lc-badge lc-badge-coin" aria-hidden="true">
-              <span class="lc-coin-leaf">🍁</span>
-              <span class="lc-coin-ring"></span>
-            </div>
-            <div class="lc-header">
-              <p class="kicker">Quick Reference</p>
-              <h3 class="lc-title">群組超精簡版</h3>
-            </div>
-          </div>
-          <pre id="group-short-output" class="lc-short-box"></pre>
-          <button id="copy-short-text" class="lc-action-btn" type="button">複製精簡版</button>
-        </div>
-
-        <!-- 完整公告文字 — 美金鈔票主題 -->
-        <div class="lc-card lc-card-bill">
-          <div class="lc-card-top">
-            <div class="lc-badge lc-badge-bill" aria-hidden="true">
-              <span class="lc-bill-denom">$</span>
-              <span class="lc-bill-100">100</span>
-              <span class="lc-bill-strip"></span>
-            </div>
-            <div class="lc-header">
-              <p class="kicker">Official LINE</p>
-              <h3 class="lc-title">完整公告文字</h3>
-              <span class="lc-subtitle">可直接複製傳送</span>
-            </div>
-          </div>
-          <div class="send-actions">
-            <button id="copy-line-text" class="primary-button" type="button">複製公告</button>
-            <button id="share-line-text" class="secondary-button" type="button">分享</button>
-            <a id="line-share" class="secondary-button" href="#" target="_blank" rel="noopener">開啟 LINE</a>
-          </div>
-          <textarea id="broadcast-output" class="broadcast-box" readonly aria-label="官方 LINE 公告"></textarea>
-        </div>
-
-      </section>
-
       <section class="panel" id="audit">
         <div class="section-head">
-          <div>
-            <p class="kicker">Audit Log</p>
-            <h2>審計提醒</h2>
-          </div>
+          <div><p class="kicker">Audit Log</p><h2>審計提醒</h2></div>
         </div>
         <div id="audit-notes" class="audit-notes"></div>
         <div id="excluded-list" class="excluded-list"></div>
@@ -157,10 +133,9 @@
 
     <nav class="bottom-nav" aria-label="主要導覽">
       <a href="#a1-hero">A1</a>
+      <a href="#line">傳送</a>
       <a href="#summary">總盤</a>
       <a href="#ranking">名次</a>
-      <a href="#groups">分級</a>
-      <a href="#line">LINE</a>
       <a href="#audit">審計</a>
     </nav>
 
@@ -170,7 +145,7 @@
           <h2 id="search-title">搜尋姓名</h2>
           <button id="search-close" class="icon-button" type="button" aria-label="關閉">×</button>
         </div>
-        <input id="lookup-input" type="search" placeholder="輸入姓名，例如：馬秋香" autocomplete="off">
+        <input id="lookup-input" type="search" placeholder="輸入姓名" autocomplete="off">
         <div id="lookup-results" class="lookup-results"></div>
       </div>
     </div>
