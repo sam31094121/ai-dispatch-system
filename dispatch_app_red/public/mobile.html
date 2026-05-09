@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="/mobile.css?v=0510-production-v2">
   <style>
     #splash-screen {
-      position: fixed; inset: 0; z-index: 9999;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999;
       background: #09111f; display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       transition: opacity 0.5s ease, visibility 0.5s;
@@ -27,17 +27,17 @@
     #splash-screen.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
     .splash-loader { position: relative; width: 80px; height: 80px; }
     .splash-circle {
-      position: absolute; inset: 0; border: 3px solid rgba(0, 242, 255, 0.1);
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 3px solid rgba(0, 242, 255, 0.1);
       border-top-color: #00f2ff; border-radius: 50%;
       animation: spin 1s linear infinite;
     }
     .splash-inner-circle {
-      position: absolute; inset: 12px; border: 2px solid rgba(255, 0, 255, 0.1);
+      position: absolute; top: 12px; left: 12px; right: 12px; bottom: 12px; border: 2px solid rgba(255, 0, 255, 0.1);
       border-bottom-color: #ff00ff; border-radius: 50%;
       animation: spin 1.5s linear reverse infinite;
     }
     .splash-logo {
-      position: absolute; inset: 0; display: flex; align-items: center;
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center;
       justify-content: center; font-size: 24px;
       animation: pulse-glow 2s ease-in-out infinite;
     }
@@ -49,6 +49,16 @@
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     @keyframes pulse-glow { 0%, 100% { opacity: 0.5; filter: blur(4px); } 50% { opacity: 1; filter: blur(8px); } }
   </style>
+  <script>
+    // 防當機安全鎖：5 秒後強制移除啟動畫面，避免 JS 報錯導致畫面全黑
+    setTimeout(function() {
+      var s = document.getElementById('splash-screen');
+      if (s) {
+        s.classList.add('fade-out');
+        setTimeout(function() { if(s.parentNode) s.parentNode.removeChild(s); }, 600);
+      }
+    }, 5000);
+  </script>
 </head>
 <body>
   <div id="splash-screen">

@@ -41,6 +41,31 @@ const state = {
 
 const CACHE_KEY = 'zhaogui_last_report_unified';
 
+// ── 全域錯誤攔截：幫助手機端除錯 ──
+window.onerror = function(msg, url, lineNo, columnNo, error) {
+  const errorMsg = `[系統錯誤] ${msg} (行: ${lineNo})`;
+  console.error(errorMsg, error);
+  if (typeof showToast === 'function') showToast(errorMsg);
+  // 確保啟動畫面一定會消失
+  const s = document.getElementById('splash-screen');
+  if (s) s.classList.add('fade-out');
+  return false;
+};
+
+// 清除舊版不相容快取
+(function() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed.version !== CACHE_VERSION) {
+        localStorage.removeItem(CACHE_KEY);
+        console.log('Cleared incompatible cache');
+      }
+    }
+  } catch(e) {}
+})();
+
 
 function get(obj, keys, fallback = '') {
   for (const key of keys) {
