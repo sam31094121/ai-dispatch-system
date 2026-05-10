@@ -37,6 +37,19 @@
     compactOutput: $('compact-output'),
     pageTitle: $('page-title'),
     pageSubtitle: $('page-subtitle'),
+    proposalSyncStatus: $('proposal-sync-status'),
+    proposalMainGoal: $('proposal-main-goal'),
+    proposalMainDetail: $('proposal-main-detail'),
+    proposalNextStep: $('proposal-next-step'),
+    proposalNextDetail: $('proposal-next-detail'),
+    proposalFeatureBoost: $('proposal-feature-boost'),
+    proposalFeatureDetail: $('proposal-feature-detail'),
+    proposalStepList: $('proposal-step-list'),
+    proposalFocusList: $('proposal-focus-list'),
+    proposalFeatureList: $('proposal-feature-list'),
+    btnProposalOptimize: $('btn-proposal-optimize'),
+    btnProposalCopy: $('btn-proposal-copy'),
+    proposalOutput: $('proposal-output'),
     scoringPolicyTitle: $('scoring-policy-title'),
     scoringPolicyDate: $('scoring-policy-date'),
     scoringPolicyDescription: $('scoring-policy-description'),
@@ -87,7 +100,7 @@
 
   function setBusy(isBusy) {
     state.busy = isBusy;
-    [refs.btnLoad, refs.btnAudit, refs.btnSave, refs.btnFix, refs.btnClear, refs.btnCopyCompact, refs.btnSendLine]
+    [refs.btnLoad, refs.btnAudit, refs.btnSave, refs.btnFix, refs.btnClear, refs.btnCopyCompact, refs.btnSendLine, refs.btnProposalOptimize, refs.btnProposalCopy]
       .filter(Boolean)
       .forEach((button) => {
         button.disabled = isBusy;
@@ -347,6 +360,92 @@
     if (refs.compactOutput) refs.compactOutput.value = text;
   }
 
+  function buildProposalPlan(snapshot, rawText = '') {
+    const rows = getRows(snapshot);
+    const groups = getGroups(snapshot);
+    const title = snapshot?.title || snapshot?.standardData?.['公告標題'] || 'AI 派單企劃案';
+    const topRows = rows.slice(0, 3).map(rowName).filter(Boolean);
+    const groupCounts = ['A1', 'A2', 'B', 'C']
+      .map((key) => `${key} ${asArray(groups[key]).length}人`)
+      .join(' / ');
+    const sourceLines = rawText.split(/\r?\n/).filter((line) => line.trim()).length;
+    const validation = snapshot?.validation || {};
+    const issueCount = asArray(validation.errors).length + asArray(validation.warnings).length;
+    const topText = topRows.length ? topRows.join('、') : '正式名單同步後自動帶入';
+    const nextStep = issueCount ? '先修正審計問題再推進' : '發布優化版並啟動追蹤';
+
+    const steps = [
+      { label: '資料審計', text: issueCount ? `處理 ${issueCount} 項審計提醒` : '正式資料已通過審計' },
+      { label: '企劃重組', text: `以 ${rows.length || '最新'} 筆名單建立主軸` },
+      { label: '下一步派送', text: '產生 LINE 精簡版與行動清單' },
+      { label: '功能提升', text: '補上追蹤、提醒、回饋與復盤欄位' },
+      { label: '成效回收', text: '24 小時內回寫執行狀態' }
+    ];
+
+    const focus = [
+      `主軸聚焦：${title}`,
+      `優先推進：${topText}`,
+      `分組盤點：${groupCounts || '等待分組資料'}`,
+      sourceLines ? `輸入素材：已讀取 ${sourceLines} 行內容` : '輸入素材：使用目前正式快照'
+    ];
+
+    const features = [
+      '自動整理企劃案：從正式快照抽出主軸、風險、下一步',
+      '自動下一步：依審計狀態決定先修正或直接發布',
+      '提升功能：增加行動追蹤、LINE 推送、24 小時回報節點',
+      '科技感畫面：流程節點、掃描光效、玻璃面板與高亮狀態'
+    ];
+
+    const output = [
+      `【企劃案自動優化版】${title}`,
+      '',
+      `一、目前主軸：以正式派單資料為基準，鎖定 ${rows.length || '最新'} 筆名單與分組節奏。`,
+      `二、優先對象：${topText}。`,
+      `三、下一步：${nextStep}。`,
+      '四、功能提升：資料審計、精簡公告、LINE 推送、回報追蹤、復盤比較同步啟動。',
+      '五、執行節奏：現在產出優化版，發布後 24 小時內回收回報，隔日依結果再自動產生下一輪優化。'
+    ].join('\n');
+
+    return { title, topText, nextStep, steps, focus, features, output };
+  }
+
+  function renderPillList(container, items, className) {
+    if (!container) return;
+    container.replaceChildren(...items.map((item) => {
+      const div = document.createElement('div');
+      div.className = className;
+      div.textContent = item;
+      return div;
+    }));
+  }
+
+  function renderProposal(snapshot) {
+    const plan = buildProposalPlan(snapshot);
+    setBadge(refs.proposalSyncStatus, 'PASS', 'AUTO NEXT');
+    setText(refs.proposalMainGoal, '正式快照企劃主軸');
+    setText(refs.proposalMainDetail, plan.title);
+    setText(refs.proposalNextStep, plan.nextStep);
+    setText(refs.proposalNextDetail, `優先對象：${plan.topText}`);
+    setText(refs.proposalFeatureBoost, '自動優化 + 行動追蹤');
+    setText(refs.proposalFeatureDetail, '企劃、公告、LINE、復盤同步提升。');
+
+    if (refs.proposalStepList) {
+      refs.proposalStepList.replaceChildren(...plan.steps.map((step, index) => {
+        const article = document.createElement('article');
+        article.className = `proposal-step ${index === 0 ? 'active' : ''}`;
+        article.innerHTML = `
+          <span>${String(index + 1).padStart(2, '0')}</span>
+          <strong>${escapeHtml(step.label)}</strong>
+          <p>${escapeHtml(step.text)}</p>
+        `;
+        return article;
+      }));
+    }
+    renderPillList(refs.proposalFocusList, plan.focus, 'proposal-pill');
+    renderPillList(refs.proposalFeatureList, plan.features, 'proposal-pill feature');
+    if (refs.proposalOutput && !refs.proposalOutput.value) refs.proposalOutput.value = plan.output;
+  }
+
   function renderQr() {
     if (!refs.qrContainer) return;
     const url = `${window.location.origin}/mobile.html`;
@@ -366,6 +465,7 @@
     renderAdvice(snapshot);
     renderScoringPolicy(snapshot);
     renderCompactOutput(snapshot);
+    renderProposal(snapshot);
   }
 
   async function loadCurrent() {
@@ -413,6 +513,21 @@
     setBadge(refs.inputStatus, 'PASS', 'LINE 已送出');
   }
 
+  function optimizeProposal() {
+    const plan = buildProposalPlan(state.current || {}, refs.rawInput?.value || '');
+    if (refs.proposalOutput) refs.proposalOutput.value = plan.output;
+    setText(refs.proposalNextStep, plan.nextStep);
+    setText(refs.proposalNextDetail, '已依目前輸入重新產生下一步。');
+    setBadge(refs.proposalSyncStatus, 'PASS', 'OPTIMIZED');
+    setBadge(refs.inputStatus, 'PASS', '企劃案已自動優化');
+  }
+
+  async function copyProposalPlan() {
+    const text = refs.proposalOutput?.value || buildProposalPlan(state.current || {}).output;
+    await navigator.clipboard.writeText(text);
+    setBadge(refs.proposalSyncStatus, 'PASS', 'COPIED');
+  }
+
   function bindEvents() {
     const run = (task) => async () => {
       if (state.busy) return;
@@ -430,7 +545,9 @@
     refs.btnLoad?.addEventListener('click', run(loadCurrent));
     refs.btnAudit?.addEventListener('click', run(auditCurrentInput));
     refs.btnSave?.addEventListener('click', run(saveCurrentReport));
-    refs.btnFix?.addEventListener('click', run(auditCurrentInput));
+    refs.btnFix?.addEventListener('click', optimizeProposal);
+    refs.btnProposalOptimize?.addEventListener('click', optimizeProposal);
+    refs.btnProposalCopy?.addEventListener('click', run(copyProposalPlan));
     refs.btnClear?.addEventListener('click', () => {
       if (refs.rawInput) refs.rawInput.value = '';
       setBadge(refs.inputStatus, 'PENDING', '已清空輸入');

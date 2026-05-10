@@ -1,0 +1,214 @@
+/* Proposal optimizer command layer */
+body.oil-announcement {
+  --proposal-bg: rgba(3, 10, 24, 0.88);
+  --proposal-panel: rgba(7, 20, 42, 0.84);
+  --proposal-line: rgba(0, 229, 255, 0.42);
+  --proposal-text: #eefcff;
+  --proposal-muted: #8abbd1;
+}
+
+body.oil-announcement .hero {
+  background:
+    linear-gradient(180deg, rgba(1, 7, 18, 0.18), rgba(1, 7, 18, 0.92)),
+    radial-gradient(circle at 22% 18%, rgba(0, 229, 255, 0.26), transparent 24%),
+    radial-gradient(circle at 78% 28%, rgba(16, 245, 180, 0.22), transparent 26%),
+    linear-gradient(135deg, #061527 0%, #07111f 46%, #04251e 100%);
+}
+
+body.oil-announcement .optimization-badge,
+body.oil-announcement .badge-pass {
+  color: #001117;
+  background: linear-gradient(135deg, #40ffff, #10f5b4);
+  border-color: rgba(151, 255, 239, 0.68);
+  box-shadow: 0 0 24px rgba(0, 229, 255, 0.28);
+}
+
+.proposal-optimizer {
+  order: 1;
+  position: relative;
+  overflow: hidden;
+  color: var(--proposal-text);
+  background:
+    linear-gradient(135deg, rgba(0, 229, 255, 0.09), transparent 24%),
+    radial-gradient(circle at 88% 16%, rgba(16, 245, 180, 0.16), transparent 28%),
+    linear-gradient(180deg, var(--proposal-bg), rgba(2, 7, 18, 0.96)) !important;
+  border-color: rgba(0, 229, 255, 0.34) !important;
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.62),
+    0 0 42px rgba(0, 229, 255, 0.12),
+    inset 0 1px 0 rgba(150, 255, 244, 0.16) !important;
+}
+
+.proposal-optimizer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.08), transparent),
+    repeating-linear-gradient(180deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 7px);
+  opacity: 0.48;
+  mix-blend-mode: screen;
+}
+
+.proposal-optimizer-head,
+.proposal-command-grid,
+.proposal-flow,
+.proposal-insight-grid,
+.proposal-actions,
+.proposal-output {
+  position: relative;
+  z-index: 1;
+}
+
+.proposal-command-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.proposal-command-card,
+.proposal-step,
+.proposal-pill {
+  border: 1px solid rgba(0, 229, 255, 0.24);
+  background:
+    linear-gradient(145deg, rgba(255,255,255,0.06), transparent 42%),
+    var(--proposal-panel);
+  border-radius: 8px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.10), 0 12px 28px rgba(0,0,0,0.38);
+}
+
+.proposal-command-card {
+  min-height: 148px;
+  padding: 18px;
+}
+
+.proposal-command-card.primary {
+  border-color: rgba(16, 245, 180, 0.44);
+  box-shadow: 0 0 26px rgba(16, 245, 180, 0.12), inset 0 1px 0 rgba(255,255,255,0.12);
+}
+
+.proposal-command-card span,
+.proposal-section-label,
+.proposal-step small {
+  display: block;
+  color: var(--proposal-muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.proposal-command-card strong {
+  display: block;
+  margin-top: 10px;
+  color: #ffffff;
+  font-size: clamp(18px, 2vw, 26px);
+  line-height: 1.22;
+}
+
+.proposal-command-card p,
+.proposal-step p,
+.proposal-pill span {
+  margin: 8px 0 0;
+  color: var(--proposal-muted);
+  line-height: 1.6;
+}
+
+.proposal-flow {
+  margin-top: 18px;
+}
+
+.proposal-step-list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.proposal-step {
+  min-height: 142px;
+  padding: 14px;
+}
+
+.proposal-step.active {
+  border-color: rgba(64, 255, 255, 0.72);
+  box-shadow: 0 0 28px rgba(0, 229, 255, 0.20), inset 0 1px 0 rgba(255,255,255,0.14);
+}
+
+.proposal-step > span {
+  display: inline-grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  color: #001117;
+  background: linear-gradient(135deg, #40ffff, #10f5b4);
+  border-radius: 50%;
+  font-family: "Orbitron", sans-serif;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.proposal-step strong {
+  display: block;
+  margin-top: 12px;
+  color: #f4fdff;
+}
+
+.proposal-insight-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.proposal-focus-list,
+.proposal-feature-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.proposal-pill {
+  display: grid;
+  gap: 3px;
+  min-height: 52px;
+  padding: 12px 14px;
+}
+
+.proposal-pill.feature {
+  border-color: rgba(16, 245, 180, 0.26);
+}
+
+.proposal-pill strong {
+  color: #f4fdff;
+}
+
+.proposal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.proposal-output {
+  width: 100%;
+  min-height: 172px;
+  margin-top: 14px;
+  padding: 16px;
+  resize: vertical;
+  color: #eaffff;
+  background: rgba(1, 8, 18, 0.82);
+  border: 1px solid rgba(0, 229, 255, 0.28);
+  border-radius: 8px;
+  outline: none;
+  box-shadow: inset 0 0 24px rgba(0, 229, 255, 0.08);
+}
+
+@media (max-width: 980px) {
+  .proposal-command-grid,
+  .proposal-step-list,
+  .proposal-insight-grid {
+    grid-template-columns: 1fr;
+  }
+}

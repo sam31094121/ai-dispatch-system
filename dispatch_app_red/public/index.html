@@ -13,6 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Orbitron:wght@700;800;900&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=20260510-production">
   <link rel="stylesheet" href="cyber-tech.css?v=2.0">
+  <link rel="stylesheet" href="proposal-optimizer.css?v=20260510">
   <style>
     #splash-screen {
       position: fixed; inset: 0; z-index: 9999;
@@ -148,6 +149,52 @@
         <span>只列審計，不入正式派單</span>
       </div>
       <div id="performance-retired" class="performance-retired"></div>
+    </section>
+
+    <section id="proposal-optimizer" class="proposal-optimizer panel">
+      <div class="panel-head proposal-optimizer-head">
+        <div>
+          <p class="eyebrow">AI Proposal Optimizer</p>
+          <h2>企劃案自動優化與下一步推進</h2>
+        </div>
+        <span id="proposal-sync-status" class="badge badge-pass">AUTO NEXT</span>
+      </div>
+      <div class="proposal-command-grid">
+        <article class="proposal-command-card primary">
+          <span>目前主軸</span>
+          <strong id="proposal-main-goal">自動讀取正式資料中</strong>
+          <p id="proposal-main-detail">系統會依照最新快照整理可執行企劃方向。</p>
+        </article>
+        <article class="proposal-command-card">
+          <span>下一步</span>
+          <strong id="proposal-next-step">等待同步</strong>
+          <p id="proposal-next-detail">完成同步後會自動產生下一個優化動作。</p>
+        </article>
+        <article class="proposal-command-card">
+          <span>提升功能</span>
+          <strong id="proposal-feature-boost">AI 功能盤點</strong>
+          <p id="proposal-feature-detail">彙整資料、畫面、行動與追蹤四個層級。</p>
+        </article>
+      </div>
+      <div class="proposal-flow">
+        <div class="proposal-flow-line" aria-hidden="true"></div>
+        <div id="proposal-step-list" class="proposal-step-list"></div>
+      </div>
+      <div class="proposal-insight-grid">
+        <div>
+          <div class="proposal-section-label">優化焦點</div>
+          <div id="proposal-focus-list" class="proposal-focus-list"></div>
+        </div>
+        <div>
+          <div class="proposal-section-label">功能提升</div>
+          <div id="proposal-feature-list" class="proposal-feature-list"></div>
+        </div>
+      </div>
+      <div class="proposal-actions">
+        <button id="btn-proposal-optimize" class="btn btn-primary" type="button">自動優化企劃案</button>
+        <button id="btn-proposal-copy" class="btn btn-secondary" type="button">複製下一步方案</button>
+      </div>
+      <textarea id="proposal-output" class="proposal-output" readonly placeholder="AI 會依照目前正式快照與輸入內容產生企劃案優化版。"></textarea>
     </section>
 
     <section class="workspace">
