@@ -67,23 +67,29 @@ class MoneyRain {
         ctx.restore();
     }
 
-    drawCoin(p) {
+    drawCoin(p, isSilver = false) {
         const ctx = this.ctx;
         ctx.save();
         ctx.translate(p.x, p.y);
         ctx.scale(p.scale * Math.abs(Math.cos(p.rotationY * Math.PI / 180)), p.scale);
         
-        // 金幣主體 - 強化金屬光澤感
+        // 金幣/銀幣主體
         const grad = ctx.createRadialGradient(-3, -3, 0, 0, 0, 8);
-        grad.addColorStop(0, '#fff6df'); // 高光
-        grad.addColorStop(0.4, '#f3c14b');
-        grad.addColorStop(1, '#8b6508'); // 陰影
+        if (isSilver) {
+            grad.addColorStop(0, '#ffffff');
+            grad.addColorStop(0.4, '#e0e0e0');
+            grad.addColorStop(1, '#a0a0a0');
+        } else {
+            grad.addColorStop(0, '#fff6df');
+            grad.addColorStop(0.4, '#f3c14b');
+            grad.addColorStop(1, '#8b6508');
+        }
         
         ctx.beginPath();
         ctx.arc(0, 0, 8, 0, Math.PI * 2);
         ctx.fillStyle = grad;
         ctx.fill();
-        ctx.strokeStyle = '#b8860b';
+        ctx.strokeStyle = isSilver ? '#909090' : '#b8860b';
         ctx.lineWidth = 0.5;
         ctx.stroke();
         
@@ -105,7 +111,8 @@ class MoneyRain {
             }
             
             if (this.type === 'dollar') this.drawDollar(p);
-            else this.drawCoin(p);
+            else if (this.type === 'silver') this.drawCoin(p, true);
+            else this.drawCoin(p, false);
         });
         
         requestAnimationFrame(() => this.animate());
