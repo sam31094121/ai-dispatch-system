@@ -751,12 +751,26 @@ class MapleCoinRain {
     // 第二名：全金幣
     // 第三名：銀幣 (透過顏色調整) + 少許美金
     // 第四名：全美金
-    if (rank === 1) type = Math.random() < 0.4 ? 'bill' : 'coin';
+    if (rank === 1) {
+        type = Math.random() < 0.4 ? 'bill' : (Math.random() < 0.8 ? 'coin' : 'glitter');
+    }
     else if (rank === 2) type = 'coin';
     else if (rank === 3) type = Math.random() < 0.3 ? 'bill' : 'silver';
     else if (rank === 4) type = 'bill';
 
-    if (type === 'bill') {
+    if (type === 'glitter') {
+        const r = 2 + Math.random() * 2;
+        this.coins.push({
+            type: 'glitter',
+            x: Math.random() * this.W,
+            y: -r,
+            vx: (Math.random() - 0.5) * 4,
+            vy: 2 + Math.random() * 3,
+            r,
+            color: `hsla(${Math.random() * 60 + 40}, 100%, 70%, ${0.6 + Math.random() * 0.4})`,
+            done: false
+        });
+    } else if (type === 'bill') {
       const bw = 32 + Math.random() * 18; // 稍微加大
       const bh = Math.round(bw * 0.44);
       const margin = bw * 0.5 + 4;
