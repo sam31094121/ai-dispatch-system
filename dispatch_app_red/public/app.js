@@ -48,6 +48,8 @@
     proposalFocusList: $('proposal-focus-list'),
     proposalFeatureList: $('proposal-feature-list'),
     proposalAwardList: $('proposal-award-list'),
+    proposalProgressBar: $('proposal-progress-bar'),
+    proposalStatusConsole: $('proposal-status-console'),
     btnProposalOptimize: $('btn-proposal-optimize'),
     btnProposalApprove: $('btn-proposal-approve'),
     btnProposalCopy: $('btn-proposal-copy'),
