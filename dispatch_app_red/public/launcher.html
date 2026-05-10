@@ -3,14 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>兆櫃 AI 派單系統 | 系統啟動中</title>
+    <title>兆櫃 AI 派單系統 | AI 意識喚醒中</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;700&family=Orbitron:wght@400;900&display=swap');
+
         :root {
             --primary: #00f2ff;
             --secondary: #7000ff;
-            --bg: #050505;
-            --text: #ffffff;
-            --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+            --accent: #ff00c8;
+            --bg: #02040a;
+            --surface: rgba(10, 15, 25, 0.8);
+            --glow: 0 0 15px rgba(0, 242, 255, 0.5);
         }
 
         * {
@@ -21,228 +24,254 @@
 
         body {
             background-color: var(--bg);
-            color: var(--text);
-            font-family: var(--font-mono);
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
             height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            position: relative;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(0, 242, 255, 0.05) 0%, transparent 70%),
+                linear-gradient(rgba(0, 242, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
         }
 
-        /* 背景網格 */
-        body::before {
-            content: '';
+        /* 頂部掃描線 */
+        body::after {
+            content: "";
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
-                linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
-            background-size: 50px 50px;
-            z-index: -1;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 3px 100%;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0.3;
         }
 
-        /* 核心載入動畫 */
-        .loader-container {
+        /* 能量核心 */
+        .ai-core {
             position: relative;
-            width: 300px;
-            height: 300px;
+            width: 250px;
+            height: 250px;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        .circle {
+        .core-ring {
             position: absolute;
-            border: 2px solid transparent;
+            border: 2px solid var(--primary);
             border-radius: 50%;
-            animation: spin var(--duration) linear infinite;
+            opacity: 0.5;
+            animation: pulse 2s infinite ease-in-out;
         }
 
-        .circle-1 {
-            width: 200px;
-            height: 200px;
-            border-top-color: var(--primary);
-            --duration: 2s;
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.3);
+        .ring-1 { width: 100%; height: 100%; border-style: dashed; animation-duration: 10s; }
+        .ring-2 { width: 80%; height: 80%; border-color: var(--secondary); animation-duration: 7s; animation-direction: reverse; }
+        .ring-3 { width: 60%; height: 60%; border-style: double; animation-duration: 4s; }
+
+        .core-center {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 40px var(--primary), 0 0 80px var(--primary);
+            animation: core-pulse 1.5s infinite alternate;
         }
 
-        .circle-2 {
-            width: 160px;
-            height: 160px;
-            border-right-color: var(--secondary);
-            --duration: 1.5s;
-            animation-direction: reverse;
+        @keyframes core-pulse {
+            from { transform: scale(0.8); opacity: 0.8; }
+            to { transform: scale(1.2); opacity: 1; }
         }
 
-        .circle-3 {
-            width: 120px;
-            height: 120px;
-            border-bottom-color: var(--primary);
-            --duration: 1s;
-        }
-
-        @keyframes spin {
+        @keyframes pulse {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
 
-        /* 系統狀態文字 */
-        .status-box {
-            margin-top: 40px;
-            text-align: left;
-            width: 400px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(0, 242, 255, 0.2);
-            padding: 20px;
-            border-radius: 8px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .log-entry {
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 5px;
-            color: rgba(0, 242, 255, 0.8);
+        /* 數據 HUD */
+        .hud-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 40px;
             display: flex;
             justify-content: space-between;
+            pointer-events: none;
         }
 
-        .log-entry .status {
-            color: #00ff00;
-            font-weight: bold;
+        .hud-corner {
+            width: 200px;
+            border-top: 2px solid var(--primary);
+            padding-top: 10px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary);
+            opacity: 0.7;
         }
 
-        .log-entry.pending {
-            color: rgba(255, 255, 255, 0.4);
+        .hud-corner.bottom {
+            align-self: flex-end;
+            border-top: none;
+            border-bottom: 2px solid var(--primary);
+            padding-top: 0;
+            padding-bottom: 10px;
         }
 
-        .log-entry.pending .status {
-            color: #ffff00;
-        }
-
-        .log-entry.error {
-            color: #ff0055;
-        }
-
-        .log-entry.error .status {
-            color: #ff0055;
-        }
-
-        .cursor {
-            display: inline-block;
-            width: 10px;
-            height: 18px;
-            background: var(--primary);
-            animation: blink 0.8s infinite;
-            vertical-align: middle;
-            margin-left: 5px;
-        }
-
-        @keyframes blink {
-            50% { opacity: 0; }
-        }
-
-        .progress-bar-container {
-            width: 100%;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            margin-top: 15px;
-            border-radius: 2px;
+        /* 系統日誌 */
+        .log-container {
+            margin-top: 60px;
+            width: 500px;
+            background: var(--surface);
+            border: 1px solid rgba(0, 242, 255, 0.3);
+            padding: 20px;
+            border-radius: 4px;
+            font-size: 12px;
+            position: relative;
             overflow: hidden;
         }
 
-        .progress-bar-fill {
+        .log-container::before {
+            content: "SYSTEM_RECOVERY_LOG";
+            position: absolute;
+            top: 0;
+            right: 10px;
+            font-size: 9px;
+            color: var(--primary);
+            opacity: 0.5;
+        }
+
+        .log-line {
+            margin-bottom: 6px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .log-time { color: var(--secondary); width: 80px; }
+        .log-status { color: #00ff00; font-weight: bold; }
+        .log-msg { color: #fff; opacity: 0.9; }
+
+        .progress-container {
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            background: var(--primary);
             width: 0%;
-            transition: width 0.3s ease;
             box-shadow: 0 0 10px var(--primary);
+            transition: width 0.2s ease;
         }
 
         h1 {
-            font-size: 24px;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            margin-bottom: 30px;
+            letter-spacing: 8px;
+            text-shadow: 0 0 20px var(--primary);
             background: linear-gradient(to right, #fff, var(--primary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 10px rgba(0, 242, 255, 0.3);
         }
 
-        .brand {
-            position: absolute;
-            top: 40px;
-            left: 40px;
-            font-size: 18px;
-            font-weight: bold;
+        .ai-status-text {
+            margin-top: 15px;
+            font-size: 14px;
             color: var(--primary);
-            opacity: 0.6;
+            text-transform: uppercase;
+            letter-spacing: 3px;
         }
     </style>
 </head>
 <body>
-    <div class="brand">ZHAOGUI AI SYSTEM v2.0</div>
-
-    <h1>Initializing Command Center</h1>
-    
-    <div class="loader-container">
-        <div class="circle circle-1"></div>
-        <div class="circle circle-2"></div>
-        <div class="circle circle-3"></div>
-        <div style="font-size: 48px; color: var(--primary); text-shadow: 0 0 20px var(--primary);">Ω</div>
+    <div class="hud-overlay">
+        <div class="hud-corner">CPU_USAGE: 42.8%<br>RAM_STREAM: STABLE<br>NET_LATENCY: 14ms</div>
+        <div class="hud-corner" style="text-align: right;">AI_NODE: PRIMARY<br>SEC_PROTOCOL: ACTIVE<br>V_VERSION: 1.0.52</div>
     </div>
 
-    <div class="status-box" id="statusBox">
-        <div class="log-entry" id="log-1"><span>> INITIALIZING_CORE_ENGINE</span> <span class="status">OK</span></div>
-        <div class="log-entry pending" id="log-2"><span>> CONNECTING_DATA_STREAM</span> <span class="status">WAIT</span></div>
-        <div class="log-entry pending" id="log-3"><span>> CALIBRATING_3D_MESH</span> <span class="status">WAIT</span></div>
-        <div class="log-entry pending" id="log-4"><span>> SYNCING_DISPATCH_LOGIC</span> <span class="status">WAIT</span></div>
-        <div class="progress-bar-container">
-            <div class="progress-bar-fill" id="progressBar"></div>
+    <h1>SYSTEM_INITIATED</h1>
+    
+    <div class="ai-core">
+        <div class="core-ring ring-1"></div>
+        <div class="core-ring ring-2"></div>
+        <div class="core-ring ring-3"></div>
+        <div class="core-center"></div>
+    </div>
+
+    <div class="ai-status-text" id="statusText">AI Consciousness Awakening...</div>
+
+    <div class="log-container">
+        <div id="logContent">
+            <!-- 這裡會由 JS 動態填充 -->
         </div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+    </div>
+
+    <div class="hud-overlay">
+        <div class="hud-corner bottom">GEO_SYNC: ACTIVE<br>LOCAL_TIME: <span id="clock"></span></div>
+        <div class="hud-corner bottom" style="text-align: right;">ENCRYPTION: AES-256<br>STATUS: DEPLOYING</div>
     </div>
 
     <script>
         const logs = [
-            { id: 'log-1', text: 'CORE_ENGINE_READY', status: 'OK', delay: 400 },
-            { id: 'log-2', text: 'DATA_STREAM_CONNECTED', status: 'OK', delay: 800 },
-            { id: 'log-3', text: '3D_MESH_STABILIZED', status: 'OK', delay: 1200 },
-            { id: 'log-4', text: 'SYSTEM_SYNC_COMPLETE', status: 'READY', delay: 1600 }
+            "BOOTING_NEURAL_LAYERS",
+            "SYNCING_HISTORICAL_SETTLEMENT",
+            "HARD_LOCK_ACTIVE: 05/09",
+            "OPTIMIZING_DATA_STREAM",
+            "RECONSTRUCTING_WAR_ROOM",
+            "AI_DECISION_MATRIX_READY",
+            "CONNECTING_TO_USER_WORKSPACE"
         ];
 
+        const logContent = document.getElementById('logContent');
         const progressBar = document.getElementById('progressBar');
+        const statusText = document.getElementById('statusText');
         const params = new URLSearchParams(window.location.search);
         const targetPage = params.get('page') || 'mobile.html';
 
-        async function startSequence() {
-            let progress = 0;
-            
-            for (let i = 0; i < logs.length; i++) {
-                const log = logs[i];
-                await new Promise(r => setTimeout(r, log.delay / 2));
-                
-                const el = document.getElementById(log.id);
-                el.classList.remove('pending');
-                el.querySelector('.status').textContent = log.status;
-                
-                progress += 25;
-                progressBar.style.width = progress + '%';
-            }
-
-            // Final delay before redirect
-            setTimeout(() => {
-                window.location.href = '/' + targetPage;
-            }, 500);
+        function addLog(msg) {
+            const time = new Date().toLocaleTimeString('zh-TW', { hour12: false });
+            const line = document.createElement('div');
+            line.className = 'log-line';
+            line.innerHTML = `<span class="log-time">[${time}]</span> <span class="log-status">OK</span> <span class="log-msg">${msg}</span>`;
+            logContent.appendChild(line);
+            if (logContent.children.length > 5) logContent.removeChild(logContent.firstChild);
         }
 
+        async function startSequence() {
+            for (let i = 0; i < logs.length; i++) {
+                await new Promise(r => setTimeout(r, 300 + Math.random() * 500));
+                addLog(logs[i]);
+                statusText.textContent = logs[i].replace(/_/g, ' ') + '...';
+                progressBar.style.width = ((i + 1) / logs.length * 100) + '%';
+            }
+
+            setTimeout(() => {
+                window.location.href = '/' + targetPage;
+            }, 800);
+        }
+
+        function updateClock() {
+            document.getElementById('clock').textContent = new Date().toLocaleTimeString('zh-TW', { hour12: false });
+        }
+
+        setInterval(updateClock, 1000);
+        updateClock();
         window.onload = startSequence;
     </script>
 </body>
