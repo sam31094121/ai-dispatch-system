@@ -73,6 +73,21 @@
       this.retryCount = 0;
       this.maxDelay = options.maxDelay || 30000;
       this.pollInterval = options.pollInterval || 300000;
+      this.lastVersion = 0;
+      this.lastUpdateAt = 0;
+      this.minUpdateGap = options.minUpdateGap || 500;
+    }
+
+    emitUpdate(data) {
+      const version = Number(data?.version || 0);
+      const now = Date.now();
+
+      if (version && version <= this.lastVersion) return;
+      if (!version && now - this.lastUpdateAt < this.minUpdateGap) return;
+
+      if (version) this.lastVersion = version;
+      this.lastUpdateAt = now;
+      this.onUpdate?.(data);
     }
 
     connect() {
@@ -89,7 +104,7 @@
           const data = JSON.parse(event.data);
           if (data.type === 'data_updated') {
             this.retryCount = 0;
-            this.onUpdate?.(data);
+            this.emitUpdate(data);
           }
         } catch (error) {
           console.error('[SSE] failed to parse update', error);
@@ -111,7 +126,8 @@
 
     startPolling() {
       this.stop();
-      this.pollTimer = window.setInterval(() => this.onUpdate?.({ type: 'poll' }), this.pollInterval);
+      this.emitUpdate({ type: 'poll' });
+      this.pollTimer = window.setInterval(() => this.emitUpdate({ type: 'poll' }), this.pollInterval);
     }
 
     stop() {
