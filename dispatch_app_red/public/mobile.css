@@ -12,6 +12,48 @@
   --shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
   --radius: 8px;
 
+/* Light mode overrides */
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f5f7fb;
+    --surface: #ffffff;
+    --surface-2: #f0f2f5;
+    --border: #d0d5de;
+    --text: #0a0f18;
+    --muted: #5a657b;
+    --accent: #0a8f80;
+    --accent-2: #c9982a;
+    --danger: #d9435e;
+    --good: #1a9b60;
+  }
+}
+
+/* Manual theme overrides */
+[data-theme="light"] {
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --surface-2: #f0f2f5;
+  --border: #d0d5de;
+  --text: #0a0f18;
+  --muted: #5a657b;
+  --accent: #0a8f80;
+  --accent-2: #c9982a;
+  --danger: #d9435e;
+  --good: #1a9b60;
+}
+[data-theme="dark"] {
+  --bg: #0a0f18;
+  --surface: #111a27;
+  --surface-2: #172335;
+  --border: #2b3a4e;
+  --text: #f5f7fb;
+  --muted: #9aa8ba;
+  --accent: #18c6a7;
+  --accent-2: #f3c14b;
+  --danger: #ef5b73;
+  --good: #27d17f;
+}
+
   /* ── 3D 深度系統 ── */
   --depth-1: 0 1px 2px rgba(0,0,0,.35), 0 4px 12px rgba(0,0,0,.25),
              inset 0 1px 0 rgba(255,255,255,.045);
@@ -33,7 +75,7 @@
   --perspective: 1000px;
   --sk-bg: #151f2e;
   --sk-shine: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-  color-scheme: dark;
+  color-scheme: light dark;
 }
 
 @keyframes float3D {
