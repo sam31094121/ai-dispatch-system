@@ -137,6 +137,152 @@ body.oil-announcement {
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+.proposal-award-stage {
+  position: relative;
+  z-index: 3;
+  margin-top: 24px;
+  padding: 18px;
+  border: 1px solid rgba(243, 193, 75, 0.22);
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(243, 193, 75, 0.14), transparent 38%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012)),
+    rgba(0, 4, 14, 0.55);
+  box-shadow: inset 0 1px 0 rgba(255, 236, 180, 0.12), 0 18px 46px rgba(0, 0, 0, 0.32);
+}
+
+.proposal-award-list {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  perspective: 1400px;
+}
+
+.proposal-award-card {
+  position: relative;
+  min-height: 188px;
+  padding: 18px 16px;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  border: 1px solid rgba(0, 229, 255, 0.24);
+  border-radius: 12px;
+  background:
+    linear-gradient(155deg, rgba(0, 229, 255, 0.09), transparent 32%),
+    radial-gradient(circle at 76% 10%, rgba(243, 193, 75, 0.16), transparent 34%),
+    rgba(5, 14, 32, 0.86);
+  box-shadow:
+    0 18px 38px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.proposal-award-card::before {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  background: conic-gradient(from 20deg, transparent, rgba(243, 193, 75, 0.24), transparent 34%);
+  opacity: 0.34;
+  animation: proposal-award-spin 7s linear infinite;
+}
+
+.proposal-award-card::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+
+.proposal-award-card:hover {
+  border-color: rgba(0, 229, 255, 0.72);
+  box-shadow:
+    0 26px 58px rgba(0, 0, 0, 0.50),
+    0 0 30px rgba(0, 229, 255, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.proposal-award-card.rank-1 {
+  border-color: rgba(255, 215, 0, 0.72);
+  background:
+    radial-gradient(circle at 28% 0%, rgba(255, 244, 190, 0.26), transparent 38%),
+    linear-gradient(145deg, rgba(116, 68, 15, 0.82), rgba(10, 9, 18, 0.96));
+  box-shadow: 0 0 46px rgba(243, 193, 75, 0.22), 0 24px 58px rgba(0, 0, 0, 0.52);
+}
+
+.proposal-award-card.rank-2 {
+  border-color: rgba(215, 185, 131, 0.62);
+}
+
+.proposal-award-card.rank-3 {
+  border-color: rgba(205, 127, 50, 0.62);
+}
+
+.proposal-award-rank,
+.proposal-award-medal,
+.proposal-award-code,
+.proposal-award-card strong,
+.proposal-award-card span,
+.proposal-award-card p {
+  position: relative;
+  z-index: 2;
+}
+
+.proposal-award-rank {
+  position: absolute;
+  right: -4px;
+  top: -14px;
+  font-family: "Orbitron", sans-serif;
+  font-size: 58px;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.10);
+}
+
+.proposal-award-medal {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 14px;
+  border-radius: 50%;
+  color: #1b120a;
+  font-family: "Orbitron", sans-serif;
+  font-weight: 900;
+  background: radial-gradient(circle at 30% 28%, #fff6df, #f3c14b 48%, #8b6508);
+  box-shadow: 0 0 22px rgba(243, 193, 75, 0.50);
+}
+
+.proposal-award-code {
+  color: var(--proposal-accent);
+  font: 800 10px/1.2 "Orbitron", sans-serif;
+  letter-spacing: 0.16em;
+}
+
+.proposal-award-card strong {
+  display: block;
+  margin-top: 10px;
+  color: #fff;
+  font-size: 22px;
+  line-height: 1.18;
+}
+
+.proposal-award-card span,
+.proposal-award-card p {
+  display: block;
+  margin-top: 8px;
+  color: var(--proposal-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.proposal-award-card p {
+  color: #f3c14b;
+}
+
+@keyframes proposal-award-spin {
+  to { transform: rotate(360deg); }
+}
+
 .proposal-step-list {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -300,10 +446,11 @@ body.oil-announcement {
 
 @media (max-width: 1024px) {
   .proposal-step-list { grid-template-columns: repeat(3, 1fr); }
+  .proposal-award-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 @media (max-width: 768px) {
   .proposal-command-grid, .proposal-insight-grid { grid-template-columns: 1fr; }
   .proposal-step-list { grid-template-columns: repeat(2, 1fr); }
+  .proposal-award-list { grid-template-columns: 1fr; }
 }
-

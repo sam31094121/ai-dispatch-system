@@ -122,32 +122,101 @@
     ));
   }
 
+  /* ── 數字跳動計數器 (Odometer Effect) ── */
+  function animateNumber(el, target, duration = 1500) {
+    const start = 0;
+    const startTime = performance.now();
+    
+    function update(now) {
+      const progress = Math.min((now - startTime) / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 4); // Quartic ease out
+      const current = start + (target - start) * ease;
+      
+      if (el.tagName === 'STRONG' || el.classList.contains('odometer')) {
+          el.textContent = el.dataset.isMoney === 'true' ? money(current) : current.toFixed(2);
+      }
+      
+      if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  }
+
   /* ── 正式前五名（油畫主角席）── */
   function renderSpotlight(data) {
     const grid = document.getElementById('spotlight-grid');
     if (!grid) return;
     const top5 = data.dispatchOrder.slice(0, 5);
     
-    grid.replaceChildren(...top5.map((row) => {
-      const rankClass = `spotlight-card rank-${row.rank} hero-card-${row.rank}`;
-      const vfxCanvas = `<div class="money-canvas-container"><canvas id="hero-${row.rank}-canvas"></canvas></div>`;
-      const iconClass = `rank-icon rank-icon-${row.rank}`;
+    const TITLES = {
+        1: 'LEGENDARY DISPATCHER',
+        2: 'DATA SOVEREIGN',
+        3: 'ELITE COMMANDER',
+        4: 'STRATEGIC MASTER',
+        5: 'PRECISION ARCHITECT'
+    };
 
-      const card = el('article', `spotlight-item ${rankClass}`, `
+    grid.replaceChildren(...top5.map((row) => {
+      const rank = row.rank;
+      const rankClass = `hero-card-${rank} spotlight-item`;
+      const vfxCanvas = `<div class="money-canvas-container"><canvas id="hero-${rank}-canvas"></canvas></div>`;
+      const iconClass = rank === 1 ? 'champion-icon' : (rank === 2 ? 'gold-icon' : '');
+      const honorTitle = TITLES[rank] || 'HONORED MEMBER';
+
+      const TREASURES = {
+          1: { label: 'DIAMOND ELITE', icon: '💎', color: '#4fc3f7' },
+          2: { label: 'GOLD SOVEREIGN', icon: '🏆', color: '#f3c14b' },
+          3: { label: 'USD MASTER', icon: '💵', color: '#a5d6a7' },
+          4: { label: 'NTD 2000 PRO', icon: '🏦', color: '#0d47a1' },
+          5: { label: 'NTD 1000 ACE', icon: '💰', color: '#1565c0' }
+      };
+      const treasure = TREASURES[rank] || { label: 'ELITE', icon: '🎖️', color: '#fff' };
+
+      const card = el('article', rankClass, `
         ${vfxCanvas}
+        <div class="specular-highlight"></div>
+        <div class="treasure-badge" style="--badge-color: ${treasure.color}">
+            <span class="badge-icon">${treasure.icon}</span>
+            <span class="badge-label">${treasure.label}</span>
+        </div>
+        <div class="ai-certified-stamp">AI CERTIFIED</div>
+        <div class="scanning-bracket top-left"></div>
+        <div class="scanning-bracket top-right"></div>
+        <div class="scanning-bracket bottom-left"></div>
+        <div class="scanning-bracket bottom-right"></div>
+        <div class="audio-visualizer">
+            <div class="vis-bar" style="animation-delay: 0.1s"></div>
+            <div class="vis-bar" style="animation-delay: 0.3s"></div>
+            <div class="vis-bar" style="animation-delay: 0.5s"></div>
+            <div class="vis-bar" style="animation-delay: 0.2s"></div>
+            <div class="vis-bar" style="animation-delay: 0.4s"></div>
+        </div>
         <div class="hero-content-wrap">
-          <div class="spotlight-rank ${iconClass}">#${row.rank}</div>
-          <div class="spotlight-name">${esc(row.name)}</div>
-          <div class="spotlight-score">AI ${Number(row.weightedScore).toFixed(2)}</div>
-          <div class="spotlight-metrics">
-            <div><span>實收</span><strong>${money(row.actualRevenue)}</strong></div>
-            <div><span>續單</span><strong>${money(row.renewalRevenue)}</strong></div>
+          <div class="spotlight-rank" data-depth="0.1">#${rank}</div>
+          <div class="${iconClass}" data-depth="0.8">⚡</div>
+          <div class="spotlight-title" data-depth="0.2">${honorTitle}</div>
+          <div class="spotlight-name" data-depth="0.5">${esc(row.name)}</div>
+          <div class="spotlight-score" data-depth="0.3">AI 權重分數 <strong class="odometer" data-target="${row.weightedScore}">${Number(row.weightedScore).toFixed(2)}</strong></div>
+          <div class="spotlight-metrics" data-depth="0.4">
+            <div>
+                <span>實收總額</span>
+                <strong class="odometer" data-is-money="true" data-target="${row.actualRevenue}">0</strong>
+            </div>
+            <div>
+                <span>追續單數</span>
+                <strong class="odometer" data-target="${row.renewalDeals}">${row.renewalDeals}</strong>
+            </div>
           </div>
-          <div class="elite-glory-seal">ELITE HONOR</div>
         </div>
       `);
       return card;
     }));
+
+    // 啟動計數器動畫
+    setTimeout(() => {
+        grid.querySelectorAll('.odometer').forEach(el => {
+            animateNumber(el, parseFloat(el.dataset.target));
+        });
+    }, 300);
 
     // 啟動 3D 特效
     if (typeof window.initMoneyEffects === 'function') {

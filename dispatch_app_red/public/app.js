@@ -47,6 +47,7 @@
     proposalStepList: $('proposal-step-list'),
     proposalFocusList: $('proposal-focus-list'),
     proposalFeatureList: $('proposal-feature-list'),
+    proposalAwardList: $('proposal-award-list'),
     btnProposalOptimize: $('btn-proposal-optimize'),
     btnProposalApprove: $('btn-proposal-approve'),
     btnProposalCopy: $('btn-proposal-copy'),
@@ -107,6 +108,27 @@
         button.disabled = isBusy;
         button.setAttribute('aria-busy', String(isBusy));
       });
+  }
+
+  async function approveProposal() {
+    if (confirm('確定批準並執行目前的派單優化方案？此操作將同步數據並發送 LINE 通知。')) {
+      // 觸發 3D 寶藏爆發特效
+      if (typeof window.triggerTreasureExplosion === 'function') {
+          window.triggerTreasureExplosion();
+      }
+      
+      const res = await fetch('/api/proposal/approve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          timestamp: new Date().toISOString(),
+          proposal: refs.compactOutput.value
+        })
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message);
+      alert('派單方案已成功優化並同步。');
+    }
   }
 
   async function requestJson(url, options = {}) {
@@ -361,11 +383,28 @@
     if (refs.compactOutput) refs.compactOutput.value = text;
   }
 
+  function buildTopFiveAwards(rows) {
+    const awardTitles = ['至尊冠軍', '數據王座', '菁英指揮官', '策略大師', '精準建築師'];
+    const awardCodes = ['SUPREME CHAMPION', 'DATA SOVEREIGN', 'ELITE COMMANDER', 'STRATEGIC MASTER', 'PRECISION ARCHITECT'];
+    return rows.slice(0, 5).map((row, index) => {
+      const rank = Number(rowRank(row)) || index + 1;
+      return {
+        rank,
+        name: rowName(row) || `第 ${rank} 名`,
+        group: rowGroup(row) || '-',
+        score: rowScore(row),
+        title: awardTitles[index] || '正式前五名',
+        code: awardCodes[index] || 'TOP FIVE AWARD'
+      };
+    });
+  }
+
   function buildProposalPlan(snapshot, rawText = '') {
     const rows = getRows(snapshot);
     const groups = getGroups(snapshot);
     const title = snapshot?.title || snapshot?.standardData?.['公告標題'] || 'AI 派單企劃案';
-    const topRows = rows.slice(0, 5).map(rowName).filter(Boolean);
+    const topAwards = buildTopFiveAwards(rows);
+    const topRows = topAwards.map((award) => award.name).filter(Boolean);
     const groupCounts = ['A1', 'A2', 'B', 'C']
       .map((key) => `${key}: ${asArray(groups[key]).length}人`)
       .join(' | ');
@@ -414,12 +453,22 @@
       `   3. 行動追蹤：24 小時內啟動業績回寫與效能追蹤。`,
       `   4. 視覺強化：全端啟動 Cyber Tech 科技感介面同步。`,
       ``,
-      `三、執行指令：`,
+      `三、正式前五名 3D 科技獎項：`,
+      ...(topAwards.length
+        ? topAwards.map((award) => `   #${award.rank} ${award.name}｜${award.title}｜${award.code}｜AI ${number(award.score, 2)}｜${award.group}`)
+        : ['   尚未取得正式前五名，等待正式快照同步。']),
+      ``,
+      `四、一直優化升級路線：`,
+      `   1. 本輪：鎖定前五名獎項視覺與正式資料一致。`,
+      `   2. 下一輪：追蹤每位前五名 24 小時執行回報。`,
+      `   3. 再下一輪：依回報自動重排行動建議與公告重點。`,
+      ``,
+      `五、執行指令：`,
       `   > 點擊下方 [複製下一步方案] 並傳送至執行群組。`,
       `   > 系統將於發布後自動進入下一輪優化循環。`
     ].join('\n');
 
-    return { title, topText, nextStep, steps, focus, features, output };
+    return { title, topText, nextStep, steps, focus, features, output, topAwards };
   }
 
   function renderPillList(container, items, className) {
@@ -441,8 +490,8 @@
     setText(refs.proposalMainDetail, plan.title);
     setText(refs.proposalNextStep, plan.nextStep);
     setText(refs.proposalNextDetail, `優先對象：${plan.topText}`);
-    setText(refs.proposalFeatureBoost, 'AI 自動優化 + 全端鏈結');
-    setText(refs.proposalFeatureDetail, '整合審計、公告、LINE 與行動追蹤。');
+    setText(refs.proposalFeatureBoost, `AI 無限優化 (第 ${snapshot?.meta?.optimizationLevel || 0} 輪)`);
+    setText(refs.proposalFeatureDetail, `數據已精煉，目前正以最高統治性能進行第 ${snapshot?.meta?.optimizationLevel || 0} 輪循環。`);
 
     if (refs.proposalStepList) {
       refs.proposalStepList.replaceChildren(...plan.steps.map((step, index) => {
@@ -456,9 +505,27 @@
         return article;
       }));
     }
+    renderProposalAwards(plan.topAwards);
     renderPillList(refs.proposalFocusList, plan.focus, 'proposal-pill');
     renderPillList(refs.proposalFeatureList, plan.features, 'proposal-pill feature');
     if (refs.proposalOutput && !refs.proposalOutput.value) refs.proposalOutput.value = plan.output;
+  }
+
+  function renderProposalAwards(awards) {
+    if (!refs.proposalAwardList) return;
+    refs.proposalAwardList.replaceChildren(...awards.map((award) => {
+      const article = document.createElement('article');
+      article.className = `proposal-award-card rank-${award.rank}`;
+      article.innerHTML = `
+        <div class="proposal-award-rank">#${escapeHtml(award.rank)}</div>
+        <div class="proposal-award-medal">${escapeHtml(award.rank)}</div>
+        <div class="proposal-award-code">${escapeHtml(award.code)}</div>
+        <strong>${escapeHtml(award.name)}</strong>
+        <span>${escapeHtml(award.title)} · ${escapeHtml(award.group)}</span>
+        <p>AI 權重分數 ${escapeHtml(number(award.score, 2))}</p>
+      `;
+      return article;
+    }));
   }
 
   function renderQr() {
@@ -539,6 +606,7 @@
     
     const plan = buildProposalPlan(state.current || {}, refs.rawInput?.value || '');
     if (refs.proposalOutput) refs.proposalOutput.value = plan.output;
+    renderProposalAwards(plan.topAwards);
     
     setText(refs.proposalNextStep, plan.nextStep);
     setText(refs.proposalNextDetail, 'AI 已依據實時數據完成優化路徑掃描。');
@@ -664,6 +732,48 @@
     sync.connect();
   }
 
+  function init3DTilt() {
+    document.addEventListener('mousemove', (e) => {
+      const cards = document.querySelectorAll('.spotlight-item, .proposal-award-card');
+      
+      cards.forEach((card) => {
+        const rect = card.getBoundingClientRect();
+        const cardX = (e.clientX - rect.left) / rect.width - 0.5;
+        const cardY = (e.clientY - rect.top) / rect.height - 0.5;
+        
+        // 限制效能消耗：如果滑鼠離卡片太遠則不計算
+        const dist = Math.sqrt(cardX * cardX + cardY * cardY);
+        if (dist > 2) return;
+
+        const intensity = 20;
+        const featured = card.classList.contains('hero-card-1') || card.classList.contains('rank-1');
+        card.style.transform = `
+          perspective(1000px) 
+          rotateY(${cardX * intensity}deg) 
+          rotateX(${-cardY * intensity}deg) 
+          ${featured ? 'scale(1.05)' : 'scale(1)'}
+        `;
+
+        // 隨動光學反射 (Specular Reflection)
+        const highlight = card.querySelector('.specular-highlight');
+        if (highlight) {
+            highlight.style.setProperty('--mouse-x', `${(cardX + 0.5) * 100}%`);
+            highlight.style.setProperty('--mouse-y', `${(cardY + 0.5) * 100}%`);
+        }
+
+        // 內部分層視差 (Internal Parallax)
+        const parallaxElements = card.querySelectorAll('[data-depth]');
+        parallaxElements.forEach(el => {
+          const depth = parseFloat(el.dataset.depth) || 0;
+          const moveX = cardX * depth * 40;
+          const moveY = cardY * depth * 40;
+          el.style.transform = `translateZ(${depth * 60}px) translateX(${moveX}px) translateY(${moveY}px)`;
+          el.style.transition = 'transform 0.1s ease-out';
+        });
+      });
+    });
+  }
+
   async function init() {
     renderRules();
     renderQr();
@@ -671,6 +781,7 @@
     try {
       await loadCurrent();
       initRealtimeSync();
+      init3DTilt();
     } finally {
       hideSplashScreen();
     }
