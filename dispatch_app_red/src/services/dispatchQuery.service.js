@@ -260,7 +260,7 @@ function persistStoredRecord(storedRecord, updateLatest = true) {
     sseService.notifyDataUpdated({
       source: 'persist',
       reportId: report.reportId,
-      version: report.version,
+      reportVersion: report.version,
       updatedAt: report.updatedAt || storedRecord.meta?.savedAt || ''
     });
   }

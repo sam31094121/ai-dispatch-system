@@ -84,8 +84,8 @@ function notifyDataUpdated(meta = {}) {
   broadcastUpdate({
     type: 'data_updated',
     timestamp: new Date().toISOString(),
-    version: now,
-    ...meta
+    ...meta,
+    version: now
   });
 }
 
