@@ -13,6 +13,7 @@ const {
 } = require('./dispatchBuild.service');
 const { validateDispatchReport } = require('./dispatchValidate.service');
 const { formatTaipeiTimestamp } = require('../utils/date.util');
+const sseService = require('./sse.service');
 
 const storagePaths = {
   root: appConfig.storageRoot,
@@ -255,6 +256,14 @@ function persistStoredRecord(storedRecord, updateLatest = true) {
   ];
   const nextLatestRecord = updateLatest ? storedRecord : getLatestStoredRecord();
   applyStorageIndex(buildStorageIndex(nextRecords, nextLatestRecord));
+  if (updateLatest) {
+    sseService.notifyDataUpdated({
+      source: 'persist',
+      reportId: report.reportId,
+      version: report.version,
+      updatedAt: report.updatedAt || storedRecord.meta?.savedAt || ''
+    });
+  }
   return storedRecord.report;
 }
 
