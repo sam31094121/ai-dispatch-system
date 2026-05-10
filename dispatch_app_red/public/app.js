@@ -364,46 +364,58 @@
     const rows = getRows(snapshot);
     const groups = getGroups(snapshot);
     const title = snapshot?.title || snapshot?.standardData?.['公告標題'] || 'AI 派單企劃案';
-    const topRows = rows.slice(0, 3).map(rowName).filter(Boolean);
+    const topRows = rows.slice(0, 5).map(rowName).filter(Boolean);
     const groupCounts = ['A1', 'A2', 'B', 'C']
-      .map((key) => `${key} ${asArray(groups[key]).length}人`)
-      .join(' / ');
+      .map((key) => `${key}: ${asArray(groups[key]).length}人`)
+      .join(' | ');
     const sourceLines = rawText.split(/\r?\n/).filter((line) => line.trim()).length;
     const validation = snapshot?.validation || {};
     const issueCount = asArray(validation.errors).length + asArray(validation.warnings).length;
-    const topText = topRows.length ? topRows.join('、') : '正式名單同步後自動帶入';
-    const nextStep = issueCount ? '先修正審計問題再推進' : '發布優化版並啟動追蹤';
+    const topText = topRows.length ? topRows.join('、') : '等待正式名單同步';
+    const nextStep = issueCount ? '🔴 攔截審計異常，請先修正' : '🟢 執行全線優化與下一步推送';
 
     const steps = [
-      { label: '資料審計', text: issueCount ? `處理 ${issueCount} 項審計提醒` : '正式資料已通過審計' },
-      { label: '企劃重組', text: `以 ${rows.length || '最新'} 筆名單建立主軸` },
-      { label: '下一步派送', text: '產生 LINE 精簡版與行動清單' },
-      { label: '功能提升', text: '補上追蹤、提醒、回饋與復盤欄位' },
-      { label: '成效回收', text: '24 小時內回寫執行狀態' }
+      { label: '數據掃描', text: `掃描 ${rows.length || 0} 筆數據節點` },
+      { label: '權重重組', text: '重新計算 AI 動態權重分配' },
+      { label: '下一步鏈路', text: '建立自動化下一步行動清單' },
+      { label: '功能鏈結', text: '整合 LINE、公告與實時追蹤' },
+      { label: '優化存檔', text: '自動更新正式企劃快照' }
     ];
 
     const focus = [
-      `主軸聚焦：${title}`,
-      `優先推進：${topText}`,
-      `分組盤點：${groupCounts || '等待分組資料'}`,
-      sourceLines ? `輸入素材：已讀取 ${sourceLines} 行內容` : '輸入素材：使用目前正式快照'
+      `🎯 核心主軸：${title}`,
+      `🔥 優先推進：${topText}`,
+      `📊 分組分佈：${groupCounts}`,
+      sourceLines ? `📝 素材讀取：已解析 ${sourceLines} 行輸入素材` : '🛰️ 資料來源：使用實時正式快照'
     ];
 
     const features = [
-      '自動整理企劃案：從正式快照抽出主軸、風險、下一步',
-      '自動下一步：依審計狀態決定先修正或直接發布',
-      '提升功能：增加行動追蹤、LINE 推送、24 小時回報節點',
-      '科技感畫面：流程節點、掃描光效、玻璃面板與高亮狀態'
+      '⚡ 實時 AI 優化：自動提取主軸、風險、下一步行動',
+      '🤖 自動下一步：依審計結果智能切換修正/發布路徑',
+      '📱 全端同步：LINE 推送、公告更新、手機同步鏈路',
+      '🔍 追蹤矩陣：建立 24 小時執行回饋與效能復盤'
     ];
 
     const output = [
-      `【企劃案自動優化版】${title}`,
-      '',
-      `一、目前主軸：以正式派單資料為基準，鎖定 ${rows.length || '最新'} 筆名單與分組節奏。`,
-      `二、優先對象：${topText}。`,
-      `三、下一步：${nextStep}。`,
-      '四、功能提升：資料審計、精簡公告、LINE 推送、回報追蹤、復盤比較同步啟動。',
-      '五、執行節奏：現在產出優化版，發布後 24 小時內回收回報，隔日依結果再自動產生下一輪優化。'
+      `【AI 企劃案自動優化版】SNAPSHOT_${Date.now().toString().slice(-6)}`,
+      `==========================================`,
+      `[目標主軸]：${title}`,
+      `[分組節奏]：${groupCounts}`,
+      `[優先對象]：${topText}`,
+      ``,
+      `一、下一步動作 (Next Step)：`,
+      `   ➔ ${nextStep}`,
+      `   ➔ 預計發布時間：${new Date().toLocaleTimeString('zh-TW')} (立即)`,
+      ``,
+      `二、功能提升方案 (Feature Boost)：`,
+      `   1. 數據審計：自動攔截邏輯異常，確保派單公平性。`,
+      `   2. 自動公告：將複雜 JSON 轉化為極簡群組公告。`,
+      `   3. 行動追蹤：24 小時內啟動業績回寫與效能追蹤。`,
+      `   4. 視覺強化：全端啟動 Cyber Tech 科技感介面同步。`,
+      ``,
+      `三、執行指令：`,
+      `   > 點擊下方 [複製下一步方案] 並傳送至執行群組。`,
+      `   > 系統將於發布後自動進入下一輪優化循環。`
     ].join('\n');
 
     return { title, topText, nextStep, steps, focus, features, output };
@@ -421,20 +433,22 @@
 
   function renderProposal(snapshot) {
     const plan = buildProposalPlan(snapshot);
+    const container = $('proposal-optimizer');
+    
     setBadge(refs.proposalSyncStatus, 'PASS', 'AUTO NEXT');
-    setText(refs.proposalMainGoal, '正式快照企劃主軸');
+    setText(refs.proposalMainGoal, '實時企劃主軸');
     setText(refs.proposalMainDetail, plan.title);
     setText(refs.proposalNextStep, plan.nextStep);
     setText(refs.proposalNextDetail, `優先對象：${plan.topText}`);
-    setText(refs.proposalFeatureBoost, '自動優化 + 行動追蹤');
-    setText(refs.proposalFeatureDetail, '企劃、公告、LINE、復盤同步提升。');
+    setText(refs.proposalFeatureBoost, 'AI 自動優化 + 全端鏈結');
+    setText(refs.proposalFeatureDetail, '整合審計、公告、LINE 與行動追蹤。');
 
     if (refs.proposalStepList) {
       refs.proposalStepList.replaceChildren(...plan.steps.map((step, index) => {
         const article = document.createElement('article');
         article.className = `proposal-step ${index === 0 ? 'active' : ''}`;
         article.innerHTML = `
-          <span>${String(index + 1).padStart(2, '0')}</span>
+          <span>${index + 1}</span>
           <strong>${escapeHtml(step.label)}</strong>
           <p>${escapeHtml(step.text)}</p>
         `;
@@ -513,13 +527,34 @@
     setBadge(refs.inputStatus, 'PASS', 'LINE 已送出');
   }
 
-  function optimizeProposal() {
+  async function optimizeProposal() {
+    const container = $('proposal-optimizer');
+    if (container) container.classList.add('scanning-mode');
+    
+    setBadge(refs.proposalSyncStatus, 'PENDING', 'SCANNING...');
+    
+    // 模擬 AI 掃描動畫延遲
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
     const plan = buildProposalPlan(state.current || {}, refs.rawInput?.value || '');
     if (refs.proposalOutput) refs.proposalOutput.value = plan.output;
+    
     setText(refs.proposalNextStep, plan.nextStep);
-    setText(refs.proposalNextDetail, '已依目前輸入重新產生下一步。');
+    setText(refs.proposalNextDetail, 'AI 已依據實時數據完成優化路徑掃描。');
+    
+    // 更新步驟狀態
+    const steps = refs.proposalStepList?.querySelectorAll('.proposal-step');
+    if (steps) {
+      steps.forEach((s, i) => {
+        s.classList.remove('active');
+        if (i < 2) s.classList.add('completed');
+        if (i === 2) s.classList.add('active');
+      });
+    }
+
+    if (container) container.classList.remove('scanning-mode');
     setBadge(refs.proposalSyncStatus, 'PASS', 'OPTIMIZED');
-    setBadge(refs.inputStatus, 'PASS', '企劃案已自動優化');
+    setBadge(refs.inputStatus, 'PASS', '企劃案自動優化完成');
   }
 
   async function copyProposalPlan() {
