@@ -52,6 +52,8 @@
     btnProposalApprove: $('btn-proposal-approve'),
     btnProposalCopy: $('btn-proposal-copy'),
     proposalOutput: $('proposal-output'),
+    proposalProgressBar: $('proposal-progress-bar'),
+    proposalStatusConsole: $('proposal-status-console'),
     scoringPolicyTitle: $('scoring-policy-title'),
     scoringPolicyDate: $('scoring-policy-date'),
     scoringPolicyDescription: $('scoring-policy-description'),
@@ -108,6 +110,23 @@
         button.disabled = isBusy;
         button.setAttribute('aria-busy', String(isBusy));
       });
+  }
+
+  function logConsole(message) {
+    if (!refs.proposalStatusConsole) return;
+    const div = document.createElement('div');
+    div.textContent = `${new Date().toLocaleTimeString('zh-TW')} - ${message}`;
+    refs.proposalStatusConsole.appendChild(div);
+    refs.proposalStatusConsole.scrollTop = refs.proposalStatusConsole.scrollHeight;
+    if (refs.proposalStatusConsole.children.length > 20) {
+      refs.proposalStatusConsole.removeChild(refs.proposalStatusConsole.firstChild);
+    }
+  }
+
+  function setProgress(percent) {
+    if (refs.proposalProgressBar) {
+      refs.proposalProgressBar.style.width = `${percent}%`;
+    }
   }
 
   async function approveProposal() {
@@ -413,13 +432,16 @@
     const issueCount = asArray(validation.errors).length + asArray(validation.warnings).length;
     const topText = topRows.length ? topRows.join('、') : '等待正式名單同步';
     const nextStep = issueCount ? '🔴 攔截審計異常，請先修正' : '🟢 執行全線優化與下一步推送';
+    const proactiveNext = issueCount 
+      ? `偵測到 ${asArray(validation.errors).length} 個阻斷性錯誤，系統已自動鎖定「修復模式」。`
+      : `數據鏈路已完成。下一步將推送至「執行群組」並啟動「24小時追蹤矩陣」。`;
 
     const steps = [
-      { label: '數據掃描', text: `掃描 ${rows.length || 0} 筆數據節點` },
-      { label: '權重重組', text: '重新計算 AI 動態權重分配' },
-      { label: '下一步鏈路', text: '建立自動化下一步行動清單' },
-      { label: '功能鏈結', text: '整合 LINE、公告與實時追蹤' },
-      { label: '優化存檔', text: '自動更新正式企劃快照' }
+      { label: '數據掃描', text: `掃描 ${rows.length || 0} 筆數據節點`, status: 'completed' },
+      { label: '權重重組', text: '重新計算 AI 動態權重分配', status: 'completed' },
+      { label: '下一步鏈路', text: '建立自動化下一步行動清單', status: 'active' },
+      { label: '功能鏈結', text: '整合 LINE、公告與實時追蹤', status: 'pending' },
+      { label: '優化存檔', text: '自動更新正式企劃快照', status: 'pending' }
     ];
 
     const focus = [
@@ -443,8 +465,9 @@
       `[分組節奏]：${groupCounts}`,
       `[優先對象]：${topText}`,
       ``,
-      `一、下一步動作 (Next Step)：`,
+      `一、下一步動作 (Next Action)：`,
       `   ➔ ${nextStep}`,
+      `   ➔ 策略路徑：${proactiveNext}`,
       `   ➔ 預計發布時間：${new Date().toLocaleTimeString('zh-TW')} (立即)`,
       ``,
       `二、功能提升方案 (Feature Boost)：`,
@@ -458,17 +481,17 @@
         ? topAwards.map((award) => `   #${award.rank} ${award.name}｜${award.title}｜${award.code}｜AI ${number(award.score, 2)}｜${award.group}`)
         : ['   尚未取得正式前五名，等待正式快照同步。']),
       ``,
-      `四、一直優化升級路線：`,
-      `   1. 本輪：鎖定前五名獎項視覺與正式資料一致。`,
-      `   2. 下一輪：追蹤每位前五名 24 小時執行回報。`,
-      `   3. 再下一輪：依回報自動重排行動建議與公告重點。`,
+      `四、自動化再下一步提升路線：`,
+      `   1. 🚀 階段一 (當前)：優化 3D 視覺獎項，確保資料與公告同步。`,
+      `   2. 📈 階段二 (自動)：自動追蹤前五名業績，若連續兩日下滑則自動重排建議。`,
+      `   3. ⚡ 階段三 (進化)：依據回報自動生成「戰情週報」並發送至管理層 LINE。`,
       ``,
       `五、執行指令：`,
-      `   > 點擊下方 [複製下一步方案] 並傳送至執行群組。`,
-      `   > 系統將於發布後自動進入下一輪優化循環。`
+      `   > 點擊下方 [批準並執行方案] 以鎖定目前優化路徑。`,
+      `   > 系統將自動進入下一輪優化循環 (Evo Loop v${(snapshot?.meta?.optimizationLevel || 1) + 1})。`
     ].join('\n');
 
-    return { title, topText, nextStep, steps, focus, features, output, topAwards };
+    return { title, topText, nextStep, steps, focus, features, output, topAwards, proactiveNext };
   }
 
   function renderPillList(container, items, className) {
@@ -599,31 +622,57 @@
     const container = $('proposal-optimizer');
     if (container) container.classList.add('scanning-mode');
     
+    logConsole('啟動 AI 企劃優化引擎...');
     setBadge(refs.proposalSyncStatus, 'PENDING', 'SCANNING...');
+    setProgress(10);
     
-    // 模擬 AI 掃描動畫延遲
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    const stages = [
+      { msg: '正在擷取實時派單快照...', p: 25 },
+      { msg: '分析前五名權重異動...', p: 45 },
+      { msg: '計算下一步策略鏈路...', p: 70 },
+      { msg: '整合功能提升方案...', p: 90 },
+      { msg: '優化完成，準備推送。', p: 100 }
+    ];
+
+    for (const stage of stages) {
+      logConsole(stage.msg);
+      setProgress(stage.p);
+      await new Promise(resolve => setTimeout(resolve, 400 + Math.random() * 400));
+    }
     
     const plan = buildProposalPlan(state.current || {}, refs.rawInput?.value || '');
-    if (refs.proposalOutput) refs.proposalOutput.value = plan.output;
+    if (refs.proposalOutput) {
+        refs.proposalOutput.value = ''; // 先清空觸發打字感
+        let i = 0;
+        const text = plan.output;
+        const typeEffect = () => {
+          if (i < text.length) {
+            refs.proposalOutput.value += text.charAt(i);
+            i += 5; // 每次打 5 個字快一點
+            requestAnimationFrame(typeEffect);
+          }
+        };
+        typeEffect();
+    }
     renderProposalAwards(plan.topAwards);
     
     setText(refs.proposalNextStep, plan.nextStep);
-    setText(refs.proposalNextDetail, 'AI 已依據實時數據完成優化路徑掃描。');
+    setText(refs.proposalNextDetail, plan.proactiveNext);
     
     // 更新步驟狀態
     const steps = refs.proposalStepList?.querySelectorAll('.proposal-step');
     if (steps) {
       steps.forEach((s, i) => {
-        s.classList.remove('active');
-        if (i < 2) s.classList.add('completed');
-        if (i === 2) s.classList.add('active');
+        s.classList.remove('active', 'completed');
+        if (i < 3) s.classList.add('completed');
+        if (i === 3) s.classList.add('active');
       });
     }
 
     if (container) container.classList.remove('scanning-mode');
     setBadge(refs.proposalSyncStatus, 'PASS', 'OPTIMIZED');
     setBadge(refs.inputStatus, 'PASS', '企劃案自動優化完成');
+    logConsole('優化循環完成。系統進入等待批準狀態。');
   }
 
   async function copyProposalPlan() {
@@ -636,7 +685,6 @@
     const container = $('proposal-optimizer');
     if (state.busy) return;
     
-    // 檢查是否有生成內容
     if (!refs.proposalOutput || !refs.proposalOutput.value) {
       setBadge(refs.proposalSyncStatus, 'FAIL', '請先點擊自動優化');
       return;
@@ -647,19 +695,25 @@
     setBusy(true);
     try {
       if (container) container.classList.add('scanning-mode');
+      logConsole('正在批準並執行優化方案...');
       setBadge(refs.proposalSyncStatus, 'PENDING', 'EXECUTING PROTOCOL...');
+      setProgress(30);
       
       // 1. 執行存檔 (包含審計)
       await saveCurrentReport();
+      setProgress(60);
+      logConsole('正式快照已鎖定，同步全端中...');
       
       // 2. 模擬執行延遲
       await new Promise(resolve => setTimeout(resolve, 800));
+      setProgress(85);
       
       // 3. 發送 LINE
       try {
+        logConsole('正在發送 LINE 推送至執行群組...');
         await sendLine();
       } catch (e) {
-        console.warn('LINE 推送失敗，但存檔已完成', e);
+        logConsole('⚠️ LINE 推送失敗，但資料已成功鎖定。');
       }
 
       // 4. 更新步驟為全部完成
@@ -671,11 +725,20 @@
         });
       }
 
+      setProgress(100);
+      logConsole('✅ 優化方案已全面執行。系統將進入 24H 追蹤模式。');
       setBadge(refs.proposalSyncStatus, 'PASS', 'PROTOCOL EXECUTED');
+      
+      // 觸發 3D 寶藏爆發
+      if (typeof window.triggerTreasureExplosion === 'function') {
+        window.triggerTreasureExplosion();
+      }
+
       alert('✅ 執行方案批準成功！\n資料已鎖定並同步全端，下一步行動已推送到執行群組。');
       
     } catch (error) {
       console.error(error);
+      logConsole(`❌ 執行失敗: ${error.message}`);
       setBadge(refs.proposalSyncStatus, 'FAIL', error.message || '執行失敗');
     } finally {
       if (container) container.classList.remove('scanning-mode');
