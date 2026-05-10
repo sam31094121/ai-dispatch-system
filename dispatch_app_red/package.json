@@ -7,6 +7,8 @@
     "predev": "node src/autoUpgrade.js",
     "prestart": "node src/autoUpgrade.js",
     "dev": "node server.js",
+    "vite-dev": "vite",
+    "vite-build": "vite build",
     "start": "node server.js",
     "check": "npm run check:syntax && npm run check:api",
     "check:api": "node scripts/check-dispatch-api.js",
