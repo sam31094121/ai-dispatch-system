@@ -1,0 +1,111 @@
+/**
+ * Zhaogui AI Dispatch - 寒冷科技版全局樣式 (Cyber Tech Edition)
+ * 核心目標：極致科技化、完美無瑕、冷色調視覺、零衝突。
+ */
+
+:root {
+    --ai-primary: #00f2ff;
+    --ai-secondary: #7000ff;
+    --ai-bg-dark: #02040a;
+    --ai-card-bg: rgba(10, 20, 35, 0.7);
+    --ai-border: rgba(0, 242, 255, 0.3);
+    --ai-glow: 0 0 15px rgba(0, 242, 255, 0.2);
+}
+
+/* 全局科技感背景 */
+body.mobile-command-center, 
+body.cyber-war-room {
+    background-color: var(--ai-bg-dark) !important;
+    background-image: 
+        radial-gradient(circle at 10% 10%, rgba(0, 242, 255, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(112, 0, 255, 0.05) 0%, transparent 40%),
+        linear-gradient(rgba(0, 242, 255, 0.01) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 242, 255, 0.01) 1px, transparent 1px) !important;
+    background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px !important;
+    color: #ffffff !important;
+}
+
+/* 卡片與面板優化 */
+.panel, .lc-card, .a1-hero-grid > div {
+    background: var(--ai-card-bg) !important;
+    border: 1px solid var(--ai-border) !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: var(--ai-glow) !important;
+    border-radius: 8px !important;
+    position: relative;
+    overflow: hidden;
+}
+
+/* AI 科技掃描線效果 */
+.panel::before, .lc-card::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba(0, 242, 255, 0.05) 50%,
+        transparent 50%
+    );
+    background-size: 100% 2px;
+    animation: scan-move 8s linear infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes scan-move {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(50%); }
+}
+
+/* 標題強化 */
+.section-head h2, .a1-hero-title-block h1 {
+    font-family: 'Orbitron', sans-serif !important;
+    letter-spacing: 2px !important;
+    text-transform: uppercase !important;
+    color: var(--ai-primary) !important;
+    text-shadow: 0 0 10px rgba(0, 242, 255, 0.5) !important;
+}
+
+/* 數值跳動感 */
+.stat-value, .metric-number, strong {
+    font-family: 'JetBrains Mono', monospace !important;
+    color: #fff !important;
+    text-shadow: 0 0 5px var(--ai-primary) !important;
+}
+
+/* 頂部工具列 */
+.topbar {
+    background: rgba(2, 4, 10, 0.9) !important;
+    border-bottom: 1px solid var(--ai-primary) !important;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* A1 英雄區特殊流光 */
+#a1-hero {
+    border: 2px solid var(--ai-primary) !important;
+    box-shadow: 0 0 30px rgba(0, 242, 255, 0.1) inset, 0 0 20px rgba(0, 242, 255, 0.2) !important;
+}
+
+/* 自定義捲軸 */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: var(--ai-bg-dark);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--ai-primary);
+    border-radius: 3px;
+}
+
+/* 狀態標籤 */
+.status-badge {
+    background: rgba(0, 242, 255, 0.1) !important;
+    border: 1px solid var(--ai-primary) !important;
+    color: var(--ai-primary) !important;
+    font-weight: bold !important;
+}
