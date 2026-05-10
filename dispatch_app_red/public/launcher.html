@@ -255,7 +255,7 @@
 
         async function startSequence() {
             for (let i = 0; i < logs.length; i++) {
-                await new Promise(r => setTimeout(r, 300 + Math.random() * 500));
+                await new Promise(r => setTimeout(r, 150 + Math.random() * 200));
                 addLog(logs[i]);
                 statusText.textContent = logs[i].replace(/_/g, ' ') + '...';
                 progressBar.style.width = ((i + 1) / logs.length * 100) + '%';
@@ -263,7 +263,7 @@
 
             setTimeout(() => {
                 window.location.href = '/' + targetPage;
-            }, 800);
+            }, 300);
         }
 
         function updateClock() {

@@ -42,6 +42,44 @@ body::after {
     mix-blend-mode: overlay;
 }
 
+/* 廣播系統專屬優化 (Oil Broadcast) */
+.broadcast-shell {
+    background: var(--oil-bg-deep) !important;
+    border-top: 4px solid var(--oil-gold-bright) !important;
+    background-image: 
+        radial-gradient(circle at 50% 0%, rgba(243, 193, 75, 0.1) 0%, transparent 70%) !important;
+}
+
+.hero-line-card {
+    background: rgba(243, 193, 75, 0.05) !important;
+    border: 2px solid var(--oil-gold-bright) !important;
+    box-shadow: 0 0 30px rgba(243, 193, 75, 0.2) inset !important;
+    position: relative;
+}
+
+.hero-line-card::after {
+    content: "AI_VOICE_ANALYSIS_STREAMING";
+    position: absolute;
+    bottom: 5px;
+    right: 10px;
+    font-size: 8px;
+    color: var(--oil-gold-bright);
+    opacity: 0.5;
+}
+
+/* 聲波模擬效果 (金色版) */
+.teleprompter-panel::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--oil-gold-dark), var(--oil-gold-bright), var(--oil-gold-dark));
+    background-size: 200% 100%;
+    animation: wave-bar 2s linear infinite;
+}
+
 /* 卡片與面板優化 - 油畫質感 */
 .panel, .lc-card, .a1-hero-grid > div, .ranking-card, .a1-hero-card {
     background: var(--oil-panel-bg) !important;
