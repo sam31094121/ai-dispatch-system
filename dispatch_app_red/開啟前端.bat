@@ -1,60 +1,82 @@
 @echo off
 chcp 65001 >nul
-title 兆櫃 AI 派單系統｜快速開啟工具
+title 兆櫃 AI 派單系統｜快速開啟工具 v2.0
+setlocal enabledelayedexpansion
+
 cd /d "%~dp0"
 
+:: 設定
 set "PORT=3001"
+set "HOST=http://localhost:%PORT%"
 
 :menu
 cls
-echo ======================================================
-echo          兆櫃 AI 派單系統｜前端開啟優化版
-echo ======================================================
 echo.
-echo  [1] 開啟 行動版 (Mobile) - 預設
-echo  [2] 開啟 電腦版戰情室 (Desktop)
-echo  [3] 開啟 廣播看板 (Broadcast)
-echo  [4] 僅啟動伺服器 (不開啟網頁)
-echo  [Q] 退出
+echo   [96m====================================================== [0m
+echo   [96m          兆櫃 AI 派單系統｜前端啟動控制台 v2.0 [0m
+echo   [96m====================================================== [0m
 echo.
-echo ======================================================
-set /p choice="請選擇欲開啟的項目 [1-4, Q]: "
+echo   [93m[1] [0m 開啟  [1m行動版儀表板 [0m (Mobile) -  [92m推薦 [0m
+echo   [93m[2] [0m 開啟  [1m電腦版戰情室 [0m (Desktop)
+echo   [93m[3] [0m 開啟  [1m廣播看板模式 [0m (Broadcast)
+echo   [93m[4] [0m 僅重啟後端服務 (Restart Server)
+echo   [93m[Q] [0m 退出系統
+echo.
+echo   [96m------------------------------------------------------ [0m
+set /p choice=" [97m請選擇欲執行的項目 [1-4, Q]:  [0m"
 
-if /i "%choice%"=="1" set "PAGE=/mobile.html" & goto checkServer
-if /i "%choice%"=="2" set "PAGE=/index.html" & goto checkServer
-if /i "%choice%"=="3" set "PAGE=/broadcast.html" & goto checkServer
-if /i choice=="" set "PAGE=/mobile.html" & goto checkServer
-if /i "%choice%"=="4" set "PAGE=NONE" & goto checkServer
+if /i "%choice%"=="1" set "PAGE=mobile.html" & goto launch
+if /i "%choice%"=="2" set "PAGE=index.html" & goto launch
+if /i "%choice%"=="3" set "PAGE=broadcast.html" & goto launch
+if /i "%choice%"=="4" set "PAGE=NONE" & goto launch
 if /i "%choice%"=="q" exit
+if /i "%choice%"=="" set "PAGE=mobile.html" & goto launch
 goto menu
 
-:checkServer
-rem ---- 檢查是否已有服務在此 port ----
-set "SERVER_RUNNING=no"
-for /f "tokens=5" %%a in ('netstat -ano ^| findstr :%PORT% ^| findstr LISTENING 2^>nul') do (
-    set "SERVER_RUNNING=yes"
+:launch
+echo.
+echo  [94m[系統] 正在準備啟動環境... [0m
+
+:: 1. 檢查伺服器是否在運行
+netstat -ano | findstr :%PORT% | findstr LISTENING >nul
+if %errorlevel% neq 0 (
+    echo  [33m[資訊] 偵測到服務未啟動，正在背景初始化伺服器... [0m
+    start "兆櫃系統引擎" /min cmd /c "set AUTO_OPEN_BROWSER=0 && node server.js"
+    :: 等待伺服器啟動
+    timeout /t 3 >nul
+) else (
+    echo  [92m[就緒] 伺服器已在運行中。 [0m
 )
 
-if "%SERVER_RUNNING%"=="no" (
-    echo [Info] 偵測到伺服器未啟動，正在初始化環境...
-    
-    if "%PAGE%"=="NONE" (
-        start "Zhaogui Server Engine" cmd /c "set AUTO_OPEN_BROWSER=0 && set PORT=%PORT% && node server.js"
-        echo [OK] 伺服器已在背景啟動。
-    ) else (
-        echo [Info] 伺服器啟動後將自動導向至 %PAGE%
-        start "Zhaogui Server Engine" cmd /c "set AUTO_OPEN_BROWSER=1 && set PORT=%PORT% && set OPEN_PAGE=%PAGE% && node server.js"
-    )
-    timeout /t 2 >nul
+if "%PAGE%"=="NONE" (
+    echo  [92m[完成] 伺服器已重啟/確認運行中。 [0m
+    pause
+    goto menu
+)
+
+:: 2. 決定開啟模式 (優先使用 Edge/Chrome 的 App 模式)
+set "BROWSER_CMD="
+
+:: 嘗試 Edge
+where msedge >nul 2>nul
+if %errorlevel% equ 0 (
+    set "BROWSER_CMD=start msedge --app=%HOST%/launcher.html?page=%PAGE%"
 ) else (
-    echo [OK] 伺服器運行中，正在開啟網頁...
-    if not "%PAGE%"=="NONE" (
-        start "" "http://localhost:%PORT%%PAGE%"
+    :: 嘗試 Chrome
+    if exist "C:\Program Files\Google\Chrome\Application\chrome.exe" (
+        set "BROWSER_CMD=start "" "C:\Program Files\Google\Chrome\Application\chrome.exe" --app=%HOST%/launcher.html?page=%PAGE%"
+    ) else (
+        :: 預設瀏覽器
+        set "BROWSER_CMD=start %HOST%/launcher.html?page=%PAGE%"
     )
 )
+
+echo  [94m[執行] 正在以專業模式開啟網頁... [0m
+%BROWSER_CMD%
 
 echo.
-echo [完成] 系統已就緒。
+echo  [96m====================================================== [0m
+echo  [92m  啟動成功！請切換至瀏覽器視窗查看。 [0m
+echo  [96m====================================================== [0m
 timeout /t 3 >nul
 exit
-

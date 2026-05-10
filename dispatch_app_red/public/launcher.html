@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>兆櫃 AI 派單系統 | 系統啟動中</title>
+    <style>
+        :root {
+            --primary: #00f2ff;
+            --secondary: #7000ff;
+            --bg: #050505;
+            --text: #ffffff;
+            --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: var(--font-mono);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 背景網格 */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+        }
+
+        /* 核心載入動畫 */
+        .loader-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .circle {
+            position: absolute;
+            border: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin var(--duration) linear infinite;
+        }
+
+        .circle-1 {
+            width: 200px;
+            height: 200px;
+            border-top-color: var(--primary);
+            --duration: 2s;
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.3);
+        }
+
+        .circle-2 {
+            width: 160px;
+            height: 160px;
+            border-right-color: var(--secondary);
+            --duration: 1.5s;
+            animation-direction: reverse;
+        }
+
+        .circle-3 {
+            width: 120px;
+            height: 120px;
+            border-bottom-color: var(--primary);
+            --duration: 1s;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 系統狀態文字 */
+        .status-box {
+            margin-top: 40px;
+            text-align: left;
+            width: 400px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            padding: 20px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .log-entry {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 5px;
+            color: rgba(0, 242, 255, 0.8);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .log-entry .status {
+            color: #00ff00;
+            font-weight: bold;
+        }
+
+        .log-entry.pending {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .log-entry.pending .status {
+            color: #ffff00;
+        }
+
+        .log-entry.error {
+            color: #ff0055;
+        }
+
+        .log-entry.error .status {
+            color: #ff0055;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 18px;
+            background: var(--primary);
+            animation: blink 0.8s infinite;
+            vertical-align: middle;
+            margin-left: 5px;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            margin-top: 15px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            width: 0%;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        h1 {
+            font-size: 24px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.3);
+        }
+
+        .brand {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary);
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="brand">ZHAOGUI AI SYSTEM v2.0</div>
+
+    <h1>Initializing Command Center</h1>
+    
+    <div class="loader-container">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+        <div class="circle circle-3"></div>
+        <div style="font-size: 48px; color: var(--primary); text-shadow: 0 0 20px var(--primary);">Ω</div>
+    </div>
+
+    <div class="status-box" id="statusBox">
+        <div class="log-entry" id="log-1"><span>> INITIALIZING_CORE_ENGINE</span> <span class="status">OK</span></div>
+        <div class="log-entry pending" id="log-2"><span>> CONNECTING_DATA_STREAM</span> <span class="status">WAIT</span></div>
+        <div class="log-entry pending" id="log-3"><span>> CALIBRATING_3D_MESH</span> <span class="status">WAIT</span></div>
+        <div class="log-entry pending" id="log-4"><span>> SYNCING_DISPATCH_LOGIC</span> <span class="status">WAIT</span></div>
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+    </div>
+
+    <script>
+        const logs = [
+            { id: 'log-1', text: 'CORE_ENGINE_READY', status: 'OK', delay: 400 },
+            { id: 'log-2', text: 'DATA_STREAM_CONNECTED', status: 'OK', delay: 800 },
+            { id: 'log-3', text: '3D_MESH_STABILIZED', status: 'OK', delay: 1200 },
+            { id: 'log-4', text: 'SYSTEM_SYNC_COMPLETE', status: 'READY', delay: 1600 }
+        ];
+
+        const progressBar = document.getElementById('progressBar');
+        const params = new URLSearchParams(window.location.search);
+        const targetPage = params.get('page') || 'mobile.html';
+
+        async function startSequence() {
+            let progress = 0;
+            
+            for (let i = 0; i < logs.length; i++) {
+                const log = logs[i];
+                await new Promise(r => setTimeout(r, log.delay / 2));
+                
+                const el = document.getElementById(log.id);
+                el.classList.remove('pending');
+                el.querySelector('.status').textContent = log.status;
+                
+                progress += 25;
+                progressBar.style.width = progress + '%';
+            }
+
+            // Final delay before redirect
+            setTimeout(() => {
+                window.location.href = '/' + targetPage;
+            }, 500);
+        }
+
+        window.onload = startSequence;
+    </script>
+</body>
+</html>
