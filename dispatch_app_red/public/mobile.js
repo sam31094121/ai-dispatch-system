@@ -322,8 +322,14 @@ function renderA1Hero(rankings) {
 
   refs.a1HeroGrid.innerHTML = a1.map((row) => {
     const pct = Math.min(100, Math.max(0, row.score / MAX_SCORE * 100));
-    const rankClass = `rank-${row.rank}`;
+    const isTopTwo = row.rank <= 2;
+    const rankClass = isTopTwo ? `hero-card-${row.rank}` : `rank-${row.rank}`;
     const crown = row.rank === 1 ? '<span class="a1-hero-crown">👑</span>' : '';
+    
+    // 3D 特效容器 (僅限前兩名)
+    const vfxCanvas = isTopTwo ? `<div class="money-canvas-container"><canvas id="hero-${row.rank}-canvas"></canvas></div>` : '';
+    const iconClass = row.rank === 2 ? 'gold-icon' : '';
+
     const metricHtml = `
       <div class="a1-metric"><span>實收</span><strong>${fmt(row.actualRevenue)}</strong></div>
       <div class="a1-metric"><span>追續金額</span><strong>${fmt(row.renewalRevenue)}</strong></div>
@@ -331,19 +337,27 @@ function renderA1Hero(rankings) {
     `;
     return `
       <article class="a1-hero-card ${rankClass}">
-        ${crown}
-        <div class="a1-hero-gloss"></div>
-        <div class="a1-hero-rank">#${row.rank} ${row.isNew ? '新人' : ''}</div>
-        <div class="a1-hero-name">${escapeHtml(row.name)}</div>
-        <div class="a1-hero-score-row">
-          <span class="a1-hero-score-label">AI分</span>
-          <span class="a1-hero-score-value">${fmt(row.score, 2)}</span>
+        ${vfxCanvas}
+        <div class="hero-content-wrap">
+          ${crown}
+          <div class="a1-hero-gloss"></div>
+          <div class="a1-hero-rank ${iconClass}">#${row.rank} ${row.isNew ? '新人' : ''}</div>
+          <div class="a1-hero-name">${escapeHtml(row.name)}</div>
+          <div class="a1-hero-score-row">
+            <span class="a1-hero-score-label">AI分</span>
+            <span class="a1-hero-score-value">${fmt(row.score, 2)}</span>
+          </div>
+          <div class="a1-hero-score-track"><div class="a1-hero-score-fill" data-pct="${pct}" style="width:0%"></div></div>
+          <div class="a1-hero-metrics">${metricHtml}</div>
         </div>
-        <div class="a1-hero-score-track"><div class="a1-hero-score-fill" data-pct="${pct}" style="width:0%"></div></div>
-        <div class="a1-hero-metrics">${metricHtml}</div>
       </article>`;
 
   }).join('');
+
+  // 延遲啟動 3D 特效
+  if (typeof window.initMoneyEffects === 'function') {
+      setTimeout(window.initMoneyEffects, 100);
+  }
 }
 
 function render(report) {

@@ -122,6 +122,39 @@
     ));
   }
 
+  /* ── 正式前五名（油畫主角席）── */
+  function renderSpotlight(data) {
+    const grid = document.getElementById('spotlight-grid');
+    if (!grid) return;
+    const top5 = data.dispatchOrder.slice(0, 5);
+    
+    grid.replaceChildren(...top5.map((row) => {
+      const isTopTwo = row.rank <= 2;
+      const rankClass = isTopTwo ? `hero-card-${row.rank}` : `spotlight-card rank-${row.rank}`;
+      const vfxCanvas = isTopTwo ? `<div class="money-canvas-container"><canvas id="hero-${row.rank}-canvas"></canvas></div>` : '';
+      const iconClass = row.rank === 2 ? 'gold-icon' : '';
+
+      const card = el('article', `spotlight-item ${rankClass}`, `
+        ${vfxCanvas}
+        <div class="hero-content-wrap">
+          <div class="spotlight-rank ${iconClass}">#${row.rank}</div>
+          <div class="spotlight-name">${esc(row.name)}</div>
+          <div class="spotlight-score">AI ${Number(row.weightedScore).toFixed(2)}</div>
+          <div class="spotlight-metrics">
+            <div><span>實收</span><strong>${money(row.actualRevenue)}</strong></div>
+            <div><span>續單</span><strong>${money(row.renewalRevenue)}</strong></div>
+          </div>
+        </div>
+      `);
+      return card;
+    }));
+
+    // 啟動 3D 特效
+    if (typeof window.initMoneyEffects === 'function') {
+        setTimeout(window.initMoneyEffects, 100);
+    }
+  }
+
   /* ── 主載入 ── */
   async function loadPerformance() {
     const panel = document.getElementById('performance-panel');
@@ -152,6 +185,7 @@
       const recEl = document.getElementById('performance-recommendation');
       if (recEl) recEl.textContent = data.recommendation;
 
+      renderSpotlight(data);
       renderSummary(data);
       renderProductRows(data);
       renderOrder(data);

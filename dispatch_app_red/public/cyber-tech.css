@@ -1,164 +1,122 @@
 /**
- * Zhaogui AI Dispatch - 寒冷科技版全局樣式 (Cyber Tech Edition)
- * 核心目標：極致科技化、完美無瑕、冷色調視覺、零衝突。
+ * Zhaogui AI Dispatch - 科技化油畫旗艦版 (Cyber Oil Edition)
+ * 追溯歷史範本 c615b82，結合現代 3D 視覺優化。
+ * 核心目標：奢華油畫質感、金幣美金實感、科技化整合、零衝突。
  */
 
 :root {
-    --ai-primary: #00f2ff;
-    --ai-secondary: #7000ff;
-    --ai-bg-dark: #02040a;
-    --ai-card-bg: rgba(10, 20, 35, 0.7);
-    --ai-border: rgba(0, 242, 255, 0.3);
-    --ai-glow: 0 0 15px rgba(0, 242, 255, 0.2);
+    /* 核心油畫色盤 */
+    --oil-gold-bright: #f3c14b;
+    --oil-gold-dark: #b8860b;
+    --oil-bg-deep: #1b120a;
+    --oil-panel-bg: rgba(58, 35, 17, 0.85);
+    --oil-border: rgba(235, 186, 104, 0.35);
+    --oil-text-warm: #fff6df;
+    --oil-glow: 0 0 20px rgba(243, 193, 75, 0.2);
 }
 
-/* 全局科技感背景 */
+/* 全局油畫科技感背景 */
 body.mobile-command-center, 
-body.cyber-war-room {
-    background-color: var(--ai-bg-dark) !important;
+body.cyber-war-room,
+body.command-center {
+    background-color: var(--oil-bg-deep) !important;
     background-image: 
-        radial-gradient(circle at 10% 10%, rgba(0, 242, 255, 0.05) 0%, transparent 40%),
-        radial-gradient(circle at 90% 90%, rgba(112, 0, 255, 0.05) 0%, transparent 40%),
-        linear-gradient(rgba(0, 242, 255, 0.01) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 242, 255, 0.01) 1px, transparent 1px) !important;
-    background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px !important;
-    color: #ffffff !important;
+        radial-gradient(circle at 10% 10%, rgba(243, 193, 75, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(169, 53, 53, 0.08) 0%, transparent 40%),
+        linear-gradient(rgba(243, 193, 75, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(243, 193, 75, 0.02) 1px, transparent 1px),
+        linear-gradient(180deg, #2b180d 0%, #130c08 100%) !important;
+    background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px, 100% 100% !important;
+    color: var(--oil-text-warm) !important;
 }
 
-/* 卡片與面板優化 */
-.panel, .lc-card, .a1-hero-grid > div {
-    background: var(--ai-card-bg) !important;
-    border: 1px solid var(--ai-border) !important;
-    backdrop-filter: blur(10px) !important;
-    box-shadow: var(--ai-glow) !important;
-    border-radius: 8px !important;
-    position: relative;
-    overflow: hidden;
+/* 疊加噪點濾鏡 (油畫質感) */
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.15;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='oil'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23oil)'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
 }
 
-/* AI 科技掃描線效果 */
-.panel::before, .lc-card::before {
+/* 卡片與面板優化 - 油畫質感 */
+.panel, .lc-card, .a1-hero-grid > div, .ranking-card, .a1-hero-card {
+    background: var(--oil-panel-bg) !important;
+    border: 1px solid var(--oil-border) !important;
+    backdrop-filter: blur(12px) !important;
+    box-shadow: 
+        0 15px 35px rgba(0,0,0,0.5),
+        inset 0 1px 1px rgba(255,230,180,0.1) !important;
+    border-radius: 4px !important; /* 採用較硬的邊角，展現權威感 */
+}
+
+/* AI 科技掃描線 (金色版) */
+.panel::before, .a1-hero-card::before {
     content: "";
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(
-        to bottom,
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
         transparent,
-        rgba(0, 242, 255, 0.05) 50%,
-        transparent 50%
+        rgba(243, 193, 75, 0.03) 1px,
+        transparent 2px
     );
-    background-size: 100% 2px;
-    animation: scan-move 8s linear infinite;
     pointer-events: none;
     z-index: 1;
 }
 
-@keyframes scan-move {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(50%); }
+/* 標題強化 (油畫金色) */
+h1, h2, .section-head h2 {
+    font-family: 'Orbitron', 'Noto Sans TC', sans-serif !important;
+    background: linear-gradient(102deg, #fff4d7 0%, #e3a846 48%, #c7462d 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
 }
 
-/* 標題強化 */
-.section-head h2, .a1-hero-title-block h1 {
-    font-family: 'Orbitron', sans-serif !important;
-    letter-spacing: 2px !important;
-    text-transform: uppercase !important;
-    color: var(--ai-primary) !important;
-    text-shadow: 0 0 10px rgba(0, 242, 255, 0.5) !important;
+/* 數字高亮 */
+strong, .stat-value, .a1-hero-score-value {
+    color: var(--oil-gold-bright) !important;
+    text-shadow: 0 0 10px rgba(243, 193, 75, 0.5) !important;
 }
 
-/* 數值跳動感 */
-.stat-value, .metric-number, strong {
-    font-family: 'JetBrains Mono', monospace !important;
-    color: #fff !important;
-    text-shadow: 0 0 5px var(--ai-primary) !important;
+/* --- 前兩名 3D 錢雨框架 --- */
+.hero-card-1 {
+    border: 3px solid var(--oil-gold-bright) !important;
+    background: linear-gradient(135deg, rgba(80, 50, 20, 0.95), rgba(40, 25, 10, 0.95)) !important;
+    box-shadow: 0 0 50px rgba(243, 193, 75, 0.3) !important;
 }
 
-/* 頂部工具列 */
-.topbar {
-    background: rgba(2, 4, 10, 0.9) !important;
-    border-bottom: 1px solid var(--ai-primary) !important;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.8) !important;
+.hero-card-2 {
+    border: 3px solid #d7b983 !important;
+    background: linear-gradient(135deg, rgba(60, 40, 20, 0.95), rgba(30, 20, 10, 0.95)) !important;
+    box-shadow: 0 0 40px rgba(215, 185, 131, 0.2) !important;
 }
 
-/* A1 英雄區特殊流光 */
-#a1-hero {
-    border: 2px solid var(--ai-primary) !important;
-    box-shadow: 0 0 30px rgba(0, 242, 255, 0.1) inset, 0 0 20px rgba(0, 242, 255, 0.2) !important;
+/* 畫布與內容層級 */
+.money-canvas-container { opacity: 0.8; }
+.hero-content-wrap { text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+
+/* 下方滾動名次條 */
+.ranking-card {
+    border-left: 4px solid var(--oil-gold-dark) !important;
+    margin-bottom: 12px !important;
 }
 
-/* 自定義捲軸 */
-::-webkit-scrollbar {
-    width: 6px;
-}
-::-webkit-scrollbar-track {
-    background: var(--ai-bg-dark);
-}
-::-webkit-scrollbar-thumb {
-    background: var(--ai-primary);
-    border-radius: 3px;
-}
+.group-A1 { border-color: #9d1f1f !important; }
+.group-A2 { border-color: #c96a1b !important; }
+.group-B { border-color: #d4a338 !important; }
+.group-C { border-color: #277a4a !important; }
 
-/* 狀態標籤 */
-.status-badge, .chip {
-    background: rgba(0, 242, 255, 0.1) !important;
-    border: 1px solid var(--ai-primary) !important;
-    color: var(--ai-primary) !important;
-    font-weight: bold !important;
-    text-transform: uppercase;
-    font-family: 'JetBrains Mono', monospace;
-}
-
-/* 廣播系統專屬優化 (Cold Broadcast) */
-.broadcast-shell {
-    background: var(--ai-bg-dark) !important;
-    border-top: 4px solid var(--ai-secondary) !important;
-}
-
-.hero-line-card {
-    background: rgba(0, 242, 255, 0.05) !important;
-    border: 2px solid var(--ai-primary) !important;
-    box-shadow: 0 0 20px rgba(0, 242, 255, 0.3) inset !important;
-    position: relative;
-}
-
-.hero-line-card::after {
-    content: "AI_VOICE_ANALYSIS_STREAMING";
-    position: absolute;
-    bottom: 5px;
-    right: 10px;
-    font-size: 8px;
-    color: var(--ai-primary);
-    opacity: 0.5;
-}
-
-/* 聲波模擬效果 */
-.teleprompter-panel::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg, var(--ai-primary), var(--ai-secondary), var(--ai-primary));
-    background-size: 200% 100%;
-    animation: wave-bar 2s linear infinite;
-}
-
-@keyframes wave-bar {
-    0% { background-position: 100% 0; }
-    100% { background-position: -100% 0; }
-}
-
-/* 完美無瑕的過渡效果 */
-.fade-in-tech {
-    animation: tech-fade 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@keyframes tech-fade {
-    from { opacity: 0; transform: scale(0.98) translateY(10px); filter: blur(10px); }
-    to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+/* 頂部標誌 */
+.optimization-badge {
+    background: rgba(169, 53, 53, 0.15) !important;
+    border: 1px solid #a93535 !important;
+    color: #f3c14b !important;
 }
