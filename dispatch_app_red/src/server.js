@@ -41,10 +41,18 @@ const server = app.listen(appConfig.port, async () => {
   const address = server.address();
   const listenPort = typeof address === 'object' && address ? address.port : appConfig.port;
   const appUrl = `http://localhost:${listenPort}`;
-  const targetPage = process.env.OPEN_PAGE || '/mobile.html';
+  const openPagesStr = process.env.OPEN_PAGES || process.env.OPEN_PAGE || 'mobile.html';
+  const openPages = openPagesStr.split(',').map(p => p.trim());
 
   console.log(`Dispatch app listening at ${appUrl}`);
-  scheduleBrowserOpen(`${appUrl}${targetPage}`);
+  
+  openPages.forEach((page, index) => {
+    // 稍微延遲開啟，避免瀏覽器同時處理多個請求造成競爭
+    setTimeout(() => {
+      const targetUrl = page.startsWith('http') ? page : `${appUrl}/launcher.html?page=${page}`;
+      scheduleBrowserOpen(targetUrl);
+    }, index * 500);
+  });
 
   // 若設定自動通知環境變數，發送 LINE 訊息
   const { sendLineMessage } = require('./services/lineNotify.service');

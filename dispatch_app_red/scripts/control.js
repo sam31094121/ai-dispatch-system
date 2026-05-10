@@ -130,6 +130,9 @@ async function connect() {
     // 5. 啟動伺服器並自動開啟
     log('正在開啟戰情室主引擎...', 'SUCCESS');
     
+    // 設定要開啟的所有頁面
+    const openPages = ['mobile.html', 'index.html', 'broadcast.html'];
+    
     const server = spawn('node', ['server.js'], {
       cwd: PROJECT_ROOT,
       detached: true,
@@ -138,7 +141,7 @@ async function connect() {
       env: { 
         ...process.env, 
         AUTO_OPEN_BROWSER: '1', 
-        OPEN_PAGE: 'launcher.html?page=mobile.html',
+        OPEN_PAGES: openPages.join(','),
         SYSTEM_CONNECTED: 'true'
       }
     });
@@ -146,7 +149,7 @@ async function connect() {
     server.unref();
     
     log('======================================================');
-    log('   全部串連成功！優化功能已恢復並升級。', 'SUCCESS');
+    log('   全部串連成功！三大戰情室已自動開啟。', 'SUCCESS');
     log('   系統已進入「立此類推」自動巡航模式。');
     log('======================================================');
 
