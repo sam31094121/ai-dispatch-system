@@ -821,11 +821,11 @@
       article.className = `proposal-award-card rank-${award.rank}`;
       
       const assetMap = {
-        1: '/hyper_realistic_diamond_top_rank_1778421240170.png',
-        2: '/hyper_realistic_gold_bar_rank2_1778421253720.png',
-        3: '/hyper_realistic_usd_stack_rank3_1778421270527.png',
-        4: '/hyper_realistic_ntd_2000_rank4_1778421287414.png',
-        5: '/hyper_realistic_ntd_1000_rank5_1778421301923.png'
+        1: 'assets/diamond.png',
+        2: 'assets/gold.png',
+        3: 'assets/money.png',
+        4: 'assets/money.png',
+        5: 'assets/money.png'
       };
       
       const assetImg = assetMap[award.rank] || '';
@@ -1181,8 +1181,8 @@
 
       // 觸發全域脈衝與爆發
       triggerDashboardPulse();
-      if (typeof window.triggerTreasureExplosion === 'function') {
-        window.triggerTreasureExplosion();
+      if (window.apexEngine) {
+        window.apexEngine.triggerExplosion(1);
       }
 
       alert('✅ 執行方案批準成功！\n身分驗證通過，資料已鎖定並同步全端，下一步行動已推送到執行群組。');
