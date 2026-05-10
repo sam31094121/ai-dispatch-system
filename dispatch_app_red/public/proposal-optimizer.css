@@ -1,26 +1,12 @@
 /* Proposal optimizer command layer */
 body.oil-announcement {
-  --proposal-bg: rgba(3, 10, 24, 0.88);
-  --proposal-panel: rgba(7, 20, 42, 0.84);
-  --proposal-line: rgba(0, 229, 255, 0.42);
+  --proposal-bg: rgba(3, 10, 24, 0.9);
+  --proposal-panel: rgba(7, 24, 48, 0.85);
+  --proposal-line: rgba(0, 229, 255, 0.5);
+  --proposal-accent: #10f5b4;
   --proposal-text: #eefcff;
   --proposal-muted: #8abbd1;
-}
-
-body.oil-announcement .hero {
-  background:
-    linear-gradient(180deg, rgba(1, 7, 18, 0.18), rgba(1, 7, 18, 0.92)),
-    radial-gradient(circle at 22% 18%, rgba(0, 229, 255, 0.26), transparent 24%),
-    radial-gradient(circle at 78% 28%, rgba(16, 245, 180, 0.22), transparent 26%),
-    linear-gradient(135deg, #061527 0%, #07111f 46%, #04251e 100%);
-}
-
-body.oil-announcement .optimization-badge,
-body.oil-announcement .badge-pass {
-  color: #001117;
-  background: linear-gradient(135deg, #40ffff, #10f5b4);
-  border-color: rgba(151, 255, 239, 0.68);
-  box-shadow: 0 0 24px rgba(0, 229, 255, 0.28);
+  --cyber-glow: 0 0 15px rgba(0, 229, 255, 0.4);
 }
 
 .proposal-optimizer {
@@ -29,14 +15,41 @@ body.oil-announcement .badge-pass {
   overflow: hidden;
   color: var(--proposal-text);
   background:
-    linear-gradient(135deg, rgba(0, 229, 255, 0.09), transparent 24%),
-    radial-gradient(circle at 88% 16%, rgba(16, 245, 180, 0.16), transparent 28%),
-    linear-gradient(180deg, var(--proposal-bg), rgba(2, 7, 18, 0.96)) !important;
-  border-color: rgba(0, 229, 255, 0.34) !important;
+    linear-gradient(135deg, rgba(0, 229, 255, 0.12), transparent 30%),
+    radial-gradient(circle at 90% 10%, rgba(16, 245, 180, 0.2), transparent 35%),
+    linear-gradient(180deg, var(--proposal-bg), #010812) !important;
+  border: 1px solid rgba(0, 229, 255, 0.35) !important;
   box-shadow:
-    0 24px 70px rgba(0, 0, 0, 0.62),
-    0 0 42px rgba(0, 229, 255, 0.12),
-    inset 0 1px 0 rgba(150, 255, 244, 0.16) !important;
+    0 30px 80px rgba(0, 0, 0, 0.7),
+    0 0 50px rgba(0, 229, 255, 0.15),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(12px);
+}
+
+/* 科技感掃描線動畫 */
+.proposal-optimizer::before {
+  content: "";
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(0, 229, 255, 0.05) 45%,
+    rgba(0, 229, 255, 0.2) 50%,
+    rgba(0, 229, 255, 0.05) 55%,
+    transparent
+  );
+  z-index: 2;
+  pointer-events: none;
+  animation: scan-vertical 8s linear infinite;
+}
+
+@keyframes scan-vertical {
+  0% { top: -100%; }
+  100% { top: 100%; }
 }
 
 .proposal-optimizer::after {
@@ -45,10 +58,9 @@ body.oil-announcement .badge-pass {
   inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.08), transparent),
-    repeating-linear-gradient(180deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 7px);
-  opacity: 0.48;
-  mix-blend-mode: screen;
+    repeating-linear-gradient(180deg, rgba(255,255,255,0.02) 0 1px, transparent 1px 4px);
+  opacity: 0.3;
+  z-index: 2;
 }
 
 .proposal-optimizer-head,
@@ -58,157 +70,213 @@ body.oil-announcement .badge-pass {
 .proposal-actions,
 .proposal-output {
   position: relative;
-  z-index: 1;
+  z-index: 3;
 }
 
 .proposal-command-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-  margin-top: 18px;
-}
-
-.proposal-command-card,
-.proposal-step,
-.proposal-pill {
-  border: 1px solid rgba(0, 229, 255, 0.24);
-  background:
-    linear-gradient(145deg, rgba(255,255,255,0.06), transparent 42%),
-    var(--proposal-panel);
-  border-radius: 8px;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.10), 0 12px 28px rgba(0,0,0,0.38);
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 20px;
 }
 
 .proposal-command-card {
-  min-height: 148px;
-  padding: 18px;
+  padding: 20px;
+  background: var(--proposal-panel);
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  border-radius: 12px;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.proposal-command-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(0, 229, 255, 0.6);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 229, 255, 0.2);
 }
 
 .proposal-command-card.primary {
-  border-color: rgba(16, 245, 180, 0.44);
-  box-shadow: 0 0 26px rgba(16, 245, 180, 0.12), inset 0 1px 0 rgba(255,255,255,0.12);
+  border-color: rgba(16, 245, 180, 0.5);
+  background: linear-gradient(145deg, rgba(16, 245, 180, 0.05), var(--proposal-panel));
 }
 
-.proposal-command-card span,
-.proposal-section-label,
-.proposal-step small {
-  display: block;
-  color: var(--proposal-muted);
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+.proposal-command-card.primary:hover {
+  border-color: var(--proposal-accent);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 25px rgba(16, 245, 180, 0.3);
+}
+
+.proposal-command-card span {
+  font-family: "Orbitron", sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--proposal-accent);
+  opacity: 0.8;
 }
 
 .proposal-command-card strong {
   display: block;
-  margin-top: 10px;
-  color: #ffffff;
-  font-size: clamp(18px, 2vw, 26px);
-  line-height: 1.22;
+  font-size: 24px;
+  margin-top: 12px;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
-.proposal-command-card p,
-.proposal-step p,
-.proposal-pill span {
-  margin: 8px 0 0;
+.proposal-command-card p {
+  font-size: 13px;
   color: var(--proposal-muted);
+  margin-top: 10px;
   line-height: 1.6;
 }
 
 .proposal-flow {
-  margin-top: 18px;
+  margin-top: 25px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .proposal-step-list {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, 1fr);
   gap: 12px;
 }
 
 .proposal-step {
-  min-height: 142px;
-  padding: 14px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(0, 229, 255, 0.15);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
 .proposal-step.active {
-  border-color: rgba(64, 255, 255, 0.72);
-  box-shadow: 0 0 28px rgba(0, 229, 255, 0.20), inset 0 1px 0 rgba(255,255,255,0.14);
+  background: rgba(0, 229, 255, 0.08);
+  border-color: rgba(0, 229, 255, 0.5);
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.15);
+}
+
+.proposal-step.completed {
+  border-color: var(--proposal-accent);
+  opacity: 0.7;
 }
 
 .proposal-step > span {
-  display: inline-grid;
-  width: 34px;
-  height: 34px;
-  place-items: center;
-  color: #001117;
-  background: linear-gradient(135deg, #40ffff, #10f5b4);
-  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--proposal-accent);
+  color: #000;
+  border-radius: 6px;
   font-family: "Orbitron", sans-serif;
-  font-size: 12px;
   font-weight: 900;
+  font-size: 12px;
 }
 
 .proposal-step strong {
   display: block;
-  margin-top: 12px;
-  color: #f4fdff;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #fff;
+}
+
+.proposal-step p {
+  font-size: 11px;
+  color: var(--proposal-muted);
+  margin-top: 6px;
 }
 
 .proposal-insight-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-top: 18px;
+  gap: 20px;
+  margin-top: 25px;
 }
 
-.proposal-focus-list,
-.proposal-feature-list {
-  display: grid;
-  gap: 10px;
-  margin-top: 10px;
+.proposal-section-label {
+  font-family: "Orbitron", sans-serif;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--proposal-muted);
+  margin-bottom: 12px;
+  padding-left: 10px;
+  border-left: 3px solid var(--proposal-accent);
 }
 
 .proposal-pill {
-  display: grid;
-  gap: 3px;
-  min-height: 52px;
-  padding: 12px 14px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 8px;
+  transition: all 0.2s ease;
+}
+
+.proposal-pill:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(0, 229, 255, 0.3);
 }
 
 .proposal-pill.feature {
-  border-color: rgba(16, 245, 180, 0.26);
-}
-
-.proposal-pill strong {
-  color: #f4fdff;
+  border-left: 3px solid var(--proposal-accent);
 }
 
 .proposal-actions {
+  margin-top: 25px;
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 18px;
+  gap: 15px;
 }
 
 .proposal-output {
   width: 100%;
-  min-height: 172px;
-  margin-top: 14px;
-  padding: 16px;
-  resize: vertical;
-  color: #eaffff;
-  background: rgba(1, 8, 18, 0.82);
-  border: 1px solid rgba(0, 229, 255, 0.28);
-  border-radius: 8px;
-  outline: none;
-  box-shadow: inset 0 0 24px rgba(0, 229, 255, 0.08);
+  min-height: 220px;
+  margin-top: 20px;
+  padding: 20px;
+  background: rgba(0, 5, 15, 0.8);
+  border: 1px solid rgba(0, 229, 255, 0.3);
+  border-radius: 12px;
+  color: #88ffff;
+  font-family: "Sora", "Noto Sans TC", sans-serif;
+  font-size: 15px;
+  line-height: 1.8;
+  resize: none;
+  box-shadow: inset 0 0 30px rgba(0, 229, 255, 0.1);
+  transition: all 0.3s ease;
 }
 
-@media (max-width: 980px) {
-  .proposal-command-grid,
-  .proposal-step-list,
-  .proposal-insight-grid {
-    grid-template-columns: 1fr;
-  }
+.proposal-output:focus {
+  border-color: rgba(0, 229, 255, 0.8);
+  box-shadow: inset 0 0 40px rgba(0, 229, 255, 0.2), 0 0 20px rgba(0, 229, 255, 0.2);
+  outline: none;
 }
+
+/* 掃描中特效 */
+.scanning-mode .proposal-optimizer::before {
+  animation: scan-vertical 1.5s linear infinite;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(0, 229, 255, 0.3) 50%,
+    transparent
+  );
+}
+
+.scanning-mode .proposal-command-card {
+  filter: blur(1px);
+  opacity: 0.6;
+}
+
+@media (max-width: 1024px) {
+  .proposal-step-list { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .proposal-command-grid, .proposal-insight-grid { grid-template-columns: 1fr; }
+  .proposal-step-list { grid-template-columns: repeat(2, 1fr); }
+}
+
