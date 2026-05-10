@@ -67,6 +67,63 @@
   <div id="splash-screen">
     <div class="splash-loader">
       <div class="splash-circle"></div>
+  <style>
+    #splash-screen {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #1b120a; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      transition: opacity 0.5s ease, visibility 0.5s;
+      font-family: 'Sora', sans-serif;
+    }
+    #splash-screen.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
+    .splash-loader { position: relative; width: 80px; height: 80px; }
+    .splash-circle {
+      position: absolute; inset: 0; border: 3px solid rgba(243, 193, 75, 0.1);
+      border-top-color: #f3c14b; border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    .splash-inner-circle {
+      position: absolute; inset: 12px; border: 2px solid rgba(169, 53, 53, 0.1);
+      border-bottom-color: #a93535; border-radius: 50%;
+      animation: spin 1.5s linear reverse infinite;
+    }
+    .splash-logo {
+      position: absolute; inset: 0; display: flex; align-items: center;
+      justify-content: center; font-size: 24px;
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+    .splash-text {
+      margin-top: 24px; font-size: 14px; font-weight: 800;
+      letter-spacing: 0.2em; color: #f3c14b;
+      text-transform: uppercase; text-shadow: 0 0 12px rgba(243, 193, 75, 0.4);
+    }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes pulse-glow { 0%, 100% { opacity: 0.5; filter: blur(4px); } 50% { opacity: 1; filter: blur(8px); } }
+    
+    .qr-card { 
+      flex-direction: row !important; align-items: center; gap: 12px; 
+      padding: 8px 16px !important; background: rgba(0, 242, 255, 0.05) !important;
+      border: 1px solid rgba(0, 242, 255, 0.2) !important;
+    }
+    .qr-box { 
+      width: 48px; height: 48px; background: #fff; border-radius: 4px; 
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
+      cursor: pointer; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .qr-box:hover { transform: scale(3) translateX(-15px); z-index: 100; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+    .qr-box img { width: 100%; height: 100%; image-rendering: pixelated; }
+    .qr-loading { font-size: 8px; color: #666; }
+    .qr-label { font-size: 11px; color: #00f2ff; font-weight: 800; letter-spacing: 1px; }
+    
+    .satellite-grid-bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0.3; background: radial-gradient(circle at center, #1a2a3a 0%, #050505 100%); overflow: hidden; }
+    .scan-beam { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: rgba(0, 255, 255, 0.5); animation: scan 4s linear infinite; box-shadow: 0 0 10px #00ffff; }
+    @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+  </style>
+</head>
+<body class="command-center oil-announcement">
+  <div id="splash-screen">
+    <div class="splash-loader">
+      <div class="splash-circle"></div>
       <div class="splash-inner-circle"></div>
       <div class="splash-logo">⚡</div>
     </div>
@@ -74,6 +131,11 @@
   </div>
 
   <div id="vfx-layer" class="vfx-layer"></div>
+  <!-- Phase 3: Global Satellite Grid -->
+  <div class="satellite-grid-bg">
+      <div class="scan-beam"></div>
+      <div class="grid-dots"></div>
+  </div>
   <div class="page-shell">
     <header class="hero">
       <div class="hero-copy">
@@ -241,6 +303,8 @@
           <div class="stat-row"><span>AI LOGIC</span><div class="stat-bar"><div id="stat-ai" style="width: 99%;"></div></div></div>
         </div>
       </div>
+      
+
       <div class="proposal-insight-grid">
         <div>
           <div class="proposal-section-label">優化焦點</div>

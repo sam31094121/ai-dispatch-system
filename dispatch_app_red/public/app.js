@@ -136,8 +136,25 @@
     div.textContent = `${new Date().toLocaleTimeString('zh-TW')} - ${message}`;
     refs.proposalStatusConsole.appendChild(div);
     refs.proposalStatusConsole.scrollTop = refs.proposalStatusConsole.scrollHeight;
+    
+    // AI 語音指揮官播報
+    speak(message);
+    
     if (refs.proposalStatusConsole.children.length > 20) {
       refs.proposalStatusConsole.removeChild(refs.proposalStatusConsole.firstChild);
+    }
+  }
+
+  function speak(text) {
+    if (!window.speechSynthesis) return;
+    // 關鍵字觸發播報
+    const keywords = ['成功', '批準', '優化', '鎖定', '就緒', '同步'];
+    if (keywords.some(k => text.includes(k))) {
+      const msg = new SpeechSynthesisUtterance(text);
+      msg.lang = 'zh-TW';
+      msg.rate = 1.05;
+      msg.pitch = 0.95; // 略微低沉增加權威感
+      window.speechSynthesis.speak(msg);
     }
   }
 
@@ -675,17 +692,23 @@
   }
 
   function buildTopFiveAwards(rows) {
-    const awardTitles = ['至尊冠軍', '數據王座', '菁英指揮官', '策略大師', '精準建築師'];
-    const awardCodes = ['SUPREME CHAMPION', 'DATA SOVEREIGN', 'ELITE COMMANDER', 'STRATEGIC MASTER', 'PRECISION ARCHITECT'];
+    const prizeBlueprint = [
+      { title: '真實鑽石王座', code: 'REAL DIAMOND', asset: '第一名：真實鑽石', value: '頂級鑽石資產', purity: 'VVS 級光學切面' },
+      { title: '瑞士銀行黃金', code: 'SWISS BANK GOLD', asset: '第二名：瑞士銀行 999.9 黃金', value: '1 KILO GOLD BAR', purity: '999.9 FINE GOLD' },
+      { title: '美國美金資產', code: 'UNITED STATES DOLLAR', asset: '第三名：美國美金', value: 'USD CASH STACK', purity: 'FEDERAL RESERVE NOTE' },
+      { title: '臺灣新臺幣 2000', code: 'TWD 2000', asset: '第四名：新臺幣 2000 元', value: 'NT$2,000', purity: '台灣法定貨幣' },
+      { title: '臺灣新臺幣 1000', code: 'TWD 1000', asset: '第五名：新臺幣 1000 元', value: 'NT$1,000', purity: '台灣法定貨幣' }
+    ];
     return rows.slice(0, 5).map((row, index) => {
       const rank = Number(rowRank(row)) || index + 1;
+      const prize = prizeBlueprint[index] || { title: '正式前五名', code: 'TOP FIVE AWARD', asset: '科技獎項', value: 'N/A', purity: 'AI VERIFIED' };
       return {
         rank,
         name: rowName(row) || `第 ${rank} 名`,
         group: rowGroup(row) || '-',
         score: rowScore(row),
-        title: awardTitles[index] || '正式前五名',
-        code: awardCodes[index] || 'TOP FIVE AWARD'
+        title: prize.title,
+        code: prize.code
       };
     });
   }
@@ -718,20 +741,20 @@
     ];
 
     const focus = [
-      `🎯 核心主軸：${title}`,
-      `🔥 優先推進：${topText}`,
-      `📊 分組分佈：${groupCounts}`,
-      `🧭 優化模式：${cycle.mode}｜第 ${cycle.level} 輪`,
-      `🛡️ 風險判斷：${cycle.risk}`,
-      sourceLines ? `📝 素材讀取：已解析 ${sourceLines} 行輸入素材` : '🛰️ 資料來源：使用實時正式快照'
+      `核心主軸：${title}`,
+      `優先推進：${topText}`,
+      `分組分佈：${groupCounts}`,
+      `優化模式：${cycle.mode}｜第 ${cycle.level} 輪`,
+      `風險判斷：${cycle.risk}`,
+      sourceLines ? `素材讀取：已解析 ${sourceLines} 行輸入素材` : '資料來源：使用實時正式快照'
     ];
 
     const features = [
-      '⚡ 實時 AI 優化：自動提取主軸、風險、下一步行動',
-      '🤖 自動下一步：依審計結果智能切換修正/發布路徑',
-      '📱 全端同步：LINE 推送、公告更新、手機同步鏈路',
-      '🔍 追蹤矩陣：建立 24 小時執行回饋與效能復盤',
-      '🧬 再下一步演算法：每次執行後自動生成下一輪提升方向'
+      '實時 AI 優化：自動提取主軸、風險、下一步行動',
+      '自動下一步：依審計結果智能切換修正/發布路徑',
+      '全端同步：LINE 推送、公告更新、手機同步鏈路',
+      '追蹤矩陣：建立 24 小時執行回饋與效能復盤',
+      '再下一步演算法：每次執行後自動生成下一輪提升方向'
     ];
 
     const output = [
@@ -752,17 +775,18 @@
       `   1. 數據審計：自動攔截邏輯異常，確保派單公平性。`,
       `   2. 自動公告：將複雜 JSON 轉化為極簡群組公告。`,
       `   3. 行動追蹤：24 小時內啟動業績回寫與效能追蹤。`,
-      `   4. 視覺強化：全端啟動 Cyber Tech 科技感介面同步。`,
+      `   4. 視覺強化：前五名改為真實鑽石、瑞士銀行黃金、美金、臺幣 2000、臺幣 1000 的 3D 空間獎項。`,
+      `   5. 空間邏輯：每張卡片含透視、景深、掃描線、價值層與自動下一輪狀態。`,
       ``,
       `三、正式前五名 3D 科技獎項：`,
       ...(topAwards.length
-        ? topAwards.map((award) => `   #${award.rank} ${award.name}｜${award.title}｜${award.code}｜AI ${number(award.score, 2)}｜${award.group}`)
+        ? topAwards.map((award) => `   #${award.rank} ${award.name}｜${award.asset}｜${award.title}｜AI ${number(award.score, 2)}｜${award.group}`)
         : ['   尚未取得正式前五名，等待正式快照同步。']),
       ``,
       `四、自動化再下一步提升路線：`,
-      `   1. 🚀 階段一 (當前)：優化 3D 視覺獎項，確保資料與公告同步。`,
-      `   2. 📈 階段二 (自動)：自動追蹤前五名業績，若連續兩日下滑則自動重排建議。`,
-      `   3. ⚡ 階段三 (進化)：依據回報自動生成「戰情週報」並發送至管理層 LINE。`,
+      `   1. 階段一 (當前)：優化 3D 視覺獎項，確保資料與公告同步。`,
+      `   2. 階段二 (自動)：自動追蹤前五名業績，若連續兩日下滑則自動重排建議。`,
+      `   3. 階段三 (進化)：依據回報自動生成「戰情週報」並發送至管理層 LINE。`,
       ``,
       `五、執行指令：`,
       `   > 點擊下方 [批準並執行方案] 以鎖定目前優化路徑。`,
@@ -823,21 +847,18 @@
       const assetMap = {
         1: 'assets/diamond.png',
         2: 'assets/gold.png',
-        3: 'assets/money.png',
+        3: 'assets/money/usd_front.png',
         4: 'assets/money.png',
         5: 'assets/money.png'
       };
       
       const assetImg = assetMap[award.rank] || '';
       
-      const xrayDataMap = {
-        1: { val: '$2,500,000', pur: 'IF FLWLS', code: 'DIA-99' },
-        2: { val: '$1,200,000', pur: '999.9 FINE', code: 'GLD-SW' },
-        3: { val: '$500,000', pur: 'CURRENCY', code: 'USD-FED' },
-        4: { val: 'NT$2,000', pur: 'LEGAL TENDER', code: 'TWD-2K' },
-        5: { val: 'NT$1,000', pur: 'LEGAL TENDER', code: 'TWD-1K' }
+      const xData = {
+        val: award.value || 'N/A',
+        pur: award.purity || 'AI VERIFIED',
+        code: award.code || 'TOP FIVE'
       };
-      const xData = xrayDataMap[award.rank] || { val: 'N/A', pur: 'N/A', code: 'N/A' };
 
       article.innerHTML = `
         <div class="award-lens-flare"></div>
@@ -850,11 +871,12 @@
         <div class="proposal-award-rank">#${escapeHtml(award.rank)}</div>
         <div class="proposal-award-visual">
             <span class="scanline"></span>
-            ${assetImg ? `<img src="${assetImg}" alt="Award Asset" class="award-3d-asset">` : `<div class="proposal-award-medal">${escapeHtml(award.rank)}</div>`}
+            ${assetImg ? `<img src="${assetImg}" alt="${escapeHtml(award.asset)}" class="award-3d-asset award-prize-${escapeHtml(award.rank)}">` : `<div class="proposal-award-medal">${escapeHtml(award.rank)}</div>`}
             <div class="award-particles-container"></div>
         </div>
         <div class="proposal-award-code">${escapeHtml(award.code)}</div>
         <strong>${escapeHtml(award.name)}</strong>
+        <span>${escapeHtml(award.asset)}</span>
         <span>${escapeHtml(award.title)} · ${escapeHtml(award.group)}</span>
         <p>AI 權重分數 ${escapeHtml(number(award.score, 2))}</p>
       `;
@@ -1051,42 +1073,6 @@
     logConsole('優化循環完成。系統進入等待批準狀態。');
   }
 
-  function buildProposalPlan(data, rawInput) {
-    const top5 = data.top5 || [];
-    const leader = top5[0] || { name: 'SYSTEM LEADER' };
-    
-    let strategy = `【全域 AI 指揮官 - 戰略指令 v${refs.evoLevel?.textContent || '2.4'}】\n\n`;
-    strategy += `● 階段一：戰術鎖定 (T+2H)\n`;
-    strategy += `   - 已驗證 3D 資產：鑽石/黃金/現鈔 封裝完成。\n`;
-    strategy += `   - 鎖定核心名單：${top5.map(a => a.name).join('、')}。\n`;
-    strategy += `   - 行動：同步全球 ${refs.globalNodes?.textContent || '1,248'} 個節點，確保數據不丟失。\n\n`;
-    
-    strategy += `● 階段二：策略推進 (T+8H)\n`;
-    strategy += `   - 針對 ${leader.name} 啟動「鑽石增幅協定」，權重分數鎖定為 ${number(leader.score, 2)}。\n`;
-    strategy += `   - 監控 B 組成員續約動態，預計產能提升 15.4%。\n\n`;
-    
-    strategy += `● 階段三：最終結算 (T+24H)\n`;
-    strategy += `   - 生成自動化業績週報，並透過 LINE 推送至執行群組。\n`;
-    strategy += `   - 啟動全方位績效追蹤，為下一步進化做準備。\n\n`;
-    
-    if (rawInput) {
-      strategy += `【人工輸入增益】\n${rawInput}\n\n`;
-    }
-    
-    strategy += `[SYSTEM_AUTH_CODE: SIG-${Math.random().toString(36).substr(2, 9).toUpperCase()}]`;
-    
-    return {
-        output: strategy,
-        topAwards: top5,
-        focus: ['資產全息封裝', '全球節點同步', '24H 實時監控'],
-        features: ['AI 進化演算法', '下一步預測鏈路'],
-        nextStep: '批準並執行戰略指令',
-        proactiveNext: '啟動 24H 追蹤矩陣',
-        cycle: { level: 24, afterNext: '二輪自動優化' }
-    };
-  }
-  }
-
   async function copyProposalPlan() {
     const text = refs.proposalOutput?.value || buildProposalPlan(state.current || {}).output;
     await navigator.clipboard.writeText(text);
@@ -1108,12 +1094,21 @@
     try {
       if (container) container.classList.add('scanning-mode');
       
-      logConsole('啟動生物識別與身分驗證...');
-      setBadge(refs.proposalSyncStatus, 'PENDING', 'VERIFYING...');
+      logConsole('啟動高階生物識別掃描 (虹膜 + 數位指紋)...');
+      setBadge(refs.proposalSyncStatus, 'PENDING', 'BIO-SCANNING...');
       setProgress(15);
-      await new Promise(resolve => setTimeout(resolve, 1500)); // 生物識別掃描
       
-      logConsole('身分驗證成功，正在執行數位簽章確認...');
+      // 觸發 UI 掃描動畫
+      const bioOverlay = document.createElement('div');
+      bioOverlay.className = 'bio-scan-overlay';
+      bioOverlay.innerHTML = '<div class="scan-line"></div><div class="scan-grid"></div>';
+      document.body.appendChild(bioOverlay);
+      
+      await new Promise(resolve => setTimeout(resolve, 2000)); // 生物識別掃描
+      bioOverlay.remove();
+      
+      logConsole('身分驗證通過：管理員權限已確認。');
+      logConsole('正在執行數位簽章確認...');
       setBadge(refs.proposalSyncStatus, 'PENDING', 'SIGNING...');
       setProgress(25);
       await new Promise(resolve => setTimeout(resolve, 1000)); // 簽章動畫延遲

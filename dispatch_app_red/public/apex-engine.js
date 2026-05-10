@@ -93,21 +93,23 @@ class ApexEngine {
             obj.z += obj.vz * dt;
             obj.rotation += obj.rv * dt;
 
-            // 碰撞地面
-            if (obj.y > this.groundY) {
-                obj.y = this.groundY;
-                obj.vy *= -0.4; // 彈跳損耗
+            // 碰撞地面與堆疊邏輯
+            const stackHeight = obj.stackedHeight || 0;
+            if (obj.y > this.groundY - stackHeight) {
+                obj.y = this.groundY - stackHeight;
+                obj.vy *= -0.3; // 降低彈跳增加沈重感
                 obj.vx *= this.friction;
                 obj.rv *= this.friction;
                 
-                // 停止運動後保持在地面
+                // 停止運動後進入堆疊狀態
                 if (Math.abs(obj.vy) < 1 && Math.abs(obj.vx) < 0.1) {
-                    // 這裡可以選擇讓它消失，或者維持在地面堆疊
-                    // 為保持效能，若物件太多則移除舊的
-                    if (this.objects.length > 200) {
-                        const removed = this.objects.shift();
-                        removed.el.remove();
-                    }
+                    obj.isStacked = true;
+                    // 為下一層物件提供支撐
+                    this.objects.forEach(other => {
+                        if (other !== obj && !other.isStacked && Math.abs(other.x - obj.x) < 60) {
+                            other.stackedHeight = (other.stackedHeight || 0) + 20;
+                        }
+                    });
                 }
             }
 

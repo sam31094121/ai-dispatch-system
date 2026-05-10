@@ -466,3 +466,89 @@ strong, .stat-value, .a1-hero-score-value {
     border: 1px solid #a93535 !important;
     color: #f3c14b !important;
 }
+/* --- Project Apex: 終極科技感優化 (Bio-Scan & Vault) --- */
+.bio-scan-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 242, 255, 0.05);
+    z-index: 10000;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(2px);
+    animation: bio-fade-in 0.3s ease-out;
+}
+
+@keyframes bio-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.bio-scan-overlay .scan-line {
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(to right, transparent, #00f2ff, transparent);
+    box-shadow: 0 0 20px #00f2ff;
+    top: 0;
+    animation: scan-move 2s linear infinite;
+}
+
+@keyframes scan-move {
+    0% { top: 0; }
+    100% { top: 100%; }
+}
+
+.bio-scan-overlay .scan-grid {
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(rgba(0, 242, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 242, 255, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    opacity: 0.3;
+}
+
+/* 戰情室背景深度優化 */
+.command-center::before {
+    content: "";
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 150px;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    z-index: 4;
+    pointer-events: none;
+}
+
+/* 鑽石與金磚的發光濾鏡 */
+.award-3d-asset {
+    filter: drop-shadow(0 0 15px rgba(243, 193, 75, 0.4));
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.rank-1 .award-3d-asset {
+    filter: drop-shadow(0 0 25px rgba(0, 242, 255, 0.6));
+}
+
+.btn-biometric {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-biometric .bio-scan-line {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: btn-scan 3s infinite;
+}
+
+@keyframes btn-scan {
+    0% { left: -100%; }
+    30%, 100% { left: 100%; }
+}

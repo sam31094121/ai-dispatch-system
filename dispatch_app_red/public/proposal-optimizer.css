@@ -1557,6 +1557,139 @@ body.oil-announcement {
   background: radial-gradient(circle at 50% 80%, rgba(255, 255, 255, 0.05), transparent 60%);
 }
 
+/* --- 前五名真實獎項空間展示 --- */
+.proposal-award-list {
+  perspective: 1800px;
+  transform-style: preserve-3d;
+}
+
+.proposal-award-card {
+  isolation: isolate;
+  transform-style: preserve-3d;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.012)),
+    radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 22%), rgba(255, 255, 255, 0.18), transparent 24%),
+    rgba(3, 8, 18, 0.9) !important;
+}
+
+.proposal-award-card::after {
+  content: "";
+  position: absolute;
+  left: 9%;
+  right: 9%;
+  bottom: 72px;
+  height: 64px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0, 229, 255, 0.22), rgba(0, 229, 255, 0.04) 46%, transparent 72%);
+  transform: rotateX(68deg) translateZ(-28px);
+  filter: blur(1px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.proposal-award-visual {
+  height: 112px;
+  overflow: hidden;
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01)),
+    radial-gradient(ellipse at 50% 82%, rgba(0, 0, 0, 0.52), transparent 58%);
+}
+
+.proposal-award-visual::before {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: 10px;
+  height: 20px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.62), transparent 70%);
+  filter: blur(8px);
+  transform: translateZ(-18px);
+  z-index: 1;
+}
+
+.award-3d-asset {
+  position: relative;
+  z-index: 2;
+  max-width: 112%;
+  max-height: 118%;
+  object-fit: contain;
+  filter:
+    drop-shadow(0 26px 24px rgba(0, 0, 0, 0.68))
+    drop-shadow(0 0 14px rgba(255, 255, 255, 0.12));
+}
+
+.rank-1 .award-3d-asset {
+  max-width: 108%;
+  max-height: 130%;
+  filter:
+    drop-shadow(0 28px 28px rgba(0, 0, 0, 0.72))
+    drop-shadow(0 0 22px rgba(165, 244, 255, 0.5));
+}
+
+.rank-2 .award-3d-asset {
+  max-width: 118%;
+  max-height: 124%;
+  filter:
+    drop-shadow(0 26px 26px rgba(0, 0, 0, 0.72))
+    drop-shadow(0 0 16px rgba(243, 193, 75, 0.28));
+}
+
+.rank-3 .award-3d-asset {
+  max-width: 142%;
+  max-height: 96%;
+  transform-origin: center;
+}
+
+.rank-4 .award-3d-asset,
+.rank-5 .award-3d-asset {
+  max-width: none;
+  width: 168%;
+  height: 132px;
+  object-fit: cover;
+}
+
+.rank-4 .award-prize-4 {
+  object-position: 88% 52%;
+}
+
+.rank-5 .award-prize-5 {
+  object-position: 12% 54%;
+}
+
+.rank-1 {
+  border-color: rgba(165, 244, 255, 0.48) !important;
+}
+
+.rank-2 {
+  border-color: rgba(255, 210, 92, 0.45) !important;
+}
+
+.rank-3 {
+  border-color: rgba(145, 235, 190, 0.32) !important;
+}
+
+.rank-4 {
+  border-color: rgba(194, 132, 252, 0.34) !important;
+}
+
+.rank-5 {
+  border-color: rgba(96, 165, 250, 0.34) !important;
+}
+
+.rank-4 .proposal-award-visual {
+  background:
+    radial-gradient(ellipse at 70% 72%, rgba(168, 85, 247, 0.2), transparent 48%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+}
+
+.rank-5 .proposal-award-visual {
+  background:
+    radial-gradient(ellipse at 28% 72%, rgba(96, 165, 250, 0.22), transparent 48%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+}
+
 .live-dispatch-feed {
   position: absolute;
   bottom: 80px;
@@ -1614,4 +1747,154 @@ body.oil-announcement {
 @keyframes execute-pulse {
   0% { transform: scale(0.8); opacity: 1; }
   100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* Real asset spatial stage: diamond, Swiss gold, USD, TWD 2000, TWD 1000 */
+.proposal-award-stage {
+  isolation: isolate;
+}
+
+.proposal-award-list::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  width: min(920px, 88vw);
+  height: 120px;
+  transform: translateX(-50%) rotateX(72deg);
+  background:
+    radial-gradient(ellipse at center, rgba(0, 229, 255, 0.20), transparent 64%),
+    linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+  filter: blur(1px);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.proposal-award-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  transform-origin: center bottom;
+}
+
+.proposal-award-card.rank-1 {
+  background:
+    radial-gradient(circle at 35% 14%, rgba(210, 250, 255, 0.40), transparent 34%),
+    linear-gradient(145deg, rgba(18, 55, 72, 0.92), rgba(4, 9, 20, 0.98)) !important;
+  border-color: rgba(175, 245, 255, 0.42) !important;
+}
+
+.proposal-award-card.rank-2 {
+  background:
+    radial-gradient(circle at 30% 12%, rgba(255, 235, 164, 0.38), transparent 36%),
+    linear-gradient(145deg, rgba(83, 55, 11, 0.88), rgba(7, 8, 16, 0.98)) !important;
+  border-color: rgba(255, 215, 114, 0.44) !important;
+}
+
+.proposal-award-card.rank-3 {
+  background:
+    radial-gradient(circle at 68% 12%, rgba(166, 255, 192, 0.24), transparent 34%),
+    linear-gradient(145deg, rgba(13, 48, 30, 0.84), rgba(7, 12, 18, 0.98)) !important;
+  border-color: rgba(124, 221, 153, 0.34) !important;
+}
+
+.proposal-award-card.rank-4,
+.proposal-award-card.rank-5 {
+  background:
+    radial-gradient(circle at 42% 10%, rgba(186, 205, 255, 0.26), transparent 34%),
+    linear-gradient(145deg, rgba(34, 36, 80, 0.84), rgba(7, 9, 20, 0.98)) !important;
+}
+
+.proposal-award-visual {
+  height: 112px;
+  margin-bottom: 14px;
+}
+
+.proposal-award-visual::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  width: 78%;
+  height: 22px;
+  transform: translateX(-50%) rotateX(68deg);
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.62), transparent 70%);
+  filter: blur(4px);
+  z-index: 0;
+}
+
+.award-3d-asset {
+  position: relative;
+  z-index: 2;
+  max-width: 100%;
+  max-height: 108px;
+  object-fit: contain;
+  transform-style: preserve-3d;
+}
+
+.award-prize-1 {
+  max-height: 128px;
+  filter:
+    drop-shadow(0 22px 26px rgba(0, 0, 0, 0.72))
+    drop-shadow(0 0 34px rgba(118, 234, 255, 0.58));
+}
+
+.award-prize-2 {
+  filter:
+    drop-shadow(0 22px 24px rgba(0, 0, 0, 0.76))
+    drop-shadow(0 0 28px rgba(255, 203, 92, 0.42));
+}
+
+.award-prize-3 {
+  max-height: 82px;
+  transform: perspective(700px) rotateX(12deg) rotateZ(-2deg);
+}
+
+.award-prize-4 {
+  object-position: right center;
+  filter: saturate(1.08) contrast(1.04) drop-shadow(0 18px 24px rgba(0, 0, 0, 0.72));
+}
+
+.award-prize-5 {
+  object-position: left center;
+  filter: saturate(1.05) contrast(1.03) drop-shadow(0 18px 24px rgba(0, 0, 0, 0.72));
+}
+
+.proposal-award-code {
+  min-height: 24px;
+}
+
+.proposal-award-card span {
+  min-height: 18px;
+}
+
+@media (max-width: 980px) {
+  .proposal-award-list {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    height: auto;
+    margin-top: 18px;
+    perspective: 1200px;
+  }
+
+  .proposal-award-card,
+  .proposal-award-card.rank-1,
+  .proposal-award-card.rank-2,
+  .proposal-award-card.rank-3,
+  .proposal-award-card.rank-4,
+  .proposal-award-card.rank-5 {
+    position: relative !important;
+    width: auto !important;
+    height: 300px !important;
+    transform: none !important;
+    opacity: 1 !important;
+    scale: 1;
+  }
+}
+
+@media (max-width: 620px) {
+  .proposal-award-list {
+    grid-template-columns: 1fr;
+  }
 }
