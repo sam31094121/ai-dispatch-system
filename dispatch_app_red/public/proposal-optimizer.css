@@ -271,6 +271,33 @@ body.oil-announcement {
   opacity: 0.6;
 }
 
+/* 正式鎖定面板強化 */
+.official-lock-panel {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(13, 2, 2, 0.95), #000) !important;
+  border: 1px solid rgba(255, 48, 48, 0.3) !important;
+  box-shadow: 0 0 40px rgba(255, 0, 0, 0.15) !important;
+}
+
+.official-lock-panel::before {
+  content: "OFFICIAL PROTOCOL LOCKED";
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-family: "Orbitron", sans-serif;
+  font-size: 10px;
+  color: rgba(255, 48, 48, 0.4);
+  letter-spacing: 2px;
+}
+
+.official-lock-panel .badge-pass {
+  background: linear-gradient(135deg, #ff4141, #9d1f1f);
+  color: #fff;
+  border-color: rgba(255, 100, 100, 0.5);
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+}
+
 @media (max-width: 1024px) {
   .proposal-step-list { grid-template-columns: repeat(3, 1fr); }
 }
