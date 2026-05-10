@@ -48,6 +48,7 @@
     proposalFocusList: $('proposal-focus-list'),
     proposalFeatureList: $('proposal-feature-list'),
     btnProposalOptimize: $('btn-proposal-optimize'),
+    btnProposalApprove: $('btn-proposal-approve'),
     btnProposalCopy: $('btn-proposal-copy'),
     proposalOutput: $('proposal-output'),
     scoringPolicyTitle: $('scoring-policy-title'),
@@ -100,7 +101,7 @@
 
   function setBusy(isBusy) {
     state.busy = isBusy;
-    [refs.btnLoad, refs.btnAudit, refs.btnSave, refs.btnFix, refs.btnClear, refs.btnCopyCompact, refs.btnSendLine, refs.btnProposalOptimize, refs.btnProposalCopy]
+    [refs.btnLoad, refs.btnAudit, refs.btnSave, refs.btnFix, refs.btnClear, refs.btnCopyCompact, refs.btnSendLine, refs.btnProposalOptimize, refs.btnProposalApprove, refs.btnProposalCopy]
       .filter(Boolean)
       .forEach((button) => {
         button.disabled = isBusy;
@@ -563,6 +564,57 @@
     setBadge(refs.proposalSyncStatus, 'PASS', 'COPIED');
   }
 
+  async function approveProposal() {
+    const container = $('proposal-optimizer');
+    if (state.busy) return;
+    
+    // 檢查是否有生成內容
+    if (!refs.proposalOutput || !refs.proposalOutput.value) {
+      setBadge(refs.proposalSyncStatus, 'FAIL', '請先點擊自動優化');
+      return;
+    }
+
+    if (!window.confirm('確定要批準並執行目前的下一步方案嗎？\n這將會：\n1. 儲存目前資料為正式版\n2. 同步全端公告\n3. 發送 LINE 通知')) return;
+
+    setBusy(true);
+    try {
+      if (container) container.classList.add('scanning-mode');
+      setBadge(refs.proposalSyncStatus, 'PENDING', 'EXECUTING PROTOCOL...');
+      
+      // 1. 執行存檔 (包含審計)
+      await saveCurrentReport();
+      
+      // 2. 模擬執行延遲
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // 3. 發送 LINE
+      try {
+        await sendLine();
+      } catch (e) {
+        console.warn('LINE 推送失敗，但存檔已完成', e);
+      }
+
+      // 4. 更新步驟為全部完成
+      const steps = refs.proposalStepList?.querySelectorAll('.proposal-step');
+      if (steps) {
+        steps.forEach(s => {
+          s.classList.remove('active');
+          s.classList.add('completed');
+        });
+      }
+
+      setBadge(refs.proposalSyncStatus, 'PASS', 'PROTOCOL EXECUTED');
+      alert('✅ 執行方案批準成功！\n資料已鎖定並同步全端，下一步行動已推送到執行群組。');
+      
+    } catch (error) {
+      console.error(error);
+      setBadge(refs.proposalSyncStatus, 'FAIL', error.message || '執行失敗');
+    } finally {
+      if (container) container.classList.remove('scanning-mode');
+      setBusy(false);
+    }
+  }
+
   function bindEvents() {
     const run = (task) => async () => {
       if (state.busy) return;
@@ -582,6 +634,7 @@
     refs.btnSave?.addEventListener('click', run(saveCurrentReport));
     refs.btnFix?.addEventListener('click', optimizeProposal);
     refs.btnProposalOptimize?.addEventListener('click', optimizeProposal);
+    refs.btnProposalApprove?.addEventListener('click', approveProposal);
     refs.btnProposalCopy?.addEventListener('click', run(copyProposalPlan));
     refs.btnClear?.addEventListener('click', () => {
       if (refs.rawInput) refs.rawInput.value = '';

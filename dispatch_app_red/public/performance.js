@@ -129,10 +129,9 @@
     const top5 = data.dispatchOrder.slice(0, 5);
     
     grid.replaceChildren(...top5.map((row) => {
-      const isTopTwo = row.rank <= 2;
-      const rankClass = isTopTwo ? `hero-card-${row.rank}` : `spotlight-card rank-${row.rank}`;
-      const vfxCanvas = isTopTwo ? `<div class="money-canvas-container"><canvas id="hero-${row.rank}-canvas"></canvas></div>` : '';
-      const iconClass = row.rank === 2 ? 'gold-icon' : '';
+      const rankClass = `spotlight-card rank-${row.rank} hero-card-${row.rank}`;
+      const vfxCanvas = `<div class="money-canvas-container"><canvas id="hero-${row.rank}-canvas"></canvas></div>`;
+      const iconClass = `rank-icon rank-icon-${row.rank}`;
 
       const card = el('article', `spotlight-item ${rankClass}`, `
         ${vfxCanvas}
@@ -144,6 +143,7 @@
             <div><span>實收</span><strong>${money(row.actualRevenue)}</strong></div>
             <div><span>續單</span><strong>${money(row.renewalRevenue)}</strong></div>
           </div>
+          <div class="elite-glory-seal">ELITE HONOR</div>
         </div>
       `);
       return card;

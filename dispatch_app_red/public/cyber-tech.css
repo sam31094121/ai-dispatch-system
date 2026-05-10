@@ -124,22 +124,75 @@ strong, .stat-value, .a1-hero-score-value {
     text-shadow: 0 0 10px rgba(243, 193, 75, 0.5) !important;
 }
 
-/* --- 前兩名 3D 錢雨框架 --- */
+/* --- 正式前五名：科技獎項視覺強化 --- */
 .hero-card-1 {
-    border: 3px solid var(--oil-gold-bright) !important;
-    background: linear-gradient(135deg, rgba(80, 50, 20, 0.95), rgba(40, 25, 10, 0.95)) !important;
-    box-shadow: 0 0 50px rgba(243, 193, 75, 0.3) !important;
+    border: 3px solid #ffcc33 !important;
+    background: linear-gradient(135deg, rgba(120, 90, 40, 0.95), rgba(40, 25, 10, 0.98)) !important;
+    box-shadow: 0 0 60px rgba(255, 204, 51, 0.4), inset 0 0 30px rgba(255, 204, 51, 0.1) !important;
+}
+.hero-card-2 {
+    border: 3px solid #e0e0e0 !important;
+    background: linear-gradient(135deg, rgba(80, 85, 90, 0.95), rgba(20, 20, 25, 0.98)) !important;
+    box-shadow: 0 0 50px rgba(224, 224, 224, 0.3) !important;
+}
+.hero-card-3 {
+    border: 2px solid #cd7f32 !important;
+    background: linear-gradient(135deg, rgba(100, 60, 30, 0.95), rgba(30, 15, 5, 0.98)) !important;
+    box-shadow: 0 0 40px rgba(205, 127, 50, 0.25) !important;
+}
+.hero-card-4, .hero-card-5 {
+    border: 1px solid rgba(0, 229, 255, 0.4) !important;
+    background: linear-gradient(135deg, rgba(10, 40, 60, 0.95), rgba(5, 10, 20, 0.98)) !important;
+    box-shadow: 0 0 30px rgba(0, 229, 255, 0.15) !important;
 }
 
-.hero-card-2 {
-    border: 3px solid #d7b983 !important;
-    background: linear-gradient(135deg, rgba(60, 40, 20, 0.95), rgba(30, 20, 10, 0.95)) !important;
-    box-shadow: 0 0 40px rgba(215, 185, 131, 0.2) !important;
+.spotlight-item {
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+    cursor: pointer;
+}
+
+.spotlight-item:hover {
+    transform: translateY(-10px) scale(1.02) !important;
+    z-index: 10;
+}
+
+.elite-glory-seal {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 4px 8px;
+    transform: rotate(-15deg);
+    pointer-events: none;
+    text-transform: uppercase;
+}
+
+.hero-card-1 .elite-glory-seal { color: #ffcc33; border-color: #ffcc33; animation: seal-pulse 2s infinite; }
+.hero-card-2 .elite-glory-seal { color: #e0e0e0; border-color: #e0e0e0; }
+
+@keyframes seal-pulse {
+    0%, 100% { opacity: 0.4; transform: rotate(-15deg) scale(1); }
+    50% { opacity: 1; transform: rotate(-15deg) scale(1.1); filter: drop-shadow(0 0 5px #ffcc33); }
 }
 
 /* 畫布與內容層級 */
-.money-canvas-container { opacity: 0.8; }
-.hero-content-wrap { text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+.money-canvas-container { 
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.7; 
+    z-index: 0;
+}
+.hero-content-wrap { 
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.9); 
+}
 
 /* 下方滾動名次條 */
 .ranking-card {

@@ -112,8 +112,20 @@ class MoneyRain {
     }
 }
 
-// 自動掛載到指定容器 (假設 A1 區域有對應的 Canvas)
+// 自動掛載到指定容器 (為前五名分別初始化)
 window.initMoneyEffects = function() {
-    new MoneyRain('hero-1-canvas', 'dollar');
-    new MoneyRain('hero-2-canvas', 'coin');
+    // 清除舊的粒子動畫 (若有需要)
+    const ranks = [
+        { id: 'hero-1-canvas', type: 'dollar' },
+        { id: 'hero-2-canvas', type: 'coin' },
+        { id: 'hero-3-canvas', type: 'silver' },
+        { id: 'hero-4-canvas', type: 'dollar' },
+        { id: 'hero-5-canvas', type: 'coin' }
+    ];
+
+    ranks.forEach(rank => {
+        if (document.getElementById(rank.id)) {
+            new MoneyRain(rank.id, rank.type);
+        }
+    });
 };
