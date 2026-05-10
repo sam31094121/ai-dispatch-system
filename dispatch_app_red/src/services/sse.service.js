@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const logger = require('../utils/logger');
 
 const HEARTBEAT_INTERVAL_MS = 25000;
 const FILE_EVENT_DEBOUNCE_MS = 250;
@@ -16,7 +17,8 @@ function writeEvent(client, data) {
   try {
     client.res.write(`data: ${JSON.stringify(data)}\n\n`);
     return true;
-  } catch {
+  } catch (err) {
+    logger.error('Failed to write SSE event', { clientId: client.id, error: err });
     return false;
   }
 }
@@ -24,19 +26,25 @@ function writeEvent(client, data) {
 function ensureHeartbeat() {
   if (heartbeatTimer || clients.length === 0) return;
 
-  heartbeatTimer = setInterval(() => {
-    clients = clients.filter((client) => writeEvent(client, {
-      type: 'heartbeat',
-      timestamp: new Date().toISOString()
-    }));
+  try {
+    heartbeatTimer = setInterval(() => {
+      clients = clients.filter((client) => writeEvent(client, {
+        type: 'heartbeat',
+        timestamp: new Date().toISOString()
+      }));
 
-    if (clients.length === 0) {
-      clearInterval(heartbeatTimer);
-      heartbeatTimer = null;
-    }
-  }, HEARTBEAT_INTERVAL_MS);
+      if (clients.length === 0) {
+        clearInterval(heartbeatTimer);
+        heartbeatTimer = null;
+        logger.info('All SSE clients disconnected, heartbeat stopped');
+      }
+    }, HEARTBEAT_INTERVAL_MS);
 
-  heartbeatTimer.unref?.();
+    heartbeatTimer.unref?.();
+    logger.info('Heartbeat timer started');
+  } catch (err) {
+    logger.error('Failed to start heartbeat timer', { error: err });
+  }
 }
 
 function addClient(res) {
@@ -57,6 +65,7 @@ function addClient(res) {
     clientId,
     timestamp: new Date().toISOString()
   });
+  logger.info('SSE client connected', { clientId });
   ensureHeartbeat();
 
   return clientId;
@@ -64,10 +73,12 @@ function addClient(res) {
 
 function removeClient(clientId) {
   clients = clients.filter((client) => client.id !== clientId);
+  logger.info('SSE client disconnected', { clientId });
 
   if (clients.length === 0 && heartbeatTimer) {
     clearInterval(heartbeatTimer);
     heartbeatTimer = null;
+    logger.info('All SSE clients disconnected, heartbeat cleared');
   }
 }
 
@@ -114,7 +125,7 @@ function handleFileChange(filePath) {
   if (nextMtimeMs <= lastKnownMtimeMs) return;
 
   lastKnownMtimeMs = nextMtimeMs;
-  console.log('[SSE] latest.json updated, broadcasting sync event.');
+  logger.info('latest.json updated, broadcasting sync event.', { filePath });
   notifyDataUpdated({ source: 'file-watch' });
 }
 
