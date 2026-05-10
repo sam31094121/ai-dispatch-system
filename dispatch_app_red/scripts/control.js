@@ -108,10 +108,13 @@ async function performSmartFix() {
 
 async function connect() {
   log('======================================================');
-  log('   兆櫃 AI 派單系統 - 全線串連優化升級 (Master v2.5)');
+  log('   兆櫃 AI 派單系統 - 全線串連優化升級 (Master v2.6)');
   log('======================================================');
 
   try {
+    // 0. 執行總決算保護企劃 (確保 5/9 全部都不動)
+    await runCommand('node', ['scripts/enforceSettlementPlan.js'], '保護企劃');
+
     // 1. 自動版本升級
     await runCommand('node', ['src/autoUpgrade.js'], '系統版本更新');
 

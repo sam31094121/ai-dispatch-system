@@ -1,4 +1,5 @@
 const { AUDIT_METRICS, GROUP_KEYS, GROUP_RANK_POLICY, SUMMARY_METRICS } = require('../constants/dispatchRules');
+const { isDateLocked } = require('../constants/systemLocks');
 const {
   buildDefaultFinalConfirmations,
   buildExpectedGroups,
@@ -190,6 +191,16 @@ function buildFallbackAdvice(row, totalCount) {
 }
 
 function repairReport(report) {
+  // --- 硬鎖定檢查：全部都不動 (禁止修改 5/9 等關鍵結算) ---
+  const settlementDate = report.settlementDate || '';
+  if (isDateLocked(settlementDate)) {
+    return {
+      fixes: [{ field: 'system', action: 'HARD_LOCK', detail: `偵測到關鍵結算日 ${settlementDate}，系統已啟動硬鎖定保護，禁止任何變動。` }],
+      report: report,
+      validation: { status: 'PASS', errors: [], warnings: [] }
+    };
+  }
+
   const repairedReport = clone(report);
   const fixes = [];
   const addFix = (field, action, detail) => appendFix(fixes, field, action, detail);
