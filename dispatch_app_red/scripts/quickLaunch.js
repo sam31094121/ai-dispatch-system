@@ -64,7 +64,20 @@ function openBrowser(page = 'mobile.html') {
 async function main() {
     const page = process.argv[2] || 'mobile.html';
     
-    // 1. 檢查是否已經運行
+    // 1. 執行輕量級資料檢查 (立此類推)
+    log('正在執行啟動前資料校準...', 'INFO');
+    try {
+        const repairScript = path.join(PROJECT_ROOT, 'scripts', 'runSmartFix.js');
+        if (fs.existsSync(repairScript)) {
+            // 同步執行以確保資料正確後才開啟網頁
+            const { execSync } = require('child_process');
+            execSync(`node "${repairScript}"`, { cwd: PROJECT_ROOT });
+        }
+    } catch (e) {
+        log('資料校準跳過', 'INFO');
+    }
+
+    // 2. 檢查是否已經運行
     if (!(await isServerRunning())) {
         const ok = await startServer();
         if (!ok) process.exit(1);
