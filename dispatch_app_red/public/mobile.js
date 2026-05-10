@@ -422,10 +422,22 @@ function renderRankings(rankings) {
   refs.rankingList.innerHTML = rankings.map((row) => {
     const pct = Math.min(100, Math.max(0, row.score / MAX_SCORE * 100));
     const safeId = encodeURIComponent(row.name);
+    const rankClass = row.rank <= 3 ? ` rank-${row.rank}` : '';
+    const rankLabel = row.rank === 1 ? '🥇' : row.rank === 2 ? '🥈' : row.rank === 3 ? '🥉' : `#${row.rank}`;
+    const winnerBadge = row.rank === 1
+      ? '<div class="winner-badge gold">👑 冠軍</div>'
+      : row.rank === 2
+      ? '<div class="winner-badge silver">亞軍</div>'
+      : row.rank === 3
+      ? '<div class="winner-badge bronze">季軍</div>'
+      : '';
+    const shineLayer = row.rank <= 3 ? '<div class="rank-shine" aria-hidden="true"></div>' : '';
     return `
-      <article class="ranking-card" id="person-${safeId}">
+      <article class="ranking-card${rankClass}" id="person-${safeId}">
+        ${shineLayer}
+        ${winnerBadge}
         <div class="ranking-top">
-          <span class="rank-number">#${row.rank}</span>
+          <span class="rank-number">${rankLabel}</span>
           <div class="person-name">
             <strong>${escapeHtml(row.name)}</strong>
             <small>${row.prevRank ? `上輪 #${row.prevRank}，${movementLabel(row.movement)}` : '本輪正式排序'}</small>
@@ -657,29 +669,7 @@ function bindEvents() {
   });
 }
 
-/* ─────────────────────────────────────────────────────────────────
-   瑞士楓葉金幣 ＋ 美金鈔票｜積沙成塔物理引擎
-   金幣：多層鑄幣紋 + 楓葉浮雕貝塞爾曲線 + 光譜鏡面高光
-   美金：格紋紙紋 + 肖像橢圓 + 安全線 + 面額文字
-   ───────────────────────────────────────────────────────────────── */
-
-// roundRect polyfill for older WebViews (Chrome < 99, Safari < 15.4)
-if (typeof CanvasRenderingContext2D !== 'undefined' && !CanvasRenderingContext2D.prototype.roundRect) {
-  CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
-    const rad = Array.isArray(r) ? r[0] : (r || 0);
-    this.beginPath();
-    this.moveTo(x + rad, y);
-    this.lineTo(x + w - rad, y);
-    this.quadraticCurveTo(x + w, y, x + w, y + rad);
-    this.lineTo(x + w, y + h - rad);
-    this.quadraticCurveTo(x + w, y + h, x + w - rad, y + h);
-    this.lineTo(x + rad, y + h);
-    this.quadraticCurveTo(x, y + h, x, y + h - rad);
-    this.lineTo(x, y + rad);
-    this.quadraticCurveTo(x, y, x + rad, y);
-    this.closePath();
-  };
-}
+// 3D 物理引擎已移至 vfx-engine.js
 
 function _drawMapleLeafPath(g) {
   g.beginPath();
@@ -732,14 +722,43 @@ class MapleCoinRain {
   _floorAt(x, r) {
     let floor = this.H;
     for (const p of this.pile) {
+      if (p.z > 0.5) continue; // 只有在背景的硬幣會堆積
       const dx = p.x - x;
-      const gap = (p.r + r) * 0.92; // 稍微重疊增加立體感
+      const gap = (p.r + r) * 0.92;
       if (Math.abs(dx) < gap) {
         const top = p.y - Math.sqrt(Math.max(0, gap * gap - dx * dx));
         if (top < floor) floor = top;
       }
     }
     return floor;
+  }
+
+  explode() {
+    const count = 40;
+    const rank = parseInt(this.cv.dataset.rank || '1');
+    for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 2 + Math.random() * 8;
+        const type = Math.random() < 0.5 ? 'bill' : 'coin';
+        this.coins.push({
+            type,
+            x: this.W / 2,
+            y: this.H / 2,
+            z: 0.1, // 深度，0 到 2
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            vz: 0.02 + Math.random() * 0.05,
+            r: 8 + Math.random() * 8,
+            bw: 30, bh: 14,
+            tilt: Math.random() * Math.PI,
+            tiltSpd: (Math.random() - 0.5) * 0.2,
+            done: false,
+            isExplosion: true
+        });
+    }
+    // 觸發畫面震動
+    this.cv.classList.add('shake');
+    setTimeout(() => this.cv.classList.remove('shake'), 500);
   }
 
   _spawn() {
@@ -815,6 +834,17 @@ class MapleCoinRain {
 
     for (const c of this.coins) {
       if (c.done) continue;
+
+      if (c.isExplosion) {
+          c.x += c.vx;
+          c.y += c.vy;
+          c.z += c.vz;
+          c.vx *= 0.96;
+          c.vy *= 0.96;
+          c.tilt += c.tiltSpd;
+          if (c.z > 2 || c.y > this.H + 100) c.done = true;
+          continue;
+      }
 
       if (c.type === 'bill') {
         c.vy = Math.min(c.vy + 0.22, 7);
@@ -1059,9 +1089,35 @@ class MapleCoinRain {
     ctx.restore();
   }
 
+  _drawGlitter(c, t) {
+    const ctx = this.cx;
+    const alpha = (Math.sin(t * 0.01 + c.x) + 1) * 0.5;
+    ctx.save();
+    ctx.translate(c.x, c.y);
+    ctx.rotate(t * 0.005);
+    ctx.fillStyle = c.color;
+    ctx.globalAlpha = alpha;
+    ctx.fillRect(-c.r, -c.r, c.r * 2, c.r * 2);
+    ctx.restore();
+  }
+
   _drawItem(c, t) {
+    const ctx = this.cx;
+    const z = c.z || 0;
+    const scale = 1 + z;
+    const blur = z > 1 ? (z - 1) * 4 : 0;
+
+    ctx.save();
+    if (blur > 0) ctx.filter = `blur(${blur}px)`;
+    ctx.translate(c.x, c.y);
+    ctx.scale(scale, scale);
+    ctx.translate(-c.x, -c.y);
+
     if (c.type === 'bill') this._drawBill(c, t);
+    else if (c.type === 'glitter') this._drawGlitter(c, t);
     else this._drawItemCoin(c, t);
+
+    ctx.restore();
   }
 
   _drawItemCoin(c, t) {
@@ -1117,6 +1173,7 @@ class MapleCoinRain {
 
   start() {
     this._resize();
+    this.explode();
     this._resume();
   }
 
@@ -1233,29 +1290,11 @@ function hideSplashScreen() {
 
 // ── 全線串連：SSE 即時推播 ──
 function initRealtimeSync() {
-  if (typeof (EventSource) !== "undefined") {
-    console.log('[SSE] 正在建立全線即時串連...');
-    const source = new EventSource('/api/updates/stream');
-
-    source.onmessage = function(event) {
-      const data = JSON.parse(event.data);
-      if (data.type === 'data_updated') {
-        console.log('[SSE] 收到即時更新指令，同步資料中...');
-        showToast('🔄 偵測到新派單，即時同步中...');
-        loadData();
-      }
-    };
-
-    source.onerror = function() {
-      console.warn('[SSE] 連線中斷，改採背景輪詢備援');
-      source.close();
-      // 備援：若 SSE 失敗，退回輪詢
-      setInterval(loadData, 300000);
-    };
-  } else {
-    // 瀏覽器不支援 SSE
-    setInterval(loadData, 300000);
-  }
+  const sync = new RealtimeSyncEngine('/api/updates/stream', (data) => {
+    showToast('🔄 偵測到新派單，即時同步中...');
+    loadData();
+  });
+  sync.connect();
 }
 
 bindEvents();
