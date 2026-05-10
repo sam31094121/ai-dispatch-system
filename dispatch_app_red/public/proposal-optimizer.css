@@ -1,12 +1,14 @@
 /* Proposal optimizer command layer */
 body.oil-announcement {
-  --proposal-bg: rgba(3, 10, 24, 0.9);
-  --proposal-panel: rgba(7, 24, 48, 0.85);
-  --proposal-line: rgba(0, 229, 255, 0.5);
+  --proposal-bg: rgba(2, 6, 18, 0.95);
+  --proposal-panel: rgba(8, 20, 42, 0.88);
+  --proposal-line: rgba(0, 229, 255, 0.6);
   --proposal-accent: #10f5b4;
+  --proposal-error: #ff4d4d;
   --proposal-text: #eefcff;
   --proposal-muted: #8abbd1;
-  --cyber-glow: 0 0 15px rgba(0, 229, 255, 0.4);
+  --cyber-glow: 0 0 20px rgba(0, 229, 255, 0.4);
+  --matrix-green: #00ff41;
 }
 
 .proposal-optimizer {
@@ -399,6 +401,152 @@ body.oil-announcement {
   border-color: rgba(0, 229, 255, 0.8);
   box-shadow: inset 0 0 40px rgba(0, 229, 255, 0.2), 0 0 20px rgba(0, 229, 255, 0.2);
   outline: none;
+}
+
+/* --- 進階科技感強化 --- */
+
+.proposal-optimizer::before {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(0, 229, 255, 0.02) 40%,
+    rgba(0, 229, 255, 0.4) 50%,
+    rgba(0, 229, 255, 0.02) 60%,
+    transparent
+  );
+  filter: blur(2px);
+}
+
+.proposal-status-console {
+  margin-top: 15px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 6px;
+  border: 1px solid rgba(0, 229, 255, 0.1);
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  font-size: 11px;
+  color: var(--proposal-accent);
+  max-height: 80px;
+  overflow-y: auto;
+  line-height: 1.4;
+}
+
+.proposal-status-console div::before {
+  content: "> ";
+  opacity: 0.6;
+}
+
+.proposal-progress-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+  margin: 15px 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.proposal-progress-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, transparent, var(--proposal-accent));
+  box-shadow: 0 0 10px var(--proposal-accent);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.proposal-auto-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(16, 245, 180, 0.1);
+  border: 1px solid var(--proposal-accent);
+  border-radius: 20px;
+  font-family: "Orbitron", sans-serif;
+  font-size: 10px;
+  font-weight: 900;
+  color: var(--proposal-accent);
+  margin-left: 10px;
+}
+
+.proposal-auto-badge .dot {
+  width: 6px;
+  height: 6px;
+  background: var(--proposal-accent);
+  border-radius: 50%;
+  animation: pulse-dot 1s infinite;
+}
+
+@keyframes pulse-dot {
+  0% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(16, 245, 180, 0.7); }
+  70% { transform: scale(1.2); opacity: 0.8; box-shadow: 0 0 0 6px rgba(16, 245, 180, 0); }
+  100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(16, 245, 180, 0); }
+}
+
+.proposal-command-card .card-icon {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  font-size: 24px;
+  opacity: 0.15;
+  transition: all 0.3s ease;
+}
+
+.proposal-command-card:hover .card-icon {
+  opacity: 0.4;
+  transform: scale(1.2) rotate(10deg);
+}
+
+.btn-glitch {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-glitch::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: 0.5s;
+}
+
+.btn-glitch:hover::after {
+  left: 100%;
+}
+
+.proposal-step.active::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40%;
+  height: 2px;
+  background: var(--proposal-accent);
+  box-shadow: 0 0 10px var(--proposal-accent);
+}
+
+/* 浮動資料點特效 */
+.data-particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: var(--proposal-accent);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 1;
 }
 
 /* 掃描中特效 */

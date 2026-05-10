@@ -158,19 +158,29 @@
           <h2>企劃案自動優化與下一步推進</h2>
         </div>
         <span id="proposal-sync-status" class="badge badge-pass">AUTO NEXT</span>
+        <div class="proposal-auto-badge">
+          <span class="dot"></span>
+          AI EVOLUTION ACTIVE
+        </div>
+      </div>
+      <div class="proposal-progress-track">
+        <div id="proposal-progress-bar" class="proposal-progress-bar"></div>
       </div>
       <div class="proposal-command-grid">
         <article class="proposal-command-card primary">
+          <div class="card-icon">🎯</div>
           <span>目前主軸</span>
           <strong id="proposal-main-goal">自動讀取正式資料中</strong>
           <p id="proposal-main-detail">系統會依照最新快照整理可執行企劃方向。</p>
         </article>
         <article class="proposal-command-card">
+          <div class="card-icon">🚀</div>
           <span>下一步</span>
           <strong id="proposal-next-step">等待同步</strong>
           <p id="proposal-next-detail">完成同步後會自動產生下一個優化動作。</p>
         </article>
         <article class="proposal-command-card">
+          <div class="card-icon">💎</div>
           <span>提升功能</span>
           <strong id="proposal-feature-boost">AI 功能盤點</strong>
           <p id="proposal-feature-detail">彙整資料、畫面、行動與追蹤四個層級。</p>
@@ -195,9 +205,12 @@
         </div>
       </div>
       <div class="proposal-actions">
-        <button id="btn-proposal-optimize" class="btn btn-primary" type="button">自動優化企劃案</button>
-        <button id="btn-proposal-approve" class="btn btn-primary" type="button" style="background: linear-gradient(135deg, #10f5b4, #00c300); border-color: #00ff00;">批準並執行方案</button>
-        <button id="btn-proposal-copy" class="btn btn-secondary" type="button">複製下一步方案</button>
+        <button id="btn-proposal-optimize" class="btn btn-primary btn-glitch" type="button">自動優化企劃案</button>
+        <button id="btn-proposal-approve" class="btn btn-primary btn-glitch" type="button" style="background: linear-gradient(135deg, #10f5b4, #00c300); border-color: #00ff00;">批準並執行方案</button>
+        <button id="btn-proposal-copy" class="btn btn-secondary btn-glitch" type="button">複製下一步方案</button>
+      </div>
+      <div id="proposal-status-console" class="proposal-status-console">
+        <div>系統就緒，等待優化指令...</div>
       </div>
       <textarea id="proposal-output" class="proposal-output" readonly placeholder="AI 會依照目前正式快照與輸入內容產生企劃案優化版。"></textarea>
     </section>
