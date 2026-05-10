@@ -54,8 +54,24 @@
     btnProposalApprove: $('btn-proposal-approve'),
     btnProposalCopy: $('btn-proposal-copy'),
     proposalOutput: $('proposal-output'),
-    proposalProgressBar: $('proposal-progress-bar'),
-    proposalStatusConsole: $('proposal-status-console'),
+    statPerf: $('stat-perf'),
+    statRel: $('stat-rel'),
+    statEng: $('stat-eng'),
+    statAi: $('stat-ai'),
+    matrixRain: $('matrix-rain'),
+    neuralSvg: $('neural-svg'),
+    evoLevel: $('evo-level'),
+    aiCommanderStatus: $('ai-commander-status'),
+    aiCommanderText: $('ai-commander-text'),
+    proposalSimTimeline: $('proposal-sim-timeline'),
+    globalNodes: $('global-nodes'),
+    globalTicker: $('global-ticker'),
+    liveDispatchFeed: $('live-dispatch-feed'),
+    holographicDocPreview: $('holographic-doc-preview'),
+    holographicReport: $('holographic-report'),
+    reportSummary: $('report-summary'),
+    insightFlashZone: $('insight-flash-zone'),
+    waveVisualizer: document.querySelector('.proposal-wave-visualizer'),
     scoringPolicyTitle: $('scoring-policy-title'),
     scoringPolicyDate: $('scoring-policy-date'),
     scoringPolicyDescription: $('scoring-policy-description'),
@@ -129,6 +145,208 @@
     if (refs.proposalProgressBar) {
       refs.proposalProgressBar.style.width = `${percent}%`;
     }
+  }
+
+  function updateHudStats() {
+    const random = () => `${70 + Math.floor(Math.random() * 30)}%`;
+    if (refs.statPerf) refs.statPerf.style.width = random();
+    if (refs.statRel) refs.statRel.style.width = random();
+    if (refs.statEng) refs.statEng.style.width = random();
+    if (refs.statAi) refs.statAi.style.width = '99%';
+  }
+
+  function startMatrixRain() {
+    if (!refs.matrixRain) return;
+    const canvas = document.createElement('canvas');
+    refs.matrixRain.innerHTML = '';
+    refs.matrixRain.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+    
+    const resize = () => {
+        canvas.width = refs.matrixRain.offsetWidth;
+        canvas.height = refs.matrixRain.offsetHeight;
+    };
+    resize();
+    
+    const characters = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const fontSize = 10;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
+
+    const draw = () => {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#0F0';
+        ctx.font = fontSize + 'px monospace';
+        for (let i = 0; i < drops.length; i++) {
+            const text = characters.charAt(Math.floor(Math.random() * characters.length));
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i]++;
+        }
+    };
+    const interval = setInterval(draw, 33);
+    return () => clearInterval(interval);
+  }
+
+  function initNeuralMap() {
+    if (!refs.neuralSvg) return;
+    const svg = refs.neuralSvg;
+    svg.innerHTML = '';
+    
+    const nodes = [];
+    const layers = [3, 5, 4, 2];
+    const width = 400, height = 150;
+    
+    layers.forEach((count, lIdx) => {
+        const x = (width / (layers.length - 1)) * lIdx;
+        for (let i = 0; i < count; i++) {
+            const y = (height / (count + 1)) * (i + 1);
+            nodes.push({ x, y, layer: lIdx, id: `${lIdx}-${i}` });
+        }
+    });
+
+    nodes.forEach(n1 => {
+        nodes.filter(n2 => n2.layer === n1.layer + 1).forEach(n2 => {
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', n1.x); line.setAttribute('y1', n1.y);
+            line.setAttribute('x2', n2.x); line.setAttribute('y2', n2.y);
+            line.setAttribute('class', 'neural-link');
+            line.dataset.from = n1.id; line.dataset.to = n2.id;
+            svg.appendChild(line);
+        });
+    });
+
+    nodes.forEach(n => {
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', n.x); circle.setAttribute('cy', n.y);
+        circle.setAttribute('r', 4);
+        circle.setAttribute('class', 'neural-node');
+        circle.id = `node-${n.id}`;
+        svg.appendChild(circle);
+    });
+  }
+
+  function animateNeuralMap() {
+    const nodes = refs.neuralSvg.querySelectorAll('.neural-node');
+    const links = refs.neuralSvg.querySelectorAll('.neural-link');
+    
+    nodes.forEach(n => n.classList.remove('active'));
+    links.forEach(l => l.classList.remove('active'));
+
+    let currentLayer = 0;
+    const maxLayer = 3;
+
+    const nextStep = () => {
+        nodes.forEach(n => { if (n.id.startsWith(`node-${currentLayer}`)) n.classList.add('active'); });
+        links.forEach(l => { if (l.dataset.from.startsWith(`${currentLayer}`)) l.classList.add('active'); });
+        
+        if (currentLayer < maxLayer) {
+            currentLayer++;
+            setTimeout(nextStep, 300);
+        }
+    };
+    nextStep();
+  }
+
+  function triggerDashboardPulse() {
+    document.body.style.animation = 'none';
+    void document.body.offsetWidth;
+    document.body.style.animation = 'dashboard-pulse 1s cubic-bezier(0,0,0.2,1)';
+  }
+
+  function renderSimulation() {
+    if (!refs.proposalSimTimeline) return;
+    const now = new Date();
+    const timeline = [
+        { label: '啟動批準', hour: 0 },
+        { label: '全端同步', hour: 1 },
+        { label: '執行追蹤', hour: 4 },
+        { label: '效能復盤', hour: 8 },
+        { label: '二輪優化', hour: 12 },
+        { label: '日結存檔', hour: 24 }
+    ];
+
+    refs.proposalSimTimeline.replaceChildren(...timeline.map((item, idx) => {
+        const time = new Date(now.getTime() + item.hour * 60 * 60 * 1000);
+        const div = document.createElement('div');
+        div.className = `sim-item ${idx === 0 ? 'active' : ''}`;
+        div.innerHTML = `
+            <div class="sim-time">${time.getHours()}:00</div>
+            <div class="sim-dot"></div>
+            <div class="sim-label">${item.label}</div>
+        `;
+        return div;
+    }));
+  }
+
+  function addFeedItem(msg) {
+    if (!refs.liveDispatchFeed) return;
+    const div = document.createElement('div');
+    div.className = 'feed-item';
+    div.textContent = `> ${msg}`;
+    refs.liveDispatchFeed.appendChild(div);
+    if (refs.liveDispatchFeed.children.length > 5) {
+        refs.liveDispatchFeed.removeChild(refs.liveDispatchFeed.firstChild);
+    }
+  }
+
+  function triggerGlobalFlash() {
+    let flash = document.querySelector('.execution-flash');
+    if (!flash) {
+        flash = document.createElement('div');
+        flash.className = 'execution-flash';
+        document.body.appendChild(flash);
+    }
+    flash.style.animation = 'global-sync-flash 0.5s ease-out';
+    setTimeout(() => { flash.style.animation = ''; }, 500);
+  }
+
+  function updateTicker() {
+    if (!refs.globalTicker) return;
+    const events = [
+        'NODE 0xAF4 SECURED', 'UPLINK STABLE', 'ENCRYPTING PAYLOAD',
+        'SATELLITE SYNC: 100%', 'ASSET AUTHENTICATED', 'GLOBAL BROADCAST ACTIVE'
+    ];
+    setInterval(() => {
+        const ev = events[Math.floor(Math.random() * events.length)];
+        refs.globalTicker.textContent += ` | ${ev}...`;
+        if (refs.globalTicker.textContent.length > 500) {
+            refs.globalTicker.textContent = refs.globalTicker.textContent.slice(-200);
+        }
+    }, 2000);
+  }
+
+  function showHolographicReport(summary) {
+    if (!refs.holographicReport || !refs.reportSummary) return;
+    refs.reportSummary.innerHTML = summary;
+    refs.holographicReport.style.display = 'block';
+    
+    // 添加關閉按鈕
+    if (!refs.holographicReport.querySelector('.btn-report-close')) {
+        const footer = document.createElement('div');
+        footer.className = 'report-footer';
+        footer.innerHTML = `<button class="btn-report-close">DISMISS REPORT</button>`;
+        footer.querySelector('button').onclick = () => {
+            refs.holographicReport.style.display = 'none';
+        };
+        refs.holographicReport.appendChild(footer);
+    }
+  }
+
+  function flashInsight(title, text) {
+    if (!refs.insightFlashZone) return;
+    const card = document.createElement('div');
+    card.className = 'insight-flash-card';
+    card.innerHTML = `<strong>${title}</strong>${text}`;
+    refs.insightFlashZone.appendChild(card);
+    
+    setTimeout(() => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateX(20px)';
+        card.style.transition = 'all 0.5s ease';
+        setTimeout(() => card.remove(), 500);
+    }, 4000);
   }
 
   async function approveProposal() {
@@ -404,6 +622,58 @@
     if (refs.compactOutput) refs.compactOutput.value = text;
   }
 
+  function setProposalProgress(value) {
+    if (!refs.proposalProgressBar) return;
+    refs.proposalProgressBar.style.width = `${Math.max(0, Math.min(100, value))}%`;
+  }
+
+  function pushProposalLog(message) {
+    if (!refs.proposalStatusConsole) return;
+    const row = document.createElement('div');
+    row.textContent = `[${new Date().toLocaleTimeString('zh-TW', { hour12: false })}] ${message}`;
+    refs.proposalStatusConsole.appendChild(row);
+    refs.proposalStatusConsole.scrollTop = refs.proposalStatusConsole.scrollHeight;
+  }
+
+  function resolveOptimizationCycle(snapshot) {
+    const currentLevel = Number(snapshot?.meta?.optimizationLevel || snapshot?.optimizationLevel || 0);
+    const rows = getRows(snapshot);
+    const validation = snapshot?.validation || {};
+    const issueCount = asArray(validation.errors).length + asArray(validation.warnings).length;
+    const hasRows = rows.length > 0;
+
+    if (issueCount) {
+      return {
+        level: currentLevel,
+        mode: '審計修復',
+        progress: 32,
+        next: '先修正審計異常，再重新產生派單企劃',
+        afterNext: '修復後重跑 AI 權重與公告版本',
+        risk: '審計仍有待處理項目，暫停正式推送'
+      };
+    }
+
+    if (!hasRows) {
+      return {
+        level: currentLevel,
+        mode: '資料同步',
+        progress: 45,
+        next: '先同步正式名單與分組資料',
+        afterNext: '資料到齊後自動建立獎項與行動追蹤',
+        risk: '尚未取得完整正式快照'
+      };
+    }
+
+    return {
+      level: currentLevel + 1,
+      mode: '自動推進',
+      progress: Math.min(96, 68 + Math.min(rows.length, 20)),
+      next: '執行全線優化、公告同步與下一步推送',
+      afterNext: '24 小時後依回報自動調整下一輪方案',
+      risk: '目前可進入正式執行流程'
+    };
+  }
+
   function buildTopFiveAwards(rows) {
     const awardTitles = ['至尊冠軍', '數據王座', '菁英指揮官', '策略大師', '精準建築師'];
     const awardCodes = ['SUPREME CHAMPION', 'DATA SOVEREIGN', 'ELITE COMMANDER', 'STRATEGIC MASTER', 'PRECISION ARCHITECT'];
@@ -425,6 +695,7 @@
     const groups = getGroups(snapshot);
     const title = snapshot?.title || snapshot?.standardData?.['公告標題'] || 'AI 派單企劃案';
     const topAwards = buildTopFiveAwards(rows);
+    const cycle = resolveOptimizationCycle(snapshot);
     const topRows = topAwards.map((award) => award.name).filter(Boolean);
     const groupCounts = ['A1', 'A2', 'B', 'C']
       .map((key) => `${key}: ${asArray(groups[key]).length}人`)
@@ -433,7 +704,7 @@
     const validation = snapshot?.validation || {};
     const issueCount = asArray(validation.errors).length + asArray(validation.warnings).length;
     const topText = topRows.length ? topRows.join('、') : '等待正式名單同步';
-    const nextStep = issueCount ? '🔴 攔截審計異常，請先修正' : '🟢 執行全線優化與下一步推送';
+    const nextStep = `${issueCount ? '🔴' : '🟢'} ${cycle.next}`;
     const proactiveNext = issueCount 
       ? `偵測到 ${asArray(validation.errors).length} 個阻斷性錯誤，系統已自動鎖定「修復模式」。`
       : `數據鏈路已完成。下一步將推送至「執行群組」並啟動「24小時追蹤矩陣」。`;
@@ -441,15 +712,17 @@
     const steps = [
       { label: '數據掃描', text: `掃描 ${rows.length || 0} 筆數據節點`, status: 'completed' },
       { label: '權重重組', text: '重新計算 AI 動態權重分配', status: 'completed' },
-      { label: '下一步鏈路', text: '建立自動化下一步行動清單', status: 'active' },
+      { label: '下一步鏈路', text: cycle.next, status: 'active' },
       { label: '功能鏈結', text: '整合 LINE、公告與實時追蹤', status: 'pending' },
-      { label: '優化存檔', text: '自動更新正式企劃快照', status: 'pending' }
+      { label: '再下一輪', text: cycle.afterNext, status: 'pending' }
     ];
 
     const focus = [
       `🎯 核心主軸：${title}`,
       `🔥 優先推進：${topText}`,
       `📊 分組分佈：${groupCounts}`,
+      `🧭 優化模式：${cycle.mode}｜第 ${cycle.level} 輪`,
+      `🛡️ 風險判斷：${cycle.risk}`,
       sourceLines ? `📝 素材讀取：已解析 ${sourceLines} 行輸入素材` : '🛰️ 資料來源：使用實時正式快照'
     ];
 
@@ -457,7 +730,8 @@
       '⚡ 實時 AI 優化：自動提取主軸、風險、下一步行動',
       '🤖 自動下一步：依審計結果智能切換修正/發布路徑',
       '📱 全端同步：LINE 推送、公告更新、手機同步鏈路',
-      '🔍 追蹤矩陣：建立 24 小時執行回饋與效能復盤'
+      '🔍 追蹤矩陣：建立 24 小時執行回饋與效能復盤',
+      '🧬 再下一步演算法：每次執行後自動生成下一輪提升方向'
     ];
 
     const output = [
@@ -466,10 +740,12 @@
       `[目標主軸]：${title}`,
       `[分組節奏]：${groupCounts}`,
       `[優先對象]：${topText}`,
+      `[優化循環]：第 ${cycle.level} 輪｜${cycle.mode}`,
       ``,
       `一、下一步動作 (Next Action)：`,
       `   ➔ ${nextStep}`,
       `   ➔ 策略路徑：${proactiveNext}`,
+      `   ➔ 再下一步：${cycle.afterNext}`,
       `   ➔ 預計發布時間：${new Date().toLocaleTimeString('zh-TW')} (立即)`,
       ``,
       `二、功能提升方案 (Feature Boost)：`,
@@ -490,10 +766,10 @@
       ``,
       `五、執行指令：`,
       `   > 點擊下方 [批準並執行方案] 以鎖定目前優化路徑。`,
-      `   > 系統將自動進入下一輪優化循環 (Evo Loop v${(snapshot?.meta?.optimizationLevel || 1) + 1})。`
+      `   > 系統將自動進入下一輪優化循環 (Evo Loop v${cycle.level})。`
     ].join('\n');
 
-    return { title, topText, nextStep, steps, focus, features, output, topAwards, proactiveNext };
+    return { title, topText, nextStep, steps, focus, features, output, topAwards, proactiveNext, cycle };
   }
 
   function renderPillList(container, items, className) {
@@ -511,17 +787,18 @@
     const container = $('proposal-optimizer');
     
     setBadge(refs.proposalSyncStatus, 'PASS', 'AUTO NEXT');
+    setProposalProgress(plan.cycle.progress);
     setText(refs.proposalMainGoal, '實時企劃主軸');
     setText(refs.proposalMainDetail, plan.title);
     setText(refs.proposalNextStep, plan.nextStep);
-    setText(refs.proposalNextDetail, `優先對象：${plan.topText}`);
-    setText(refs.proposalFeatureBoost, `AI 無限優化 (第 ${snapshot?.meta?.optimizationLevel || 0} 輪)`);
-    setText(refs.proposalFeatureDetail, `數據已精煉，目前正以最高統治性能進行第 ${snapshot?.meta?.optimizationLevel || 0} 輪循環。`);
+    setText(refs.proposalNextDetail, `優先對象：${plan.topText}｜再下一步：${plan.cycle.afterNext}`);
+    setText(refs.proposalFeatureBoost, `AI 自動進化 (第 ${plan.cycle.level} 輪)`);
+    setText(refs.proposalFeatureDetail, `目前模式：${plan.cycle.mode}。${plan.cycle.risk}。`);
 
     if (refs.proposalStepList) {
       refs.proposalStepList.replaceChildren(...plan.steps.map((step, index) => {
         const article = document.createElement('article');
-        article.className = `proposal-step ${index === 0 ? 'active' : ''}`;
+        article.className = `proposal-step ${step.status || (index === 0 ? 'active' : '')}`;
         article.innerHTML = `
           <span>${index + 1}</span>
           <strong>${escapeHtml(step.label)}</strong>
@@ -534,6 +811,7 @@
     renderPillList(refs.proposalFocusList, plan.focus, 'proposal-pill');
     renderPillList(refs.proposalFeatureList, plan.features, 'proposal-pill feature');
     if (refs.proposalOutput && !refs.proposalOutput.value) refs.proposalOutput.value = plan.output;
+    pushProposalLog(`已同步企劃引擎：${plan.cycle.mode}`);
   }
 
   function renderProposalAwards(awards) {
@@ -541,14 +819,78 @@
     refs.proposalAwardList.replaceChildren(...awards.map((award) => {
       const article = document.createElement('article');
       article.className = `proposal-award-card rank-${award.rank}`;
+      
+      const assetMap = {
+        1: '/hyper_realistic_diamond_top_rank_1778421240170.png',
+        2: '/hyper_realistic_gold_bar_rank2_1778421253720.png',
+        3: '/hyper_realistic_usd_stack_rank3_1778421270527.png',
+        4: '/hyper_realistic_ntd_2000_rank4_1778421287414.png',
+        5: '/hyper_realistic_ntd_1000_rank5_1778421301923.png'
+      };
+      
+      const assetImg = assetMap[award.rank] || '';
+      
+      const xrayDataMap = {
+        1: { val: '$2,500,000', pur: 'IF FLWLS', code: 'DIA-99' },
+        2: { val: '$1,200,000', pur: '999.9 FINE', code: 'GLD-SW' },
+        3: { val: '$500,000', pur: 'CURRENCY', code: 'USD-FED' },
+        4: { val: 'NT$2,000', pur: 'LEGAL TENDER', code: 'TWD-2K' },
+        5: { val: 'NT$1,000', pur: 'LEGAL TENDER', code: 'TWD-1K' }
+      };
+      const xData = xrayDataMap[award.rank] || { val: 'N/A', pur: 'N/A', code: 'N/A' };
+
       article.innerHTML = `
+        <div class="award-lens-flare"></div>
+        <div class="award-xray-overlay">
+            <div class="xray-grid"></div>
+            <div class="xray-data">VALUE: ${xData.val}</div>
+            <div class="xray-data">PURITY: ${xData.pur}</div>
+            <div class="xray-data">AUTH: ${xData.code}</div>
+        </div>
         <div class="proposal-award-rank">#${escapeHtml(award.rank)}</div>
-        <div class="proposal-award-medal">${escapeHtml(award.rank)}</div>
+        <div class="proposal-award-visual">
+            <span class="scanline"></span>
+            ${assetImg ? `<img src="${assetImg}" alt="Award Asset" class="award-3d-asset">` : `<div class="proposal-award-medal">${escapeHtml(award.rank)}</div>`}
+            <div class="award-particles-container"></div>
+        </div>
         <div class="proposal-award-code">${escapeHtml(award.code)}</div>
         <strong>${escapeHtml(award.name)}</strong>
         <span>${escapeHtml(award.title)} · ${escapeHtml(award.group)}</span>
         <p>AI 權重分數 ${escapeHtml(number(award.score, 2))}</p>
       `;
+
+      // 監聽滑鼠移動以更新反光效果
+      article.addEventListener('mousemove', (e) => {
+        const rect = article.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        article.style.setProperty('--mouse-x', `${x}%`);
+        article.style.setProperty('--mouse-y', `${y}%`);
+      });
+
+      // 注入環境粒子
+      const particleContainer = article.querySelector('.award-particles-container');
+      if (particleContainer) {
+          for (let i = 0; i < 5; i++) {
+              const p = document.createElement('div');
+              p.className = 'award-particle';
+              p.style.left = `${Math.random() * 100}%`;
+              p.style.top = `${Math.random() * 100}%`;
+              p.style.animationDelay = `${Math.random() * 5}s`;
+              particleContainer.appendChild(p);
+          }
+      }
+
+      // 添加物理掉落動畫 (Staggered drop)
+      const idx = awards.indexOf(award);
+      setTimeout(() => {
+          const img = article.querySelector('.award-3d-asset');
+          if (img) {
+              img.classList.add('asset-drop-bounce');
+              img.style.opacity = '1';
+          }
+      }, idx * 200 + 500); 
+
       return article;
     }));
   }
@@ -625,23 +967,49 @@
     if (container) container.classList.add('scanning-mode');
     
     logConsole('啟動 AI 企劃優化引擎...');
+    setText(refs.aiCommanderStatus, 'ANALYZING GLOBAL DISPATCH DATA...');
+    setText(refs.aiCommanderText, '正在透過大數據比例原則進行深度優化，預測未來 24 小時執行鏈路。');
+    
     setBadge(refs.proposalSyncStatus, 'PENDING', 'SCANNING...');
     setProgress(10);
+    updateHudStats();
+    initNeuralMap();
+    animateNeuralMap();
+    renderSimulation();
+    const stopRain = startMatrixRain();
+    if (refs.waveVisualizer) refs.waveVisualizer.style.opacity = '1';
     
     const stages = [
-      { msg: '正在擷取實時派單快照...', p: 25 },
-      { msg: '分析前五名權重異動...', p: 45 },
-      { msg: '計算下一步策略鏈路...', p: 70 },
-      { msg: '整合功能提升方案...', p: 90 },
+      { msg: '正在擷取實時派單快照...', p: 25, insight: { t: 'DATA SYNC', m: '已成功鎖定 24 人正式名單鏈路。' } },
+      { msg: '驗證高價值資產認證 (Diamond/Gold)...', p: 40, insight: { t: 'ASSET AUTH', m: '第一名鑽石資產已完成 3D 全息封裝。' } },
+      { msg: '分析前五名權重異動...', p: 55, insight: { t: 'TOP 5 INSIGHT', m: '偵測到 A1 組別實收金額有上升趨勢。' } },
+      { msg: '計算下一步策略鏈路...', p: 75, insight: { t: 'RENEWAL ALERT', m: 'B 組成員續約客單價需加強監控。' } },
+      { msg: '整合功能提升方案...', p: 90, insight: { t: 'AI EVO', m: '進化等級已準備好進行 v2.4 升級。' } },
       { msg: '優化完成，準備推送。', p: 100 }
     ];
 
     for (const stage of stages) {
       logConsole(stage.msg);
+      if (stage.insight) flashInsight(stage.insight.t, stage.insight.m);
       setProgress(stage.p);
       await new Promise(resolve => setTimeout(resolve, 400 + Math.random() * 400));
     }
+    logConsole('優化完成，準備推送。');
     
+    // 顯示全息文件預覽
+    if (refs.holographicDocPreview) refs.holographicDocPreview.style.display = 'flex';
+
+    // 提升進化等級
+    if (refs.evoLevel) {
+        const current = refs.evoLevel.textContent;
+        const parts = current.split('.');
+        parts[2] = parseInt(parts[2]) + 1;
+        refs.evoLevel.textContent = parts.join('.');
+    }
+    
+    setText(refs.aiCommanderStatus, 'OPTIMIZATION COMPLETE - READY FOR ACTION');
+    setText(refs.aiCommanderText, '已完成下一步優化推演。系統建議立即批準方案以啟動 24H 執行鏈路。');
+
     const plan = buildProposalPlan(state.current || {}, refs.rawInput?.value || '');
     if (refs.proposalOutput) {
         refs.proposalOutput.value = ''; // 先清空觸發打字感
@@ -649,17 +1017,21 @@
         const text = plan.output;
         const typeEffect = () => {
           if (i < text.length) {
-            refs.proposalOutput.value += text.charAt(i);
-            i += 5; // 每次打 5 個字快一點
+            refs.proposalOutput.value += text.slice(i, i + 5);
+            i += 5;
             requestAnimationFrame(typeEffect);
           }
         };
         typeEffect();
     }
     renderProposalAwards(plan.topAwards);
+    renderPillList(refs.proposalFocusList, plan.focus, 'proposal-pill');
+    renderPillList(refs.proposalFeatureList, plan.features, 'proposal-pill feature');
     
     setText(refs.proposalNextStep, plan.nextStep);
-    setText(refs.proposalNextDetail, plan.proactiveNext);
+    setText(refs.proposalNextDetail, `${plan.proactiveNext} 再下一步：${plan.cycle.afterNext}`);
+    setText(refs.proposalFeatureBoost, `AI 自動進化 (第 ${plan.cycle.level} 輪)`);
+    setText(refs.proposalFeatureDetail, `新增再下一步演算法、24 小時追蹤矩陣、科技感視覺強化。`);
     
     // 更新步驟狀態
     const steps = refs.proposalStepList?.querySelectorAll('.proposal-step');
@@ -672,9 +1044,47 @@
     }
 
     if (container) container.classList.remove('scanning-mode');
+    if (stopRain) stopRain();
+    if (refs.waveVisualizer) refs.waveVisualizer.style.opacity = '0.3';
     setBadge(refs.proposalSyncStatus, 'PASS', 'OPTIMIZED');
     setBadge(refs.inputStatus, 'PASS', '企劃案自動優化完成');
     logConsole('優化循環完成。系統進入等待批準狀態。');
+  }
+
+  function buildProposalPlan(data, rawInput) {
+    const top5 = data.top5 || [];
+    const leader = top5[0] || { name: 'SYSTEM LEADER' };
+    
+    let strategy = `【全域 AI 指揮官 - 戰略指令 v${refs.evoLevel?.textContent || '2.4'}】\n\n`;
+    strategy += `● 階段一：戰術鎖定 (T+2H)\n`;
+    strategy += `   - 已驗證 3D 資產：鑽石/黃金/現鈔 封裝完成。\n`;
+    strategy += `   - 鎖定核心名單：${top5.map(a => a.name).join('、')}。\n`;
+    strategy += `   - 行動：同步全球 ${refs.globalNodes?.textContent || '1,248'} 個節點，確保數據不丟失。\n\n`;
+    
+    strategy += `● 階段二：策略推進 (T+8H)\n`;
+    strategy += `   - 針對 ${leader.name} 啟動「鑽石增幅協定」，權重分數鎖定為 ${number(leader.score, 2)}。\n`;
+    strategy += `   - 監控 B 組成員續約動態，預計產能提升 15.4%。\n\n`;
+    
+    strategy += `● 階段三：最終結算 (T+24H)\n`;
+    strategy += `   - 生成自動化業績週報，並透過 LINE 推送至執行群組。\n`;
+    strategy += `   - 啟動全方位績效追蹤，為下一步進化做準備。\n\n`;
+    
+    if (rawInput) {
+      strategy += `【人工輸入增益】\n${rawInput}\n\n`;
+    }
+    
+    strategy += `[SYSTEM_AUTH_CODE: SIG-${Math.random().toString(36).substr(2, 9).toUpperCase()}]`;
+    
+    return {
+        output: strategy,
+        topAwards: top5,
+        focus: ['資產全息封裝', '全球節點同步', '24H 實時監控'],
+        features: ['AI 進化演算法', '下一步預測鏈路'],
+        nextStep: '批準並執行戰略指令',
+        proactiveNext: '啟動 24H 追蹤矩陣',
+        cycle: { level: 24, afterNext: '二輪自動優化' }
+    };
+  }
   }
 
   async function copyProposalPlan() {
@@ -697,18 +1107,30 @@
     setBusy(true);
     try {
       if (container) container.classList.add('scanning-mode');
-      logConsole('正在批準並執行優化方案...');
+      
+      logConsole('啟動生物識別與身分驗證...');
+      setBadge(refs.proposalSyncStatus, 'PENDING', 'VERIFYING...');
+      setProgress(15);
+      await new Promise(resolve => setTimeout(resolve, 1500)); // 生物識別掃描
+      
+      logConsole('身分驗證成功，正在執行數位簽章確認...');
+      setBadge(refs.proposalSyncStatus, 'PENDING', 'SIGNING...');
+      setProgress(25);
+      await new Promise(resolve => setTimeout(resolve, 1000)); // 簽章動畫延遲
+      
+      logConsole('數位簽章已賦予：' + (Math.random().toString(36).substr(2, 9).toUpperCase()));
+      logConsole('正在執行優化方案並鎖定數據...');
       setBadge(refs.proposalSyncStatus, 'PENDING', 'EXECUTING PROTOCOL...');
-      setProgress(30);
+      setProgress(50);
       
       // 1. 執行存檔 (包含審計)
       await saveCurrentReport();
-      setProgress(60);
+      setProgress(75);
       logConsole('正式快照已鎖定，同步全端中...');
       
       // 2. 模擬執行延遲
       await new Promise(resolve => setTimeout(resolve, 800));
-      setProgress(85);
+      setProgress(90);
       
       // 3. 發送 LINE
       try {
@@ -731,13 +1153,44 @@
       logConsole('✅ 優化方案已全面執行。系統將進入 24H 追蹤模式。');
       setBadge(refs.proposalSyncStatus, 'PASS', 'PROTOCOL EXECUTED');
       
-      // 觸發 3D 寶藏爆發
+      triggerGlobalFlash();
+      container.classList.add('executing');
+      
+      // 啟動實時派單饋送模擬
+      const names = state.current?.top5?.map(a => a.name) || ['Leader A', 'Leader B'];
+      let feedIdx = 0;
+      const feedTimer = setInterval(() => {
+          if (feedIdx < 10) {
+              const name = names[feedIdx % names.length];
+              addFeedItem(`TASK ASSIGNED: ${name}`);
+              feedIdx++;
+          } else {
+              clearInterval(feedTimer);
+          }
+      }, 800);
+
+      // 顯示全息報告
+      showHolographicReport(`
+        <p><strong>執行狀態：</strong> 全端同步完成</p>
+        <p><strong>獎項分配：</strong><br>
+        1. 鑽石資產 - 封裝完成<br>
+        2. 瑞士金磚 - 認證發出<br>
+        3. 美金現鈔 - 撥款鎖定</p>
+        <p><strong>下一步：</strong> 24H 實時追蹤啟動</p>
+      `);
+
+      // 觸發全域脈衝與爆發
+      triggerDashboardPulse();
       if (typeof window.triggerTreasureExplosion === 'function') {
         window.triggerTreasureExplosion();
       }
 
-      alert('✅ 執行方案批準成功！\n資料已鎖定並同步全端，下一步行動已推送到執行群組。');
+      alert('✅ 執行方案批準成功！\n身分驗證通過，資料已鎖定並同步全端，下一步行動已推送到執行群組。');
       
+      // 執行後隱藏全息投影 (模擬任務完成)
+      const hologram = document.querySelector('.hologram-projection');
+      if (hologram) hologram.style.display = 'none';
+
     } catch (error) {
       console.error(error);
       logConsole(`❌ 執行失敗: ${error.message}`);
@@ -778,6 +1231,31 @@
       await navigator.clipboard.writeText(text);
       setBadge(refs.inputStatus, 'PASS', '已複製精簡版');
     });
+    
+    // 初始化全息投影隱藏
+    const hologram = document.querySelector('.hologram-projection');
+    if (hologram) hologram.style.display = 'none';
+
+    updateTicker();
+    
+    // 初始化 3D 面板傾斜
+    const panel = $('proposal-optimizer');
+    if (panel) {
+        panel.addEventListener('mousemove', (e) => {
+            const rect = panel.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = (y - centerY) / 50; // 降低傾斜度以免影響操作
+            const rotateY = (centerX - x) / 50;
+            panel.style.transform = `perspective(2000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+        panel.addEventListener('mouseleave', () => {
+            panel.style.transform = `perspective(2000px) rotateX(0deg) rotateY(0deg)`;
+        });
+    }
+
     refs.btnSendLine?.addEventListener('click', run(sendLine));
   }
 

@@ -152,6 +152,10 @@
     </section>
 
     <section id="proposal-optimizer" class="proposal-optimizer panel">
+      <div class="proposal-spatial-grid"></div>
+      <div class="proposal-hub-map">
+        <div class="global-news-ticker" id="global-ticker">SYSTEM INITIALIZING... NODE SYNC: 99.8%... GLOBAL BROADCAST ACTIVE...</div>
+      </div>
       <div class="panel-head proposal-optimizer-head">
         <div>
           <p class="eyebrow">AI Proposal Optimizer</p>
@@ -160,11 +164,31 @@
         <span id="proposal-sync-status" class="badge badge-pass">AUTO NEXT</span>
         <div class="proposal-auto-badge">
           <span class="dot"></span>
-          AI EVOLUTION ACTIVE
+          GLOBAL SYNC: <span id="global-nodes">1,248</span> ACTIVE
         </div>
+        <div class="proposal-auto-badge">
+          <span class="dot"></span>
+          AI EVOLUTION v<span id="evo-level">2.4.0</span>
+        </div>
+      </div>
+      <div class="satellite-uplink-zone">
+        <div class="satellite-beam"></div>
+        <div class="satellite-dish">🛰️ UPLINKING TO GLOBAL CLOUD...</div>
       </div>
       <div class="proposal-progress-track">
         <div id="proposal-progress-bar" class="proposal-progress-bar"></div>
+      </div>
+      <div class="ai-commander-zone">
+        <div class="ai-sphere-wrap">
+            <div class="ai-sphere"></div>
+            <div class="ai-sphere-ring"></div>
+            <div class="ai-sphere-ring"></div>
+        </div>
+        <div class="ai-commander-brief">
+            <p class="eyebrow">GLOBAL AI COMMANDER</p>
+            <h3 id="ai-commander-status">SYSTEM IDLE - WAITING FOR OPTIMIZATION</h3>
+            <p id="ai-commander-text">正在監控全域派單鏈路，準備進行下一步策略推演。</p>
+        </div>
       </div>
       <div class="proposal-command-grid">
         <article class="proposal-command-card primary">
@@ -189,6 +213,12 @@
       <div class="proposal-award-stage">
         <div class="proposal-section-label">正式前五名 · 3D 科技獎項</div>
         <div id="proposal-award-list" class="proposal-award-list"></div>
+      </div>
+      <div class="proposal-neural-map">
+        <div class="proposal-section-label">AI NEURAL LOGIC MAP</div>
+        <svg id="neural-svg" viewBox="0 0 400 150" class="neural-svg">
+          <!-- Nodes and lines will be injected by JS -->
+        </svg>
       </div>
       <div class="proposal-flow">
         <div class="proposal-flow-line" aria-hidden="true"></div>
@@ -223,15 +253,55 @@
       </div>
       <div class="proposal-actions">
         <button id="btn-proposal-optimize" class="btn btn-primary btn-glitch" type="button">自動優化企劃案</button>
-        <button id="btn-proposal-approve" class="btn btn-primary btn-glitch" type="button" style="background: linear-gradient(135deg, #10f5b4, #00c300); border-color: #00ff00;">批準並執行方案</button>
+        <button id="btn-proposal-approve" class="btn btn-primary btn-glitch btn-biometric" type="button" style="background: linear-gradient(135deg, #10f5b4, #00c300); border-color: #00ff00;">
+          <span class="bio-scan-line"></span>
+          批準並執行方案
+        </button>
         <button id="btn-proposal-copy" class="btn btn-secondary btn-glitch" type="button">複製下一步方案</button>
       </div>
       <div id="proposal-status-console" class="proposal-status-console">
         <div>系統就緒，等待優化指令...</div>
       </div>
-      <div class="proposal-output-container">
-        <div id="matrix-rain" class="matrix-rain"></div>
-        <textarea id="proposal-output" class="proposal-output" readonly placeholder="AI 會依照目前正式快照與輸入內容產生企劃案優化版。"></textarea>
+      <div class="proposal-insight-flash-zone" id="insight-flash-zone">
+        <!-- AI Insights will pop up here -->
+      </div>
+      <div class="proposal-hologram-wrap">
+        <div class="hologram-projection">
+            <div class="hologram-beam"></div>
+            <div class="hologram-content">
+                <div class="hologram-glitch-text">ENHANCED PROTOCOL ACTIVE</div>
+                <div class="hologram-data-line">SYNC: 100%</div>
+                <div class="hologram-data-line">AI: STABLE</div>
+            </div>
+        </div>
+        <div class="proposal-output-container">
+            <div id="matrix-rain" class="matrix-rain"></div>
+            <textarea id="proposal-output" class="proposal-output" readonly placeholder="AI 會依照目前正式快照與輸入內容產生企劃案優化版。"></textarea>
+        </div>
+      </div>
+      <div class="proposal-simulation-stage">
+        <div class="proposal-section-label">24H 執行模擬預測 (PREDICTIVE TIMELINE)</div>
+        <div id="proposal-sim-timeline" class="proposal-sim-timeline">
+            <!-- Timeline items will be injected -->
+        </div>
+      </div>
+      <div id="holographic-report" class="holographic-report">
+        <div class="report-glitch">FINALIZING REPORT...</div>
+        <div class="report-content">
+            <div class="report-header">AI DISPATCH SNAPSHOT</div>
+            <div id="report-summary"></div>
+        </div>
+      </div>
+      <div id="holographic-doc-preview" class="holographic-doc-preview">
+        <div class="doc-line"></div><div class="doc-line"></div><div class="doc-line"></div>
+        <div class="doc-stamp">APPROVED</div>
+      </div>
+      <div id="live-dispatch-feed" class="live-dispatch-feed"></div>
+      <div class="proposal-wave-visualizer">
+        <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+        <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+        <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+        <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
       </div>
     </section>
 

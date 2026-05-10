@@ -8,6 +8,7 @@ const { parseDispatchDraft } = require('../services/dispatchParse.service');
 const {
   getLatestReport,
   getLegacySnapshot,
+  getValidationForReport,
   saveNewReport,
   saveReportVersion
 } = require('../services/dispatchQuery.service');
@@ -84,10 +85,18 @@ router.post('/audit', (req, res) => {
 /* ── POST /api/save ───────────────────────────────────────── */
 router.post('/save', (req, res) => {
   const rawText = req.body?.rawText;
-  if (rawText === undefined) { fail(res, 400, '缺少 rawText 欄位'); return; }
+  const currentReport = req.body?.report;
+  if (rawText === undefined && !currentReport) { fail(res, 400, '缺少 rawText 或 report 欄位'); return; }
 
   try {
-    const { report, validation } = parseDispatchDraft({ rawText, operator: 'WEB', source: 'manual' });
+    const draft = rawText !== undefined
+      ? parseDispatchDraft({ rawText, operator: 'WEB', source: 'manual' })
+      : (() => {
+          const latestReport = getLatestReport();
+          return { report: latestReport, validation: getValidationForReport(latestReport) };
+        })();
+    const { report } = draft;
+    const validation = draft.validation;
 
     if (!validation.ok) {
       const snapshot = getLegacySnapshot(report, validation, { persisted: false });
