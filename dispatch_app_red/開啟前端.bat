@@ -48,42 +48,22 @@ goto launch_process
 
 :launch_process
 echo.
-echo  [94m[系統] 正在準備啟動環境... [0m
-
-:: 1. 檢查伺服器是否在運行
-netstat -ano | findstr :%PORT% | findstr LISTENING >nul
-if %errorlevel% neq 0 (
-    echo  [33m[資訊] 偵測到服務未啟動，正在背景初始化伺服器... [0m
-    start "兆櫃系統引擎" /min cmd /c "set AUTO_OPEN_BROWSER=0 && node server.js"
-    timeout /t 4 >nul
-) else (
-    echo  [92m[就緒] 伺服器已在運行中。 [0m
-)
-
-if "%PAGE%"=="NONE" (
-    echo  [92m[完成] 伺服器已重啟/確認運行中。 [0m
-    pause
-    goto menu
-)
-
-:: 2. 執行開啟
-echo  [94m[執行] 正在以專業模式開啟網頁... [0m
+echo  [94m[系統] 正在以 Turbo 模式優化啟動環境... [0m
+echo.
 
 if "%IS_ALL%"=="1" (
-    call :open_browser "mobile.html"
-    timeout /t 1 >nul
-    call :open_browser "index.html"
-    timeout /t 1 >nul
-    call :open_browser "broadcast.html"
+    node scripts/quickLaunch.js mobile.html
+    node scripts/quickLaunch.js index.html
+    node scripts/quickLaunch.js broadcast.html
 ) else (
-    call :open_browser "%PAGE%"
+    node scripts/quickLaunch.js %PAGE%
 )
 
 echo.
 echo  [96m====================================================== [0m
-echo  [92m  啟動成功！請切換至瀏覽器視窗查看。 [0m
+echo  [92m  啟動優化成功！系統已進入極速運行狀態。 [0m
 echo  [96m====================================================== [0m
-timeout /t 3 >nul
+timeout /t 2 >nul
 exit
 
 :: --- 瀏覽器開啟子程式 ---

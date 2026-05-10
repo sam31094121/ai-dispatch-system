@@ -33,10 +33,29 @@
             align-items: center;
             overflow: hidden;
             background-image: 
-                radial-gradient(circle at 50% 50%, rgba(0, 242, 255, 0.05) 0%, transparent 70%),
+                radial-gradient(circle at 50% 50%, rgba(0, 242, 255, 0.08) 0%, transparent 70%),
                 linear-gradient(rgba(0, 242, 255, 0.02) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 242, 255, 0.02) 1px, transparent 1px);
             background-size: 100% 100%, 40px 40px, 40px 40px;
+            position: relative;
+        }
+
+        /* 掃描線動畫 */
+        .scanner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(to bottom, transparent, var(--primary), transparent);
+            opacity: 0.1;
+            pointer-events: none;
+            animation: scan 4s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { top: -10%; }
+            100% { top: 110%; }
         }
 
         /* 頂部掃描線 */
@@ -197,6 +216,7 @@
     </style>
 </head>
 <body>
+    <div class="scanner"></div>
     <div class="hud-overlay">
         <div class="hud-corner">CPU_USAGE: 42.8%<br>RAM_STREAM: STABLE<br>NET_LATENCY: 14ms</div>
         <div class="hud-corner" style="text-align: right;">AI_NODE: PRIMARY<br>SEC_PROTOCOL: ACTIVE<br>V_VERSION: 1.0.52</div>
@@ -254,16 +274,28 @@
         }
 
         async function startSequence() {
+            const isFast = params.get('fast') === '1';
+            const baseDelay = isFast ? 30 : 150;
+            
             for (let i = 0; i < logs.length; i++) {
-                await new Promise(r => setTimeout(r, 150 + Math.random() * 200));
+                await new Promise(r => setTimeout(r, baseDelay + Math.random() * (isFast ? 20 : 200)));
                 addLog(logs[i]);
                 statusText.textContent = logs[i].replace(/_/g, ' ') + '...';
                 progressBar.style.width = ((i + 1) / logs.length * 100) + '%';
             }
 
+            // 最終確認
+            statusText.textContent = "SYSTEM_SYNC_COMPLETE";
+            statusText.style.color = "var(--accent)";
+            progressBar.style.width = '100%';
+            
             setTimeout(() => {
-                window.location.href = '/' + targetPage;
-            }, 300);
+                document.body.style.opacity = '0';
+                document.body.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => {
+                    window.location.href = '/' + targetPage;
+                }, 500);
+            }, isFast ? 100 : 300);
         }
 
         function updateClock() {
