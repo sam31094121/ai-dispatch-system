@@ -197,28 +197,60 @@ class MapleCoinRain {
   _drawDiamond(c, t) {
     const ctx = this.cx;
     const { x, y, r, tilt } = c;
-    const size = r * 2;
+    
+    // 進階：多軸旋轉模擬 (模擬 3D 翻轉)
+    const rotX = Math.sin(t * 0.002 + x) * 0.5; // X軸翻轉
+    const rotY = Math.cos(t * 0.003 + y) * 0.5; // Y軸翻轉
+    const scaleZ = 1 + Math.sin(t * 0.001) * 0.1; // 輕微深度脈動
     
     ctx.save();
     ctx.translate(x, y);
-    ctx.rotate(tilt);
     
-    // 繪製真實鑽石圖片
+    // 模擬 3D 矩陣變換
+    ctx.transform(
+      Math.cos(tilt) * scaleZ,      // m11
+      Math.sin(rotX) * 0.3,         // m12
+      Math.sin(rotY) * 0.3,         // m21
+      Math.cos(tilt) * scaleZ,      // m22
+      0, 0
+    );
+
+    // 1. 底層光暈 (Bloom)
+    ctx.shadowBlur = 25;
+    ctx.shadowColor = 'rgba(255, 255, 255, 0.4)';
+    
+    // 2. 繪製「八心八箭」極致鑽石
     if (this.diamondImg.complete) {
-        ctx.drawImage(this.diamondImg, -r, -r, size, size);
+        ctx.drawImage(this.diamondImg, -r, -r, r * 2, r * 2);
     }
 
-    // 模擬光學閃爍 (Sparkle)
-    const sparkle = Math.sin(t * 0.01 + x);
-    if (sparkle > 0.8) {
+    // 3. 模擬色散火彩 (Rainbow Fire)
+    const fireSeed = Math.sin(t * 0.02 + x);
+    if (fireSeed > 0.7) {
+        const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00'];
+        ctx.globalCompositeOperation = 'screen';
+        for (let i = 0; i < 4; i++) {
+            ctx.beginPath();
+            const angle = (t * 0.01) + (i * Math.PI / 2);
+            const dist = r * 0.8;
+            ctx.fillStyle = colors[i];
+            ctx.globalAlpha = (fireSeed - 0.7) * 0.5;
+            ctx.arc(Math.cos(angle) * dist, Math.sin(angle) * dist, r * 0.2, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        ctx.globalCompositeOperation = 'source-over';
+    }
+
+    // 4. 強力閃爍 (Sparkle)
+    if (fireSeed > 0.9) {
         ctx.beginPath();
-        const sSize = r * (sparkle - 0.8) * 5;
+        const sSize = r * 1.5;
         ctx.fillStyle = '#fff';
-        ctx.shadowBlur = 15;
+        ctx.globalAlpha = 1;
+        ctx.shadowBlur = 10;
         ctx.shadowColor = '#fff';
-        // 繪製十字星芒
-        ctx.fillRect(-sSize/10, -sSize, sSize/5, sSize*2);
-        ctx.fillRect(-sSize, -sSize/10, sSize*2, sSize/5);
+        ctx.fillRect(-1, -sSize, 2, sSize * 2);
+        ctx.fillRect(-sSize, -1, sSize * 2, 2);
     }
     
     ctx.restore();
