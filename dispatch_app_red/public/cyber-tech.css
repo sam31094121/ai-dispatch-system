@@ -57,6 +57,28 @@
 .date-strip span { font-size: 9px !important; }
 .date-strip strong { font-size: 14px !important; }
 
+/* ── 整合總盤 (Summary Grid) 極致壓縮 ── */
+.summary-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    padding: 10px !important;
+}
+.summary-card {
+    padding: 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    min-height: 50px !important;
+}
+.summary-card span { font-size: 10px !important; opacity: 0.7; margin-bottom: 2px; }
+.summary-card strong { font-size: 16px !important; }
+
+/* 隱藏手機版不必要的 Kicker 標籤以釋放高度 */
+.kicker { display: none !important; }
+.section-head { margin-bottom: 8px !important; padding: 0 10px !important; }
+.section-head h2 { font-size: 16px !important; margin: 5px 0 !important; }
+
 /* 全局行動優先 (Mobile-First) 強制規範 */
 :root {
     --mobile-width: 430px;
