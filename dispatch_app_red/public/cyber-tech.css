@@ -15,7 +15,8 @@
     --oil-glow: 0 0 20px rgba(243, 193, 75, 0.2);
 }
 
-/* 全局油畫科技感背景 */
+/* 全局油畫科技感背景 - 強化捲動覆蓋 */
+html,
 body.mobile-command-center, 
 body.cyber-war-room,
 body.command-center {
@@ -26,8 +27,11 @@ body.command-center {
         linear-gradient(rgba(243, 193, 75, 0.02) 1px, transparent 1px),
         linear-gradient(90deg, rgba(243, 193, 75, 0.02) 1px, transparent 1px),
         linear-gradient(180deg, #2b180d 0%, #130c08 100%) !important;
-    background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px, 100% 100% !important;
+    background-size: cover, cover, 40px 40px, 40px 40px, cover !important;
+    background-attachment: fixed !important;
+    background-repeat: no-repeat, no-repeat, repeat, repeat, no-repeat !important;
     color: var(--oil-text-warm) !important;
+    min-height: 100%;
 }
 
 /* 疊加噪點濾鏡 (油畫質感) */

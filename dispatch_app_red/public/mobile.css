@@ -376,8 +376,6 @@ h2 {
 }
 
 .ranking-card {
-  content-visibility: auto;
-  contain-intrinsic-size: 0 180px;
   animation: cardEnter3D 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
   background: linear-gradient(160deg, #131d2b 0%, #0e1720 100%);
   border-top: 1px solid rgba(255,255,255,0.05);
@@ -1623,12 +1621,24 @@ mark {
   pointer-events: none;
 }
 
-.a1-hero-card.rank-1,
-.a1-hero-card.rank-2,
-.a1-hero-card.rank-3,
-.a1-hero-card.rank-4,
-.a1-hero-card.rank-5 {
+.a1-hero-card.rank-1 {
   grid-column: span 2;
+}
+
+.a1-hero-card.rank-2,
+.a1-hero-card.rank-3 {
+  grid-column: span 1;
+}
+
+.a1-hero-card.rank-4 {
+  grid-column: span 2;
+}
+
+.a1-hero-card.rank-5,
+.a1-hero-card.rank-6,
+.a1-hero-card.rank-7,
+.a1-hero-card.rank-8 {
+  grid-column: span 1;
 }
 
 /* 前四名頂級卡片主題 */
@@ -1808,11 +1818,15 @@ mark {
 }
 
 .a1-hero-card.rank-1 .a1-hero-metrics,
-.a1-hero-card.rank-2 .a1-hero-metrics,
-.a1-hero-card.rank-3 .a1-hero-metrics,
 .a1-hero-card.rank-4 .a1-hero-metrics {
   grid-template-columns: repeat(3, 1fr);
   gap: 6px;
+}
+
+.a1-hero-card.rank-2 .a1-hero-metrics,
+.a1-hero-card.rank-3 .a1-hero-metrics {
+  grid-template-columns: 1fr;
+  gap: 4px;
 }
 
 @media (max-width: 440px) {
