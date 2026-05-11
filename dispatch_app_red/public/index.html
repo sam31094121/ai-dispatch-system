@@ -603,9 +603,22 @@
   </div>
 
   <script src="utils.js?v=1.0"></script>
+  <script src="sync-client.js?v=1.0"></script>
   <script src="vfx-engine.js?v=3.0"></script>
   <script src="apex-engine.js?v=1.0"></script> <!-- Project Apex Engine -->
   <script src="app.js?v=20260510-production-v3"></script>
+  <script>
+    // 桌機版同步守衛客戶端
+    (function(){
+      var sync = new DispatchSyncClient({
+        type: 'desktop',
+        onForceSync: function() { if (typeof loadCurrent === 'function') loadCurrent(); },
+        onStatusChange: function(s) { console.log('[SyncClient] 狀態:', s); }
+      });
+      sync.start();
+      window._dispatchSyncClient = sync;
+    })();
+  </script>
   <script src="3d-money.js?v=20260510-awards"></script>
   <script src="performance.js?v=20260510-production-v3"></script>
 </body>

@@ -222,7 +222,21 @@
   </div>
 
   <script src="/utils.js?v=1.0"></script>
+  <script src="/sync-client.js?v=1.0"></script>
   <script src="/mobile.js?v=20260510-production-v2"></script>
+  <script>
+    // 同步守衛客戶端初始化
+    (function(){
+      var sync = new DispatchSyncClient({
+        type: 'mobile',
+        onForceSync: function() { if (typeof loadData === 'function') loadData(); },
+        onStatusChange: function(s) { console.log('[SyncClient] 狀態:', s); }
+      });
+      sync.start();
+      // 每次資料載入完成後更新版本號（由 SSE data_updated 的 dataVersion 驅動）
+      window._dispatchSyncClient = sync;
+    })();
+  </script>
   <script>
     // 主題切換邏輯
     (function(){

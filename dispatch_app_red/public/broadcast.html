@@ -203,6 +203,19 @@
   </div>
 
   <script src="utils.js?v=1.1"></script>
+  <script src="sync-client.js?v=1.0"></script>
   <script src="broadcast.js?v=20260502"></script>
+  <script>
+    // 會議室版同步守衛客戶端
+    (function(){
+      var sync = new DispatchSyncClient({
+        type: 'broadcast',
+        onForceSync: function() { if (typeof loadSystemAnnouncement === 'function') loadSystemAnnouncement(); },
+        onStatusChange: function(s) { console.log('[SyncClient] 狀態:', s); }
+      });
+      sync.start();
+      window._dispatchSyncClient = sync;
+    })();
+  </script>
 </body>
 </html>

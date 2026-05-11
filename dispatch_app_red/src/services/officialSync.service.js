@@ -200,6 +200,7 @@ function startRepair(reason, contract, details = {}) {
 }
 
 function finishRepair(contract, details = {}) {
+  if (state.mode !== 'repair' && state.locked === false) return;
   state.mode = 'normal';
   state.locked = false;
   setAction('repair_finished', { officialVersion: contract.officialVersion, ...details });

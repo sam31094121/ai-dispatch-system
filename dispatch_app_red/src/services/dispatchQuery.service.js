@@ -16,6 +16,15 @@ const { formatTaipeiTimestamp } = require('../utils/date.util');
 const sseService = require('./sse.service');
 const officialSync = require('./officialSync.service');
 
+// 延遲載入 syncGuard 以避免循環依賴
+let _syncGuard = null;
+function getSyncGuard() {
+  if (!_syncGuard) {
+    try { _syncGuard = require('./syncGuard.service'); } catch { _syncGuard = null; }
+  }
+  return _syncGuard;
+}
+
 const storagePaths = {
   root: appConfig.storageRoot,
   reportsDir: path.join(appConfig.storageRoot, 'reports'),
@@ -300,6 +309,12 @@ function persistStoredRecord(storedRecord, updateLatest = true) {
       reportVersion: report.version,
       reason: storedRecord.meta?.reason || ''
     });
+    // 同步守衛：更新正式版本號並備份
+    const guard = getSyncGuard();
+    if (guard) {
+      guard.backupCurrentSnapshot();
+      guard.bumpDataVersion();
+    }
     sseService.notifyDataUpdated({
       source: 'persist',
       reportId: report.reportId,

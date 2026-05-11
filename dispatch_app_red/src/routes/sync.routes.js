@@ -13,7 +13,19 @@
 const express = require('express');
 const router = express.Router();
 const syncGuard = require('../services/syncGuard.service');
+const officialSync = require('../services/officialSync.service');
+const { getLegacySnapshot, getLatestReport } = require('../services/dispatchQuery.service');
 const logger = require('../utils/logger');
+
+function buildOfficialContract() {
+  const latest = getLatestReport();
+  const snapshot = officialSync.stampSnapshot(getLegacySnapshot(latest, {
+    persisted: true,
+    source: 'backend-master',
+    operator: 'system'
+  }));
+  return officialSync.getOfficialContract(snapshot);
+}
 
 /**
  * POST /api/sync/heartbeat
@@ -30,11 +42,24 @@ router.post('/heartbeat', (req, res) => {
     });
   }
 
+  const officialStatus = officialSync.getStatus(buildOfficialContract());
+  const guardStatusBeforeReport = syncGuard.getGuardStatus();
+  if (guardStatusBeforeReport.status === 'LOCKED' && officialStatus.status === 'normal' && officialStatus.missing.length === 0) {
+    syncGuard.unlockSystem();
+  }
+
+  const currentGuardStatus = syncGuard.getGuardStatus();
+  const normalizedDataVersion = Number(dataVersion) || currentGuardStatus.dataVersion || 0;
+
   syncGuard.reportClientStatus(clientKey, {
     type: type || 'desktop',
-    dataVersion: Number(dataVersion) || 0,
+    dataVersion: normalizedDataVersion,
     screenState: screenState || 'active',
-    metadata: metadata || {}
+    metadata: {
+      ...(metadata || {}),
+      officialVersion: officialStatus.officialVersion,
+      officialFingerprint: officialStatus.officialFingerprint
+    }
   });
 
   // 回傳後端目前的正式版本號，讓前端比對
@@ -54,10 +79,34 @@ router.post('/heartbeat', (req, res) => {
  */
 router.get('/status', (_req, res) => {
   const status = syncGuard.getGuardStatus();
+  const officialStatus = officialSync.getStatus(buildOfficialContract());
   res.json({
     success: true,
-    data: status
+    data: {
+      ...status,
+      official: officialStatus,
+      endpoints: officialStatus.endpoints,
+      officialVersion: officialStatus.officialVersion,
+      officialFingerprint: officialStatus.officialFingerprint
+    }
   });
+});
+
+/**
+ * POST /api/sync/report
+ * Browser screens report the exact official backend version they rendered.
+ */
+router.post('/report', (req, res) => {
+  try {
+    const status = officialSync.reportScreen(req.body || {}, buildOfficialContract());
+    res.json({
+      success: true,
+      data: status
+    });
+  } catch (err) {
+    logger.error('[SyncRoute] official report failed', { error: err.message });
+    res.status(500).json({ success: false, message: err.message });
+  }
 });
 
 /**

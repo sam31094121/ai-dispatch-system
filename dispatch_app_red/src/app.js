@@ -11,6 +11,7 @@ const legacyRoutes = require('./routes/legacy.routes');
 const syncRoutes = require('./routes/sync.routes');
 const versionRoutes = require('./routes/version.routes');
 const sseService = require('./services/sse.service');
+const syncGuard = require('./services/syncGuard.service');
 
 const { errorResponse } = require('./utils/response.util');
 const errorCodes = require('./constants/errorCodes');
@@ -63,7 +64,7 @@ function createApp() {
   app.use('/api/line', lineNotifyRoutes);
   app.use('/api', legacyRoutes);
   app.use('/api', dispatchReportRoutes);
-  app.use('/api', syncRoutes);
+  app.use('/api/sync', syncRoutes);
   app.use('/api/version', versionRoutes);
 
   // SSE 即時推播路由
@@ -76,6 +77,12 @@ function createApp() {
 
   // 啟動資料監看器
   sseService.initDataWatcher(appConfig.storageRoot);
+
+  // 啟動同步守衛服務（注入 SSE 廣播函式）
+  syncGuard.startSyncGuard({
+    broadcastFn: (data) => sseService.broadcastUpdate(data),
+    notifyUpdateFn: (meta) => sseService.notifyDataUpdated(meta)
+  });
 
   app.use('/api', (_req, res) => {
     res

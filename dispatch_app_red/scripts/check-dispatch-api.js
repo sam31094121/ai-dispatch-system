@@ -10,6 +10,8 @@ process.env.AUTO_OPEN_BROWSER = '0';
 process.env.NODE_ENV = 'test';
 
 const { createApp } = require('../src/app');
+const sseService = require('../src/services/sse.service');
+const syncGuard = require('../src/services/syncGuard.service');
 
 function closeServer(server) {
   return new Promise((resolve, reject) => {
@@ -114,6 +116,8 @@ async function main() {
 
     console.log('Dispatch API smoke check passed.');
   } finally {
+    sseService.stopDataWatcher();
+    syncGuard.stopSyncGuard();
     await closeServer(server);
     fs.rmSync(tempRoot, { recursive: true, force: true });
   }

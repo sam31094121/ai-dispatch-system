@@ -173,6 +173,9 @@
         if (result.success) {
           const prevServerVersion = this.serverDataVersion;
           this.serverDataVersion = result.serverDataVersion || 0;
+          if (!this.currentDataVersion && this.serverDataVersion) {
+            this.currentDataVersion = this.serverDataVersion;
+          }
 
           // 同步狀態更新
           const prevStatus = this.syncStatus;

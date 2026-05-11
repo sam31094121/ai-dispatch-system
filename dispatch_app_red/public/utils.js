@@ -105,6 +105,17 @@
           if (data.type === 'data_updated') {
             this.retryCount = 0;
             this.emitUpdate(data);
+            // 同步守衛：將後端 dataVersion 轉發給 sync-client
+            if (data.dataVersion && window._dispatchSyncClient) {
+              window._dispatchSyncClient.setDataVersion(data.dataVersion);
+            }
+          }
+          // 同步守衛：處理 force_sync 強制同步事件
+          if (data.type === 'force_sync') {
+            this.emitUpdate(data);
+            if (data.dataVersion && window._dispatchSyncClient) {
+              window._dispatchSyncClient.setDataVersion(0); // 強制觸發重新抓取
+            }
           }
         } catch (error) {
           console.error('[SSE] failed to parse update', error);
