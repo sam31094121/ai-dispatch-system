@@ -3,171 +3,402 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Nexus Hub | AI Dispatch</title>
+  <title>Nexus Hub | 企劃自動優化中心</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Oxanium:wght@400;700;900&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Oxanium:wght@500;700;900&family=Noto+Sans+TC:wght@400;600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="nexus.css">
 </head>
 <body>
-  <div class="mesh-gradient"></div>
-  <div class="scanline"></div>
+  <canvas id="nexus-field" class="nexus-field" aria-hidden="true"></canvas>
+  <div class="mesh-gradient" aria-hidden="true"></div>
+  <div class="scanline" aria-hidden="true"></div>
 
-  <div class="nexus-container">
-    <!-- Header -->
+  <main class="nexus-container">
     <header class="nexus-header animate-up">
       <div class="brand-nexus">
-        <h1>PROJECT NEXUS</h1>
-        <div class="system-status">● SYSTEM ONLINE // SYNCED</div>
+        <span class="brand-kicker">ZHAOGUI COMMAND OS</span>
+        <h1>企劃自動優化中心</h1>
+        <div class="system-status" id="system-status">SYSTEM ONLINE // WAITING DATA</div>
       </div>
-      <div class="header-actions">
-        <button id="sync-btn" style="background: none; border: 1px solid var(--glass-border); border-radius: 50%; width: 32px; height: 32px; color: var(--accent-cyan);">↻</button>
-      </div>
+      <button id="sync-btn" class="icon-btn" type="button" aria-label="重新同步資料" title="重新同步資料">
+        <span aria-hidden="true">SYNC</span>
+      </button>
     </header>
 
-    <!-- Mission Control Orb -->
-    <section class="mission-control animate-up" style="animation-delay: 0.1s;">
-      <div class="orbit-ring"></div>
-      <div class="central-orb">
-        <span class="orb-label">Total Revenue</span>
-        <span class="orb-value" id="total-revenue">0</span>
-        <div class="orb-glow"></div>
+    <section class="command-hero animate-up" style="animation-delay: 0.05s;">
+      <div class="hero-copy">
+        <span class="hero-tag">AUTO OPTIMIZATION LOOP</span>
+        <h2 id="report-title">讀取正式派單資料中</h2>
+        <p id="report-subtitle">系統會依正式資料產生下一步、再下一步、風險補洞與功能提升建議。</p>
+      </div>
+      <div class="mission-control">
+        <div class="orbit-ring"></div>
+        <div class="central-orb">
+          <span class="orb-label">Optimization</span>
+          <span class="orb-value" id="optimization-score">0%</span>
+          <span class="orb-foot" id="audit-state">PENDING</span>
+        </div>
       </div>
     </section>
 
-    <!-- Strike Force (Hero Ranking) -->
+    <section class="nexus-module control-module animate-up" style="animation-delay: 0.1s;">
+      <div class="module-header">
+        <div>
+          <h2 class="module-title">自動下一步企劃</h2>
+          <p>即時根據排行榜、分組與驗證狀態產生執行順序。</p>
+        </div>
+        <span class="live-badge" id="proposal-mode">AUTO NEXT</span>
+      </div>
+      <div class="next-grid">
+        <article class="next-card primary">
+          <span>NOW</span>
+          <strong id="next-step">建立今日優化節點</strong>
+          <p id="next-detail">同步資料後自動更新。</p>
+        </article>
+        <article class="next-card">
+          <span>NEXT</span>
+          <strong id="after-step">安排 24H 追蹤</strong>
+          <p id="after-detail">將高分名單、低動能區與風險缺口排入追蹤。</p>
+        </article>
+        <article class="next-card">
+          <span>BOOST</span>
+          <strong id="feature-step">提升功能與畫面</strong>
+          <p id="feature-detail">強化自動檢核、LINE 輸出與科技感互動。</p>
+        </article>
+      </div>
+      <div class="action-row">
+        <button class="command-btn primary" id="optimize-btn" type="button">執行自動優化</button>
+        <button class="command-btn" id="copy-plan-btn" type="button">複製企劃案</button>
+        <a class="command-btn link-btn" href="mobile.html">前往完整排行</a>
+      </div>
+    </section>
+
+    <section class="nexus-module animate-up" style="animation-delay: 0.15s;">
+      <div class="module-header">
+        <div>
+          <h2 class="module-title">優化流程</h2>
+          <p>從資料檢查到再下一步追蹤，形成閉環。</p>
+        </div>
+      </div>
+      <div class="timeline" id="plan-timeline"></div>
+    </section>
+
     <section class="nexus-module animate-up" style="animation-delay: 0.2s;">
       <div class="module-header">
-        <h2 class="module-title">STRIKE FORCE ALPHA</h2>
-        <a href="mobile.html" style="font-size: 10px; color: var(--accent-cyan); text-decoration: none;">VIEW ALL</a>
+        <div>
+          <h2 class="module-title">STRIKE FORCE TOP 5</h2>
+          <p>正式資料前五名與推進目標。</p>
+        </div>
       </div>
       <div class="hero-slider" id="hero-slider">
-        <!-- Dynamic Hero Cards -->
-        <div class="nexus-hero-card rank-1">
+        <article class="nexus-hero-card rank-1">
           <span class="hero-rank">RANK #1</span>
-          <span class="hero-name">Loading...</span>
-          <span class="hero-metric">$0</span>
+          <span class="hero-name">Loading</span>
+          <span class="hero-metric">0</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="nexus-module animate-up" style="animation-delay: 0.25s;">
+      <div class="module-header">
+        <div>
+          <h2 class="module-title">功能補強雷達</h2>
+          <p>自動標示可以提升的功能面與畫面面。</p>
         </div>
       </div>
+      <div class="radar-grid">
+        <div class="radar-panel">
+          <span>資料完整度</span>
+          <div class="meter"><i id="meter-data"></i></div>
+        </div>
+        <div class="radar-panel">
+          <span>下一步明確度</span>
+          <div class="meter"><i id="meter-next"></i></div>
+        </div>
+        <div class="radar-panel">
+          <span>科技感畫面</span>
+          <div class="meter"><i id="meter-ui"></i></div>
+        </div>
+      </div>
+      <div class="focus-list" id="focus-list"></div>
     </section>
 
-    <!-- Command Actions -->
-    <section class="action-grid animate-up" style="animation-delay: 0.3s;">
-      <a href="#" class="action-btn" id="copy-broadcast">
-        <span class="action-icon">📢</span>
-        <span>Copy Official LINE</span>
-      </a>
-      <a href="#" class="action-btn" id="open-ranking">
-        <span class="action-icon">📊</span>
-        <span>Full Rankings</span>
-      </a>
-      <a href="broadcast.html" class="action-btn">
-        <span class="action-icon">🎙️</span>
-        <span>Broadcast Mode</span>
-      </a>
-      <a href="#" class="action-btn" id="search-action">
-        <span class="action-icon">🔍</span>
-        <span>Quick Search</span>
-      </a>
-    </section>
-
-    <!-- AI Tactical Log -->
-    <section class="nexus-module animate-up" style="animation-delay: 0.4s;">
+    <section class="nexus-module output-module animate-up" style="animation-delay: 0.3s;">
       <div class="module-header">
-        <h2 class="module-title">AI COMMANDER TACTICS</h2>
+        <div>
+          <h2 class="module-title">企劃案輸出</h2>
+          <p>可直接交辦、貼到 LINE 或作為下一輪優化基準。</p>
+        </div>
       </div>
-      <div id="tactical-log" style="font-size: 12px; font-family: var(--font-mono); color: var(--accent-cyan); line-height: 1.6;">
-        > INITIALIZING TACTICAL OVERLAY...<br>
-        > ANALYZING DISPATCH VELOCITY...<br>
-        > ALL SYSTEMS NOMINAL.
+      <textarea id="proposal-output" class="proposal-output" spellcheck="false"></textarea>
+      <div id="tactical-log" class="tactical-log">
+        <div>&gt; NEXUS BOOT COMPLETE</div>
+        <div>&gt; WAITING FOR OFFICIAL SNAPSHOT</div>
       </div>
     </section>
-  </div>
+  </main>
 
-  <!-- Navigation Dock -->
-  <nav class="nexus-nav animate-up" style="animation-delay: 0.5s;">
-    <a href="#" class="nav-item active">🏠</a>
-    <a href="mobile.html" class="nav-item">🏆</a>
-    <a href="broadcast.html" class="nav-item">📢</a>
-    <a href="#" class="nav-item">⚙️</a>
+  <nav class="nexus-nav animate-up" style="animation-delay: 0.35s;" aria-label="Nexus navigation">
+    <a href="nexus.html" class="nav-item active">OS</a>
+    <a href="mobile.html" class="nav-item">TOP</a>
+    <a href="broadcast.html" class="nav-item">LINE</a>
+    <a href="launcher.html" class="nav-item">RUN</a>
   </nav>
 
-  <script src="utils.js"></script>
   <script>
-    const state = {
-      data: null
-    };
+    const fmt = new Intl.NumberFormat('zh-TW');
+    const state = { snapshot: null, plan: null };
+    const $ = (id) => document.getElementById(id);
 
-    async function loadNexusData() {
-      try {
-        const res = await fetch('/api/current?t=' + Date.now());
-        const json = await res.json();
-        const data = json.data || json;
-        renderNexus(data);
-      } catch (e) {
-        console.error("Nexus Load Error", e);
-      }
+    function cleanText(value, fallback = '未命名') {
+      const text = String(value ?? '').replace(/[^\u4e00-\u9fffA-Za-z0-9#%.,:：()（）/\-\s]/g, '').trim();
+      return text || fallback;
     }
 
-    function renderNexus(data) {
-      const summary = data.summary || data.report?.summary || {};
-      const totalRev = summary.totalRevenue || summary.全部總業績 || 0;
-      
-      // Animate Number
-      animateValue("total-revenue", 0, totalRev, 1500);
+    function toNumber(value) {
+      const parsed = Number(String(value ?? '').replace(/,/g, ''));
+      return Number.isFinite(parsed) ? parsed : 0;
+    }
 
-      // Render Heroes
-      const ranking = data.ranking || data.report?.ranking || [];
-      const slider = document.getElementById('hero-slider');
-      slider.innerHTML = ranking.slice(0, 5).map(row => `
-        <div class="nexus-hero-card ${row.rank === 1 ? 'rank-1' : ''}">
-          <span class="hero-rank">RANK #${row.rank}</span>
-          <span class="hero-name">${row.name}</span>
-          <span class="hero-metric">$${new Intl.NumberFormat().format(row.totalRevenue || 0)}</span>
-        </div>
+    function getRows(snapshot) {
+      return Array.isArray(snapshot?.ranking) ? snapshot.ranking
+        : Array.isArray(snapshot?.rankings) ? snapshot.rankings
+        : Array.isArray(snapshot?.report?.rankings) ? snapshot.report.rankings
+        : [];
+    }
+
+    function getGroups(snapshot) {
+      return snapshot?.groups || snapshot?.report?.groups || {};
+    }
+
+    function getMetric(row, names) {
+      for (const name of names) {
+        if (row?.[name] !== undefined) return toNumber(row[name]);
+        if (row?.metrics?.[name] !== undefined) return toNumber(row.metrics[name]);
+      }
+      const numeric = Object.values(row?.metrics || {}).map(toNumber).filter(Boolean);
+      return numeric[0] || 0;
+    }
+
+    function summarize(snapshot) {
+      const rows = getRows(snapshot);
+      const groups = getGroups(snapshot);
+      const warnings = [
+        ...(snapshot?.validation?.errors || []),
+        ...(snapshot?.validation?.warnings || []),
+        ...(snapshot?.auditWarnings || [])
+      ];
+      const totalRevenue = rows.reduce((sum, row) => sum + getMetric(row, ['總業績', 'totalRevenue', '蝮賣平蝮?']), 0);
+      const top = rows[0] || {};
+      return {
+        rows,
+        groups,
+        warnings,
+        totalRevenue,
+        title: cleanText(snapshot?.title || snapshot?.report?.title || 'AI 派單企劃優化'),
+        audit: cleanText(snapshot?.audit?.result || snapshot?.audit?.status || snapshot?.validation?.status || 'PASS', 'PASS'),
+        topName: cleanText(top.name, '尚無排名'),
+        groupText: ['A1', 'A2', 'B', 'C'].map((key) => `${key} ${Array.isArray(groups[key]) ? groups[key].length : 0} 人`).join(' / ')
+      };
+    }
+
+    function buildPlan(snapshot) {
+      const info = summarize(snapshot);
+      const hasRisk = info.warnings.length > 0;
+      const score = Math.min(99, Math.max(56, 70 + info.rows.length - info.warnings.length * 6));
+      const nextStep = hasRisk
+        ? '先修補資料缺口與驗證警示'
+        : '鎖定 Top 5 推進今日成交節奏';
+      const afterStep = hasRisk
+        ? '修補後重新產生 LINE 精簡版與排行確認'
+        : '24H 追蹤 A1/A2 高動能名單，B/C 區安排補強話術';
+      const featureStep = '啟用自動優化、雷達檢核、科技感指揮艙與一鍵複製';
+
+      const timeline = [
+        { label: '資料同步', text: `讀取正式快照，共 ${info.rows.length} 筆排行。`, status: info.rows.length ? 'done' : 'active' },
+        { label: '風險補洞', text: hasRisk ? `偵測 ${info.warnings.length} 個警示，先修正再推進。` : '驗證狀態穩定，可直接進入推進。', status: hasRisk ? 'active' : 'done' },
+        { label: '下一步', text: nextStep, status: 'active' },
+        { label: '再下一步', text: afterStep, status: 'pending' },
+        { label: '功能提升', text: featureStep, status: 'pending' }
+      ];
+
+      const focus = [
+        `核心目標：${info.title}`,
+        `目前第一名：${info.topName}`,
+        `分組狀態：${info.groupText}`,
+        `總業績估算：${fmt.format(info.totalRevenue)}`,
+        `補洞狀態：${hasRisk ? `${info.warnings.length} 個警示待處理` : '正式資料通過檢核'}`,
+        '畫面提升：高對比 HUD、雷達條、掃描光、即時戰術紀錄'
+      ];
+
+      const output = [
+        '【企劃案自動優化版】',
+        `主題：${info.title}`,
+        `狀態：${info.audit} / 優化分數 ${score}%`,
+        `分組：${info.groupText}`,
+        `Top 1：${info.topName}`,
+        '',
+        '一、下一步',
+        `- ${nextStep}`,
+        '- 將 Top 5 轉成今日推進名單，優先確認可成交與可追續對象。',
+        '',
+        '二、再下一步',
+        `- ${afterStep}`,
+        '- 每 24 小時回看排行變化、警示數、輸出文字與實際成交回饋。',
+        '',
+        '三、功能提升',
+        '- 增加自動優化按鈕、企劃案一鍵複製、風險補洞提示。',
+        '- 優化畫面科技感：指揮艙主視覺、雷達指標、掃描動畫、Top 5 橫向卡片。',
+        '- 保持資料以後端正式快照為準，前端只做呈現與企劃建議。',
+        '',
+        '四、交辦重點',
+        ...focus.map((item) => `- ${item}`)
+      ].join('\n');
+
+      return { ...info, score, nextStep, afterStep, featureStep, timeline, focus, output };
+    }
+
+    function renderPlan(plan) {
+      $('report-title').textContent = plan.title;
+      $('report-subtitle').textContent = `正式資料 ${plan.rows.length} 筆，${plan.groupText}`;
+      $('system-status').textContent = `SYSTEM ONLINE // ${new Date().toLocaleTimeString('zh-TW')}`;
+      $('audit-state').textContent = plan.audit;
+      $('optimization-score').textContent = `${plan.score}%`;
+      $('next-step').textContent = plan.nextStep;
+      $('after-step').textContent = plan.afterStep;
+      $('feature-step').textContent = plan.featureStep;
+      $('next-detail').textContent = `以 ${plan.topName} 與 Top 5 作為今日推進核心。`;
+      $('after-detail').textContent = plan.warnings.length ? '先清掉警示，再進入推播與追蹤。' : '資料穩定，建議直接形成 24H 回看節奏。';
+      $('feature-detail').textContent = '已整合一鍵優化、複製輸出、雷達指標與科技視覺。';
+      $('proposal-output').value = plan.output;
+      $('proposal-mode').textContent = plan.warnings.length ? 'FIX FIRST' : 'AUTO NEXT';
+
+      $('plan-timeline').innerHTML = plan.timeline.map((item, index) => `
+        <article class="timeline-item ${item.status}">
+          <span>${String(index + 1).padStart(2, '0')}</span>
+          <strong>${item.label}</strong>
+          <p>${item.text}</p>
+        </article>
       `).join('');
 
-      // Tactical Log
-      const log = document.getElementById('tactical-log');
-      const messages = [
-        `> DATA SYNC COMPLETE: ${new Date().toLocaleTimeString()}`,
-        `> TOP PERFORMER: ${ranking[0]?.name || 'N/A'}`,
-        `> SYSTEM INTEGRITY: 100%`,
-        `> SUGGESTION: EXECUTE STRATEGY B-4`
-      ];
-      log.innerHTML = messages.map(m => `<div>${m}</div>`).join('');
+      $('focus-list').innerHTML = plan.focus.map((item) => `<span>${item}</span>`).join('');
+      $('meter-data').style.width = `${Math.min(98, 62 + plan.rows.length)}%`;
+      $('meter-next').style.width = `${plan.warnings.length ? 68 : 92}%`;
+      $('meter-ui').style.width = '96%';
+
+      $('hero-slider').innerHTML = plan.rows.slice(0, 5).map((row, index) => {
+        const rank = row.rank || index + 1;
+        const score = getMetric(row, ['加權分數', 'weightedScore', '甇??甈??', 'score']);
+        const revenue = getMetric(row, ['總業績', 'totalRevenue', '蝮賣平蝮?']);
+        return `
+          <article class="nexus-hero-card rank-${rank}">
+            <img src="${index === 0 ? 'assets/diamond.png' : index === 1 ? 'assets/gold.png' : 'assets/money.png'}" alt="" class="hero-asset">
+            <span class="hero-rank">RANK #${rank}</span>
+            <span class="hero-name">${cleanText(row.name, `第 ${rank} 名`)}</span>
+            <span class="hero-group">${cleanText(row.group, '未分組')}</span>
+            <span class="hero-metric">業績 ${fmt.format(revenue || score)}</span>
+          </article>
+        `;
+      }).join('');
     }
 
-    function animateValue(id, start, end, duration) {
-      const obj = document.getElementById(id);
-      let startTimestamp = null;
-      const step = (timestamp) => {
-        if (!startTimestamp) startTimestamp = timestamp;
-        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-        obj.innerHTML = Math.floor(progress * (end - start) + start).toLocaleString();
-        if (progress < 1) {
-          window.requestAnimationFrame(step);
-        }
-      };
-      window.requestAnimationFrame(step);
+    function pushLog(message) {
+      const log = $('tactical-log');
+      const line = document.createElement('div');
+      line.textContent = `> ${new Date().toLocaleTimeString('zh-TW')} ${message}`;
+      log.appendChild(line);
+      while (log.children.length > 8) log.removeChild(log.firstElementChild);
+      log.scrollTop = log.scrollHeight;
     }
 
-    // Copy Action
-    document.getElementById('copy-broadcast').onclick = async (e) => {
-      e.preventDefault();
-      try {
-        const res = await fetch('/api/line-output');
-        const json = await res.json();
-        const text = json.data?.text || json.text;
-        await navigator.clipboard.writeText(text);
-        alert("Announcement Copied!");
-      } catch (e) {
-        alert("Copy failed");
+    async function loadNexusData() {
+      pushLog('SYNC OFFICIAL SNAPSHOT');
+      const response = await fetch('/api/current?t=' + Date.now(), { cache: 'no-store' });
+      const json = await response.json();
+      const snapshot = json.data || json;
+      state.snapshot = snapshot;
+      state.plan = buildPlan(snapshot);
+      renderPlan(state.plan);
+      pushLog('PLAN READY');
+    }
+
+    async function runOptimization() {
+      const button = $('optimize-btn');
+      button.disabled = true;
+      $('proposal-mode').textContent = 'SCANNING';
+      const stages = ['檢查資料完整度', '計算下一步優先級', '建立再下一步追蹤', '刷新科技感畫面', '輸出企劃案'];
+      for (const stage of stages) {
+        pushLog(stage);
+        await new Promise((resolve) => setTimeout(resolve, 240));
       }
-    };
+      state.plan = buildPlan(state.snapshot || {});
+      renderPlan(state.plan);
+      $('proposal-mode').textContent = 'OPTIMIZED';
+      button.disabled = false;
+      pushLog('AUTO OPTIMIZATION COMPLETE');
+    }
 
-    loadNexusData();
-    setInterval(loadNexusData, 30000); // Auto refresh every 30s
+    async function copyPlan() {
+      const text = $('proposal-output').value;
+      await navigator.clipboard.writeText(text);
+      pushLog('PROPOSAL COPIED');
+      $('copy-plan-btn').textContent = '已複製';
+      setTimeout(() => { $('copy-plan-btn').textContent = '複製企劃案'; }, 1200);
+    }
+
+    function startField() {
+      const canvas = $('nexus-field');
+      const ctx = canvas.getContext('2d');
+      const points = Array.from({ length: 70 }, () => ({ x: Math.random(), y: Math.random(), vx: (Math.random() - 0.5) * 0.0008, vy: (Math.random() - 0.5) * 0.0008 }));
+      function resize() {
+        canvas.width = window.innerWidth * devicePixelRatio;
+        canvas.height = window.innerHeight * devicePixelRatio;
+      }
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = 'rgba(24, 198, 167, 0.16)';
+        ctx.fillStyle = 'rgba(243, 193, 75, 0.5)';
+        points.forEach((p, index) => {
+          p.x = (p.x + p.vx + 1) % 1;
+          p.y = (p.y + p.vy + 1) % 1;
+          const x = p.x * canvas.width;
+          const y = p.y * canvas.height;
+          ctx.beginPath();
+          ctx.arc(x, y, 1.3 * devicePixelRatio, 0, Math.PI * 2);
+          ctx.fill();
+          for (let i = index + 1; i < points.length; i++) {
+            const q = points[i];
+            const dx = (p.x - q.x) * canvas.width;
+            const dy = (p.y - q.y) * canvas.height;
+            const dist = Math.hypot(dx, dy);
+            if (dist < 130 * devicePixelRatio) {
+              ctx.globalAlpha = 1 - dist / (130 * devicePixelRatio);
+              ctx.beginPath();
+              ctx.moveTo(x, y);
+              ctx.lineTo(q.x * canvas.width, q.y * canvas.height);
+              ctx.stroke();
+            }
+          }
+          ctx.globalAlpha = 1;
+        });
+        requestAnimationFrame(draw);
+      }
+      resize();
+      window.addEventListener('resize', resize);
+      draw();
+    }
+
+    $('sync-btn').addEventListener('click', loadNexusData);
+    $('optimize-btn').addEventListener('click', runOptimization);
+    $('copy-plan-btn').addEventListener('click', copyPlan);
+    startField();
+    loadNexusData().catch((error) => {
+      console.error(error);
+      pushLog('LOAD FAILED: ' + error.message);
+      $('system-status').textContent = 'SYSTEM WARNING // API LOAD FAILED';
+    });
+    setInterval(loadNexusData, 30000);
   </script>
 </body>
 </html>

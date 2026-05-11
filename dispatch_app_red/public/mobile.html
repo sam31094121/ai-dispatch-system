@@ -150,13 +150,28 @@
           </div>
         </div>
         
-        <!-- AI 戰術建議區塊 (New) -->
-        <div class="ai-tactical-panel">
-          <div class="tactical-header">AI COMMANDER TACTICS</div>
-          <div class="tactical-content" id="ai-tactical-advice">
-            分析目前派單動能中... 建議 A1 首席加強資源覆蓋...
+        <!-- AI 戰略指揮中心 (Project Genesis Upgrade) -->
+        <div class="ai-command-suite">
+          <div class="suite-header">
+            <div class="ai-sphere-mini"></div>
+            <span>AI STRATEGIC COMMANDER</span>
+            <div class="status-blink">LIVE</div>
           </div>
-          <div class="tactical-footer">REAL-TIME STRATEGY OPTIMIZER</div>
+          
+          <div class="suite-body">
+            <div class="tactical-content" id="ai-tactical-advice">
+              系統已就緒，等待深度優化指令...
+            </div>
+            <div class="next-step-badge" id="next-step-hint">NEXT STEP: WAITING SCAN</div>
+          </div>
+
+          <div class="suite-actions">
+            <button id="btn-auto-optimize" class="btn-cyber-primary">
+              <span class="btn-text">自動優化企劃案</span>
+              <div class="btn-scan-line"></div>
+            </button>
+            <button id="btn-next-step" class="btn-cyber-secondary">推演下一步</button>
+          </div>
         </div>
 
         <div id="summary-grid" class="summary-grid"></div>

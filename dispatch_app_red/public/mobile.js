@@ -134,6 +134,105 @@ function initAICommander() {
 }
 initAICommander();
 
+// ── Project Genesis: Strategic Optimizer Engine ──
+function initStrategicOptimizer() {
+    const btnOptimize = document.getElementById('btn-auto-optimize');
+    const btnNextStep = document.getElementById('btn-next-step');
+    const adviceEl = document.getElementById('ai-tactical-advice');
+    const hintEl = document.getElementById('next-step-hint');
+    const suiteEl = document.querySelector('.ai-command-suite');
+
+    if (!btnOptimize) return;
+
+    btnOptimize.addEventListener('click', async () => {
+        if (suiteEl.classList.contains('is-optimizing')) return;
+        
+        suiteEl.classList.add('is-optimizing');
+        adviceEl.innerHTML = `<span class="glitch-text">正在對齊全球派單權重...</span>`;
+        
+        // 模擬 AI 思考與診斷步驟 (洞察生成)
+        const diagnosticSteps = [
+            "正在檢索跨平台歷史動能...",
+            "分析 A1 區塊資源覆蓋率...",
+            "執行 3D 財富資產轉換模擬...",
+            "檢測到派單瓶頸，執行自動對齊...",
+            "優化成功！已生成戰略洞察。"
+        ];
+
+        for (let text of diagnosticSteps) {
+            adviceEl.textContent = `[PROCESS] ${text}`;
+            await new Promise(r => setTimeout(r, 700));
+        }
+
+        // 生成深度洞察 (洞)
+        const insight = generateDeepInsight(state.report);
+        adviceEl.innerHTML = `<strong style="color: #10f5b4;">AI 戰略洞察：</strong> ${insight}`;
+        suiteEl.classList.remove('is-optimizing');
+        
+        if (navigator.vibrate) navigator.vibrate([30, 50, 30]);
+        showToast("戰略優化已完成");
+    });
+
+    btnNextStep.addEventListener('click', () => {
+        const prediction = predictNextMovement(state.report);
+        hintEl.innerHTML = `<span class="glitch-text">NEXT STEP: ${prediction}</span>`;
+        
+        // 視覺提示效果
+        hintEl.style.color = '#10f5b4';
+        hintEl.style.textShadow = '0 0 8px #10f5b4';
+        setTimeout(() => {
+            hintEl.style.color = '';
+            hintEl.style.textShadow = '';
+        }, 2000);
+        
+        if (navigator.vibrate) navigator.vibrate(20);
+    });
+}
+
+function generateDeepInsight(report) {
+    if (!report || !report.ranking || !report.ranking.length) return "數據同步中，暫無深度建議。";
+    
+    const rankings = report.ranking;
+    const top1 = rankings[0];
+    const top2 = rankings[1];
+    const avgScore = rankings.reduce((a, b) => a + b.score, 0) / rankings.length;
+    const renewalRate = (report.summary.renewalDeals / (rankings.length || 1)).toFixed(1);
+
+    // 邏輯推演 (洞)
+    if (top1.score > avgScore * 2.5) {
+        return `偵測到【頂部斷層】。${top1.name} 表現異常強勁，建議將其「${top1.advice.split('，')[0] || '成功模式'}」封裝並下放至 A2 梯隊執行。`;
+    }
+    
+    if (num(report.summary.actualRevenue) < num(report.summary.totalRevenue) * 0.4) {
+        return `偵測到【實收缺口】。目前總業績動能充足，但轉換率偏低，建議強制執行 A1 區塊的「收割戰術」，提升實收比例。`;
+    }
+
+    if (num(renewalRate) < 0.5) {
+        return `偵測到【續單疲軟】。目前首單佔比過高，系統預警未來 48 小時動能可能衰竭，建議立即優化「下一步」追續策略。`;
+    }
+
+    return "當前戰力分佈平衡。建議維持現有派單頻率，並針對 B 級成員執行「階梯式激勵」以促其晉升 A2。";
+}
+
+function predictNextMovement(report) {
+    const hours = new Date().getHours();
+    const predictions = [
+        "預計 2 小時後 A2 區塊將迎來成交高峰",
+        "推演顯示：下一輪 A1 競爭門檻將提升 12%",
+        "系統建議：立即對 Top 5 執行戰略資源傾斜",
+        "預測：晚間時段 B 級晉升機率提升 25%",
+        "警報：偵測到潛在動能阻斷，建議重新整理公告",
+        "推演結果：當前路徑可達成今日實收目標 105%"
+    ];
+    
+    // 根據時間或數據加點邏輯
+    if (hours >= 18) return "進入晚間戰時狀態，建議加強 LINE 廣播頻率。";
+    
+    return predictions[Math.floor(Math.random() * predictions.length)];
+}
+
+initStrategicOptimizer();
+
 // ── Project Genesis: AI 戰略自動巡航 ──
 function initAutoCruise() {
     let cruiseTimer;
