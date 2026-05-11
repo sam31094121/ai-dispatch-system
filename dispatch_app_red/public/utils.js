@@ -207,7 +207,39 @@
     }
   };
 
+  /**
+   * 數位解碼動畫：將數字以跳動方式呈現，增加科技感。
+   * @param {HTMLElement} el 目標元素
+   * @param {number} targetValue 目標數值
+   * @param {string} prefix 前綴 (如 $)
+   * @param {number} duration 動畫時長 (ms)
+   */
+  function digitDecoder(el, targetValue, prefix = '', duration = 1000) {
+    if (!el) return;
+    const startValue = 0;
+    const startTime = performance.now();
+
+    function update(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easeOutQuad = 1 - (1 - progress) * (1 - progress);
+      const currentValue = Math.floor(startValue + (targetValue - startValue) * easeOutQuad);
+      
+      // 隨動數位噪點
+      const noise = progress < 1 ? Math.floor(Math.random() * 99) : '';
+      el.textContent = `${prefix}${new Intl.NumberFormat('zh-TW').format(currentValue)}${noise ? '.' + noise : ''}`;
+
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      } else {
+        el.textContent = `${prefix}${new Intl.NumberFormat('zh-TW').format(targetValue)}`;
+      }
+    }
+    requestAnimationFrame(update);
+  }
+
   window.normalizeReport = normalizeReport;
   window.ReportOfficialSync = ReportOfficialSync;
   window.RealtimeSyncEngine = RealtimeSyncEngine;
+  window.digitDecoder = digitDecoder;
 })();

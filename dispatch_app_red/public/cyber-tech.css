@@ -159,32 +159,69 @@ body.command-center {
     }
 }
 
-/* 使用偽元素替代 background-attachment: fixed，解決手機捲動卡頓 */
+/* ── Project Apex: 極致科技感背景 (War Room Depth) ── */
 body.mobile-command-center::before {
     content: "";
     position: fixed;
     inset: 0;
     z-index: -1;
-    background-image: 
-        radial-gradient(circle at 10% 10%, rgba(243, 193, 75, 0.08) 0%, transparent 40%),
-        radial-gradient(circle at 90% 90%, rgba(169, 53, 53, 0.08) 0%, transparent 40%),
-        linear-gradient(rgba(243, 193, 75, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(243, 193, 75, 0.02) 1px, transparent 1px),
-        linear-gradient(180deg, #2b180d 0%, #130c08 100%) !important;
-    background-size: cover, cover, 40px 40px, 40px 40px, cover !important;
-    background-repeat: no-repeat, no-repeat, repeat, repeat, no-repeat !important;
+    background: 
+        radial-gradient(circle at 50% 50%, rgba(243, 193, 75, 0.05) 0%, transparent 80%),
+        linear-gradient(rgba(243, 193, 75, 0.01) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(243, 193, 75, 0.01) 1px, transparent 1px),
+        linear-gradient(180deg, #090e15 0%, #05080c 100%) !important;
+    background-size: cover, 30px 30px, 30px 30px, cover !important;
     pointer-events: none;
 }
 
-/* 簡化噪點濾鏡，移除昂貴的 mix-blend-mode */
+/* 數位雷達掃描線 */
 body::after {
     content: "";
     position: fixed;
-    inset: 0;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba(243, 193, 75, 0.08) 50%,
+        transparent 51%
+    );
+    z-index: 1000;
     pointer-events: none;
-    z-index: 100;
-    opacity: 0.08; /* 調低不透明度以補償移除混合模式的視覺差異 */
-    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='oil'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23oil)'/%3E%3C/svg%3E");
+    animation: radar-scan 8s linear infinite;
+}
+
+@keyframes radar-scan {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(200%); }
+}
+
+/* ── 全像投影卡片升級 (Holographic Cards) ── */
+.panel, .lc-card, .a1-hero-grid > div, .ranking-card, .a1-hero-card, .hero-line-compact {
+    background: rgba(16, 24, 39, 0.8) !important;
+    border: 1px solid rgba(243, 193, 75, 0.2) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    box-shadow: 
+        0 10px 40px rgba(0,0,0,0.6),
+        inset 0 0 20px rgba(243, 193, 75, 0.05) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 卡片邊角的「數位鎖定器」 */
+.panel::after, .a1-hero-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(to right, var(--oil-gold-bright) 2px, transparent 2px),
+        linear-gradient(to bottom, var(--oil-gold-bright) 2px, transparent 2px);
+    background-size: 15px 15px;
+    background-repeat: no-repeat;
+    opacity: 0.3;
+    pointer-events: none;
 }
 
 /* 廣播系統專屬優化 (Oil Broadcast) */
