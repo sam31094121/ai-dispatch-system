@@ -164,8 +164,8 @@ function initStrategicOptimizer() {
             await new Promise(r => setTimeout(r, 700));
         }
 
-        // 生成深度洞察 (洞)
-        const insight = generateDeepInsight(state.report);
+        // 從後端拉取深度洞察 (洞)
+        const insight = state.report?.aiStrategy?.insight || generateDeepInsight(state.report);
         adviceEl.innerHTML = `<strong style="color: #10f5b4;">AI 戰略洞察：</strong> ${insight}`;
         suiteEl.classList.remove('is-optimizing');
         
@@ -174,7 +174,7 @@ function initStrategicOptimizer() {
     });
 
     btnNextStep.addEventListener('click', () => {
-        const prediction = predictNextMovement(state.report);
+        const prediction = state.report?.aiStrategy?.nextStep || predictNextMovement(state.report);
         hintEl.innerHTML = `<span class="glitch-text">NEXT STEP: ${prediction}</span>`;
         
         // 視覺提示效果
@@ -189,45 +189,20 @@ function initStrategicOptimizer() {
     });
 }
 
+// 保留本地備用推演邏輯 (Fallbacks)
 function generateDeepInsight(report) {
     if (!report || !report.ranking || !report.ranking.length) return "數據同步中，暫無深度建議。";
     
     const rankings = report.ranking;
     const top1 = rankings[0];
-    const top2 = rankings[1];
     const avgScore = rankings.reduce((a, b) => a + b.score, 0) / rankings.length;
-    const renewalRate = (report.summary.renewalDeals / (rankings.length || 1)).toFixed(1);
-
-    // 邏輯推演 (洞)
-    if (top1.score > avgScore * 2.5) {
-        return `偵測到【頂部斷層】。${top1.name} 表現異常強勁，建議將其「${top1.advice.split('，')[0] || '成功模式'}」封裝並下放至 A2 梯隊執行。`;
-    }
     
-    if (num(report.summary.actualRevenue) < num(report.summary.totalRevenue) * 0.4) {
-        return `偵測到【實收缺口】。目前總業績動能充足，但轉換率偏低，建議強制執行 A1 區塊的「收割戰術」，提升實收比例。`;
-    }
-
-    if (num(renewalRate) < 0.5) {
-        return `偵測到【續單疲軟】。目前首單佔比過高，系統預警未來 48 小時動能可能衰竭，建議立即優化「下一步」追續策略。`;
-    }
-
-    return "當前戰力分佈平衡。建議維持現有派單頻率，並針對 B 級成員執行「階梯式激勵」以促其晉升 A2。";
+    if (top1.score > avgScore * 2.5) return `偵測到【頂部斷層】。建議將 ${top1.name} 成功模式下放。`;
+    return "戰力分佈平衡，建議針對 B 級成員執行階梯式激勵。";
 }
 
 function predictNextMovement(report) {
-    const hours = new Date().getHours();
-    const predictions = [
-        "預計 2 小時後 A2 區塊將迎來成交高峰",
-        "推演顯示：下一輪 A1 競爭門檻將提升 12%",
-        "系統建議：立即對 Top 5 執行戰略資源傾斜",
-        "預測：晚間時段 B 級晉升機率提升 25%",
-        "警報：偵測到潛在動能阻斷，建議重新整理公告",
-        "推演結果：當前路徑可達成今日實收目標 105%"
-    ];
-    
-    // 根據時間或數據加點邏輯
-    if (hours >= 18) return "進入晚間戰時狀態，建議加強 LINE 廣播頻率。";
-    
+    const predictions = ["推演顯示：下一輪 A1 競爭門檻將提升 12%", "建議：立即對 Top 5 執行戰略資源傾斜"];
     return predictions[Math.floor(Math.random() * predictions.length)];
 }
 
