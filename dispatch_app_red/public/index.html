@@ -60,14 +60,18 @@
     .qr-box:hover { transform: scale(3) translateX(-15px); z-index: 100; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
     .qr-box img { width: 100%; height: 100%; image-rendering: pixelated; }
     .qr-loading { font-size: 8px; color: #666; }
-    .qr-label { font-size: 11px; color: #00f2ff;  <div id="splash-screen">
+    .qr-label { font-size: 11px; color: #00f2ff; font-weight: 800; letter-spacing: 1px; }
+    .satellite-grid-bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: 0.3; background: radial-gradient(circle at center, #1a2a3a 0%, #050505 100%); overflow: hidden; }
+    .scan-beam { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: rgba(0, 255, 255, 0.5); animation: scan 4s linear infinite; box-shadow: 0 0 10px #00ffff; }
+    @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+  </style>
+</head>
+<body class="command-center oil-announcement">
+  <div id="splash-screen">
     <div class="splash-loader">
       <div class="splash-circle"></div>
       <div class="splash-inner-circle"></div>
       <div class="splash-logo">⚡</div>
-    </div>
-    <div class="splash-text">AI Dispatch Center</div>
-  </div>      <div class="splash-logo">⚡</div>
     </div>
     <div class="splash-text">AI Dispatch Center</div>
   </div>
