@@ -2,6 +2,15 @@ const fs = require('fs');
 const path = require('path');
 const logger = require('../utils/logger');
 
+// 延遲載入以避免循環依賴
+let _syncGuard = null;
+function getSyncGuard() {
+  if (!_syncGuard) {
+    try { _syncGuard = require('./syncGuard.service'); } catch { _syncGuard = null; }
+  }
+  return _syncGuard;
+}
+
 const HEARTBEAT_INTERVAL_MS = 25000;
 const FILE_EVENT_DEBOUNCE_MS = 250;
 
@@ -92,11 +101,16 @@ function notifyDataUpdated(meta = {}) {
   if (now - lastBroadcastAt < FILE_EVENT_DEBOUNCE_MS) return;
   lastBroadcastAt = now;
 
+  // 若有 syncGuard 則使用其正式 dataVersion
+  const guard = getSyncGuard();
+  const dataVersion = guard ? guard.getDataVersion() : now;
+
   broadcastUpdate({
     type: 'data_updated',
     timestamp: new Date().toISOString(),
     ...meta,
-    version: now
+    version: now,
+    dataVersion
   });
 }
 
