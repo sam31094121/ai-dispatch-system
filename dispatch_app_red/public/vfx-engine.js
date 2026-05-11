@@ -198,70 +198,69 @@ class MapleCoinRain {
     const ctx = this.cx;
     const { x, y, r, tilt } = c;
     
-    // 1. 計算物理變換 (3D 翻轉與脈動)
-    const rotX = Math.sin(t * 0.002 + x) * 0.4;
-    const rotY = Math.cos(t * 0.003 + y) * 0.4;
-    const scaleZ = 1 + Math.sin(t * 0.001) * 0.12;
-    
-    ctx.save();
-    ctx.translate(x, y);
-    
-    // 2. 應用 3D 空間矩陣
-    ctx.transform(
-      Math.cos(tilt) * scaleZ,
-      Math.sin(rotX) * 0.35,
-      Math.sin(rotY) * 0.35,
-      Math.cos(tilt) * scaleZ,
-      0, 0
-    );
-
-    // 3. 繪製物理陰影層 (與背景融合)
-    ctx.shadowBlur = 30;
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
-    
-    // 4. 繪製終極實體鑽石 (具備環境反射)
-    if (this.diamondImg.complete) {
-        // 第一層：基礎本體
-        ctx.globalAlpha = 0.95;
-        ctx.drawImage(this.diamondImg, -r, -r, r * 2, r * 2);
+    try {
+        // 1. 基礎物理變換
+        const rotX = Math.sin(t * 0.002 + x) * 0.4;
+        const rotY = Math.cos(t * 0.003 + y) * 0.4;
+        const scaleZ = 1 + Math.sin(t * 0.001) * 0.12;
         
-        // 第二層：動態折射強化 (Screen Mode)
-        ctx.globalCompositeOperation = 'screen';
-        ctx.globalAlpha = (Math.sin(t * 0.005) + 1) * 0.2;
-        ctx.drawImage(this.diamondImg, -r, -r, r * 2, r * 2);
-        ctx.globalCompositeOperation = 'source-over';
-    }
-
-    // 5. 極細碎火彩 (Diamond Dust Fragments)
-    const fireSeed = Math.sin(t * 0.015 + x);
-    if (fireSeed > 0.6) {
         ctx.save();
-        ctx.globalCompositeOperation = 'lighter';
-        for (let i = 0; i < 3; i++) {
-            const angle = (t * 0.05) + i;
-            const d = r * 1.2;
-            ctx.fillStyle = `hsla(${t % 360}, 100%, 90%, 0.6)`;
+        ctx.translate(x, y);
+        
+        // 2. 空間矩陣 (加入保護，防止 scale 為 0)
+        const sX = Math.max(0.1, Math.cos(tilt) * scaleZ);
+        ctx.transform(sX, Math.sin(rotX) * 0.35, Math.sin(rotY) * 0.35, sX, 0, 0);
+
+        // 3. 物理陰影
+        ctx.shadowBlur = 30;
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+        
+        // 4. 實體渲染 (加入備援機制)
+        if (this.diamondImg && this.diamondImg.complete && this.diamondImg.naturalWidth > 0) {
+            ctx.globalAlpha = 0.95;
+            ctx.drawImage(this.diamondImg, -r, -r, r * 2, r * 2);
+            
+            ctx.globalCompositeOperation = 'screen';
+            ctx.globalAlpha = (Math.sin(t * 0.005) + 1) * 0.2;
+            ctx.drawImage(this.diamondImg, -r, -r, r * 2, r * 2);
+            ctx.globalCompositeOperation = 'source-over';
+        } else {
+            // 備援：若圖片未載入，顯示幾何鑽石避免空洞
+            ctx.fillStyle = '#f3c14b';
             ctx.beginPath();
-            ctx.arc(Math.cos(angle) * d, Math.sin(angle) * d, 1, 0, Math.PI * 2);
+            ctx.moveTo(0, -r); ctx.lineTo(r, 0); ctx.lineTo(0, r); ctx.lineTo(-r, 0);
+            ctx.closePath();
             ctx.fill();
         }
-        ctx.restore();
-    }
 
-    // 6. 極致星芒閃爍
-    if (fireSeed > 0.95) {
-        ctx.beginPath();
-        const sSize = r * 1.8;
-        ctx.fillStyle = '#fff';
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = '#fff';
-        ctx.globalAlpha = 1;
-        // 銳利十字光
-        ctx.fillRect(-0.5, -sSize, 1, sSize * 2);
-        ctx.fillRect(-sSize, -0.5, sSize * 2, 1);
+        // 5. 火彩特效
+        const fireSeed = Math.sin(t * 0.015 + x);
+        if (fireSeed > 0.6) {
+            ctx.save();
+            ctx.globalCompositeOperation = 'lighter';
+            for (let i = 0; i < 3; i++) {
+                const angle = (t * 0.05) + i;
+                const d = r * 1.2;
+                ctx.fillStyle = `hsla(${t % 360}, 100%, 90%, 0.4)`;
+                ctx.beginPath(); ctx.arc(Math.cos(angle) * d, Math.sin(angle) * d, 1, 0, Math.PI * 2); ctx.fill();
+            }
+            ctx.restore();
+        }
+
+        if (fireSeed > 0.95) {
+            ctx.beginPath();
+            const sSize = r * 1.8;
+            ctx.fillStyle = '#fff';
+            ctx.shadowBlur = 20; ctx.shadowColor = '#fff';
+            ctx.fillRect(-0.5, -sSize, 1, sSize * 2);
+            ctx.fillRect(-sSize, -0.5, sSize * 2, 1);
+        }
+        
+        ctx.restore();
+    } catch (e) {
+        console.error('[VFX-Repair] 繪製異常:', e);
+        if (ctx) ctx.restore();
     }
-    
-    ctx.restore();
   }
 
   _drawBill(c, t) {
