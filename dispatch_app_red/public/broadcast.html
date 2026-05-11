@@ -1,212 +1,259 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>專業女主播廣播系統</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ZHAOGUI AI - 專業廣播指揮中心</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Oxanium:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="broadcast.css?v=20260502">
   <link rel="stylesheet" href="cyber-tech.css?v=2.0">
   <style>
+    /* ── 進化版廣播專屬極致佈局 ── */
+    body {
+      background: #09111f !important;
+      overflow-x: hidden;
+    }
+
+    /* 頂部極細導覽列 */
+    .broadcast-topbar-mini {
+      height: 44px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 15px;
+      background: rgba(0,0,0,0.5);
+      border-bottom: 1px solid var(--oil-border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+    }
+    .broadcast-topbar-mini h1 { font-size: 16px !important; margin: 0; color: var(--oil-gold-bright); }
+
+    /* 狀態橫向滑動帶 */
+    .status-scroll {
+      display: flex;
+      overflow-x: auto;
+      gap: 10px;
+      padding: 10px 15px;
+      scrollbar-width: none;
+      background: rgba(243, 193, 75, 0.05);
+    }
+    .status-scroll::-webkit-scrollbar { display: none; }
+    .status-chip {
+      flex-shrink: 0;
+      padding: 6px 12px;
+      background: rgba(58, 35, 17, 0.6);
+      border: 1px solid var(--oil-border);
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      min-width: 80px;
+    }
+    .status-chip span { font-size: 8px; color: var(--oil-gold-dark); text-transform: uppercase; }
+    .status-chip strong { font-size: 12px; color: var(--oil-gold-bright); }
+
+    /* 主播朗讀核心區 */
+    .prompter-main {
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .hero-line-compact {
+      background: rgba(243, 193, 75, 0.08);
+      border: 2px solid var(--oil-gold-bright);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: inset 0 0 30px rgba(243, 193, 75, 0.1);
+      position: relative;
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero-line-compact .hero-label {
+      position: absolute;
+      top: -10px;
+      left: 20px;
+      background: var(--oil-gold-bright);
+      color: #000;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 2px 10px;
+      border-radius: 4px;
+    }
+    .hero-line-text {
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.5;
+      color: #fff;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    /* 播放控制區 */
+    .broadcast-controls {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 8px;
+    }
+    .btn-main {
+      height: 50px;
+      border-radius: 12px;
+      border: none;
+      font-weight: 900;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    .btn-play { background: var(--oil-gold-bright); color: #000; box-shadow: 0 0 20px rgba(243, 193, 75, 0.4); }
+    .btn-secondary { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--oil-border); }
+
+    /* 段落清單 */
+    .segment-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+    .segment-item {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      text-align: left;
+      transition: all 0.3s;
+    }
+    .segment-item.active {
+      border-color: var(--oil-gold-bright);
+      background: rgba(243, 193, 75, 0.1);
+      color: var(--oil-gold-bright);
+      transform: scale(1.02);
+    }
+
+    /* 隱藏原生捲軸 */
+    .segment-list::-webkit-scrollbar { width: 3px; }
+    .segment-list::-webkit-scrollbar-thumb { background: var(--oil-gold-dark); border-radius: 10px; }
+
+    /* 設定區域抽屜感 */
+    .settings-drawer {
+      background: rgba(0,0,0,0.3);
+      border-radius: 16px;
+      padding: 15px;
+      border: 1px solid var(--oil-border);
+    }
+    .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .control-field { display: flex; flex-direction: column; gap: 4px; }
+    .control-field span { font-size: 10px; color: var(--oil-gold-dark); }
+    select, input[type="range"] { background: #1a1a1a; color: #fff; border: 1px solid #333; padding: 4px; border-radius: 4px; }
+
     #splash-screen {
-      position: fixed; inset: 0; z-index: 9999;
-      background: #0a0f18; display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      transition: opacity 0.5s ease, visibility 0.5s;
-      font-family: 'Oxanium', cursive, sans-serif;
+      position: fixed; inset: 0; z-index: 9999; background: #09111f;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
-    #splash-screen.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
-    .splash-loader { position: relative; width: 80px; height: 80px; }
-    .splash-circle {
-      position: absolute; inset: 0; border: 3px solid rgba(243, 193, 75, 0.1);
-      border-top-color: #f3c14b; border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    .splash-inner-circle {
-      position: absolute; inset: 12px; border: 2px solid rgba(24, 198, 167, 0.1);
-      border-bottom-color: #18c6a7; border-radius: 50%;
-      animation: spin 1.5s linear reverse infinite;
-    }
-    .splash-logo {
-      position: absolute; inset: 0; display: flex; align-items: center;
-      justify-content: center; font-size: 24px;
-      animation: pulse-glow 2s ease-in-out infinite;
-    }
-    .splash-text {
-      margin-top: 24px; font-size: 14px; font-weight: 800;
-      letter-spacing: 0.2em; color: #f3c14b;
-      text-transform: uppercase; text-shadow: 0 0 12px rgba(243, 193, 75, 0.4);
-    }
-    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    @keyframes pulse-glow { 0%, 100% { opacity: 0.5; filter: blur(4px); } 50% { opacity: 1; filter: blur(8px); } }
+    #splash-screen.fade-out { opacity: 0; visibility: hidden; pointer-events: none; transition: 0.8s; }
   </style>
 </head>
-<body>
+<body class="mobile-command-center">
   <div id="splash-screen">
-    <div class="splash-loader">
-      <div class="splash-circle"></div>
-      <div class="splash-inner-circle"></div>
-      <div class="splash-logo">🎤</div>
-    </div>
-    <div class="splash-text">Broadcast System</div>
+    <div style="font-size: 40px; margin-bottom: 20px;">🎤</div>
+    <div style="color: var(--oil-gold-bright); font-weight: 900; letter-spacing: 4px;">BROADCAST CORE v2</div>
   </div>
 
-  <div class="broadcast-shell" id="broadcast-shell">
-    <header class="broadcast-topbar">
-      <div class="title-zone">
-        <p class="eyebrow">首頁同步使用｜會議室刊登｜後端正式播報稿｜前端只做展示與高亮</p>
-        <h1>專業女主播廣播系統</h1>
-        <p id="broadcast-summary" class="broadcast-summary">
-          高學歷、專業、穩重的女主播播報模式。聲音、字幕、重點數字、排名焦點、公告焦點全部同步呼應，
-          適合董事長與幹部在首頁或會議室大螢幕直接觀看。
-        </p>
-        <div id="broadcast-proof" class="proof-row"></div>
-      </div>
-
-      <div class="status-zone">
-        <article class="status-card">
-          <span>播報狀態</span>
-          <strong id="speech-state">待命</strong>
-          <small id="speech-detail">等待載入正式播報稿</small>
-        </article>
-        <article class="status-card">
-          <span>AI 狀態</span>
-          <strong id="ai-state">待確認</strong>
-          <small id="ai-detail">等待後端正式資料</small>
-        </article>
-        <article class="status-card">
-          <span>語音模式</span>
-          <strong id="voice-mode">女聲優先</strong>
-          <small id="voice-name">等待可用語音</small>
-        </article>
-        <article class="status-card">
-          <span>段落進度</span>
-          <strong id="segment-progress">0 / 0</strong>
-          <small id="segment-detail">等待載入播報段落</small>
-        </article>
-      </div>
+  <div id="app-shell">
+    <header class="broadcast-topbar-mini">
+      <h1>AI 指揮官廣播系統</h1>
+      <button onclick="window.location.href='mobile.html'" class="mini-btn">✕</button>
     </header>
 
-    <main class="broadcast-layout">
-      <section class="control-panel">
-        <div class="section-head">
-          <h2>播報控制台</h2>
-          <span class="chip" id="broadcast-source">等待資料</span>
-        </div>
+    <div class="status-scroll">
+      <div class="status-chip"><span>語音狀態</span><strong id="speech-state">待命</strong></div>
+      <div class="status-chip"><span>段落進度</span><strong id="segment-progress">0 / 0</strong></div>
+      <div class="status-chip"><span>AI 同步</span><strong id="ai-state">已連線</strong></div>
+      <div class="status-chip"><span>執行序號</span><strong id="source-execution-id">-</strong></div>
+    </div>
 
-        <div class="quick-actions">
-          <button id="btn-load-system" class="ghost-btn" type="button">載入正式播報稿</button>
-          <button id="btn-paste-clipboard" class="ghost-btn" type="button">貼上外部稿件</button>
-          <button id="btn-clear-text" class="ghost-btn danger-btn" type="button">清空稿件</button>
-        </div>
+    <main class="prompter-main">
+      <!-- 沉浸式朗讀區 -->
+      <article class="hero-line-compact">
+        <span id="hero-label" class="hero-label">目前朗讀</span>
+        <div id="hero-line" class="hero-line-text">等待載入正式播報稿</div>
+      </article>
 
-        <label class="field-label" for="broadcast-input">
-          播報稿文字。後端提供正式播報稿時，前端只做展示、放大、高亮與會議室刊登；
-          若手動貼上稿件，畫面會明確標示為手動稿件，不冒充正式結果。
-        </label>
-        <textarea
-          id="broadcast-input"
-          class="broadcast-input"
-          placeholder="貼上任何需要播報的文字，或直接載入後端正式播報稿。"
-        ></textarea>
+      <!-- 播放控制區 -->
+      <div class="broadcast-controls">
+        <button id="btn-start-broadcast" class="btn-main btn-play">▶ 開始播報</button>
+        <button id="btn-pause-broadcast" class="btn-main btn-secondary">暫停</button>
+        <button id="btn-stop-broadcast" class="btn-main btn-secondary">停止</button>
+      </div>
 
+      <!-- 段落快速切換區 -->
+      <div id="teleprompter-list" class="segment-list">
+        <!-- JS 動態生成 -->
+      </div>
+
+      <!-- 進階設定區 -->
+      <section class="settings-drawer">
         <div class="settings-grid">
-          <label class="control-field control-field-wide">
-            <span>播報女聲</span>
-            <select id="voice-select" class="control-select"></select>
+          <label class="control-field" style="grid-column: span 2;">
+            <span>播報語音 (指定女聲)</span>
+            <select id="voice-select"></select>
           </label>
-
           <label class="control-field">
-            <span>語速</span>
+            <span>語速 (<strong id="rate-value">0.95</strong>)</span>
             <input id="rate-range" type="range" min="0.7" max="1.3" step="0.05" value="0.95">
-            <strong id="rate-value">0.95x</strong>
           </label>
-
           <label class="control-field">
-            <span>語調</span>
+            <span>語調 (<strong id="pitch-value">1.05</strong>)</span>
             <input id="pitch-range" type="range" min="0.8" max="1.4" step="0.05" value="1.05">
-            <strong id="pitch-value">1.05</strong>
-          </label>
-
-          <label class="control-field">
-            <span>音量</span>
-            <input id="volume-range" type="range" min="0.4" max="1" step="0.05" value="1">
-            <strong id="volume-value">100%</strong>
-          </label>
-
-          <label class="control-field">
-            <span>字體比例</span>
-            <input id="font-range" type="range" min="1" max="1.8" step="0.05" value="1.15">
-            <strong id="font-value">115%</strong>
           </label>
         </div>
-
-        <div class="playback-row">
-          <button id="btn-start-broadcast" class="primary-btn" type="button">開始播報</button>
-          <button id="btn-pause-broadcast" class="ghost-btn" type="button">暫停</button>
-          <button id="btn-stop-broadcast" class="ghost-btn" type="button">停止</button>
-          <button id="btn-meeting-mode" class="ghost-btn" type="button">關閉會議室模式</button>
-          <button id="btn-copy-text" class="ghost-btn" type="button">複製稿件</button>
-          <button id="btn-fullscreen" class="ghost-btn" type="button">全螢幕</button>
-          <button id="btn-back-home" class="ghost-btn" type="button">返回首頁</button>
-        </div>
-
-        <div class="control-notes">
-          <div class="note-row">`Ctrl + Enter`：立即開始播報</div>
-          <div class="note-row">空白鍵：暫停 / 繼續</div>
-          <div class="note-row">`Esc`：停止播報</div>
+        <div style="margin-top: 15px; display: flex; gap: 10px;">
+          <button id="btn-load-system" class="btn-main btn-secondary" style="flex: 1; height: 36px; font-size: 12px;">載入正式稿</button>
+          <button id="btn-copy-text" class="btn-main btn-secondary" style="flex: 1; height: 36px; font-size: 12px;">複製內容</button>
         </div>
       </section>
 
-      <section class="teleprompter-panel">
-        <div class="section-head">
-          <h2>會議室刊登版</h2>
-          <span class="chip" id="teleprompter-mode">會議室刊登模式</span>
-        </div>
-
-        <article class="hero-line-card">
-          <span id="hero-label" class="hero-label">目前朗讀</span>
-          <div id="hero-line" class="hero-line">等待載入正式播報稿</div>
-        </article>
-
-        <div class="teleprompter-meta">
-          <div class="meta-block">
-            <span>總段落數</span>
-            <strong id="segment-count">0</strong>
-          </div>
-          <div class="meta-block">
-            <span>目前段落</span>
-            <strong id="segment-index">0</strong>
-          </div>
-          <div class="meta-block">
-            <span>稿件字數</span>
-            <strong id="char-count">0</strong>
-          </div>
-          <div class="meta-block">
-            <span>來源序號</span>
-            <strong id="source-execution-id">-</strong>
-          </div>
-        </div>
-
-        <div class="meeting-focus-head">
-          <h3>同步高亮區</h3>
-          <span id="meeting-focus-status" class="chip">專業女主播廣播模式</span>
-        </div>
-
-        <div id="meeting-focus-grid" class="meeting-focus-grid"></div>
-
-        <div id="teleprompter-list" class="teleprompter-list"></div>
-      </section>
+      <textarea id="broadcast-input" style="display:none;"></textarea>
+      <div id="broadcast-summary" style="display:none;"></div>
+      <div id="broadcast-proof" style="display:none;"></div>
+      <div id="broadcast-source" style="display:none;"></div>
+      <div id="teleprompter-mode" style="display:none;"></div>
+      <div id="meeting-focus-status" style="display:none;"></div>
+      <div id="meeting-focus-grid" style="display:none;"></div>
+      <article id="broadcast-shell" style="display:none;"></article>
+      <article id="ai-detail" style="display:none;"></article>
+      <article id="speech-detail" style="display:none;"></article>
+      <article id="voice-mode" style="display:none;"></article>
+      <article id="voice-name" style="display:none;"></article>
+      <article id="segment-detail" style="display:none;"></article>
+      <article id="segment-count" style="display:none;"></article>
+      <article id="segment-index" style="display:none;"></article>
+      <article id="char-count" style="display:none;"></article>
     </main>
+
+    <nav class="bottom-nav">
+      <a href="mobile.html">回首頁</a>
+      <a href="#teleprompter-list" class="is-active">播報中心</a>
+    </nav>
   </div>
 
   <script src="utils.js?v=1.1"></script>
+  <script src="mobile-standard.js?v=1.0"></script>
   <script src="sync-client.js?v=1.0"></script>
-  <script src="broadcast.js?v=20260502"></script>
+  <script src="broadcast.js?v=20260511"></script>
   <script>
-    // 會議室版同步守衛客戶端
+    // 會議室版同步守衛
     (function(){
       var sync = new DispatchSyncClient({
         type: 'broadcast',
@@ -215,6 +262,12 @@
       });
       sync.start();
       window._dispatchSyncClient = sync;
+      
+      // 隱藏啟動畫面
+      setTimeout(() => {
+        const splash = document.getElementById('splash-screen');
+        if (splash) splash.classList.add('fade-out');
+      }, 1000);
     })();
   </script>
 </body>
