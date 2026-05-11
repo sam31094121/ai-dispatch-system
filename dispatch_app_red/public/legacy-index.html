@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Orbitron:wght@700;800;900&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=20260503-oil">
+  <link rel="stylesheet" href="proposal-optimizer.css?v=20260511-auto-next">
 </head>
 <body class="command-center oil-announcement">
   <div id="vfx-layer" class="vfx-layer"></div>
@@ -299,6 +300,90 @@
         <div id="scoring-policy-formula" class="policy-formula"></div>
       </article>
       <div id="prop-advice-grid" class="prop-advice-grid"></div>
+    </section>
+    <section id="proposal-optimizer" class="panel proposal-optimizer">
+      <div class="proposal-optimizer-head">
+        <div>
+          <p class="eyebrow">AI Proposal Optimizer</p>
+          <h2>企劃案自動優化主控台 <span id="proposal-sync-status" class="badge badge-neutral">READY</span></h2>
+          <p class="proposal-headline">自動讀取派單資料，判斷下一步、再下一步，並生成可直接執行的企劃案。</p>
+        </div>
+        <label class="proposal-auto-switch">
+          <input id="proposal-auto-cycle" type="checkbox" checked>
+          <span>自動再下一步</span>
+        </label>
+      </div>
+
+      <div class="proposal-progress-track" aria-hidden="true">
+        <div id="proposal-progress-bar" class="proposal-progress-bar"></div>
+      </div>
+      <div id="proposal-status-console" class="proposal-status-console" aria-live="polite"></div>
+
+      <div class="proposal-command-grid">
+        <article class="proposal-command-card primary">
+          <span>MAIN GOAL</span>
+          <strong id="proposal-main-goal">企劃主軸</strong>
+          <p id="proposal-main-detail">等待資料同步。</p>
+          <div class="card-icon">AI</div>
+        </article>
+        <article class="proposal-command-card">
+          <span>NEXT ACTION</span>
+          <strong id="proposal-next-step">下一步</strong>
+          <p id="proposal-next-detail">系統將依審計狀態自動切換修正或發布路徑。</p>
+          <div class="card-icon">NX</div>
+        </article>
+        <article class="proposal-command-card">
+          <span>FEATURE BOOST</span>
+          <strong id="proposal-feature-boost">功能提升</strong>
+          <p id="proposal-feature-detail">優化畫面科技感、執行節奏與 24H 追蹤矩陣。</p>
+          <div class="card-icon">UP</div>
+        </article>
+      </div>
+
+      <div class="proposal-metric-hud">
+        <div class="hud-radar" aria-hidden="true">
+          <div class="radar-circle"></div>
+          <div class="radar-circle"></div>
+          <div class="radar-circle"></div>
+          <div class="radar-sweep"></div>
+          <span class="radar-point" style="left: 64%; top: 22%;"></span>
+          <span class="radar-point" style="left: 28%; top: 62%;"></span>
+        </div>
+        <div class="hud-stats">
+          <div class="stat-row"><span>PERFORMANCE</span><div class="stat-bar"><div id="stat-perf"></div></div></div>
+          <div class="stat-row"><span>RELIABILITY</span><div class="stat-bar"><div id="stat-rel"></div></div></div>
+          <div class="stat-row"><span>ENGAGEMENT</span><div class="stat-bar"><div id="stat-eng"></div></div></div>
+          <div class="stat-row"><span>AI CONFIDENCE</span><div class="stat-bar"><div id="stat-ai"></div></div></div>
+        </div>
+      </div>
+
+      <div class="proposal-flow">
+        <div class="proposal-section-label">AUTO STEP ROUTE</div>
+        <div id="proposal-step-list" class="proposal-step-list"></div>
+      </div>
+
+      <div class="proposal-insight-grid">
+        <div>
+          <div class="proposal-section-label">優化洞察</div>
+          <div id="proposal-focus-list"></div>
+        </div>
+        <div>
+          <div class="proposal-section-label">提升功能</div>
+          <div id="proposal-feature-list"></div>
+        </div>
+      </div>
+
+      <div class="proposal-award-stage">
+        <div class="proposal-section-label">TOP 5 戰力獎勵視覺</div>
+        <div id="proposal-award-list" class="proposal-award-list"></div>
+      </div>
+
+      <div class="proposal-actions">
+        <button id="btn-proposal-optimize" class="btn btn-primary btn-glitch" type="button">啟動自動優化</button>
+        <button id="btn-proposal-approve" class="btn btn-secondary" type="button">批准下一步</button>
+        <button id="btn-proposal-copy" class="btn btn-ghost" type="button">複製企劃案</button>
+      </div>
+      <textarea id="proposal-output" class="proposal-output" readonly aria-label="AI 企劃案輸出"></textarea>
     </section>
   </div>
 
