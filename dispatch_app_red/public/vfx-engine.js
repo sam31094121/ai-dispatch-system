@@ -16,6 +16,10 @@ class MapleCoinRain {
     this.sprites = {};
     this.lastSpawn = 0;
     this.dpr = Math.min(window.devicePixelRatio || 1, 2);
+    
+    // 預載入極致寫實鑽石資產
+    this.diamondImg = new Image();
+    this.diamondImg.src = 'ultra_realistic_diamond_top1_1778480554500.png';
   }
 
   _resize() {
@@ -101,12 +105,25 @@ class MapleCoinRain {
   _spawn() {
     const rank = parseInt(this.cv.dataset.rank || '1');
     let type = 'coin';
-    if (rank === 1) type = Math.random() < 0.4 ? 'bill' : (Math.random() < 0.8 ? 'coin' : 'glitter');
+    if (rank === 1) type = Math.random() < 0.6 ? 'diamond' : 'glitter';
     else if (rank === 2) type = 'coin';
     else if (rank === 3) type = Math.random() < 0.3 ? 'bill' : 'silver';
     else if (rank === 4) type = 'bill';
 
-    if (type === 'glitter') {
+    if (type === 'diamond') {
+        const r = 25 + Math.random() * 15;
+        this.coins.push({
+            type: 'diamond',
+            x: Math.random() * this.W,
+            y: -r,
+            vx: (Math.random() - 0.5) * 1.5,
+            vy: 1.5 + Math.random() * 2,
+            r,
+            tilt: Math.random() * Math.PI * 2,
+            tiltSpd: (Math.random() - 0.5) * 0.08,
+            done: false
+        });
+    } else if (type === 'glitter') {
         const r = 1.5 + Math.random() * 2;
         this.coins.push({
             type: 'glitter',
@@ -177,6 +194,36 @@ class MapleCoinRain {
     this.coins = this.coins.filter(c => !c.done);
   }
 
+  _drawDiamond(c, t) {
+    const ctx = this.cx;
+    const { x, y, r, tilt } = c;
+    const size = r * 2;
+    
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(tilt);
+    
+    // 繪製真實鑽石圖片
+    if (this.diamondImg.complete) {
+        ctx.drawImage(this.diamondImg, -r, -r, size, size);
+    }
+
+    // 模擬光學閃爍 (Sparkle)
+    const sparkle = Math.sin(t * 0.01 + x);
+    if (sparkle > 0.8) {
+        ctx.beginPath();
+        const sSize = r * (sparkle - 0.8) * 5;
+        ctx.fillStyle = '#fff';
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = '#fff';
+        // 繪製十字星芒
+        ctx.fillRect(-sSize/10, -sSize, sSize/5, sSize*2);
+        ctx.fillRect(-sSize, -sSize/10, sSize*2, sSize/5);
+    }
+    
+    ctx.restore();
+  }
+
   _drawBill(c, t) {
     const ctx = this.cx;
     const { x, y, bw, bh, flutter } = c;
@@ -224,6 +271,7 @@ class MapleCoinRain {
     ctx.translate(-c.x, -c.y);
     if (c.type === 'bill') this._drawBill(c, t);
     else if (c.type === 'glitter') this._drawGlitter(c, t);
+    else if (c.type === 'diamond') this._drawDiamond(c, t);
     else this._drawItemCoin(c, t);
     ctx.restore();
   }
