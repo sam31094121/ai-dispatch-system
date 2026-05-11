@@ -633,3 +633,75 @@ strong, .stat-value, .a1-hero-score-value {
     0% { left: -100%; }
     30%, 100% { left: 100%; }
 }
+
+/* ── 前 5 名手機版縮小比例原則 (Mobile Scaling Concept) ── */
+@media (max-width: 1024px) {
+    /* 1. Grid 權重分配：冠軍全寬，其餘併列 */
+    .spotlight-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
+        padding: 10px !important;
+    }
+
+    .hero-card-1 {
+        grid-column: 1 / span 2 !important; /* 冠軍獨佔一行 */
+        padding: 20px !important;
+    }
+
+    /* 2. 階梯式縮放與內距優化 */
+    .spotlight-item {
+        padding: 14px !important; /* 統一縮減內距 */
+    }
+
+    /* No.1 冠軍比例：1.0x (維持大氣) */
+    .hero-card-1 .spotlight-name { font-size: 28px !important; }
+    .hero-card-1 .spotlight-rank { font-size: 70px !important; top: -10px; right: -5px; }
+
+    /* No.2 & No.3 比例：0.85x (主力縮放) */
+    .hero-card-2, .hero-card-3 {
+        min-height: 180px;
+    }
+    .hero-card-2 .spotlight-name, .hero-card-3 .spotlight-name { 
+        font-size: 20px !important; 
+    }
+    .hero-card-2 .spotlight-rank, .hero-card-3 .spotlight-rank { 
+        font-size: 50px !important; 
+    }
+
+    /* No.4 & No.5 比例：0.7x (菁英精簡) */
+    .hero-card-4, .hero-card-5 {
+        min-height: 160px;
+    }
+    .hero-card-4 .spotlight-name, .hero-card-5 .spotlight-name { 
+        font-size: 18px !important; 
+    }
+    .hero-card-4 .spotlight-rank, .hero-card-5 .spotlight-rank { 
+        font-size: 40px !important; 
+    }
+
+    /* 3. 移除手機版冗餘裝飾以增加空間 */
+    .hero-card-4 .scanning-bracket, .hero-card-5 .scanning-bracket,
+    .hero-card-4 .audio-visualizer, .hero-card-5 .audio-visualizer {
+        display: none !important;
+    }
+
+    /* 4. 數據清單優化：改為左右排列 */
+    .spotlight-metrics {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 8px !important;
+        margin-top: 10px !important;
+        padding-top: 10px !important;
+    }
+    .spotlight-metrics div strong {
+        font-size: 16px !important;
+    }
+    .spotlight-metrics div span {
+        font-size: 8px !important;
+    }
+
+    /* 5. 巨大名次標記在手機端微調，避免遮擋文字 */
+    .spotlight-rank {
+        line-height: 1;
+        pointer-events: none;
+    }
+}
