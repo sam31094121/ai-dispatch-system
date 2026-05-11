@@ -972,6 +972,105 @@ body.oil-announcement {
   outline: none;
 }
 
+.proposal-optimizer-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.proposal-optimizer-head h2 {
+  margin: 6px 0 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: clamp(24px, 4vw, 42px);
+}
+
+.proposal-headline {
+  margin: 10px 0 0;
+  color: var(--proposal-muted);
+  line-height: 1.7;
+  max-width: 760px;
+}
+
+.proposal-auto-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: max-content;
+  padding: 10px 12px;
+  color: var(--proposal-accent);
+  border: 1px solid rgba(16, 245, 180, 0.45);
+  border-radius: 8px;
+  background: rgba(16, 245, 180, 0.08);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.proposal-auto-switch input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--proposal-accent);
+}
+
+.proposal-command-card .card-icon {
+  font-family: "Orbitron", "Noto Sans TC", sans-serif;
+  letter-spacing: 0;
+}
+
+.proposal-command-card strong,
+.proposal-step strong,
+.proposal-pill,
+.proposal-award-card strong,
+.proposal-award-card span,
+.proposal-award-card p,
+.proposal-output {
+  overflow-wrap: anywhere;
+}
+
+.proposal-command-card p,
+.proposal-step p {
+  margin-bottom: 0;
+}
+
+.proposal-actions .btn {
+  min-height: 44px;
+}
+
+.proposal-award-list {
+  min-height: 220px;
+}
+
+.proposal-award-visual img {
+  object-fit: contain;
+}
+
+@media (max-width: 900px) {
+  .proposal-optimizer-head,
+  .proposal-metric-hud,
+  .proposal-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .proposal-command-grid,
+  .proposal-insight-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .proposal-step-list {
+    grid-template-columns: 1fr;
+  }
+
+  .proposal-auto-switch {
+    justify-content: space-between;
+    min-width: 0;
+  }
+}
+
 /* --- 進階科技感強化 --- */
 
 .proposal-optimizer::before {
