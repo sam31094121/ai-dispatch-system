@@ -113,41 +113,27 @@
       <div class="sk-card"></div>
     </div>
 
-    <header class="topbar">
-      <div>
-        <p class="kicker">Zhaogui AI Dispatch</p>
+    <header class="topbar-compact">
+      <div class="brand-mini">
         <h1 id="main-title">AI 派單公告</h1>
+        <span id="audit-result" class="status-badge-mini">--</span>
       </div>
-      <div class="topbar-actions">
-        <button id="refresh-data" class="icon-button" type="button" aria-label="重新整理">↻</button>
-        <button id="theme-toggle" class="icon-button" type="button" aria-label="切換主題">🌓</button>
-        <span id="audit-result" class="status-badge">--</span>
+      <div class="topbar-actions-mini">
+        <button id="refresh-data" class="mini-btn">↻</button>
+        <button id="theme-toggle" class="mini-btn">🌓</button>
       </div>
     </header>
 
-    <!-- AI 指揮中心即時動態 -->
-    <div class="ai-command-ticker">
-      <div class="ticker-label">AI COMMANDER</div>
-      <div class="ticker-track">
-        <div class="ticker-content" id="ai-next-step">系統初始化中... 準備執行 A1 優先派單分析... 公告同步守衛已啟動...</div>
-      </div>
+    <!-- 跑馬燈改為極細版 -->
+    <div class="ai-ticker-mini">
+      <div class="ticker-content-mini" id="ai-next-step">系統就緒... 等待派單分析...</div>
     </div>
 
-    <!-- ① 前4名英雄區：topbar 下方，第一眼主角 -->
-    <section id="a1-hero" aria-label="A1 top ranking cards">
-      <canvas id="mobile-coin-canvas" class="mobile-coin-canvas" aria-hidden="true"></canvas>
-      <div class="a1-hero-header">
-        <div class="a1-hero-title-block">
-          <span class="a1-hero-kicker">🔴 A1 高優先主力｜今日必派首席</span>
-          <span class="a1-hero-dates">
-            結算 <strong id="hero-settlement-date">--</strong>
-            &nbsp;→&nbsp;
-            派單 <strong id="hero-dispatch-date">--</strong>
-          </span>
-        </div>
-        <span id="audit-result-hero" class="status-badge">--</span>
+    <!-- 前4名英雄區：改為橫向滑動，節省縱向空間 -->
+    <section id="a1-hero" class="hero-section-compact">
+      <div class="hero-scroll-container">
+        <div id="a1-hero-grid" class="hero-flex-row"></div>
       </div>
-      <div id="a1-hero-grid" class="a1-hero-grid"></div>
     </section>
 
     <!-- ② 統計帶：英雄區後 -->
