@@ -1197,6 +1197,255 @@
     }
   }
 
+  function deriveProposalMetric(rows, key, fallback = 0) {
+    const values = rows
+      .map((row) => Number(String(getMetric(row, key)).replace(/,/g, '')))
+      .filter(Number.isFinite);
+    if (!values.length) return fallback;
+    return values.reduce((sum, value) => sum + value, 0);
+  }
+
+  function buildTopFiveAwards(rows) {
+    const prizeBlueprint = [
+      { title: '鑽石級執行獎', code: 'DIAMOND PROTOCOL', asset: 'assets/diamond.png', value: '最高戰力', purity: 'AI VERIFIED' },
+      { title: '金條級成長獎', code: 'GOLD RESERVE', asset: 'assets/gold.png', value: '穩定輸出', purity: '999.9 STRATEGY' },
+      { title: '美元級動能獎', code: 'USD MOMENTUM', asset: 'assets/money/usd_front.png', value: '現金動能', purity: 'LIVE DATA' },
+      { title: '高效推進獎', code: 'BOOST 2000', asset: 'assets/money.png', value: '下一步加速', purity: 'TRACKED' },
+      { title: '潛力提升獎', code: 'BOOST 1000', asset: 'assets/money.png', value: '再下一步優化', purity: 'MONITORED' }
+    ];
+
+    return rows.slice(0, 5).map((row, index) => {
+      const prize = prizeBlueprint[index] || prizeBlueprint[4];
+      const rank = Number(rowRank(row)) || index + 1;
+      return {
+        rank,
+        name: rowName(row) || `第 ${rank} 名`,
+        group: rowGroup(row) || '未分組',
+        score: rowScore(row),
+        title: prize.title,
+        code: prize.code,
+        asset: prize.value,
+        image: prize.asset,
+        value: prize.value,
+        purity: prize.purity
+      };
+    });
+  }
+
+  function resolveOptimizationCycle(snapshot) {
+    const rows = getRows(snapshot);
+    const validation = snapshot?.validation || {};
+    const issueCount = asArray(validation.errors).length + asArray(validation.warnings).length;
+    const currentLevel = Number(snapshot?.meta?.optimizationLevel || snapshot?.optimizationLevel || 0);
+    const hasRows = rows.length > 0;
+
+    if (issueCount) {
+      return {
+        level: currentLevel + 1,
+        mode: '審計修正模式',
+        progress: 42,
+        next: '先修正資料異常與缺漏欄位，重新審計後再發布',
+        afterNext: '通過審計後自動生成正式派單公告與 LINE 推送版本',
+        risk: `${issueCount} 個審計項目需要處理`,
+        actionType: 'FIX'
+      };
+    }
+
+    if (!hasRows) {
+      return {
+        level: currentLevel + 1,
+        mode: '資料補齊模式',
+        progress: 36,
+        next: '匯入最新派單資料，建立排名、分組與營收基準',
+        afterNext: '資料補齊後自動進入企劃優化與獎勵視覺生成',
+        risk: '目前沒有可推演的排名資料',
+        actionType: 'LOAD'
+      };
+    }
+
+    return {
+      level: currentLevel + 1,
+      mode: '自動提升模式',
+      progress: Math.min(96, 70 + Math.min(rows.length, 20)),
+      next: '發布本輪最佳派單企劃，推送執行重點與 Top 5 獎勵',
+      afterNext: '24 小時後依回報、續約、營收與分組變化自動產生下一輪方案',
+      risk: '低風險，可進入執行與追蹤',
+      actionType: 'EXECUTE'
+    };
+  }
+
+  function buildProposalPlan(snapshot, rawText = '') {
+    const rows = getRows(snapshot);
+    const groups = getGroups(snapshot);
+    const title = snapshot?.title || snapshot?.standardData?.['公告標題'] || 'AI 派單企劃案';
+    const topAwards = buildTopFiveAwards(rows);
+    const cycle = resolveOptimizationCycle(snapshot);
+    const topText = topAwards.length
+      ? topAwards.map((award) => award.name).join('、')
+      : '等待資料匯入';
+    const groupText = ['A1', 'A2', 'B', 'C']
+      .map((key) => `${key} ${asArray(groups[key]).length} 人`)
+      .join(' / ');
+    const totalRevenue = deriveProposalMetric(rows, ['總營收', 'totalRevenue', 'revenue']);
+    const sourceLines = rawText.split(/\r?\n/).filter((line) => line.trim()).length;
+    const autoCycle = $('proposal-auto-cycle')?.checked !== false;
+
+    const steps = [
+      { label: '資料讀取', text: `同步 ${rows.length} 筆派單資料`, status: rows.length ? 'completed' : 'active' },
+      { label: '審計判斷', text: cycle.risk, status: cycle.actionType === 'FIX' ? 'active' : 'completed' },
+      { label: '下一步', text: cycle.next, status: cycle.actionType === 'EXECUTE' ? 'active' : 'pending' },
+      { label: '推送執行', text: '產出公告、複製方案、批准後同步全端', status: 'pending' },
+      { label: '再下一步', text: cycle.afterNext, status: autoCycle ? 'active' : 'pending' }
+    ];
+
+    const focus = [
+      `企劃主軸：${title}`,
+      `Top 5 焦點：${topText}`,
+      `分組結構：${groupText}`,
+      `總營收基準：${number(totalRevenue)}`,
+      `風險狀態：${cycle.risk}`,
+      sourceLines ? `輸入來源：${sourceLines} 行資料已納入判斷` : '輸入來源：使用目前系統資料'
+    ];
+
+    const features = [
+      '自動優化：依審計結果切換修正、補資料或發布路線',
+      '自動下一步：直接產出可執行的 Next Action',
+      '再下一步：建立 24H 追蹤矩陣，下一輪自動調整方案',
+      '科技感畫面：雷達 HUD、掃描進度、獎勵 3D 卡片與狀態日誌',
+      '複製輸出：一鍵取得完整企劃案文字，可貼到 LINE 或正式公告'
+    ];
+
+    const output = [
+      `【AI 企劃案自動優化版】SNAPSHOT_${Date.now().toString().slice(-6)}`,
+      `企劃主軸：${title}`,
+      `目前模式：${cycle.mode} / Evo Loop v${cycle.level}`,
+      `分組概況：${groupText}`,
+      `Top 5 焦點：${topText}`,
+      ``,
+      `一、下一步`,
+      `- ${cycle.next}`,
+      `- 優先對象：${topText}`,
+      `- 執行時間：立即執行，完成後回寫狀態。`,
+      ``,
+      `二、再下一步`,
+      `- ${cycle.afterNext}`,
+      `- 自動追蹤：續約、營收、分組變化、審計異常。`,
+      `- 若數據偏離，系統自動回到修正模式；若通過，進入下一輪發布。`,
+      ``,
+      `三、功能提升`,
+      ...features.map((item, index) => `${index + 1}. ${item}`),
+      ``,
+      `四、Top 5 獎勵視覺`,
+      ...(topAwards.length
+        ? topAwards.map((award) => `#${award.rank} ${award.name}｜${award.title}｜AI 分數 ${number(award.score, 2)}｜${award.group}`)
+        : ['目前尚無排名資料，請先匯入或載入最新資料。']),
+      ``,
+      `結論：${cycle.mode} 已完成。本輪先做「${cycle.next}」，下一輪自動接「${cycle.afterNext}」。`
+    ].join('\n');
+
+    return { title, topText, nextStep: cycle.next, steps, focus, features, output, topAwards, cycle };
+  }
+
+  function renderProposal(snapshot) {
+    const plan = buildProposalPlan(snapshot);
+    const container = $('proposal-optimizer');
+    if (!container) return;
+
+    setBadge(refs.proposalSyncStatus, 'PASS', 'AUTO NEXT');
+    setProposalProgress(plan.cycle.progress);
+    setText(refs.proposalMainGoal, '實時企劃主軸');
+    setText(refs.proposalMainDetail, plan.title);
+    setText(refs.proposalNextStep, plan.nextStep);
+    setText(refs.proposalNextDetail, `優先對象：${plan.topText}。再下一步：${plan.cycle.afterNext}`);
+    setText(refs.proposalFeatureBoost, `功能提升 v${plan.cycle.level}`);
+    setText(refs.proposalFeatureDetail, `目前模式：${plan.cycle.mode}。${plan.cycle.risk}`);
+
+    if (refs.proposalStepList) {
+      refs.proposalStepList.replaceChildren(...plan.steps.map((step, index) => {
+        const article = document.createElement('article');
+        article.className = `proposal-step ${step.status || (index === 0 ? 'active' : '')}`;
+        article.innerHTML = `
+          <span>${index + 1}</span>
+          <strong>${escapeHtml(step.label)}</strong>
+          <p>${escapeHtml(step.text)}</p>
+        `;
+        return article;
+      }));
+    }
+
+    renderProposalAwards(plan.topAwards);
+    renderPillList(refs.proposalFocusList, plan.focus, 'proposal-pill');
+    renderPillList(refs.proposalFeatureList, plan.features, 'proposal-pill feature');
+    if (refs.proposalOutput && !refs.proposalOutput.value) refs.proposalOutput.value = plan.output;
+    pushProposalLog(`企劃引擎已同步：${plan.cycle.mode}`);
+  }
+
+  function renderProposalAwards(awards) {
+    if (!refs.proposalAwardList) return;
+    refs.proposalAwardList.replaceChildren(...awards.map((award) => {
+      const article = document.createElement('article');
+      article.className = `proposal-award-card rank-${award.rank}`;
+      const assetImg = award.image || '';
+      article.innerHTML = `
+        <div class="award-lens-flare"></div>
+        <div class="proposal-award-rank">#${escapeHtml(award.rank)}</div>
+        <div class="proposal-award-visual">
+          <span class="scanline"></span>
+          ${assetImg ? `<img src="${escapeHtml(assetImg)}" alt="${escapeHtml(award.title)}" class="award-3d-asset award-prize-${escapeHtml(award.rank)}">` : `<div class="proposal-award-medal">${escapeHtml(award.rank)}</div>`}
+        </div>
+        <div class="proposal-award-code">${escapeHtml(award.code)}</div>
+        <strong>${escapeHtml(award.name)}</strong>
+        <span>${escapeHtml(award.title)} / ${escapeHtml(award.group)}</span>
+        <p>AI 分數 ${escapeHtml(number(award.score, 2))}</p>
+      `;
+      return article;
+    }));
+  }
+
+  async function optimizeProposal() {
+    const container = $('proposal-optimizer');
+    if (container) container.classList.add('scanning-mode', 'executing');
+    setBadge(refs.proposalSyncStatus, 'PENDING', 'SCANNING');
+    updateHudStats();
+
+    const stages = [
+      { msg: '讀取目前派單資料與審計狀態', p: 18 },
+      { msg: '分析 Top 5、分組結構與營收基準', p: 38 },
+      { msg: '產生下一步執行路線', p: 58 },
+      { msg: '建立 24H 再下一步追蹤矩陣', p: 78 },
+      { msg: '輸出正式企劃案與科技感視覺狀態', p: 100 }
+    ];
+
+    for (const stage of stages) {
+      pushProposalLog(stage.msg);
+      setProposalProgress(stage.p);
+      await new Promise((resolve) => setTimeout(resolve, 260));
+    }
+
+    const plan = buildProposalPlan(state.current || {}, refs.rawInput?.value || '');
+    if (refs.proposalOutput) {
+      refs.proposalOutput.value = '';
+      let index = 0;
+      const tick = () => {
+        refs.proposalOutput.value += plan.output.slice(index, index + 8);
+        index += 8;
+        if (index < plan.output.length) requestAnimationFrame(tick);
+      };
+      tick();
+    }
+
+    renderProposal(state.current || {});
+    setText(refs.proposalNextStep, plan.nextStep);
+    setText(refs.proposalNextDetail, `系統已鎖定下一步：${plan.nextStep}。再下一步：${plan.cycle.afterNext}`);
+    setBadge(refs.proposalSyncStatus, 'PASS', 'OPTIMIZED');
+    setBadge(refs.inputStatus, 'PASS', '企劃案自動優化完成');
+    pushProposalLog('自動優化完成，等待批准或複製輸出');
+
+    if (container) {
+      window.setTimeout(() => container.classList.remove('scanning-mode', 'executing'), 600);
+    }
+  }
+
   function bindEvents() {
     const run = (task) => async () => {
       if (state.busy) return;
