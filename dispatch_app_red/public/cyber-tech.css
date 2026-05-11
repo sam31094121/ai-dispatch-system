@@ -15,14 +15,84 @@
     --oil-glow: 0 0 20px rgba(243, 193, 75, 0.2);
 }
 
-/* 全局油畫科技感背景 - 效能優化版 */
+/* 全局行動優先 (Mobile-First) 強制規範 */
+:root {
+    --mobile-width: 430px;
+    --mobile-height: 932px; /* iPhone 14 Pro Max 比例 */
+    --mobile-border-radius: 40px;
+}
+
 html,
 body.mobile-command-center, 
 body.cyber-war-room,
 body.command-center {
     background-color: var(--oil-bg-deep) !important;
     color: var(--oil-text-warm) !important;
-    min-height: 100%;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow-x: hidden;
+}
+
+/* ── 手機模擬器外殼 (僅桌機顯示) ── */
+@media (min-width: 1025px) {
+    body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at center, #2b180d 0%, #050302 100%);
+        z-index: -2;
+    }
+
+    #app-shell, 
+    .broadcast-shell,
+    main.container {
+        width: var(--mobile-width) !important;
+        height: 90vh !important;
+        max-height: var(--mobile-height);
+        margin: 5vh auto !important;
+        position: relative !important;
+        border: 12px solid #333 !important;
+        border-radius: var(--mobile-border-radius) !important;
+        box-shadow: 0 50px 100px rgba(0,0,0,0.8), 0 0 20px rgba(243, 193, 75, 0.2) !important;
+        overflow-y: auto !important;
+        background: var(--oil-bg-deep) !important;
+    }
+
+    /* 頂部動態島模擬 */
+    #app-shell::after {
+        content: "";
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120px;
+        height: 25px;
+        background: #000;
+        border-radius: 20px;
+        z-index: 10001;
+        pointer-events: none;
+    }
+
+    /* 隱藏原生滾動條，使用精美滾動條 */
+    #app-shell::-webkit-scrollbar { width: 4px; }
+    #app-shell::-webkit-scrollbar-thumb { background: var(--oil-gold-dark); border-radius: 10px; }
+}
+
+/* ── 手機版全螢幕規範 ── */
+@media (max-width: 1024px) {
+    #app-shell, 
+    .broadcast-shell,
+    main.container {
+        width: 100% !important;
+        min-height: 100vh !important;
+        margin: 0 !important;
+        border: none !important;
+        border-radius: 0 !important;
+    }
 }
 
 /* 使用偽元素替代 background-attachment: fixed，解決手機捲動卡頓 */
@@ -95,11 +165,11 @@ body::after {
 .panel, .lc-card, .a1-hero-grid > div, .ranking-card, .a1-hero-card {
     background: var(--oil-panel-bg) !important;
     border: 1px solid var(--oil-border) !important;
-    backdrop-filter: blur(12px) !important;
+    backdrop-filter: blur(8px) !important; /* 降低模糊半徑提升效能 */
     box-shadow: 
-        0 15px 35px rgba(0,0,0,0.5),
-        inset 0 1px 1px rgba(255,230,180,0.1) !important;
-    border-radius: 4px !important; /* 採用較硬的邊角，展現權威感 */
+        0 10px 30px rgba(0,0,0,0.5),
+        inset 0 1px 1px rgba(255,230,180,0.05) !important;
+    border-radius: 12px !important; /* 恢復稍微圓潤的邊角，提升現代感 */
 }
 
 /* AI 科技掃描線 (金色版) */

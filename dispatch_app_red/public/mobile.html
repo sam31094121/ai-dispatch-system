@@ -37,7 +37,56 @@
       justify-content: center; font-size: 20px;
       animation: pulse-glow 2s ease-in-out infinite;
     }
-    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    /* AI 指揮中心跑馬燈樣式 */
+.ai-command-ticker {
+  background: rgba(24, 198, 167, 0.05);
+  border: 1px solid rgba(24, 198, 167, 0.15);
+  height: 28px;
+  margin: 8px 0 12px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.ticker-label {
+  background: var(--accent);
+  color: #061310;
+  font-size: 8px;
+  font-weight: 900;
+  padding: 0 8px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  z-index: 2;
+}
+
+.ticker-track {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+}
+
+.ticker-content {
+  display: inline-block;
+  padding-left: 100%;
+  font-size: 11px;
+  color: var(--accent);
+  font-weight: 700;
+  animation: ticker-scroll 20s linear infinite;
+  opacity: 0.8;
+}
+
+@keyframes ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     @keyframes pulse-glow { 0%, 100% { opacity: 0.5; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.1); } }
     
     /* ── 骨架屏預渲染 (Skeleton Inline) ── */
@@ -75,6 +124,14 @@
         <span id="audit-result" class="status-badge">--</span>
       </div>
     </header>
+
+    <!-- AI 指揮中心即時動態 -->
+    <div class="ai-command-ticker">
+      <div class="ticker-label">AI COMMANDER</div>
+      <div class="ticker-track">
+        <div class="ticker-content" id="ai-next-step">系統初始化中... 準備執行 A1 優先派單分析... 公告同步守衛已啟動...</div>
+      </div>
+    </div>
 
     <!-- ① 前4名英雄區：topbar 下方，第一眼主角 -->
     <section id="a1-hero" aria-label="A1 top ranking cards">
@@ -201,7 +258,7 @@
       <a href="#a1-hero">A1</a>
       <a href="#summary">總盤</a>
       <a href="#ranking">名次</a>
-      <a href="#groups">分級</a>
+      <a href="broadcast.html" class="nav-highlight">🎤 廣播</a>
       <a href="#line">LINE</a>
       <a href="#audit">審計</a>
     </nav>
@@ -221,8 +278,9 @@
   </div>
 
   <script src="/utils.js?v=1.1"></script>
+  <script src="/vfx-engine.js?v=3.0"></script>
   <script src="/sync-client.js?v=1.1"></script>
-  <script src="/mobile.js?v=20260510-production-v3"></script>
+  <script src="/mobile.js?v=20260510-production-v4"></script>
   <script>
     // 同步守衛客戶端初始化
     (function(){
@@ -232,7 +290,6 @@
         onStatusChange: function(s) { console.log('[SyncClient] 狀態:', s); }
       });
       sync.start();
-      // 每次資料載入完成後更新版本號（由 SSE data_updated 的 dataVersion 驅動）
       window._dispatchSyncClient = sync;
     })();
   </script>
@@ -251,5 +308,6 @@
       });
     })();
   </script>
+  <script src="/mobile-standard.js?v=1.0"></script>
 </body>
 </html>

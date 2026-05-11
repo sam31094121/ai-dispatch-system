@@ -1,310 +1,53 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>兆櫃 AI 派單系統 | AI 意識喚醒中</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;700&family=Orbitron:wght@400;900&display=swap');
-
-        :root {
-            --primary: #00f2ff;
-            --secondary: #7000ff;
-            --accent: #ff00c8;
-            --bg: #02040a;
-            --surface: rgba(10, 15, 25, 0.8);
-            --glow: 0 0 15px rgba(0, 242, 255, 0.5);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: #fff;
-            font-family: 'JetBrains Mono', monospace;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            background-image: 
-                radial-gradient(circle at 50% 50%, rgba(0, 242, 255, 0.08) 0%, transparent 70%),
-                linear-gradient(rgba(0, 242, 255, 0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 242, 255, 0.02) 1px, transparent 1px);
-            background-size: 100% 100%, 40px 40px, 40px 40px;
-            position: relative;
-        }
-
-        /* 掃描線動畫 */
-        .scanner {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 10px;
-            background: linear-gradient(to bottom, transparent, var(--primary), transparent);
-            opacity: 0.1;
-            pointer-events: none;
-            animation: scan 4s linear infinite;
-        }
-
-        @keyframes scan {
-            0% { top: -10%; }
-            100% { top: 110%; }
-        }
-
-        /* 頂部掃描線 */
-        body::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 4px, 3px 100%;
-            z-index: 100;
-            pointer-events: none;
-            opacity: 0.3;
-        }
-
-        /* 能量核心 */
-        .ai-core {
-            position: relative;
-            width: 250px;
-            height: 250px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .core-ring {
-            position: absolute;
-            border: 2px solid var(--primary);
-            border-radius: 50%;
-            opacity: 0.5;
-            animation: pulse 2s infinite ease-in-out;
-        }
-
-        .ring-1 { width: 100%; height: 100%; border-style: dashed; animation-duration: 10s; }
-        .ring-2 { width: 80%; height: 80%; border-color: var(--secondary); animation-duration: 7s; animation-direction: reverse; }
-        .ring-3 { width: 60%; height: 60%; border-style: double; animation-duration: 4s; }
-
-        .core-center {
-            width: 40px;
-            height: 40px;
-            background: var(--primary);
-            border-radius: 50%;
-            box-shadow: 0 0 40px var(--primary), 0 0 80px var(--primary);
-            animation: core-pulse 1.5s infinite alternate;
-        }
-
-        @keyframes core-pulse {
-            from { transform: scale(0.8); opacity: 0.8; }
-            to { transform: scale(1.2); opacity: 1; }
-        }
-
-        @keyframes pulse {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        /* 數據 HUD */
-        .hud-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            padding: 40px;
-            display: flex;
-            justify-content: space-between;
-            pointer-events: none;
-        }
-
-        .hud-corner {
-            width: 200px;
-            border-top: 2px solid var(--primary);
-            padding-top: 10px;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--primary);
-            opacity: 0.7;
-        }
-
-        .hud-corner.bottom {
-            align-self: flex-end;
-            border-top: none;
-            border-bottom: 2px solid var(--primary);
-            padding-top: 0;
-            padding-bottom: 10px;
-        }
-
-        /* 系統日誌 */
-        .log-container {
-            margin-top: 60px;
-            width: 500px;
-            background: var(--surface);
-            border: 1px solid rgba(0, 242, 255, 0.3);
-            padding: 20px;
-            border-radius: 4px;
-            font-size: 12px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .log-container::before {
-            content: "SYSTEM_RECOVERY_LOG";
-            position: absolute;
-            top: 0;
-            right: 10px;
-            font-size: 9px;
-            color: var(--primary);
-            opacity: 0.5;
-        }
-
-        .log-line {
-            margin-bottom: 6px;
-            display: flex;
-            gap: 15px;
-        }
-
-        .log-time { color: var(--secondary); width: 80px; }
-        .log-status { color: #00ff00; font-weight: bold; }
-        .log-msg { color: #fff; opacity: 0.9; }
-
-        .progress-container {
-            width: 100%;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.1);
-            margin-top: 20px;
-            position: relative;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: var(--primary);
-            width: 0%;
-            box-shadow: 0 0 10px var(--primary);
-            transition: width 0.2s ease;
-        }
-
-        h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 28px;
-            margin-bottom: 30px;
-            letter-spacing: 8px;
-            text-shadow: 0 0 20px var(--primary);
-            background: linear-gradient(to right, #fff, var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .ai-status-text {
-            margin-top: 15px;
-            font-size: 14px;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 3px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Zhaogui AI System Boot</title>
+  <style>
+    body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #05080c; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    #mobile-boot-frame {
+      width: 420px; height: 880px; border: 12px solid #1a2332; border-radius: 54px;
+      background: #09111f; position: relative; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; overflow: hidden;
+      box-shadow: 0 50px 100px rgba(0,0,0,0.8);
+      animation: phonePulse 4s ease-in-out infinite;
+    }
+    @keyframes phonePulse { 0%, 100% { box-shadow: 0 50px 100px rgba(0,0,0,0.8); } 50% { box-shadow: 0 50px 120px rgba(24,198,167,0.15); } }
+    
+    .biometric-circle {
+      width: 120px; height: 120px; border: 2px solid rgba(24, 198, 167, 0.2);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      position: relative; margin-bottom: 40px;
+    }
+    .biometric-scan {
+      position: absolute; width: 100%; height: 2px; background: #18c6a7;
+      box-shadow: 0 0 15px #18c6a7; animation: scanMove 2s ease-in-out infinite;
+    }
+    @keyframes scanMove { 0%, 100% { top: 10%; } 50% { top: 90%; } }
+    
+    .loading-text { color: #18c6a7; font-size: 14px; font-weight: 900; letter-spacing: 5px; animation: blink 1.5s infinite; }
+    @keyframes blink { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+    
+    .mobile-notch { position: absolute; top: 0; width: 160px; height: 34px; background: #1a2332; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
+  </style>
 </head>
 <body>
-    <div class="scanner"></div>
-    <div class="hud-overlay">
-        <div class="hud-corner">CPU_USAGE: 42.8%<br>RAM_STREAM: STABLE<br>NET_LATENCY: 14ms</div>
-        <div class="hud-corner" style="text-align: right;">AI_NODE: PRIMARY<br>SEC_PROTOCOL: ACTIVE<br>V_VERSION: 1.0.52</div>
+  <div id="mobile-boot-frame">
+    <div class="mobile-notch"></div>
+    <div class="biometric-circle">
+      <div class="biometric-scan"></div>
+      <span style="font-size: 40px;">👤</span>
     </div>
+    <div class="loading-text">SYSTEM SECURED</div>
+    <div style="margin-top: 20px; color: rgba(24,198,167,0.4); font-size: 10px;">ID: ZHAOGUI-MOBILE-CORE</div>
+  </div>
 
-    <h1>SYSTEM_INITIATED</h1>
-    
-    <div class="ai-core">
-        <div class="core-ring ring-1"></div>
-        <div class="core-ring ring-2"></div>
-        <div class="core-ring ring-3"></div>
-        <div class="core-center"></div>
-    </div>
-
-    <div class="ai-status-text" id="statusText">AI Consciousness Awakening...</div>
-
-    <div class="log-container">
-        <div id="logContent">
-            <!-- 這裡會由 JS 動態填充 -->
-        </div>
-        <div class="progress-container">
-            <div class="progress-bar" id="progressBar"></div>
-        </div>
-    </div>
-
-    <div class="hud-overlay">
-        <div class="hud-corner bottom">GEO_SYNC: ACTIVE<br>LOCAL_TIME: <span id="clock"></span></div>
-        <div class="hud-corner bottom" style="text-align: right;">ENCRYPTION: AES-256<br>STATUS: DEPLOYING</div>
-    </div>
-
-    <script>
-        const logs = [
-            "BOOTING_NEURAL_LAYERS",
-            "SYNCING_HISTORICAL_SETTLEMENT",
-            "HARD_LOCK_ACTIVE: 05/09",
-            "OPTIMIZING_DATA_STREAM",
-            "RECONSTRUCTING_WAR_ROOM",
-            "AI_DECISION_MATRIX_READY",
-            "CONNECTING_TO_USER_WORKSPACE"
-        ];
-
-        const logContent = document.getElementById('logContent');
-        const progressBar = document.getElementById('progressBar');
-        const statusText = document.getElementById('statusText');
-        const params = new URLSearchParams(window.location.search);
-        const targetPage = params.get('page') || 'mobile.html';
-
-        function addLog(msg) {
-            const time = new Date().toLocaleTimeString('zh-TW', { hour12: false });
-            const line = document.createElement('div');
-            line.className = 'log-line';
-            line.innerHTML = `<span class="log-time">[${time}]</span> <span class="log-status">OK</span> <span class="log-msg">${msg}</span>`;
-            logContent.appendChild(line);
-            if (logContent.children.length > 5) logContent.removeChild(logContent.firstChild);
-        }
-
-        async function startSequence() {
-            const isFast = params.get('fast') === '1';
-            const baseDelay = isFast ? 30 : 150;
-            
-            for (let i = 0; i < logs.length; i++) {
-                await new Promise(r => setTimeout(r, baseDelay + Math.random() * (isFast ? 20 : 200)));
-                addLog(logs[i]);
-                statusText.textContent = logs[i].replace(/_/g, ' ') + '...';
-                progressBar.style.width = ((i + 1) / logs.length * 100) + '%';
-            }
-
-            // 最終確認
-            statusText.textContent = "SYSTEM_SYNC_COMPLETE";
-            statusText.style.color = "var(--accent)";
-            progressBar.style.width = '100%';
-            
-            setTimeout(() => {
-                document.body.style.opacity = '0';
-                document.body.style.transition = 'opacity 0.5s ease';
-                setTimeout(() => {
-                    window.location.href = '/' + targetPage;
-                }, 500);
-            }, isFast ? 100 : 300);
-        }
-
-        function updateClock() {
-            document.getElementById('clock').textContent = new Date().toLocaleTimeString('zh-TW', { hour12: false });
-        }
-
-        setInterval(updateClock, 1000);
-        updateClock();
-        window.onload = startSequence;
-    </script>
+  <script>
+    // 啟動器強制手機版導向
+    setTimeout(() => {
+      window.location.href = 'index.html';
+    }, 3000);
+  </script>
 </body>
 </html>

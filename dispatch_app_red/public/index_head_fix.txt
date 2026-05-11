@@ -1,0 +1,36 @@
+    /* 深度優化：自動切換與持久化記憶邏輯 */
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const modeParam = params.get('mode');
+      const savedMode = localStorage.getItem('preferred_view_mode');
+      
+      if (modeParam === 'desktop') {
+        localStorage.setItem('preferred_view_mode', 'desktop');
+        return;
+      }
+      
+      const shouldBeMobile = modeParam === 'mobile' || 
+                             savedMode === 'mobile' || 
+                             (window.innerWidth < 1024 && savedMode !== 'desktop');
+
+      if (shouldBeMobile) {
+        if (modeParam === 'mobile') localStorage.setItem('preferred_view_mode', 'mobile');
+        window.location.href = 'mobile.html' + window.location.search;
+      }
+    })();
+  </script>
+  <style>
+    /* 手機切換按鈕特效 */
+    .qr-scan-line {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(to bottom, transparent, rgba(243,193,75,0.2), transparent);
+      animation: qr-scan 3s ease-in-out infinite;
+      z-index: 1; pointer-events: none;
+    }
+    @keyframes qr-scan {
+      0% { transform: translateY(-100%); }
+      50% { transform: translateY(100%); }
+      100% { transform: translateY(-100%); }
+    }
+  </style>

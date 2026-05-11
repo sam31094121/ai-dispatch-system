@@ -30,7 +30,8 @@ const refs = {
   copyShortText: document.getElementById('copy-short-text'),
   shareLineText: document.getElementById('share-line-text'),
   lineShare: document.getElementById('line-share'),
-  toast: document.getElementById('toast')
+  toast: document.getElementById('toast'),
+  aiNextStep: document.getElementById('ai-next-step')
 };
 
 const state = {
@@ -46,9 +47,12 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
   const errorMsg = `[系統錯誤] ${msg} (行: ${lineNo})`;
   console.error(errorMsg, error);
   if (typeof showToast === 'function') showToast(errorMsg);
-  // 確保啟動畫面一定會消失
+  // 確保啟動畫面一定會消失，防止死機
   const s = document.getElementById('splash-screen');
-  if (s) s.classList.add('fade-out');
+  if (s) {
+    s.style.opacity = '0';
+    setTimeout(() => s.remove(), 1000);
+  }
   return false;
 };
 
@@ -288,7 +292,7 @@ async function loadData() {
     hideSplashScreen();
   } catch (error) {
     renderError(error);
-    hideSplashScreen();
+    hideSplashScreen(); // 強制隱藏
   }
 }
 
@@ -390,6 +394,13 @@ function render(report) {
   renderDualTotals(report.reportTotal, report.assignmentTotal);
   renderSendText(report.sendText, report.groupShortText);
   animateScoreFills();
+
+  // 更新 AI 指揮中心跑馬燈
+  if (refs.aiNextStep) {
+    const auditStatus = auditPass ? '🟢 審計通過' : '🔴 審計警告';
+    const a1Count = report.ranking.filter(r => r.group === 'A1').length;
+    refs.aiNextStep.textContent = `[系統狀態] ${auditStatus} | [A1 分佈] 已鎖定 ${a1Count} 位主力 | [派單進度] ${report.dispatchDate} 公告同步完畢... 準備執行下一步推送...`;
+  }
 }
 
 function renderSummary(summary) {
@@ -672,515 +683,6 @@ function bindEvents() {
 
 // 3D 物理引擎已移至 vfx-engine.js
 
-function _drawMapleLeafPath(g) {
-  g.beginPath();
-  g.moveTo(0, -9);
-  g.bezierCurveTo( 0.5, -7.6,  1.6, -6.8,  2.0, -6.2);
-  g.bezierCurveTo( 3.8, -6.8,  5.2, -6.0,  4.8, -4.6);
-  g.bezierCurveTo( 7.0, -3.6,  7.8, -1.8,  6.2, -0.7);
-  g.bezierCurveTo( 7.3,  0.8,  6.6,  2.5,  4.9,  2.0);
-  g.bezierCurveTo( 5.8,  4.2,  4.6,  5.8,  2.9,  4.8);
-  g.bezierCurveTo( 2.2,  6.5,  0.8,  7.0,  0.0,  5.8);
-  g.bezierCurveTo(-0.8,  7.0, -2.2,  6.5, -2.9,  4.8);
-  g.bezierCurveTo(-4.6,  5.8, -5.8,  4.2, -4.9,  2.0);
-  g.bezierCurveTo(-6.6,  2.5, -7.3,  0.8, -6.2, -0.7);
-  g.bezierCurveTo(-7.8, -1.8, -7.0, -3.6, -4.8, -4.6);
-  g.bezierCurveTo(-5.2, -6.0, -3.8, -6.8, -2.0, -6.2);
-  g.bezierCurveTo(-1.6, -6.8, -0.5, -7.6,  0.0, -9.0);
-  g.closePath();
-}
-
-class MapleCoinRain {
-  constructor(canvas) {
-    this.cv = canvas;
-    this.cx = canvas.getContext('2d', { alpha: true });
-    this.coins  = [];   // 飛行中
-    this.pile   = [];   // 已落定
-    this.frame  = 0;
-    this.running = false;
-    this.raf    = null;
-    /* 效能核心：預渲染 sprite cache，避免每幀重繪放射紋與楓葉 */
-    this._spriteCache = new Map();
-    this._resize();
-    window.addEventListener('resize', () => this._resize(), { passive: true });
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) this._pause();
-      else this._resume();
-    });
-  }
-
-  _resize() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    this.W = this.cv.offsetWidth  || 320;
-    this.H = this.cv.offsetHeight || 220;
-    this.cv.width  = Math.round(this.W * dpr);
-    this.cv.height = Math.round(this.H * dpr);
-    this.cx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    this._spriteCache.clear(); // resize 後需重建 sprite
-  }
-
-  /* 查詢 x 位置的最高堆積 y（碰到哪個落定硬幣最高） */
-  _floorAt(x, r) {
-    let floor = this.H;
-    for (const p of this.pile) {
-      if (p.z > 0.5) continue; // 只有在背景的硬幣會堆積
-      const dx = p.x - x;
-      const gap = (p.r + r) * 0.92;
-      if (Math.abs(dx) < gap) {
-        const top = p.y - Math.sqrt(Math.max(0, gap * gap - dx * dx));
-        if (top < floor) floor = top;
-      }
-    }
-    return floor;
-  }
-
-  explode() {
-    const count = 20;
-    const rank = parseInt(this.cv.dataset.rank || '1');
-    for (let i = 0; i < count; i++) {
-        const angle = Math.random() * Math.PI * 2;
-        const speed = 2 + Math.random() * 8;
-        const type = Math.random() < 0.5 ? 'bill' : 'coin';
-        this.coins.push({
-            type,
-            x: this.W / 2,
-            y: this.H / 2,
-            z: 0.1, // 深度，0 到 2
-            vx: Math.cos(angle) * speed,
-            vy: Math.sin(angle) * speed,
-            vz: 0.02 + Math.random() * 0.05,
-            r: 8 + Math.random() * 8,
-            bw: 30, bh: 14,
-            tilt: Math.random() * Math.PI,
-            tiltSpd: (Math.random() - 0.5) * 0.2,
-            done: false,
-            isExplosion: true
-        });
-    }
-    // 觸發畫面震動
-    this.cv.classList.add('shake');
-    setTimeout(() => this.cv.classList.remove('shake'), 500);
-  }
-
-  _spawn() {
-    const rank = parseInt(this.cv.dataset.rank || '1');
-    let type = 'coin';
-    
-    // 根據排名調整掉落物比例與類型
-    // 第一名：美金 + 金幣混合
-    // 第二名：全金幣
-    // 第三名：銀幣 (透過顏色調整) + 少許美金
-    // 第四名：全美金
-    if (rank === 1) {
-        type = Math.random() < 0.4 ? 'bill' : (Math.random() < 0.8 ? 'coin' : 'glitter');
-    }
-    else if (rank === 2) type = 'coin';
-    else if (rank === 3) type = Math.random() < 0.3 ? 'bill' : 'silver';
-    else if (rank === 4) type = 'bill';
-
-    if (type === 'glitter') {
-        const r = 2 + Math.random() * 2;
-        this.coins.push({
-            type: 'glitter',
-            x: Math.random() * this.W,
-            y: -r,
-            vx: (Math.random() - 0.5) * 4,
-            vy: 2 + Math.random() * 3,
-            r,
-            color: `hsla(${Math.random() * 60 + 40}, 100%, 70%, ${0.6 + Math.random() * 0.4})`,
-            done: false
-        });
-    } else if (type === 'bill') {
-      const bw = 32 + Math.random() * 18; // 稍微加大
-      const bh = Math.round(bw * 0.44);
-      const margin = bw * 0.5 + 4;
-      this.coins.push({
-        type: 'bill',
-        x:   margin + Math.random() * Math.max(1, this.W - margin * 2),
-        y:   -bh,
-        vx:  (Math.random() - 0.5) * 1.8,
-        vy:  0.5 + Math.random() * 1.8,
-        r:   bh * 0.5,
-        bw, bh,
-        tilt:     (Math.random() - 0.5) * 0.4,
-        tiltSpd:  (Math.random() - 0.5) * 0.015,
-        flutter:  Math.random() * Math.PI * 2,
-        flutterSpd: 0.04 + Math.random() * 0.06,
-        bounces: 0, done: false,
-      });
-    } else {
-      const isSilver = type === 'silver';
-      const r = 9 + Math.random() * 8;
-      const margin = r + 4;
-      this.coins.push({
-        type: isSilver ? 'silver' : 'coin',
-        x:       margin + Math.random() * Math.max(1, this.W - margin * 2),
-        y:       -r,
-        vx:      (Math.random() - 0.5) * 2.8,
-        vy:      0.8 + Math.random() * 2.5,
-        r,
-        spin:    (Math.random() - 0.5) * 0.12,
-        tilt:    Math.random() * Math.PI * 2,
-        tiltSpd: (Math.random() - 0.5) * 0.08,
-        bounces: 0, done: false,
-      });
-    }
-  }
-
-  _update() {
-    this.frame++;
-    const maxPile = Math.floor(this.W / 18);
-    const interval = 16 + this.pile.length * 4;
-    if (this.frame % interval === 0 && this.pile.length < maxPile) this._spawn();
-
-    for (const c of this.coins) {
-      if (c.done) continue;
-
-      if (c.isExplosion) {
-          c.x += c.vx;
-          c.y += c.vy;
-          c.z += c.vz;
-          c.vx *= 0.96;
-          c.vy *= 0.96;
-          c.tilt += c.tiltSpd;
-          if (c.z > 2 || c.y > this.H + 100) c.done = true;
-          continue;
-      }
-
-      if (c.type === 'bill') {
-        c.vy = Math.min(c.vy + 0.22, 7);
-        c.flutter += c.flutterSpd;
-        c.vx += Math.sin(c.flutter * 1.4) * 0.09;
-        c.vx = Math.max(-2.8, Math.min(2.8, c.vx));
-        c.vx *= 0.978;
-        c.tilt += Math.sin(c.flutter * 0.8) * 0.005;
-        c.tilt = Math.max(-0.42, Math.min(0.42, c.tilt));
-      } else {
-        c.vy = Math.min(c.vy + 0.44, 13);
-        c.tilt += c.tiltSpd;
-      }
-
-      c.x += c.vx;
-      c.y += c.vy;
-
-      const hw = c.type === 'bill' ? c.bw * 0.5 : c.r;
-      if (c.x - hw < 0)       { c.x = hw;          c.vx =  Math.abs(c.vx) * 0.50; }
-      if (c.x + hw > this.W)  { c.x = this.W - hw; c.vx = -Math.abs(c.vx) * 0.50; }
-
-      const floor = this._floorAt(c.x, c.r);
-      if (c.y + c.r >= floor) {
-        c.y   = floor - c.r;
-        c.vy *= c.type === 'bill' ? -0.18 : -0.28;
-        c.vx *= 0.65;
-        c.bounces++;
-        if (c.type === 'bill') { c.tiltSpd = 0; }
-        else { c.spin = (c.spin || 0) * 0.75; }
-        if (Math.abs(c.vy) < 0.75 && c.bounces >= 1) {
-          c.done = true;
-          c.vy = 0; c.vx = 0;
-          if (c.type === 'bill') { c.tilt = 0; c.flutter = 0; }
-          else { c.spin = 0; }
-          this.pile.push(c);
-        }
-      }
-    }
-    this.coins = this.coins.filter(c => !c.done);
-  }
-
-  _getCoinSprite(r, isSilver = false) {
-    const key = Math.round(r);
-    const cacheKey = (isSilver ? 'silver_' : 'coin_') + key;
-    if (this._spriteCache.has(cacheKey)) return this._spriteCache.get(cacheKey);
-
-    const pad = 12; // 增加邊距以容納發光
-    const size = (key + pad) * 2;
-    const off = document.createElement('canvas');
-    off.width = size; off.height = size;
-    const g = off.getContext('2d');
-    const cx = size / 2, cy = size / 2;
-
-    // ─ 1. 落影 (增加柔和度) ─
-    g.shadowColor = 'rgba(0,0,0,0.6)';
-    g.shadowBlur = key * 0.6;
-    g.shadowOffsetX = key * 0.1;
-    g.shadowOffsetY = key * 0.25;
-    g.beginPath(); g.arc(cx, cy, key * 0.98, 0, Math.PI * 2);
-    g.fillStyle = '#000'; g.fill();
-    g.shadowColor = 'transparent'; g.shadowBlur = 0;
-
-    // ─ 2. 鑄幣齒邊 (增加多重層次金屬感) ─
-    const teeth = Math.max(24, Math.floor(key * 2.5));
-    g.beginPath();
-    for (let i = 0; i <= teeth * 2; i++) {
-      const a = (i / (teeth * 2)) * Math.PI * 2;
-      const rad = i % 2 === 0 ? key * 1.0 : key * 0.93;
-      if (i === 0) g.moveTo(cx + Math.cos(a) * rad, cy + Math.sin(a) * rad);
-      else g.lineTo(cx + Math.cos(a) * rad, cy + Math.sin(a) * rad);
-    }
-    g.closePath();
-    
-    // 金/銀漸層
-    const edgeG = g.createRadialGradient(cx - key*0.15, cy - key*0.25, key*0.6, cx, cy, key);
-    if (isSilver) {
-        edgeG.addColorStop(0, '#E0E0E0'); edgeG.addColorStop(0.5, '#A0A0A0'); edgeG.addColorStop(1, '#404040');
-    } else {
-        edgeG.addColorStop(0, '#FFD700'); edgeG.addColorStop(0.45, '#B8860B'); edgeG.addColorStop(0.8, '#8B4513'); edgeG.addColorStop(1, '#422400');
-    }
-    g.fillStyle = edgeG; g.fill();
-
-    // 頂部高亮邊緣
-    g.beginPath(); g.arc(cx, cy, key * 0.99, Math.PI * 1.1, Math.PI * 1.9);
-    g.strokeStyle = isSilver ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,200,0.5)'; g.lineWidth = 1.2; g.stroke();
-
-    // ─ 3. 正面金屬面 ─
-    const fr = key * 0.86;
-    const faceG = g.createRadialGradient(cx - key*0.25, cy - key*0.3, 0, cx + key*0.1, cy + key*0.1, fr*1.1);
-    if (isSilver) {
-        faceG.addColorStop(0, '#FFFFFF'); faceG.addColorStop(0.3, '#D0D0D0'); faceG.addColorStop(0.8, '#808080'); faceG.addColorStop(1, '#404040');
-    } else {
-        faceG.addColorStop(0.00, '#FFFDE0'); faceG.addColorStop(0.1, '#FFEB3B'); faceG.addColorStop(0.3, '#FBC02D'); faceG.addColorStop(0.6, '#F57F17'); faceG.addColorStop(1.0, '#3E2723');
-    }
-    g.beginPath(); g.arc(cx, cy, fr, 0, Math.PI * 2);
-    g.fillStyle = faceG; g.fill();
-
-    // ─ 4. 髮絲紋 (更加精細) ─
-    g.save();
-    g.beginPath(); g.arc(cx, cy, fr, 0, Math.PI * 2); g.clip();
-    const rings = Math.max(8, Math.floor(fr / 1.2));
-    for (let i = 1; i <= rings; i++) {
-      g.beginPath(); g.arc(cx, cy, (i / rings) * fr, 0, Math.PI * 2);
-      g.strokeStyle = isSilver ? `rgba(100,100,100,${0.05 + (i%5==0?0.03:0)})` : `rgba(80,40,0,${0.06 + (i%5==0?0.04:0)})`;
-      g.lineWidth = 0.25; g.stroke();
-    }
-    g.restore();
-
-    // ─ 5. 楓葉浮雕 (提升寫實度) ─
-    g.save();
-    g.translate(cx, cy);
-    const ls = key * 0.056;
-    g.scale(ls, ls);
-    
-    // 浮雕深影
-    g.save(); g.translate(0.7, 1.0);
-    g.fillStyle = isSilver ? 'rgba(0,0,0,0.4)' : 'rgba(60,20,0,0.5)';
-    _drawMapleLeafPath(g); g.fill(); g.restore();
-
-    // 浮雕主體 (使用更強的對比)
-    g.fillStyle = isSilver ? 'rgba(180,180,180,0.8)' : 'rgba(184,134,11,0.8)';
-    _drawMapleLeafPath(g); g.fill();
-    g.restore();
-
-    // ─ 6. 鏡面反光 (加上彩虹色散微光) ─
-    const hiG = g.createRadialGradient(cx - fr*0.4, cy - fr*0.45, 0, cx - fr*0.1, cy - fr*0.1, fr*0.7);
-    hiG.addColorStop(0, 'rgba(255,255,255,0.6)');
-    hiG.addColorStop(0.2, 'rgba(255,255,255,0.2)');
-    hiG.addColorStop(0.5, 'rgba(255,255,255,0)');
-    g.beginPath(); g.arc(cx, cy, fr, 0, Math.PI * 2);
-    g.fillStyle = hiG; g.fill();
-
-    const result = { canvas: off, pad };
-    this._spriteCache.set(cacheKey, result);
-    return result;
-  }
-
-  _getBillSprite(bw, bh) {
-    const rw = Math.round(bw / 2) * 2;
-    const rh = Math.round(bh / 2) * 2;
-    const cacheKey = `bill_${rw}_${rh}`;
-    if (this._spriteCache.has(cacheKey)) return this._spriteCache.get(cacheKey);
-
-    const pad = 10;
-    const sw = rw + pad * 2, sh = rh + pad * 2;
-    const off = document.createElement('canvas');
-    off.width = sw; off.height = sh;
-    const g = off.getContext('2d');
-    const bx = pad, by = pad;
-
-    // ─ 1. 落影 (柔和疊加) ─
-    g.shadowColor = 'rgba(0,0,0,0.45)'; g.shadowBlur = 8;
-    g.shadowOffsetX = 2; g.shadowOffsetY = 4;
-    g.beginPath(); g.roundRect(bx, by, rw, rh, 1.5);
-    g.fillStyle = '#000'; g.fill();
-    g.shadowColor = 'transparent'; g.shadowBlur = 0;
-
-    // ─ 2. 鈔票基底 (加入紙張纖維質感) ─
-    const baseG = g.createLinearGradient(bx, by, bx + rw, by + rh);
-    baseG.addColorStop(0.0, '#2D5A27'); baseG.addColorStop(0.5, '#3D7A37'); baseG.addColorStop(1.0, '#244A20');
-    g.beginPath(); g.roundRect(bx, by, rw, rh, 1.5); g.fillStyle = baseG; g.fill();
-
-    // ─ 3. 微細紋理 (Noise / Intaglio texture) ─
-    g.save();
-    g.beginPath(); g.roundRect(bx, by, rw, rh, 1.5); g.clip();
-    for(let i=0; i<300; i++) {
-        g.fillStyle = `rgba(255,255,255,${Math.random()*0.05})`;
-        g.fillRect(bx + Math.random()*rw, by + Math.random()*rh, 1, 1);
-    }
-    // 橫向印刷線
-    g.strokeStyle = 'rgba(0,0,0,0.1)'; g.lineWidth = 0.3;
-    for(let i=0; i<rh; i+=2) {
-        g.beginPath(); g.moveTo(bx, by+i); g.lineTo(bx+rw, by+i); g.stroke();
-    }
-    g.restore();
-
-    // ─ 4. 安全線與防偽浮水印 ─
-    const sx = bx + rw * 0.72;
-    g.fillStyle = 'rgba(200,255,200,0.25)';
-    g.fillRect(sx, by + 2, 1.5, rh - 4);
-
-    // ─ 5. 面額數字與邊框 ─
-    g.strokeStyle = 'rgba(150,220,150,0.4)'; g.lineWidth = 0.8;
-    g.strokeRect(bx+3, by+3, rw-6, rh-6);
-    
-    g.font = `bold ${rh*0.4}px Georgia, serif`;
-    g.fillStyle = 'rgba(180,240,180,0.6)';
-    g.textAlign = 'center'; g.textBaseline = 'middle';
-    g.fillText('$ 100', bx + rw*0.5, by + rh*0.5);
-
-    // ─ 6. 頂部高光 ─
-    const gloss = g.createLinearGradient(bx, by, bx+rw*0.3, by+rh*0.3);
-    gloss.addColorStop(0, 'rgba(255,255,255,0.2)'); gloss.addColorStop(1, 'rgba(255,255,255,0)');
-    g.fillStyle = gloss; g.fillRect(bx, by, rw, rh);
-
-    const result = { canvas: off, pad };
-    this._spriteCache.set(cacheKey, result);
-    return result;
-  }
-
-  _drawCoin(c, t) {
-    const ctx = this.cx;
-    const { x, y, r, tilt } = c;
-    const squish = Math.max(0.07, Math.abs(Math.cos(tilt)));
-    const sprite = this._getCoinSprite(r);
-    const drawSize = (Math.round(r) + sprite.pad) * 2;
-
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.scale(squish, 1);
-    ctx.drawImage(sprite.canvas, -drawSize / 2, -drawSize / 2, drawSize, drawSize);
-
-    // 動態鏡面閃光（鏡面反射掃過時的白點）
-    const glint = (Math.sin(t * 0.0028 + x * 0.09) + 1) * 0.5;
-    if (glint > 0.70 && squish > 0.30) {
-      const gs = (glint - 0.70) / 0.30;
-      ctx.beginPath();
-      ctx.arc(-r * 0.30, -r * 0.34, r * 0.13, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255,255,240,${gs * 0.68})`;
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc( r * 0.18, -r * 0.20, r * 0.055, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255,255,200,${gs * 0.32})`;
-      ctx.fill();
-    }
-    ctx.restore();
-  }
-
-  _drawBill(c, t) {
-    const ctx = this.cx;
-    const sprite = this._getBillSprite(c.bw, c.bh);
-    const sw = c.bw + sprite.pad * 2;
-    const sh = c.bh + sprite.pad * 2;
-    const flutter = c.done ? 0 : Math.sin(t * 0.0012 + c.flutter) * 0.14;
-    const squishX = Math.cos(flutter);
-
-    ctx.save();
-    ctx.translate(c.x, c.y);
-    ctx.rotate(c.tilt + flutter * 0.22);
-    ctx.scale(squishX, 1);
-    ctx.drawImage(sprite.canvas, -sw / 2, -sh / 2, sw, sh);
-    ctx.restore();
-  }
-
-  _drawGlitter(c, t) {
-    const ctx = this.cx;
-    const alpha = (Math.sin(t * 0.01 + c.x) + 1) * 0.5;
-    ctx.save();
-    ctx.translate(c.x, c.y);
-    ctx.rotate(t * 0.005);
-    ctx.fillStyle = c.color;
-    ctx.globalAlpha = alpha;
-    ctx.fillRect(-c.r, -c.r, c.r * 2, c.r * 2);
-    ctx.restore();
-  }
-
-  _drawItem(c, t) {
-    const ctx = this.cx;
-    const z = c.z || 0;
-    const scale = 1 + z;
-    const blur = z > 1 ? (z - 1) * 4 : 0;
-
-    ctx.save();
-    if (blur > 0) ctx.filter = `blur(${blur}px)`;
-    ctx.translate(c.x, c.y);
-    ctx.scale(scale, scale);
-    ctx.translate(-c.x, -c.y);
-
-    if (c.type === 'bill') this._drawBill(c, t);
-    else if (c.type === 'glitter') this._drawGlitter(c, t);
-    else this._drawItemCoin(c, t);
-
-    ctx.restore();
-  }
-
-  _drawItemCoin(c, t) {
-    const isSilver = c.type === 'silver';
-    const ctx = this.cx;
-    const { x, y, r, tilt } = c;
-    const squish = Math.max(0.07, Math.abs(Math.cos(tilt)));
-    const sprite = this._getCoinSprite(r, isSilver);
-    const drawSize = (Math.round(r) + sprite.pad) * 2;
-
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.scale(squish, 1);
-    ctx.drawImage(sprite.canvas, -drawSize / 2, -drawSize / 2, drawSize, drawSize);
-
-    // 動態鏡面閃光 (更加閃爍)
-    const glint = (Math.sin(t * 0.0035 + x * 0.12) + 1) * 0.5;
-    if (glint > 0.65 && squish > 0.25) {
-      const gs = (glint - 0.65) / 0.35;
-      ctx.beginPath();
-      ctx.arc(-r * 0.35, -r * 0.4, r * 0.15, 0, Math.PI * 2);
-      ctx.fillStyle = isSilver ? `rgba(255,255,255,${gs * 0.8})` : `rgba(255,255,240,${gs * 0.8})`;
-      ctx.fill();
-    }
-    ctx.restore();
-  }
-
-  _draw() {
-    const t = performance.now();
-    this.cx.clearRect(0, 0, this.W, this.H);
-    for (let i = this.pile.length - 1; i >= 0; i--) this._drawItem(this.pile[i], t);
-    for (const c of this.coins) this._drawItem(c, t);
-  }
-
-  _tick() {
-    if (!this.running) return;
-    this._update();
-    this._draw();
-    this.raf = requestAnimationFrame(() => this._tick());
-  }
-
-  _pause() {
-    this.running = false;
-    if (this.raf) cancelAnimationFrame(this.raf);
-    this.raf = null;
-  }
-
-  _resume() {
-    if (this.running) return;
-    this.running = true;
-    this._tick();
-  }
-
-  start() {
-    this._resize();
-    this.explode();
-    this._resume();
-  }
-
-  stop() { this._pause(); }
-}
-
 let _coinRain = null;
 
 function initMoneyEffects() {
@@ -1189,14 +691,19 @@ function initMoneyEffects() {
   // 針對前四名卡片初始化各自的 Canvas
   const canvases = document.querySelectorAll('.money-canvas-container canvas');
   canvases.forEach(cv => {
+    // 檢查是否已經有引擎實例
+    if (cv._vfx) cv._vfx.stop();
     const rain = new MapleCoinRain(cv);
+    cv._vfx = rain;
     rain.start();
   });
   
   // 原有的全域金幣雨 (若有的話)
   const globalCv = document.getElementById('mobile-coin-canvas');
   if (globalCv) {
+    if (globalCv._vfx) globalCv._vfx.stop();
     const globalRain = new MapleCoinRain(globalCv);
+    globalCv._vfx = globalRain;
     globalRain.start();
   }
 }
@@ -1223,16 +730,20 @@ function initHeroTilt() {
     const rect = card.getBoundingClientRect();
     const x = ((touch.clientX - rect.left) / rect.width - 0.5) * 2;
     const y = ((touch.clientY - rect.top)  / rect.height - 0.5) * 2;
-    const tiltX = (-y * 8).toFixed(2);
-    const tiltY = ( x * 8).toFixed(2);
     
-    // 動態光源模擬：根據觸控位置調整 gloss 與內陰影
+    // 加入阻尼感與旋轉限制
+    const tiltX = (-y * 6).toFixed(2);
+    const tiltY = ( x * 6).toFixed(2);
+    
+    // 動態光源模擬
     const lightX = ((x + 1) * 50).toFixed(1);
     const lightY = ((y + 1) * 50).toFixed(1);
     
-    card.style.transform = `perspective(600px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(8px) scale(1.02)`;
-    card.style.setProperty('--light-x', `${lightX}%`);
-    card.style.setProperty('--light-y', `${lightY}%`);
+    requestAnimationFrame(() => {
+      card.style.transform = `perspective(800px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(10px) scale(1.03)`;
+      card.style.setProperty('--light-x', `${lightX}%`);
+      card.style.setProperty('--light-y', `${lightY}%`);
+    });
 
   }, { passive: true });
 

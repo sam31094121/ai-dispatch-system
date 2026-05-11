@@ -1253,6 +1253,11 @@
     }
 
     refs.btnSendLine?.addEventListener('click', run(sendLine));
+
+    // 手機模式切換
+    $('mobile-mode-trigger')?.addEventListener('click', () => {
+      window.location.href = 'mobile.html?mode=mobile';
+    });
   }
 
   function hideSplashScreen() {
