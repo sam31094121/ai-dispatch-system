@@ -198,59 +198,67 @@ class MapleCoinRain {
     const ctx = this.cx;
     const { x, y, r, tilt } = c;
     
-    // 進階：多軸旋轉模擬 (模擬 3D 翻轉)
-    const rotX = Math.sin(t * 0.002 + x) * 0.5; // X軸翻轉
-    const rotY = Math.cos(t * 0.003 + y) * 0.5; // Y軸翻轉
-    const scaleZ = 1 + Math.sin(t * 0.001) * 0.1; // 輕微深度脈動
+    // 1. 計算物理變換 (3D 翻轉與脈動)
+    const rotX = Math.sin(t * 0.002 + x) * 0.4;
+    const rotY = Math.cos(t * 0.003 + y) * 0.4;
+    const scaleZ = 1 + Math.sin(t * 0.001) * 0.12;
     
     ctx.save();
     ctx.translate(x, y);
     
-    // 模擬 3D 矩陣變換
+    // 2. 應用 3D 空間矩陣
     ctx.transform(
-      Math.cos(tilt) * scaleZ,      // m11
-      Math.sin(rotX) * 0.3,         // m12
-      Math.sin(rotY) * 0.3,         // m21
-      Math.cos(tilt) * scaleZ,      // m22
+      Math.cos(tilt) * scaleZ,
+      Math.sin(rotX) * 0.35,
+      Math.sin(rotY) * 0.35,
+      Math.cos(tilt) * scaleZ,
       0, 0
     );
 
-    // 1. 底層光暈 (Bloom)
-    ctx.shadowBlur = 25;
-    ctx.shadowColor = 'rgba(255, 255, 255, 0.4)';
+    // 3. 繪製物理陰影層 (與背景融合)
+    ctx.shadowBlur = 30;
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
     
-    // 2. 繪製「八心八箭」極致鑽石
+    // 4. 繪製終極實體鑽石 (具備環境反射)
     if (this.diamondImg.complete) {
+        // 第一層：基礎本體
+        ctx.globalAlpha = 0.95;
         ctx.drawImage(this.diamondImg, -r, -r, r * 2, r * 2);
-    }
-
-    // 3. 模擬色散火彩 (Rainbow Fire)
-    const fireSeed = Math.sin(t * 0.02 + x);
-    if (fireSeed > 0.7) {
-        const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00'];
+        
+        // 第二層：動態折射強化 (Screen Mode)
         ctx.globalCompositeOperation = 'screen';
-        for (let i = 0; i < 4; i++) {
-            ctx.beginPath();
-            const angle = (t * 0.01) + (i * Math.PI / 2);
-            const dist = r * 0.8;
-            ctx.fillStyle = colors[i];
-            ctx.globalAlpha = (fireSeed - 0.7) * 0.5;
-            ctx.arc(Math.cos(angle) * dist, Math.sin(angle) * dist, r * 0.2, 0, Math.PI * 2);
-            ctx.fill();
-        }
+        ctx.globalAlpha = (Math.sin(t * 0.005) + 1) * 0.2;
+        ctx.drawImage(this.diamondImg, -r, -r, r * 2, r * 2);
         ctx.globalCompositeOperation = 'source-over';
     }
 
-    // 4. 強力閃爍 (Sparkle)
-    if (fireSeed > 0.9) {
+    // 5. 極細碎火彩 (Diamond Dust Fragments)
+    const fireSeed = Math.sin(t * 0.015 + x);
+    if (fireSeed > 0.6) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        for (let i = 0; i < 3; i++) {
+            const angle = (t * 0.05) + i;
+            const d = r * 1.2;
+            ctx.fillStyle = `hsla(${t % 360}, 100%, 90%, 0.6)`;
+            ctx.beginPath();
+            ctx.arc(Math.cos(angle) * d, Math.sin(angle) * d, 1, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        ctx.restore();
+    }
+
+    // 6. 極致星芒閃爍
+    if (fireSeed > 0.95) {
         ctx.beginPath();
-        const sSize = r * 1.5;
+        const sSize = r * 1.8;
         ctx.fillStyle = '#fff';
-        ctx.globalAlpha = 1;
-        ctx.shadowBlur = 10;
+        ctx.shadowBlur = 20;
         ctx.shadowColor = '#fff';
-        ctx.fillRect(-1, -sSize, 2, sSize * 2);
-        ctx.fillRect(-sSize, -1, sSize * 2, 2);
+        ctx.globalAlpha = 1;
+        // 銳利十字光
+        ctx.fillRect(-0.5, -sSize, 1, sSize * 2);
+        ctx.fillRect(-sSize, -0.5, sSize * 2, 1);
     }
     
     ctx.restore();
