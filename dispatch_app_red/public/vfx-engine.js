@@ -17,9 +17,18 @@ class MapleCoinRain {
     this.lastSpawn = 0;
     this.dpr = Math.min(window.devicePixelRatio || 1, 2);
     
-    // 預載入極致寫實鑽石資產
+    // 預載入 Project Apex 極致實體資產
     this.diamondImg = new Image();
-    this.diamondImg.src = 'ultra_realistic_diamond_top1_1778480554500.png';
+    this.diamondImg.src = 'war_room_refracted_diamond_final_1778481582281.png';
+    
+    this.goldBarImg = new Image();
+    this.goldBarImg.src = 'ultra_realistic_gold_bar_top2_1778482392660.png';
+
+    this.silverBarImg = new Image();
+    this.silverBarImg.src = 'ultra_realistic_rank3_rank4_assets_1778482757686.png';
+    
+    this.cashBundleImg = new Image();
+    this.cashBundleImg.src = 'ultra_realistic_rank3_rank4_assets_1778482757686.png';
   }
 
   _resize() {
@@ -106,9 +115,9 @@ class MapleCoinRain {
     const rank = parseInt(this.cv.dataset.rank || '1');
     let type = 'coin';
     if (rank === 1) type = Math.random() < 0.6 ? 'diamond' : 'glitter';
-    else if (rank === 2) type = 'coin';
-    else if (rank === 3) type = Math.random() < 0.3 ? 'bill' : 'silver';
-    else if (rank === 4) type = 'bill';
+    else if (rank === 2) type = Math.random() < 0.7 ? 'goldbar' : 'coin';
+    else if (rank === 3) type = Math.random() < 0.7 ? 'silverbar' : 'silver';
+    else if (rank === 4) type = Math.random() < 0.7 ? 'cashbundle' : 'bill';
 
     if (type === 'diamond') {
         const r = 25 + Math.random() * 15;
@@ -121,6 +130,32 @@ class MapleCoinRain {
             r,
             tilt: Math.random() * Math.PI * 2,
             tiltSpd: (Math.random() - 0.5) * 0.08,
+            done: false
+        });
+    } else if (type === 'goldbar' || type === 'silverbar') {
+        const bw = 35 + Math.random() * 15;
+        this.coins.push({
+            type: type,
+            x: Math.random() * this.W,
+            y: -20,
+            vx: (Math.random() - 0.5) * 1.2,
+            vy: type === 'goldbar' ? 3.5 : 2.8,
+            bw, bh: bw * 0.45,
+            tilt: Math.random() * Math.PI * 2,
+            tiltSpd: (Math.random() - 0.5) * 0.06,
+            done: false
+        });
+    } else if (type === 'cashbundle') {
+        const bw = 45 + Math.random() * 15;
+        this.coins.push({
+            type: 'cashbundle',
+            x: Math.random() * this.W,
+            y: -20,
+            vx: (Math.random() - 0.5) * 1,
+            vy: 2 + Math.random() * 2,
+            bw, bh: bw * 0.5,
+            tilt: Math.random() * Math.PI * 2,
+            tiltSpd: (Math.random() - 0.5) * 0.1,
             done: false
         });
     } else if (type === 'glitter') {
@@ -164,6 +199,24 @@ class MapleCoinRain {
     }
   }
 
+  triggerBurst() {
+    const count = 30;
+    for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 5 + Math.random() * 10;
+        this.coins.push({
+            x: this.W / 2,
+            y: this.H / 2,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            tilt: Math.random() * 360,
+            tiltSpd: Math.random() * 0.2 - 0.1,
+            type: this.rank === 1 ? 'diamond' : (this.rank === 2 ? 'goldbar' : 'silverbar'),
+            life: 80 + Math.random() * 40
+        });
+    }
+  }
+
   _update() {
     const now = performance.now();
     if (now - this.lastSpawn > 180) {
@@ -173,115 +226,241 @@ class MapleCoinRain {
 
     for (const c of this.coins) {
       if (c.done) continue;
-      if (c.isExplosion) {
-          c.x += c.vx; c.y += c.vy; c.z += c.vz;
-          c.vx *= 0.97; c.vy *= 0.97; c.tilt += c.tiltSpd;
-          if (c.z > 2 || c.y > this.H + 100) c.done = true;
-          continue;
-      }
-      if (c.type === 'bill') {
-        c.vy = Math.min(c.vy + 0.15, 6);
-        c.x += Math.sin(c.flutter) * 1.5;
-        c.flutter += c.flutterSpd;
-      } else {
-        c.vy = Math.min(c.vy + 0.25, 10);
-        c.tilt += c.tiltSpd;
-      }
+      
+      // 物理模擬優化
+      c.vy = Math.min(c.vy + 0.25, 12);
       c.x += c.vx;
       c.y += c.vy;
-      if (c.y > this.H + 50) c.done = true;
+      c.tilt += c.tiltSpd;
+
+      // 觸發鏡頭光暈 (當物件落入頂部區域時)
+      if (c.y > 50 && c.y < 55 && Math.random() > 0.8) {
+          const flare = document.getElementById('lens-flare');
+          if (flare) {
+              flare.classList.remove('flare-active');
+              void flare.offsetWidth; // 觸發重繪
+              flare.classList.add('flare-active');
+          }
+      }
+
+      // 落地反彈與堆疊邏輯 (New)
+      const floor = this.H - 10;
+      if (c.y > floor) {
+          if (c.vy > 2) {
+              // 發生碰撞反彈
+              c.y = floor;
+              c.vy *= -0.4; // 能量損耗反彈
+              c.vx *= 0.6;
+              c.tiltSpd *= 0.5;
+              
+              // 觸發鏡頭震動 (大型物件落地)
+              if (c.type === 'goldbar' || c.type === 'diamond') {
+                  this.cv.classList.add('impact-shake');
+                  setTimeout(() => this.cv.classList.remove('impact-shake'), 100);
+              }
+          } else {
+              // 速度過低，進入堆疊狀態
+              c.y = floor;
+              c.vx *= 0.9;
+              c.vy = 0;
+              // 緩慢消失
+              c.life = (c.life || 100) - 1;
+              if (c.life <= 0) c.done = true;
+          }
+      }
     }
     this.coins = this.coins.filter(c => !c.done);
   }
 
   _drawDiamond(c, t) {
     const ctx = this.cx;
-    const { x, y, r, tilt } = c;
+    const { x, y, r, tilt, vy } = c;
     
-    try {
-        // 1. 基礎物理變換
-        const rotX = Math.sin(t * 0.002 + x) * 0.4;
-        const rotY = Math.cos(t * 0.003 + y) * 0.4;
-        const scaleZ = 1 + Math.sin(t * 0.001) * 0.12;
-        
-        ctx.save();
-        ctx.translate(x, y);
-        
-        // 2. 空間矩陣 (加入保護，防止 scale 為 0)
-        const sX = Math.max(0.1, Math.cos(tilt) * scaleZ);
-        ctx.transform(sX, Math.sin(rotX) * 0.35, Math.sin(rotY) * 0.35, sX, 0, 0);
+    // 1. 空間透視計算：模擬 Z 軸深度 (從遠處落向眼前)
+    // 讓鑽石在下墜過程中逐漸放大，產生 3D 衝擊感
+    const progress = Math.min(1, y / this.H);
+    const perspectiveScale = 0.5 + progress * 0.8; // 從 0.5倍 放大到 1.3倍
+    
+    // 2. 多軸空間翻轉 (模擬真實物理旋轉)
+    const rotX = Math.sin(t * 0.003 + x) * 0.6;
+    const rotY = Math.cos(t * 0.004 + y) * 0.6;
+    const motionBlur = Math.min(15, vy * 0.7);
+    
+    ctx.save();
+    ctx.translate(x, y);
+    
+    // 3. 繪製 3D 空間拖尾 (增強墜落深度)
+    ctx.save();
+    ctx.globalCompositeOperation = 'screen';
+    for (let i = 1; i <= 4; i++) {
+        ctx.globalAlpha = 0.12 / i;
+        const trailScale = perspectiveScale * (1 - i * 0.05);
+        ctx.drawImage(this.diamondImg, -r * trailScale, -r * trailScale - (i * vy * 2), r * 2 * trailScale, r * 2 * trailScale);
+    }
+    ctx.restore();
 
-        // 3. 物理陰影
-        ctx.shadowBlur = 30;
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+    // 4. 應用 3D 矩陣變換
+    ctx.scale(perspectiveScale, perspectiveScale);
+    ctx.transform(
+        Math.cos(tilt), Math.sin(rotX) * 0.4, 
+        Math.sin(rotY) * 0.4, Math.cos(tilt), 
+        0, 0
+    );
+
+    // 5. 極致寫實渲染
+    if (this.diamondImg.complete) {
+        // 動態模糊處理
+        if (motionBlur > 3) ctx.filter = `blur(${motionBlur}px)`;
         
-        // 4. 實體渲染 (加入備援機制)
-        if (this.diamondImg && this.diamondImg.complete && this.diamondImg.naturalWidth > 0) {
-            ctx.globalAlpha = 0.95;
-            ctx.drawImage(this.diamondImg, -r, -r, r * 2, r * 2);
-            
-            ctx.globalCompositeOperation = 'screen';
-            ctx.globalAlpha = (Math.sin(t * 0.005) + 1) * 0.2;
-            ctx.drawImage(this.diamondImg, -r, -r, r * 2, r * 2);
-            ctx.globalCompositeOperation = 'source-over';
-        } else {
-            // 備援：若圖片未載入，顯示幾何鑽石避免空洞
-            ctx.fillStyle = '#f3c14b';
+        ctx.shadowBlur = 40;
+        ctx.shadowColor = 'rgba(255, 255, 255, 0.4)';
+        
+        // 繪製本體
+        ctx.drawImage(this.diamondImg, -r, -r, r * 2, r * 2);
+        
+        // 模擬折射高光 (隨旋轉變動)
+        ctx.globalCompositeOperation = 'screen';
+        ctx.globalAlpha = (Math.sin(t * 0.01 + x) + 1) * 0.4;
+        ctx.drawImage(this.diamondImg, -r, -r, r * 2, r * 2);
+        
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.filter = 'none';
+    }
+
+    // 6. 核心閃爍 (Sparkle)
+    if (Math.sin(t * 0.02 + x) > 0.9) {
+        ctx.beginPath();
+        const sSize = r * 2;
+        ctx.fillStyle = '#fff';
+        ctx.shadowBlur = 20; ctx.shadowColor = '#fff';
+        ctx.fillRect(-0.5, -sSize, 1, sSize * 2);
+        ctx.fillRect(-sSize, -0.5, sSize * 2, 1);
+        
+        // 新增：極致折射火彩粒子 (Prismatic Dust)
+        for(let i=0; i<5; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const dist = r * (1 + Math.random());
+            ctx.fillStyle = `hsla(${Math.random()*360}, 100%, 70%, 0.6)`;
             ctx.beginPath();
-            ctx.moveTo(0, -r); ctx.lineTo(r, 0); ctx.lineTo(0, r); ctx.lineTo(-r, 0);
-            ctx.closePath();
+            ctx.arc(Math.cos(angle)*dist, Math.sin(angle)*dist, 1, 0, Math.PI*2);
             ctx.fill();
         }
-
-        // 5. 火彩特效
-        const fireSeed = Math.sin(t * 0.015 + x);
-        if (fireSeed > 0.6) {
-            ctx.save();
-            ctx.globalCompositeOperation = 'lighter';
-            for (let i = 0; i < 3; i++) {
-                const angle = (t * 0.05) + i;
-                const d = r * 1.2;
-                ctx.fillStyle = `hsla(${t % 360}, 100%, 90%, 0.4)`;
-                ctx.beginPath(); ctx.arc(Math.cos(angle) * d, Math.sin(angle) * d, 1, 0, Math.PI * 2); ctx.fill();
-            }
-            ctx.restore();
-        }
-
-        if (fireSeed > 0.95) {
-            ctx.beginPath();
-            const sSize = r * 1.8;
-            ctx.fillStyle = '#fff';
-            ctx.shadowBlur = 20; ctx.shadowColor = '#fff';
-            ctx.fillRect(-0.5, -sSize, 1, sSize * 2);
-            ctx.fillRect(-sSize, -0.5, sSize * 2, 1);
-        }
-        
-        ctx.restore();
-    } catch (e) {
-        console.error('[VFX-Repair] 繪製異常:', e);
-        if (ctx) ctx.restore();
     }
+    
+    ctx.restore();
+  }
+
+  _drawGoldBar(c, t) {
+    const ctx = this.cx;
+    const { x, y, bw, bh, tilt, vy } = c;
+    
+    // 1. 空間透視計算 (與鑽石一致的 3D 深度感)
+    const progress = Math.min(1, y / this.H);
+    const perspectiveScale = 0.6 + progress * 0.7; // 遠小近大
+    
+    // 2. 空間翻轉矩陣
+    const rotX = Math.sin(t * 0.001 + x) * 0.8;
+    const rotY = Math.cos(t * 0.002 + y) * 0.4;
+    
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(perspectiveScale, perspectiveScale);
+    
+    // 3D 投影變換
+    ctx.transform(1, Math.sin(rotX) * 0.3, Math.sin(rotY) * 0.3, 1, 0, 0);
+    ctx.rotate(tilt);
+
+    // 3. 物理陰影
+    ctx.shadowBlur = 20;
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+
+    // 4. 繪製金磚本體 (具備 24K 鏡面反射)
+    if (this.goldBarImg.complete) {
+        ctx.drawImage(this.goldBarImg, -bw/2, -bh/2, bw, bh);
+        
+        // 5. 動態鏡面掃描
+        ctx.globalCompositeOperation = 'overlay';
+        const shineX = (Math.sin(t * 0.005) * bw);
+        const grad = ctx.createLinearGradient(shineX - 25, 0, shineX + 25, 0);
+        grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+        grad.addColorStop(0.5, 'rgba(255, 255, 255, 0.6)');
+        grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(-bw/2, -bh/2, bw, bh);
+        ctx.globalCompositeOperation = 'source-over';
+    }
+
+    ctx.restore();
+  }
+
+  _drawSilverBar(c, t) {
+    const ctx = this.cx;
+    const { x, y, bw, bh, tilt } = c;
+    const progress = Math.min(1, y / this.H);
+    const perspectiveScale = 0.6 + progress * 0.6;
+
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(perspectiveScale, perspectiveScale);
+    ctx.rotate(tilt);
+    
+    // 繪製銀磚 (從生成圖中切分，此處暫以全圖模擬，後續可優化為裁切)
+    if (this.silverBarImg.complete) {
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = 'rgba(255, 255, 255, 0.2)';
+        ctx.drawImage(this.silverBarImg, -bw/2, -bh/2, bw, bh);
+    }
+    ctx.restore();
+  }
+
+  _drawCashBundle(c, t) {
+    const ctx = this.cx;
+    const { x, y, bw, bh, tilt } = c;
+    const progress = Math.min(1, y / this.H);
+    const perspectiveScale = 0.7 + progress * 0.5;
+
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(perspectiveScale, perspectiveScale);
+    ctx.rotate(tilt);
+    
+    // 繪製現鈔束
+    if (this.cashBundleImg.complete) {
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+        ctx.drawImage(this.cashBundleImg, -bw/2, -bh/2, bw, bh);
+    }
+    ctx.restore();
   }
 
   _drawBill(c, t) {
     const ctx = this.cx;
     const { x, y, bw, bh, flutter } = c;
-    const wave = Math.sin(flutter) * 0.15;
+    const wave = Math.sin(flutter) * 0.2;
+    
+    // 美金也加入 3D 透視
+    const progress = Math.min(1, y / this.H);
+    const perspectiveScale = 0.7 + progress * 0.5;
+
     ctx.save();
     ctx.translate(x, y);
+    ctx.scale(perspectiveScale, perspectiveScale);
     ctx.rotate(wave);
     
-    // 寫實美金
-    ctx.fillStyle = '#2d5a27'; // 墨綠
+    // 3D 扭曲模擬
+    ctx.transform(1, Math.sin(flutter) * 0.2, 0, 1, 0, 0);
+    
+    // 寫實美金樣式
+    ctx.fillStyle = '#1b3d1b';
     ctx.fillRect(-bw / 2, -bh / 2, bw, bh);
-    ctx.strokeStyle = '#d4af37';
+    ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
     ctx.lineWidth = 0.5;
     ctx.strokeRect(-bw / 2, -bh / 2, bw, bh);
     
     // 安全線
-    ctx.fillStyle = '#afffa0';
-    ctx.globalAlpha = 0.6;
-    ctx.fillRect(bw * 0.2, -bh / 2, bw * 0.05, bh);
+    ctx.fillStyle = '#7cff7c';
+    ctx.globalAlpha = 0.4;
+    ctx.fillRect(bw * 0.1, -bh / 2, bw * 0.04, bh);
     
     ctx.restore();
   }
@@ -311,6 +490,9 @@ class MapleCoinRain {
     if (c.type === 'bill') this._drawBill(c, t);
     else if (c.type === 'glitter') this._drawGlitter(c, t);
     else if (c.type === 'diamond') this._drawDiamond(c, t);
+    else if (c.type === 'goldbar') this._drawGoldBar(c, t);
+    else if (c.type === 'silverbar') this._drawSilverBar(c, t);
+    else if (c.type === 'cashbundle') this._drawCashBundle(c, t);
     else this._drawItemCoin(c, t);
     ctx.restore();
   }

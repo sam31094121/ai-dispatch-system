@@ -16,93 +16,77 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/mobile.css?v=0511-mobile-v4">
-  <link rel="stylesheet" href="/cyber-tech.css?v=2.0">
+  <link rel="stylesheet" href="/cyber-tech.css?v=20260511-ULTRA">
   <style>
-    /* ── 核心加載樣式：必須內嵌以達成零秒顯示 ── */
+    /* ── Project Genesis: 生物識別加載與軍規視覺 ── */
     #splash-screen {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 10000;
-      background: #09111f; display: flex; flex-direction: column;
+      background: #060a10; display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s;
+      overflow: hidden;
+    }
+    #splash-screen::before {
+      content: ""; position: absolute; inset: 0;
+      background: repeating-linear-gradient(transparent, transparent 2px, rgba(24, 198, 167, 0.05) 3px);
+      pointer-events: none;
     }
     #splash-screen.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
-    .splash-loader { position: relative; width: 60px; height: 60px; margin-bottom: 20px; }
-    .splash-circle {
-      position: absolute; inset: 0; border: 3px solid rgba(24, 198, 167, 0.1);
-      border-top-color: #18c6a7; border-radius: 50%;
-      animation: spin 1s linear infinite;
+    
+    .biometric-scanner { position: relative; width: 80px; height: 80px; margin-bottom: 30px; }
+    .scanner-ring {
+      position: absolute; inset: 0; border: 2px solid rgba(24, 198, 167, 0.2);
+      border-radius: 50%; border-top-color: #18c6a7; border-bottom-color: #18c6a7;
+      animation: spin-scan 2s linear infinite;
+    }
+    .scanner-line {
+      position: absolute; left: 0; right: 0; height: 2px; background: #18c6a7;
+      box-shadow: 0 0 10px #18c6a7; top: 0; animation: scan-up-down 2s ease-in-out infinite;
     }
     .splash-logo {
       position: absolute; inset: 0; display: flex; align-items: center;
-      justify-content: center; font-size: 20px;
-      animation: pulse-glow 2s ease-in-out infinite;
+      justify-content: center; font-size: 22px; color: #fff; font-family: 'Oxanium', sans-serif;
+      text-shadow: 0 0 10px rgba(24, 198, 167, 0.8); animation: pulse-glitch 0.1s infinite;
     }
-    /* AI 指揮中心跑馬燈樣式 */
-.ai-command-ticker {
-  background: rgba(24, 198, 167, 0.05);
-  border: 1px solid rgba(24, 198, 167, 0.15);
-  height: 28px;
-  margin: 8px 0 12px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-  position: relative;
-}
 
-.ticker-label {
-  background: var(--accent);
-  color: #061310;
-  font-size: 8px;
-  font-weight: 900;
-  padding: 0 8px;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  letter-spacing: 1px;
-  white-space: nowrap;
-  z-index: 2;
-}
-
-.ticker-track {
-  flex: 1;
-  overflow: hidden;
-  white-space: nowrap;
-  position: relative;
-}
-
-.ticker-content {
-  display: inline-block;
-  padding-left: 100%;
-  font-size: 11px;
-  color: var(--accent);
-  font-weight: 700;
-  animation: ticker-scroll 20s linear infinite;
-  opacity: 0.8;
-}
-
-@keyframes ticker-scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
-}
-
-@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    @keyframes pulse-glow { 0%, 100% { opacity: 0.5; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.1); } }
+    @keyframes spin-scan { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes scan-up-down { 0%, 100% { top: 0; opacity: 0; } 10% { opacity: 1; } 50% { top: 100%; } 90% { opacity: 1; } }
+    @keyframes pulse-glitch { 0%, 100% { transform: translate(0,0); } 50% { transform: translate(-1px, 1px); } }
     
-    /* ── 骨架屏預渲染 (Skeleton Inline) ── */
-    .skeleton-placeholder { padding: 20px; }
-    .sk-card { height: 120px; background: #111a27; border-radius: 12px; margin-bottom: 16px; opacity: 0.5; }
-    .sk-hero { height: 200px; background: #172335; border-radius: 16px; margin-bottom: 24px; }
+    .cyber-decoding-text {
+      color: #18c6a7; font-weight: 900; letter-spacing: 6px; font-size: 11px;
+      font-family: monospace; position: relative;
+    }
+    .cyber-decoding-text::after {
+      content: "ACCESS GRANTED // SYNCHRONIZING";
+      position: absolute; inset: 0; background: #060a10;
+      animation: decode-reveal 1.5s steps(20) forwards;
+    }
+    @keyframes decode-reveal { to { left: 100%; } }
+
+    /* 全域 CRT 軍規噪點與光學掃描線 */
+    body.mobile-command-center::after {
+      content: ""; position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+      background: 
+        radial-gradient(circle at center, transparent 50%, rgba(0,0,0,0.3) 100%),
+        linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(24, 198, 167, 0.03) 50%, rgba(255,255,255,0) 100%);
+      background-size: 100% 100%, 100% 200%;
+      animation: global-optical-scan 8s linear infinite;
+    }
+    @keyframes global-optical-scan { 0% { background-position: 0 0, 0 -200%; } 100% { background-position: 0 0, 0 200%; } }
   </style>
 </head>
 <body class="mobile-command-center">
-  <!-- 雙重保障啟動畫面 -->
+  <div class="lens-flare-overlay" id="lens-flare"></div>
+
+  <!-- 雙重保障啟動畫面：生物識別系統 -->
   <div id="splash-screen">
-    <div class="splash-loader">
-      <div class="splash-circle"></div>
+    <div class="biometric-scanner">
+      <div class="scanner-ring"></div>
+      <div class="scanner-line"></div>
       <div class="splash-logo">AI</div>
     </div>
-    <div style="color: #18c6a7; font-weight: 900; letter-spacing: 4px; font-size: 12px;">LOADING SYSTEM</div>
+    <div class="cyber-decoding-text">INITIALIZING COMMAND CENTER</div>
   </div>
 
   <div id="app-shell">
@@ -135,6 +119,7 @@
 
     <!-- 前4名英雄區：改為橫向滑動，節省縱向空間 -->
     <section id="a1-hero" class="hero-section-compact">
+      <div class="hologram-grid-overlay"></div> <!-- 新增：全像屏障網格 -->
       <div class="hero-scroll-container">
         <div id="a1-hero-grid" class="hero-flex-row"></div>
       </div>
@@ -257,7 +242,7 @@
       <a href="#a1-hero">A1</a>
       <a href="#summary">總盤</a>
       <a href="#ranking">名次</a>
-      <a href="broadcast.html" class="nav-highlight">🎤 廣播</a>
+      <a href="broadcast.html?v=20260511-ULTRA" class="nav-highlight">🎤 廣播</a>
       <a href="#line">LINE</a>
       <a href="#audit">審計</a>
     </nav>
@@ -276,10 +261,10 @@
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
   </div>
 
-  <script src="/utils.js?v=1.1"></script>
-  <script src="/vfx-engine.js?v=3.0"></script>
-  <script src="/sync-client.js?v=1.1"></script>
-  <script src="/mobile.js?v=20260510-production-v4"></script>
+  <script src="/utils.js?v=20260511-ULTRA"></script>
+  <script src="/vfx-engine.js?v=20260511-ULTRA"></script>
+  <script src="/sync-client.js?v=20260511-ULTRA"></script>
+  <script src="/mobile.js?v=20260511-ULTRA"></script>
   <script>
     // 同步守衛客戶端初始化
     (function(){

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Nexus Hub | AI Dispatch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Oxanium:wght@400;700;900&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="nexus.css">
+</head>
+<body>
+  <div class="mesh-gradient"></div>
+  <div class="scanline"></div>
+
+  <div class="nexus-container">
+    <!-- Header -->
+    <header class="nexus-header animate-up">
+      <div class="brand-nexus">
+        <h1>PROJECT NEXUS</h1>
+        <div class="system-status">● SYSTEM ONLINE // SYNCED</div>
+      </div>
+      <div class="header-actions">
+        <button id="sync-btn" style="background: none; border: 1px solid var(--glass-border); border-radius: 50%; width: 32px; height: 32px; color: var(--accent-cyan);">↻</button>
+      </div>
+    </header>
+
+    <!-- Mission Control Orb -->
+    <section class="mission-control animate-up" style="animation-delay: 0.1s;">
+      <div class="orbit-ring"></div>
+      <div class="central-orb">
+        <span class="orb-label">Total Revenue</span>
+        <span class="orb-value" id="total-revenue">0</span>
+        <div class="orb-glow"></div>
+      </div>
+    </section>
+
+    <!-- Strike Force (Hero Ranking) -->
+    <section class="nexus-module animate-up" style="animation-delay: 0.2s;">
+      <div class="module-header">
+        <h2 class="module-title">STRIKE FORCE ALPHA</h2>
+        <a href="mobile.html" style="font-size: 10px; color: var(--accent-cyan); text-decoration: none;">VIEW ALL</a>
+      </div>
+      <div class="hero-slider" id="hero-slider">
+        <!-- Dynamic Hero Cards -->
+        <div class="nexus-hero-card rank-1">
+          <span class="hero-rank">RANK #1</span>
+          <span class="hero-name">Loading...</span>
+          <span class="hero-metric">$0</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Command Actions -->
+    <section class="action-grid animate-up" style="animation-delay: 0.3s;">
+      <a href="#" class="action-btn" id="copy-broadcast">
+        <span class="action-icon">📢</span>
+        <span>Copy Official LINE</span>
+      </a>
+      <a href="#" class="action-btn" id="open-ranking">
+        <span class="action-icon">📊</span>
+        <span>Full Rankings</span>
+      </a>
+      <a href="broadcast.html" class="action-btn">
+        <span class="action-icon">🎙️</span>
+        <span>Broadcast Mode</span>
+      </a>
+      <a href="#" class="action-btn" id="search-action">
+        <span class="action-icon">🔍</span>
+        <span>Quick Search</span>
+      </a>
+    </section>
+
+    <!-- AI Tactical Log -->
+    <section class="nexus-module animate-up" style="animation-delay: 0.4s;">
+      <div class="module-header">
+        <h2 class="module-title">AI COMMANDER TACTICS</h2>
+      </div>
+      <div id="tactical-log" style="font-size: 12px; font-family: var(--font-mono); color: var(--accent-cyan); line-height: 1.6;">
+        > INITIALIZING TACTICAL OVERLAY...<br>
+        > ANALYZING DISPATCH VELOCITY...<br>
+        > ALL SYSTEMS NOMINAL.
+      </div>
+    </section>
+  </div>
+
+  <!-- Navigation Dock -->
+  <nav class="nexus-nav animate-up" style="animation-delay: 0.5s;">
+    <a href="#" class="nav-item active">🏠</a>
+    <a href="mobile.html" class="nav-item">🏆</a>
+    <a href="broadcast.html" class="nav-item">📢</a>
+    <a href="#" class="nav-item">⚙️</a>
+  </nav>
+
+  <script src="utils.js"></script>
+  <script>
+    const state = {
+      data: null
+    };
+
+    async function loadNexusData() {
+      try {
+        const res = await fetch('/api/current?t=' + Date.now());
+        const json = await res.json();
+        const data = json.data || json;
+        renderNexus(data);
+      } catch (e) {
+        console.error("Nexus Load Error", e);
+      }
+    }
+
+    function renderNexus(data) {
+      const summary = data.summary || data.report?.summary || {};
+      const totalRev = summary.totalRevenue || summary.全部總業績 || 0;
+      
+      // Animate Number
+      animateValue("total-revenue", 0, totalRev, 1500);
+
+      // Render Heroes
+      const ranking = data.ranking || data.report?.ranking || [];
+      const slider = document.getElementById('hero-slider');
+      slider.innerHTML = ranking.slice(0, 5).map(row => `
+        <div class="nexus-hero-card ${row.rank === 1 ? 'rank-1' : ''}">
+          <span class="hero-rank">RANK #${row.rank}</span>
+          <span class="hero-name">${row.name}</span>
+          <span class="hero-metric">$${new Intl.NumberFormat().format(row.totalRevenue || 0)}</span>
+        </div>
+      `).join('');
+
+      // Tactical Log
+      const log = document.getElementById('tactical-log');
+      const messages = [
+        `> DATA SYNC COMPLETE: ${new Date().toLocaleTimeString()}`,
+        `> TOP PERFORMER: ${ranking[0]?.name || 'N/A'}`,
+        `> SYSTEM INTEGRITY: 100%`,
+        `> SUGGESTION: EXECUTE STRATEGY B-4`
+      ];
+      log.innerHTML = messages.map(m => `<div>${m}</div>`).join('');
+    }
+
+    function animateValue(id, start, end, duration) {
+      const obj = document.getElementById(id);
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        obj.innerHTML = Math.floor(progress * (end - start) + start).toLocaleString();
+        if (progress < 1) {
+          window.requestAnimationFrame(step);
+        }
+      };
+      window.requestAnimationFrame(step);
+    }
+
+    // Copy Action
+    document.getElementById('copy-broadcast').onclick = async (e) => {
+      e.preventDefault();
+      try {
+        const res = await fetch('/api/line-output');
+        const json = await res.json();
+        const text = json.data?.text || json.text;
+        await navigator.clipboard.writeText(text);
+        alert("Announcement Copied!");
+      } catch (e) {
+        alert("Copy failed");
+      }
+    };
+
+    loadNexusData();
+    setInterval(loadNexusData, 30000); // Auto refresh every 30s
+  </script>
+</body>
+</html>

@@ -141,6 +141,17 @@
 /* 隱藏手機版不必要的 Kicker 標籤以釋放高度 */
 .kicker { display: none !important; }
 .section-head { margin-bottom: 8px !important; padding: 0 10px !important; }
+/* ── 物理碰撞震動 (Impact Shake) ── */
+.impact-shake {
+    animation: screen-shake 0.1s ease-in-out;
+}
+@keyframes screen-shake {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(-2px, 2px); }
+    50% { transform: translate(2px, -2px); }
+    75% { transform: translate(-1px, 1px); }
+}
+
 .section-head h2 { font-size: 16px !important; margin: 5px 0 !important; }
 
 /* ── 系統心跳與戰術面板 (Tactical Apex UI) ── */
@@ -163,6 +174,178 @@
     margin: 0 10px 15px 10px;
     position: relative;
     overflow: hidden;
+}
+/* ── 核心組件：科技感面板 ── */
+.panel {
+    background: rgba(8, 12, 18, 0.7);
+    border: 1px solid rgba(24, 198, 167, 0.15);
+    border-radius: 16px;
+    margin-bottom: 20px;
+    padding: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(24, 198, 167, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+/* 面板動態流光邊框 */
+.panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; width: 50%; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    animation: flux-border 4s linear infinite;
+}
+@keyframes flux-border {
+    100% { left: 200%; }
+}
+
+/* ── Project Genesis: 全像數據屏障網格 ── */
+.hologram-grid-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: linear-gradient(rgba(24, 198, 167, 0.03) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(24, 198, 167, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    z-index: 10;
+    mask-image: radial-gradient(ellipse at center, transparent 40%, black 100%);
+    -webkit-mask-image: radial-gradient(ellipse at center, transparent 40%, black 100%);
+    opacity: 0.8;
+    animation: hologram-flicker 3s infinite;
+}
+@keyframes hologram-flicker {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 0.5; }
+}
+
+/* ── Project Apex: 第一名專屬戰術皇冠 (Rank 1 Apex UI) ── */
+.rank-1-apex {
+    min-height: 220px !important;
+    border: 1px solid var(--oil-gold-bright) !important;
+    background: linear-gradient(135deg, rgba(243, 193, 75, 0.1) 0%, rgba(0, 0, 0, 0.8) 100%) !important;
+    box-shadow: 0 0 40px rgba(243, 193, 75, 0.15), inset 0 0 30px rgba(243, 193, 75, 0.05) !important;
+}
+
+/* 數位鎖定器 (Targeting Brackets) */
+.target-bracket {
+    position: absolute; width: 15px; height: 15px;
+    border: 2px solid var(--oil-gold-bright);
+    opacity: 0.8; pointer-events: none;
+    animation: bracket-pulse 2s infinite ease-in-out;
+}
+.bracket-tl { top: 10px; left: 10px; border-right: none; border-bottom: none; }
+.bracket-tr { top: 10px; right: 10px; border-left: none; border-bottom: none; }
+.bracket-bl { bottom: 10px; left: 10px; border-right: none; border-top: none; }
+.bracket-br { bottom: 10px; right: 10px; border-left: none; border-top: none; }
+
+@keyframes bracket-pulse {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 0.4; }
+}
+
+/* HUD 動態儀表 (Live HUD Metrics) */
+.apex-hud {
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    border: 1px solid rgba(243, 193, 75, 0.1);
+}
+.hud-item { margin-bottom: 8px; }
+.hud-label {
+    display: flex; justify-content: space-between;
+    font-size: 8px; color: var(--oil-gold-bright);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+.hud-bar-bg {
+    height: 3px; background: rgba(255, 255, 255, 0.05);
+    border-radius: 2px; overflow: hidden;
+}
+.hud-bar-fill {
+    height: 100%; background: var(--oil-gold-bright);
+    box-shadow: 0 0 10px var(--oil-gold-bright);
+    transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Elite Hierarchy: 精英階梯樣式 ── */
+.rank-2-elite {
+    border: 1px solid #ffd700 !important;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.05) 0%, rgba(0, 0, 0, 0.8) 100%) !important;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
+}
+.rank-3-elite {
+    border: 1px solid #c0c0c0 !important;
+    background: linear-gradient(135deg, rgba(192, 192, 192, 0.05) 0%, rgba(0, 0, 0, 0.8) 100%) !important;
+    box-shadow: 0 0 15px rgba(192, 192, 192, 0.1);
+}
+.rank-4, .rank-5 {
+    border: 1px solid rgba(24, 198, 167, 0.3) !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+}
+
+/* 3D 點擊反饋：縮放效果 */
+.a1-hero-card:active {
+    transform: scale(0.98) translateY(2px);
+    transition: transform 0.1s;
+}
+
+.hero-main-compact {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    height: 80px;
+}
+.vfx-canvas-wrap-mini {
+    width: 60px; height: 60px;
+    position: relative;
+    overflow: hidden;
+}
+.hero-info-mini {
+    flex: 1;
+}
+.spotlight-name-mini {
+    font-size: 14px; color: #fff; margin: 0;
+}
+.hero-score-mini {
+    font-size: 16px; color: var(--oil-gold-bright); font-family: 'Oxanium', sans-serif;
+    font-weight: 900; margin-top: 4px;
+}
+.lens-flare-overlay {
+    position: fixed;
+    top: 15%; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, transparent, #4db8ff, #fff, #4db8ff, transparent);
+    opacity: 0;
+    z-index: 10001;
+    pointer-events: none;
+    mix-blend-mode: screen;
+}
+.flare-active {
+    animation: flare-flash 0.8s ease-out forwards;
+}
+@keyframes flare-flash {
+    0% { opacity: 0; transform: scaleX(0); }
+    20% { opacity: 0.8; transform: scaleX(1.2); }
+    100% { opacity: 0; transform: scaleX(1); }
+}
+
+/* ── Project Genesis: 一級戰備脈衝 (Defcon Alert) ── */
+body.alert-mode-active {
+    box-shadow: inset 0 0 50px rgba(255, 0, 0, 0.2);
+    animation: defcon-pulse 2s infinite;
+}
+@keyframes defcon-pulse {
+    0%, 100% { box-shadow: inset 0 0 30px rgba(255, 0, 0, 0.1); }
+    50% { box-shadow: inset 0 0 80px rgba(255, 0, 0, 0.3); }
+}
+body.alert-mode-active .ai-ticker-mini {
+    background: rgba(255, 0, 0, 0.1);
+    border-color: rgba(255, 0, 0, 0.3);
+}
+body.alert-mode-active .ticker-content-mini {
+    color: #ff4d4d;
 }
 .ai-tactical-panel::before {
     content: "";
@@ -277,11 +460,11 @@ body.command-center {
     }
 }
 
-/* ── Project Apex: 極致科技感背景 (War Room Depth) ── */
+/* ── Project Apex: 極致科技感背景 (War Room Depth + Parallax) ── */
 body.mobile-command-center::before {
     content: "";
     position: fixed;
-    inset: 0;
+    inset: -100px; /* 擴大範圍以應對位移 */
     z-index: -1;
     background: 
         radial-gradient(circle at 50% 50%, rgba(243, 193, 75, 0.05) 0%, transparent 80%),
@@ -290,6 +473,8 @@ body.mobile-command-center::before {
         linear-gradient(180deg, #090e15 0%, #05080c 100%) !important;
     background-size: cover, 30px 30px, 30px 30px, cover !important;
     pointer-events: none;
+    transform: translate(var(--parallax-x, 0), var(--parallax-y, 0));
+    transition: transform 0.2s cubic-bezier(0.2, 0, 0.2, 1);
 }
 
 /* 數位雷達掃描線 */
@@ -923,4 +1108,95 @@ strong, .stat-value, .a1-hero-score-value {
         line-height: 1;
         pointer-events: none;
     }
+}
+
+/* ── 互動按鈕：神經脈衝與故障干擾 (Glitch & Haptic) ── */
+button {
+    transition: all 0.2s cubic-bezier(0.2, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+button:active {
+    transform: scale(0.95);
+    filter: brightness(1.2) contrast(1.2);
+}
+button::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(24, 198, 167, 0.4);
+    opacity: 0;
+    transition: 0s;
+}
+button:active::after {
+    opacity: 1;
+    transform: scale(1.5);
+    transition: transform 0.3s ease-out, opacity 0.3s;
+}
+
+/* 故障干擾特效 (Glitch on Click) */
+button:active, .icon-button:active, .mini-btn:active {
+    animation: cyber-glitch 0.2s infinite;
+}
+@keyframes cyber-glitch {
+    0% { transform: translate(0) skew(0deg); }
+    20% { transform: translate(-2px, 1px) skew(2deg); filter: drop-shadow(-2px 0 0 red); }
+    40% { transform: translate(2px, -1px) skew(-2deg); filter: drop-shadow(2px 0 0 blue); }
+    60% { transform: translate(-1px, 2px) skew(1deg); filter: drop-shadow(-2px 0 0 red); }
+    80% { transform: translate(1px, -2px) skew(-1deg); filter: drop-shadow(2px 0 0 blue); }
+    100% { transform: translate(0) skew(0deg); }
+}
+
+/* ── Project Genesis: 深度視覺與熱力雷達 (Abyss Depth & Heat Radar) ── */
+/* 景深效果 */
+body.mobile-command-center::before {
+    filter: blur(4px); /* 讓最底層背景稍微模糊，襯托前景面板 */
+}
+
+/* 熱力雷達掃描 (套用於高分卡片) */
+.ranking-card {
+    position: relative;
+    overflow: hidden;
+}
+.ranking-card.hot-zone::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(24, 198, 167, 0.15), transparent);
+    transform: skewX(-20deg);
+    animation: heat-radar-sweep 3s ease-in-out infinite;
+    pointer-events: none;
+}
+@keyframes heat-radar-sweep {
+    0% { left: -100%; }
+    100% { left: 200%; }
+}
+
+/* 數字解碼跳動樣式 */
+.matrix-decode-text {
+    font-family: 'Oxanium', monospace;
+    color: var(--oil-gold-bright);
+    text-shadow: 0 0 5px rgba(243, 193, 75, 0.5);
+}
+
+/* ── Project Genesis: 3D 空間投影與生物脈衝 (Spatial UI & Bio-Pulse) ── */
+body.mobile-command-center {
+    perspective: 1000px; /* 開啟 3D 空間深度 */
+    overflow-x: hidden;
+}
+
+#app-shell {
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease-out; /* 確保旋轉平滑 */
+}
+
+/* 全域生物脈衝光暈 (Biometric Pulse) */
+body.mobile-command-center::before {
+    animation: biometric-pulse 3s infinite ease-in-out;
+}
+
+@keyframes biometric-pulse {
+    0%, 100% { box-shadow: inset 0 0 30px rgba(24, 198, 167, 0.05); }
+    50% { box-shadow: inset 0 0 60px rgba(24, 198, 167, 0.15); }
 }

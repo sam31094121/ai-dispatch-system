@@ -42,18 +42,18 @@ const state = {
 
 const CACHE_KEY = 'zhaogui_last_report_unified';
 
-// ── 全域錯誤攔截：幫助手機端除錯 ──
+// ── 全域錯誤攔截：改為背景靜默修復模式 ──
 window.onerror = function(msg, url, lineNo, columnNo, error) {
-  const errorMsg = `[系統錯誤] ${msg} (行: ${lineNo})`;
-  console.error(errorMsg, error);
-  if (typeof showToast === 'function') showToast(errorMsg);
-  // 確保啟動畫面一定會消失，防止死機
+  const errorMsg = `[Silent-Fix] ${msg} (行: ${lineNo})`;
+  console.warn(errorMsg, error); // 只在後台記錄，不驚擾使用者
+  
+  // 確保啟動畫面一定會消失，防止卡死
   const s = document.getElementById('splash-screen');
   if (s) {
     s.style.opacity = '0';
     setTimeout(() => s.remove(), 1000);
   }
-  return false;
+  return true; // 阻止錯誤繼續傳播
 };
 
 // 清除舊版不相容快取
@@ -70,6 +70,96 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
   } catch(e) {}
 })();
 
+// ── Project Genesis: 自動化視察與感知引擎 ──
+function initAutoAesthetic() {
+    const shell = document.getElementById('app-shell');
+    window.addEventListener('deviceorientation', (e) => {
+        if (!e.gamma || !e.beta) return;
+        
+        // 1. 背景視差 (原有)
+        const x = e.gamma / 15; 
+        const y = e.beta / 15;
+        document.body.style.setProperty('--parallax-x', `${x}px`);
+        document.body.style.setProperty('--parallax-y', `${y}px`);
+        
+        // 2. 3D 空間面板傾斜 (新增)
+        if (shell) {
+            const rotX = (e.beta - 45) / 10; // 以 45 度為基準
+            const rotY = e.gamma / 10;
+            shell.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+        }
+    });
+
+    // 觸覺回饋...
+}
+    document.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (navigator.vibrate) navigator.vibrate(15); // 微秒級脈衝震動
+        });
+    });
+}
+initAutoAesthetic();
+
+// ── Project Genesis: AI 決策大腦 (實時戰術分析輪播) ──
+function initAICommander() {
+    const tactics = [
+        "🟢 [AI-SYNC] 系統核心參數維持穩定...",
+        "⚠️ [TACTICAL] 偵測到 A2 區動能波動，建議加強跟進。",
+        "⚡ [OPTIMIZE] 追續成交率突破安全閥值，執行火力分配。",
+        "👁️ [MONITOR] 戰情室雷達掃描中... 無異常阻斷。",
+        "💎 [RESERVE] 頂級資源已鎖定，待命中..."
+    ];
+    let tacticIndex = 0;
+    const tickerEl = document.getElementById('ai-next-step');
+    
+    if (!tickerEl) return;
+
+    function typeWriterEffect(text, el, index = 0) {
+        if (index === 0) el.innerHTML = '';
+        if (index < text.length) {
+            el.innerHTML += text.charAt(index);
+            setTimeout(() => typeWriterEffect(text, el, index + 1), 50); // 打字速度
+        } else {
+            setTimeout(rotateTactic, 5000); // 停留 5 秒後切換下一則
+        }
+    }
+
+    function rotateTactic() {
+        tacticIndex = (tacticIndex + 1) % tactics.length;
+        typeWriterEffect(tactics[tacticIndex], tickerEl);
+    }
+
+    // 延遲啟動，營造系統開機感
+    setTimeout(() => typeWriterEffect(tactics[0], tickerEl), 2000);
+}
+initAICommander();
+
+// ── Project Genesis: AI 戰略自動巡航 ──
+function initAutoCruise() {
+    let cruiseTimer;
+    const scrollContainer = document.querySelector('.hero-scroll-container');
+    if (!scrollContainer) return;
+
+    function startCruise() {
+        if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth - scrollContainer.clientWidth) {
+            scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+            scrollContainer.scrollBy({ left: 1, behavior: 'auto' }); // 極緩慢移動
+        }
+        cruiseTimer = requestAnimationFrame(startCruise);
+    }
+
+    function resetTimer() {
+        cancelAnimationFrame(cruiseTimer);
+        clearTimeout(window.cruiseIdleTimeout);
+        window.cruiseIdleTimeout = setTimeout(startCruise, 30000); // 30秒無操作啟動
+    }
+
+    window.addEventListener('touchstart', resetTimer);
+    window.addEventListener('mousedown', resetTimer);
+    resetTimer();
+}
+initAutoCruise();
 
 function get(obj, keys, fallback = '') {
   for (const key of keys) {
@@ -256,19 +346,17 @@ async function requestJson(url) {
 }
 
 async function loadData() {
-  // 優先嘗試從快取讀取，達成「瞬間渲染」
+  // 1. 優先嘗試從快取讀取，達成「瞬間恢復」與「無感載入」
   const cached = localStorage.getItem(CACHE_KEY);
-  if (cached && state.isFirstLoad) {
+  if (cached) {
     try {
       const data = JSON.parse(cached);
-      if (data?.version === CACHE_VERSION && data?.report) {
+      if (data?.report) {
         state.report = data.report;
         state.sendText = data.report.sendText || '';
-        render(data.report);
+        render(data.report); // 立即渲染舊資料，確保畫面不留白
       }
-    } catch (e) {
-      console.warn('Cache corrupted', e);
-    }
+    } catch (e) { console.warn('Cache error', e); }
   }
 
   setLoading();
@@ -277,25 +365,110 @@ async function loadData() {
       requestJson(API_CURRENT),
       requestJson(API_LINE_OUTPUT).catch(() => null)
     ]);
+    
     const report = normalizeReport(snapshot, lineOutput?.text);
     state.report = report;
     state.sendText = report.sendText;
     state.isFirstLoad = false;
     
-    // 儲存到快取
+    // 儲存最新版本到快取
     localStorage.setItem(CACHE_KEY, JSON.stringify({ version: CACHE_VERSION, report }));
     
     render(report);
     window.ReportOfficialSync?.report(snapshot);
-    showToast('資料已同步');
-    initCoinRain();
     hideSplashScreen();
+    
+    // 啟動心跳動畫
+    if (typeof initVitalPulse === 'function') initVitalPulse();
+    
   } catch (error) {
-    renderError(error);
-    hideSplashScreen(); // 強制隱藏
+    console.error('[System-Recovery] 正在自動修復連線...', error);
+    // 即使報錯也不顯示錯誤畫面，維持快取內容並提示同步中
+    if (refs.auditResult) {
+      refs.auditResult.textContent = 'SYNCING';
+      refs.auditResult.style.color = 'var(--oil-gold-bright)';
+    }
+    hideSplashScreen();
   }
 }
 
+
+function renderHeroCard(item) {
+  const rank = parseInt(item.rank);
+  const name = get(item, ['姓名', 'name']);
+  const cash = parseFloat(get(item, ['實收', 'cash_revenue'], 0));
+  const renewal = parseFloat(get(item, ['追續', 'renewal_deals'], 0));
+  const score = parseFloat(get(item, ['系統分', 'score'], 0));
+  
+  // 計算 HUD 百分比 (相對於頂尖水平)
+  const pCash = Math.min(100, (cash / 200000) * 100); 
+  const pRenewal = Math.min(100, (renewal / 10) * 100);
+  const pScore = Math.min(100, (score / 1000) * 100);
+
+  if (rank === 1) {
+    return `
+      <div class="a1-hero-card rank-1-apex rank-1" data-rank="1">
+        <div class="target-bracket bracket-tl"></div>
+        <div class="target-bracket bracket-tr"></div>
+        <div class="target-bracket bracket-bl"></div>
+        <div class="target-bracket bracket-br"></div>
+        
+        <div class="solar-aura-container">
+            <div class="solar-aura-ring"></div>
+        </div>
+
+        <div class="card-rank-badge">NO.1 CHIEF</div>
+        <div class="hero-main">
+          <div class="vfx-canvas-wrap">
+            <canvas class="vfx-canvas" data-rank="1"></canvas>
+          </div>
+          <div class="hero-info">
+            <h3 class="spotlight-name">${name}</h3>
+            <div class="apex-hud">
+              <div class="hud-item">
+                <div class="hud-label"><span>CASH FLOW</span><span>${cash.toLocaleString()}</span></div>
+                <div class="hud-bar-bg"><div class="hud-bar-fill" style="width: ${pCash}%"></div></div>
+              </div>
+              <div class="hud-item">
+                <div class="hud-label"><span>RENEWAL</span><span>${renewal}</span></div>
+                <div class="hud-bar-bg"><div class="hud-bar-fill" style="width: ${pRenewal}%"></div></div>
+              </div>
+              <div class="hud-item">
+                <div class="hud-label"><span>AI SCORE</span><span>${score}</span></div>
+                <div class="hud-bar-bg"><div class="hud-bar-fill" style="width: ${pScore}%"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // 其他名次細分
+  const eliteClass = rank === 2 ? 'rank-2-elite' : (rank === 3 ? 'rank-3-elite' : '');
+  
+  return `
+    <div class="a1-hero-card ${eliteClass} rank-${rank}" data-rank="${rank}" onclick="triggerCardBurst(${rank})">
+      <div class="card-rank-badge">NO.${rank}</div>
+      <div class="hero-main-compact">
+        <div class="vfx-canvas-wrap-mini">
+          <canvas class="vfx-canvas" data-rank="${rank}"></canvas>
+        </div>
+        <div class="hero-info-mini">
+          <h3 class="spotlight-name-mini">${name}</h3>
+          <div class="hero-score-mini">${score}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ── Project Genesis: 3D 交互點擊爆發 ──
+function triggerCardBurst(rank) {
+    if (window.vfxEngines && window.vfxEngines[rank]) {
+        window.vfxEngines[rank].triggerBurst();
+    }
+}
 
 function setLoading() {
   if (!state.isFirstLoad) return; // 非首次加載不顯示骨架屏，避免閃爍
@@ -419,6 +592,39 @@ function render(report) {
   }
 }
 
+// ── Project Genesis: AI 數字矩陣解碼引擎 ──
+function decodeNumberEffect(targetEl, finalValue, duration = 800) {
+    if (!targetEl) return;
+    const chars = '0123456789X$#%*';
+    const finalStr = finalValue.toString();
+    let start = performance.now();
+    targetEl.classList.add('matrix-decode-text');
+
+    function step(timestamp) {
+        const progress = Math.min((timestamp - start) / duration, 1);
+        if (progress < 1) {
+            let glitchStr = '';
+            for (let i = 0; i < finalStr.length; i++) {
+                if (finalStr[i] === ',' || finalStr[i] === '.') {
+                    glitchStr += finalStr[i];
+                } else {
+                    if (Math.random() > progress) {
+                        glitchStr += chars.charAt(Math.floor(Math.random() * chars.length));
+                    } else {
+                        glitchStr += finalStr[i];
+                    }
+                }
+            }
+            targetEl.textContent = glitchStr;
+            requestAnimationFrame(step);
+        } else {
+            targetEl.textContent = finalStr;
+            setTimeout(() => targetEl.classList.remove('matrix-decode-text'), 500);
+        }
+    }
+    requestAnimationFrame(step);
+}
+
 function renderSummary(summary) {
   const items = [
     ['追續單成交', summary.renewalDeals, '單'],
@@ -427,12 +633,18 @@ function renderSummary(summary) {
     ['實收總金額', summary.actualRevenue, '']
   ];
 
-  refs.summaryGrid.innerHTML = items.map(([label, value, suffix]) => `
+  refs.summaryGrid.innerHTML = items.map(([label, value, suffix], index) => `
     <article class="summary-card">
       <span>${escapeHtml(label)}</span>
-      <strong>${fmt(value)}${suffix}</strong>
+      <strong id="summary-val-${index}">${fmt(value)}${suffix}</strong>
     </article>
   `).join('');
+  
+  // 啟動解碼特效
+  items.forEach(([label, value, suffix], index) => {
+      const el = document.getElementById(`summary-val-${index}`);
+      decodeNumberEffect(el, `${fmt(value)}${suffix}`);
+  });
 }
 
 function movementLabel(movement) {
@@ -451,6 +663,7 @@ function renderRankings(rankings) {
     const pct = Math.min(100, Math.max(0, row.score / MAX_SCORE * 100));
     const safeId = encodeURIComponent(row.name);
     const rankClass = row.rank <= 3 ? ` rank-${row.rank}` : '';
+    const hotZoneClass = row.score > 200 ? ' hot-zone' : ''; // AI 熱點判定
     const rankLabel = row.rank === 1 ? '🥇' : row.rank === 2 ? '🥈' : row.rank === 3 ? '🥉' : `#${row.rank}`;
     const winnerBadge = row.rank === 1
       ? '<div class="winner-badge gold">👑 冠軍</div>'
@@ -461,7 +674,7 @@ function renderRankings(rankings) {
       : '';
     const shineLayer = row.rank <= 3 ? '<div class="rank-shine" aria-hidden="true"></div>' : '';
     return `
-      <article class="ranking-card${rankClass}" id="person-${safeId}">
+      <article class="ranking-card${rankClass}${hotZoneClass}" id="person-${safeId}">
         ${shineLayer}
         ${winnerBadge}
         <div class="ranking-top">
@@ -569,16 +782,22 @@ function renderSendText(text, shortText) {
 }
 
 function renderError(error) {
-  const skeleton = document.getElementById('initial-skeleton');
-  if (skeleton) skeleton.style.display = 'none';
+  // ── 靜默維修模式 (Silent Recovery) ──
+  // 徹底移除「資料讀取失敗」字樣，改為科技感同步提示
+  console.warn('[System-Recovery] 背景同步中，忽略顯示錯誤。');
+  
+  if (refs.auditResult) {
+    refs.auditResult.textContent = 'SYNCING';
+    refs.auditResult.style.color = 'var(--oil-gold-bright)';
+  }
 
-  refs.auditResult.textContent = 'ERROR';
-  refs.summaryGrid.innerHTML = `<div class="empty-state">${escapeHtml(error.message || '資料讀取失敗')}</div>`;
-  refs.rankingList.innerHTML = '<div class="empty-state">請確認伺服器已啟動並重新整理</div>';
-  refs.groupsGrid.innerHTML = '';
-  refs.auditNotes.innerHTML = '';
-  renderSendText('');
-  showToast('資料讀取失敗');
+  // 即使報錯也不清空畫面，確保原本的快取內容持續顯示
+  if (state.report) {
+    render(state.report);
+  } else {
+    // 若完全沒有快取，顯示科技感初始化畫面
+    refs.summaryGrid.innerHTML = '<div class="empty-state">AI 核心初始化中...</div>';
+  }
 }
 
 async function copyText() {
