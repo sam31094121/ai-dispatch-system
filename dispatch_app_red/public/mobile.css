@@ -55,7 +55,7 @@
   --good: #27d17f;
 }
 
-  /* â”€â”€ 3D æ·±åº¦ç³»çµ± â”€â”€ */
+  /* ?€?€ 3D æ·±åº¦ç³»çµ± ?€?€ */
 :root {
   --depth-1: 0 1px 2px rgba(0,0,0,.35), 0 4px 12px rgba(0,0,0,.25),
              inset 0 1px 0 rgba(255,255,255,.045);
@@ -98,7 +98,7 @@ html {
   overflow-y: scroll;
 }
 
-/* â”€â”€ 3D å…¥å ´å‹•ç•« â”€â”€ */
+/* ?€?€ 3D ?¥å ´?•ç•« ?€?€ */
 @keyframes cardEnter3D {
   from {
     opacity: 0;
@@ -206,7 +206,7 @@ a {
   cursor: pointer;
 }
 
-/* â”€â”€ Splash Screen â”€â”€ */
+/* ?€?€ Splash Screen ?€?€ */
 #splash-screen {
   position: fixed;
   inset: 0;
@@ -368,7 +368,7 @@ h2 {
   transform-style: preserve-3d;
 }
 
-/* Panel æ·±åº¦å±¤ç´šï¼šç¬¬äºŒå±¤ */
+/* Panel æ·±åº¦å±¤ç?ï¼šç¬¬äºŒå±¤ */
 .panel {
   box-shadow: var(--depth-2);
   background: linear-gradient(160deg, #141e2e 0%, #0f1824 100%);
@@ -395,7 +395,7 @@ h2 {
   box-shadow: 0 0 0 1px var(--accent), var(--depth-3);
 }
 
-/* â”€â”€ å¾—çå¡ç‰‡ â”€â”€ */
+/* ?€?€ å¾—ç??¡ç? ?€?€ */
 .ranking-card.rank-1,
 .ranking-card.rank-2,
 .ranking-card.rank-3 {
@@ -403,7 +403,7 @@ h2 {
   overflow: hidden;
 }
 
-/* é–ƒå…‰æƒéå±¤ */
+/* ?ƒå??ƒé?å±?*/
 .rank-shine {
   position: absolute;
   inset: 0;
@@ -426,7 +426,7 @@ h2 {
 .ranking-card.rank-2 .rank-shine::after { animation-delay: 0.8s; }
 .ranking-card.rank-3 .rank-shine::after { animation-delay: 1.6s; }
 
-/* å† /äº/å­£è»æ¨™ç±¤ */
+/* ??äº?å­??æ¨™ç±¤ */
 .winner-badge {
   position: absolute;
   top: 10px; right: 10px;
@@ -456,7 +456,7 @@ h2 {
   box-shadow: 0 2px 8px rgba(180,100,30,0.35);
 }
 
-/* ç¬¬ä¸€åå¡ç‰‡ */
+/* ç¬¬ä??å¡??*/
 .ranking-card.rank-1 {
   background: linear-gradient(160deg, #1f1600 0%, #2c1e00 45%, #1a1200 100%);
   border-color: rgba(220, 170, 0, 0.6);
@@ -484,7 +484,7 @@ h2 {
   background: linear-gradient(90deg, #c88000, #ffe033, #c88000);
 }
 
-/* ç¬¬äºŒåå¡ç‰‡ */
+/* ç¬¬ä??å¡??*/
 .ranking-card.rank-2 {
   background: linear-gradient(160deg, #141925 0%, #1c2232 45%, #0e1420 100%);
   border-color: rgba(170, 190, 230, 0.5);
@@ -508,7 +508,7 @@ h2 {
   background: linear-gradient(90deg, #607090, #b0c8e8, #607090);
 }
 
-/* ç¬¬ä¸‰åå¡ç‰‡ */
+/* ç¬¬ä??å¡??*/
 .ranking-card.rank-3 {
   background: linear-gradient(160deg, #1a1008 0%, #221608 45%, #160d05 100%);
   border-color: rgba(190, 110, 40, 0.5);
@@ -531,7 +531,7 @@ h2 {
   background: linear-gradient(90deg, #8b4010, #d08030, #8b4010);
 }
 
-/* å¾—çå¡ç‰‡å…§å®¹ç¢ºä¿åœ¨ shine å±¤ä¹‹ä¸Š */
+/* å¾—ç??¡ç??§å®¹ç¢ºä???shine å±¤ä?ä¸?*/
 .ranking-card.rank-1 > *:not(.rank-shine):not(.winner-badge),
 .ranking-card.rank-2 > *:not(.rank-shine):not(.winner-badge),
 .ranking-card.rank-3 > *:not(.rank-shine):not(.winner-badge) {
@@ -633,7 +633,7 @@ main {
   color: var(--text);
 }
 
-/* â”€â”€ LINE è¼¸å‡ºé›™å¡ç‰‡ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ?€?€ LINE è¼¸å‡º?™å¡???€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€ */
 
 @keyframes lcCoinGlint {
   0%   { transform: translateX(-180%) skewX(-22deg); opacity: 0; }
@@ -689,7 +689,7 @@ main {
   gap: 12px;
 }
 
-/* é‡‘å¹£å¡ */
+/* ?‘å¹£??*/
 .lc-card-coin {
   background: linear-gradient(148deg, #221a00 0%, #2e2204 30%, #1f1800 65%, #130f00 100%);
   border: 1px solid rgba(200, 140, 10, 0.50);
@@ -726,7 +726,7 @@ main {
   pointer-events: none;
 }
 
-/* ç¾é‡‘å¡ */
+/* ç¾é???*/
 .lc-card-bill {
   background: linear-gradient(148deg, #091e0b 0%, #112e14 30%, #0b2010 65%, #071509 100%);
   border: 1px solid rgba(60, 175, 75, 0.46);
@@ -763,7 +763,7 @@ main {
   pointer-events: none;
 }
 
-/* å¡ç‰‡é ‚éƒ¨ flex è¡Œ */
+/* ?¡ç??‚éƒ¨ flex è¡?*/
 .lc-card-top {
   display: flex;
   align-items: center;
@@ -791,7 +791,7 @@ main {
   margin-top: 1px;
 }
 
-/* â”€â”€ é‡‘å¹£å¾½ç«  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ?€?€ ?‘å¹£å¾½ç? ?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€ */
 
 .lc-badge {
   flex-shrink: 0;
@@ -827,7 +827,7 @@ main {
   animation: lcCoinPulse 3.2s ease-in-out infinite;
 }
 
-/* é‡‘å…‰æƒå°„å‹•ç•« */
+/* ?‘å??ƒå??•ç•« */
 .lc-badge-coin::after {
   content: '';
   position: absolute;
@@ -845,7 +845,7 @@ main {
   border-radius: 50%;
 }
 
-/* å…§ç·£æµ®é›•ç’° */
+/* ?§ç·£æµ®é???*/
 .lc-coin-ring {
   position: absolute;
   inset: 8px;
@@ -855,7 +855,7 @@ main {
   pointer-events: none;
 }
 
-/* æ¥“è‘‰ emoji â€”æ·±é‡‘è‰²æ¿¾é¡æ¨¡æ“¬æµ®é›• */
+/* æ¥“è? emoji ?”æ·±?‘è‰²æ¿¾é¡æ¨¡æ“¬æµ®é? */
 .lc-coin-leaf {
   position: absolute;
   inset: 0;
@@ -868,7 +868,7 @@ main {
     drop-shadow(0px 0px 2px rgba(180,100,0,0.45));
 }
 
-/* â”€â”€ ç¾é‡‘éˆ”ç¥¨å¾½ç«  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ?€?€ ç¾é??”ç¥¨å¾½ç? ?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€ */
 
 .lc-badge-bill {
   width: 86px;
@@ -893,7 +893,7 @@ main {
     inset 0 -1px 0 rgba(0,0,0,0.32);
 }
 
-/* å…§æ¡†è£é£¾ç·š */
+/* ?§æ?è£é£¾ç·?*/
 .lc-badge-bill::before {
   content: '';
   position: absolute;
@@ -902,7 +902,7 @@ main {
   border-radius: 2px;
 }
 
-/* å®‰å…¨ç·š â€” è¢å…‰ç£·ç¶  */
+/* å®‰å…¨ç·????¢å?ç£·ç? */
 .lc-bill-strip {
   position: absolute;
   top: 3px; bottom: 3px;
@@ -920,7 +920,7 @@ main {
   border-radius: 1px;
 }
 
-/* "$" å¤§ç¬¦è™Ÿ */
+/* "$" å¤§ç¬¦??*/
 .lc-bill-denom {
   position: absolute;
   left: 50%;
@@ -934,7 +934,7 @@ main {
   letter-spacing: 0;
 }
 
-/* "100" é¢é¡æ¨™ç¤º */
+/* "100" ?¢é?æ¨™ç¤º */
 .lc-bill-100 {
   position: absolute;
   top: 3.5px; left: 4px;
@@ -945,7 +945,7 @@ main {
   line-height: 1;
 }
 
-/* é ‚éƒ¨ç´™é¢å…‰æ¾¤ */
+/* ?‚éƒ¨ç´™é¢?‰æ¾¤ */
 .lc-badge-bill::after {
   content: '';
   position: absolute;
@@ -954,7 +954,7 @@ main {
   pointer-events: none;
 }
 
-/* â”€â”€ ç²¾ç°¡ç‰ˆæ–‡å­—æ¡† â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ?€?€ ç²¾ç°¡?ˆæ?å­—æ? ?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€ */
 
 .lc-short-box {
   margin: 0;
@@ -974,7 +974,7 @@ main {
   overflow-y: auto;
 }
 
-/* â”€â”€ ç²¾ç°¡ç‰ˆè¤‡è£½æŒ‰éˆ• â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ?€?€ ç²¾ç°¡?ˆè?è£½æ????€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€ */
 
 .lc-action-btn {
   align-self: start;
@@ -996,7 +996,7 @@ main {
   box-shadow: 0 0 8px rgba(200,140,10,0.25);
 }
 
-/* â”€â”€ å»£æ’­æ–‡å­—æ¡†ï¼ˆç¾é‡‘å¡å…§éƒ¨ç¹¼æ‰¿ä¸»é¡Œè‰²ï¼‰ â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ?€?€ å»?’­?‡å?æ¡†ï?ç¾é??¡å…§?¨ç¹¼?¿ä¸»é¡Œè‰²ï¼??€?€?€?€?€?€?€?€ */
 
 .lc-card-bill .broadcast-box {
   border-color: rgba(60,170,70,0.32);
@@ -1375,7 +1375,7 @@ mark {
   border-radius: 2px;
 }
 
-/* â”€â”€ éª¨æ¶å± â”€â”€ */
+/* ?€?€ éª¨æ¶å±??€?€ */
 .ranking-card.skeleton {
   pointer-events: none;
   border-color: transparent;
@@ -1483,7 +1483,7 @@ mark {
   transform: translateX(-50%) translateY(0);
 }
 
-/* â”€â”€ A1 è‹±é›„é¦–å± â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ?€?€ A1 ?±é?é¦–å? ?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€ */
 #a1-hero {
   position: relative;
   margin-bottom: 10px;
@@ -1493,7 +1493,7 @@ mark {
   border: 1px solid rgba(43,58,78,.85);
   background: linear-gradient(155deg, #101827 0%, #0a101a 100%);
   box-shadow: var(--depth-2);
-  /* åº•éƒ¨é‡‘å¹£ç©å †å…‰æšˆ */
+  /* åº•éƒ¨?‘å¹£ç©å??‰æ? */
   --pile-glow: radial-gradient(ellipse 80% 40% at 50% 100%,
     rgba(200,130,10,0.18) 0%, transparent 70%);
 }
@@ -1641,7 +1641,7 @@ mark {
   grid-column: span 1;
 }
 
-/* å‰å››åé ‚ç´šå¡ç‰‡ä¸»é¡Œ */
+/* ?å??é?ç´šå¡?‡ä¸»é¡?*/
 .a1-hero-card.hero-card-1,
 .a1-hero-card.rank-1 {
   border: 2px solid #ffd700;
@@ -1682,7 +1682,7 @@ mark {
   box-shadow: 0 0 12px rgba(24, 198, 167, 0.12), 0 12px 28px rgba(0,0,0,0.35);
 }
 
-/* 3D éŒ¢å¹£/ç¾é‡‘å®¹å™¨ */
+/* 3D ?¢å¹£/ç¾é?å®¹å™¨ */
 .money-canvas-container {
   position: absolute;
   inset: 0;
@@ -1702,7 +1702,7 @@ mark {
 .a1-hero-card .hero-content-wrap {
   position: relative;
   z-index: 10;
-  pointer-events: none; /* è®“é»æ“Šç©¿é€åˆ°å¡ç‰‡æœ¬èº«ä½†æ–‡å­—ä¸æ“‹ä½ç‰¹æ•ˆ */
+  pointer-events: none; /* è®“é??Šç©¿?åˆ°?¡ç??¬èº«ä½†æ?å­—ä??‹ä??¹æ? */
 }
 
 .a1-hero-rank {
@@ -1716,10 +1716,10 @@ mark {
   gap: 4px;
 }
 
-/* æ¦®è­½åœ–ç¤º */
-.gold-icon::before { content: 'ğŸ¥‡'; }
-.silver-icon::before { content: 'ğŸ¥ˆ'; }
-.bronze-icon::before { content: 'ğŸ¥‰'; }
+/* æ¦®è­½?–ç¤º */
+.gold-icon::before { content: '??'; }
+.silver-icon::before { content: '??'; }
+.bronze-icon::before { content: '??'; }
 
 .a1-hero-card.hero-card-1 .a1-hero-rank,
 .a1-hero-card.hero-card-2 .a1-hero-rank,
