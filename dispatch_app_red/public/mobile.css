@@ -55,7 +55,7 @@
   --good: #27d17f;
 }
 
-  /* ?€?€ 3D æ·±åº¦ç³»çµ± ?€?€ */
+  /* ?Â€?Â€ 3D ç˜›å‹—æ¼²èŸé¤Œçµ ?Â€?Â€ */
 :root {
   --depth-1: 0 1px 2px rgba(0,0,0,.35), 0 4px 12px rgba(0,0,0,.25),
              inset 0 1px 0 rgba(255,255,255,.045);
@@ -98,27 +98,15 @@ html {
   overflow-y: scroll;
 }
 
-/* ?€?€ 3D ?¥å ´?•ç•« ?€?€ */
+/* ?Â€?Â€ 3D ?äº™î¹­?îŸ¡î¥ ?Â€?Â€ */
 @keyframes cardEnter3D {
-  from {
-    opacity: 0;
-    transform: perspective(var(--perspective)) translateY(18px) rotateX(7deg) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: perspective(var(--perspective)) translateY(0) rotateX(0deg) scale(1);
-  }
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @keyframes heroEnter3D {
-  from {
-    opacity: 0;
-    transform: perspective(var(--perspective)) translateY(24px) rotateX(10deg) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: perspective(var(--perspective)) translateY(0) rotateX(0deg) scale(1);
-  }
+  from { opacity: 0; transform: translateY(15px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @keyframes skeletonShine {
@@ -206,7 +194,7 @@ a {
   cursor: pointer;
 }
 
-/* ?€?€ Splash Screen ?€?€ */
+/* ?Â€?Â€ Splash Screen ?Â€?Â€ */
 #splash-screen {
   position: fixed;
   inset: 0;
@@ -368,9 +356,9 @@ h2 {
   transform-style: preserve-3d;
 }
 
-/* Panel æ·±åº¦å±¤ç?ï¼šç¬¬äºŒå±¤ */
+/* Panel ç˜›å‹—æ¼²æ’…æ–¤?åš—î«²æ´µéˆ­ï—ºæƒœ */
 .panel {
-  box-shadow: var(--depth-2);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   background: linear-gradient(160deg, #141e2e 0%, #0f1824 100%);
   border-top: 1px solid rgba(255,255,255,0.06);
 }
@@ -395,7 +383,7 @@ h2 {
   box-shadow: 0 0 0 1px var(--accent), var(--depth-3);
 }
 
-/* ?€?€ å¾—ç??¡ç? ?€?€ */
+/* ?Â€?Â€ æ•ºî¤›??âˆ ? ?Â€?Â€ */
 .ranking-card.rank-1,
 .ranking-card.rank-2,
 .ranking-card.rank-3 {
@@ -403,7 +391,7 @@ h2 {
   overflow: hidden;
 }
 
-/* ?ƒå??ƒé?å±?*/
+/* ?ïµ??ï¹?æ’…?*/
 .rank-shine {
   position: absolute;
   inset: 0;
@@ -426,7 +414,7 @@ h2 {
 .ranking-card.rank-2 .rank-shine::after { animation-delay: 0.8s; }
 .ranking-card.rank-3 .rank-shine::after { animation-delay: 1.6s; }
 
-/* ??äº?å­??æ¨™ç±¤ */
+/* ??éˆ­?æ‘®??ç’…î©•æƒœ */
 .winner-badge {
   position: absolute;
   top: 10px; right: 10px;
@@ -456,7 +444,7 @@ h2 {
   box-shadow: 0 2px 8px rgba(180,100,30,0.35);
 }
 
-/* ç¬¬ä??å¡??*/
+/* èšç Œ??ïš—ï™“??*/
 .ranking-card.rank-1 {
   background: linear-gradient(160deg, #1f1600 0%, #2c1e00 45%, #1a1200 100%);
   border-color: rgba(220, 170, 0, 0.6);
@@ -484,7 +472,7 @@ h2 {
   background: linear-gradient(90deg, #c88000, #ffe033, #c88000);
 }
 
-/* ç¬¬ä??å¡??*/
+/* èšç Œ??ïš—ï™“??*/
 .ranking-card.rank-2 {
   background: linear-gradient(160deg, #141925 0%, #1c2232 45%, #0e1420 100%);
   border-color: rgba(170, 190, 230, 0.5);
@@ -508,7 +496,7 @@ h2 {
   background: linear-gradient(90deg, #607090, #b0c8e8, #607090);
 }
 
-/* ç¬¬ä??å¡??*/
+/* èšç Œ??ïš—ï™“??*/
 .ranking-card.rank-3 {
   background: linear-gradient(160deg, #1a1008 0%, #221608 45%, #160d05 100%);
   border-color: rgba(190, 110, 40, 0.5);
@@ -531,7 +519,7 @@ h2 {
   background: linear-gradient(90deg, #8b4010, #d08030, #8b4010);
 }
 
-/* å¾—ç??¡ç??§å®¹ç¢ºä???shine å±¤ä?ä¸?*/
+/* æ•ºî¤›??âˆ ??æ‰¹æ†è£ç®”???shine æ’…æ”¯?éŠ?*/
 .ranking-card.rank-1 > *:not(.rank-shine):not(.winner-badge),
 .ranking-card.rank-2 > *:not(.rank-shine):not(.winner-badge),
 .ranking-card.rank-3 > *:not(.rank-shine):not(.winner-badge) {
@@ -633,7 +621,7 @@ main {
   color: var(--text);
 }
 
-/* ?€?€ LINE è¼¸å‡º?™å¡???€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€ */
+/* ?Â€?Â€ LINE é ›è©¨ïŠ¾?î©“ï™“???Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€ */
 
 @keyframes lcCoinGlint {
   0%   { transform: translateX(-180%) skewX(-22deg); opacity: 0; }
@@ -689,7 +677,7 @@ main {
   gap: 12px;
 }
 
-/* ?‘å¹£??*/
+/* ?î•«é¦³??*/
 .lc-card-coin {
   background: linear-gradient(148deg, #221a00 0%, #2e2204 30%, #1f1800 65%, #130f00 100%);
   border: 1px solid rgba(200, 140, 10, 0.50);
@@ -726,7 +714,7 @@ main {
   pointer-events: none;
 }
 
-/* ç¾é???*/
+/* è¢î˜???*/
 .lc-card-bill {
   background: linear-gradient(148deg, #091e0b 0%, #112e14 30%, #0b2010 65%, #071509 100%);
   border: 1px solid rgba(60, 175, 75, 0.46);
@@ -763,7 +751,7 @@ main {
   pointer-events: none;
 }
 
-/* ?¡ç??‚éƒ¨ flex è¡?*/
+/* ?âˆ ??î¿œï€¸ flex éŠµ?*/
 .lc-card-top {
   display: flex;
   align-items: center;
@@ -791,7 +779,7 @@ main {
   margin-top: 1px;
 }
 
-/* ?€?€ ?‘å¹£å¾½ç? ?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€ */
+/* ?Â€?Â€ ?î•«é¦³æ•ºè³œ? ?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€ */
 
 .lc-badge {
   flex-shrink: 0;
@@ -827,7 +815,7 @@ main {
   animation: lcCoinPulse 3.2s ease-in-out infinite;
 }
 
-/* ?‘å??ƒå??•ç•« */
+/* ?î•«??ïµ??îŸ¡î¥ */
 .lc-badge-coin::after {
   content: '';
   position: absolute;
@@ -845,7 +833,7 @@ main {
   border-radius: 50%;
 }
 
-/* ?§ç·£æµ®é???*/
+/* ?æŠ’æ¥ ç˜šæ¡…???*/
 .lc-coin-ring {
   position: absolute;
   inset: 8px;
@@ -855,7 +843,7 @@ main {
   pointer-events: none;
 }
 
-/* æ¥“è? emoji ?”æ·±?‘è‰²æ¿¾é¡æ¨¡æ“¬æµ®é? */
+/* ç’†îš¨? emoji ?îƒæ¥›?î•®ï°çˆæš¸î­ç’…âŠ¥î™¬ç˜šæ¡…? */
 .lc-coin-leaf {
   position: absolute;
   inset: 0;
@@ -868,7 +856,7 @@ main {
     drop-shadow(0px 0px 2px rgba(180,100,0,0.45));
 }
 
-/* ?€?€ ç¾é??”ç¥¨å¾½ç? ?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€ */
+/* ?Â€?Â€ è¢î˜??î„å·¨æ•ºè³œ? ?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€ */
 
 .lc-badge-bill {
   width: 86px;
@@ -893,7 +881,7 @@ main {
     inset 0 -1px 0 rgba(0,0,0,0.32);
 }
 
-/* ?§æ?è£é£¾ç·?*/
+/* ?æ‰³?é‹†î³‹Ë‡èº?*/
 .lc-badge-bill::before {
   content: '';
   position: absolute;
@@ -902,7 +890,7 @@ main {
   border-radius: 2px;
 }
 
-/* å®‰å…¨ç·????¢å?ç£·ç? */
+/* æ‘°ï£ï…²èº????ï¼·?è¤ç‘? */
 .lc-bill-strip {
   position: absolute;
   top: 3px; bottom: 3px;
@@ -920,7 +908,7 @@ main {
   border-radius: 1px;
 }
 
-/* "$" å¤§ç¬¦??*/
+/* "$" æ†­æŠ’æ³µ??*/
 .lc-bill-denom {
   position: absolute;
   left: 50%;
@@ -934,7 +922,7 @@ main {
   letter-spacing: 0;
 }
 
-/* "100" ?¢é?æ¨™ç¤º */
+/* "100" ?ï½?ç’…î©•å…§ */
 .lc-bill-100 {
   position: absolute;
   top: 3.5px; left: 4px;
@@ -945,7 +933,7 @@ main {
   line-height: 1;
 }
 
-/* ?‚éƒ¨ç´™é¢?‰æ¾¤ */
+/* ?î¿œï€¸èî©—î²„?ï¤é» */
 .lc-badge-bill::after {
   content: '';
   position: absolute;
@@ -954,7 +942,7 @@ main {
   pointer-events: none;
 }
 
-/* ?€?€ ç²¾ç°¡?ˆæ?å­—æ? ?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€ */
+/* ?Â€?Â€ èæ›„é™›?ï‡?æ‘®î¤š? ?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€ */
 
 .lc-short-box {
   margin: 0;
@@ -974,7 +962,7 @@ main {
   overflow-y: auto;
 }
 
-/* ?€?€ ç²¾ç°¡?ˆè?è£½æ????€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€ */
+/* ?Â€?Â€ èæ›„é™›?ï‰?é‹†è³£????Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€ */
 
 .lc-action-btn {
   align-self: start;
@@ -996,7 +984,7 @@ main {
   box-shadow: 0 0 8px rgba(200,140,10,0.25);
 }
 
-/* ?€?€ å»?’­?‡å?æ¡†ï?ç¾é??¡å…§?¨ç¹¼?¿ä¸»é¡Œè‰²ï¼??€?€?€?€?€?€?€?€ */
+/* ?Â€?Â€ æ’±?î—?ï‹©?ç¢ï‰–?è¢î˜??âˆªï…±?å‡½åŒ±?è¹‚èœ“æ†¿ï—½ï°åš—??Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€ */
 
 .lc-card-bill .broadcast-box {
   border-color: rgba(60,170,70,0.32);
@@ -1375,7 +1363,7 @@ mark {
   border-radius: 2px;
 }
 
-/* ?€?€ éª¨æ¶å±??€?€ */
+/* ?Â€?Â€ æ’‰å†½î´µæ’…??Â€?Â€ */
 .ranking-card.skeleton {
   pointer-events: none;
   border-color: transparent;
@@ -1428,9 +1416,9 @@ mark {
   border: 1px solid rgba(43, 58, 78, 0.8);
   border-top: 1px solid rgba(255,255,255,0.07);
   border-radius: 14px;
-  background: rgba(13, 20, 32, 0.92);
-  backdrop-filter: blur(20px) saturate(1.4);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  background: rgba(13, 20, 32, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 -2px 24px rgba(0,0,0,0.45),
               0 8px 32px rgba(0,0,0,0.5),
               inset 0 1px 0 rgba(255,255,255,0.06);
@@ -1483,7 +1471,7 @@ mark {
   transform: translateX(-50%) translateY(0);
 }
 
-/* ?€?€ A1 ?±é?é¦–å? ?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€ */
+/* ?Â€?Â€ A1 ?æ¢¢?æ“î¡¼? ?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€?Â€ */
 #a1-hero {
   position: relative;
   margin-bottom: 10px;
@@ -1493,7 +1481,7 @@ mark {
   border: 1px solid rgba(43,58,78,.85);
   background: linear-gradient(155deg, #101827 0%, #0a101a 100%);
   box-shadow: var(--depth-2);
-  /* åº•éƒ¨?‘å¹£ç©å??‰æ? */
+  /* æ‘¨îŸ£ï€¸?î•«é¦³è›ïš—??ï¤? */
   --pile-glow: radial-gradient(ellipse 80% 40% at 50% 100%,
     rgba(200,130,10,0.18) 0%, transparent 70%);
 }
@@ -1572,17 +1560,16 @@ mark {
 .a1-hero-card {
   position: relative;
   border-radius: 10px;
-  padding: 14px 12px 12px;
+  padding: 10px 10px 8px;
   min-width: 0;
   background: linear-gradient(145deg, #16200f 0%, #111a27 100%);
   border: 1px solid #3a2a10;
   border-top: 1px solid rgba(255,255,255,0.07);
   overflow: hidden;
-  box-shadow: var(--depth-3);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
   animation: heroEnter3D 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
-  transform-style: preserve-3d;
-  transition: box-shadow 0.25s, transform 0.25s, border-color 0.25s;
-  will-change: transform;
+  transition: box-shadow 0.2s, transform 0.2s;
+  will-change: transform, opacity;
 }
 
 .a1-hero-gloss {
@@ -1626,22 +1613,19 @@ mark {
 }
 
 .a1-hero-card.rank-2,
-.a1-hero-card.rank-3 {
+.a1-hero-card.rank-3,
+.a1-hero-card.rank-4,
+.a1-hero-card.rank-5 {
   grid-column: span 1;
 }
 
-.a1-hero-card.rank-4 {
-  grid-column: span 2;
-}
-
-.a1-hero-card.rank-5,
 .a1-hero-card.rank-6,
 .a1-hero-card.rank-7,
 .a1-hero-card.rank-8 {
   grid-column: span 1;
 }
 
-/* ?å??é?ç´šå¡?‡ä¸»é¡?*/
+/* ?ïš—??ïš›?èî«°ï™“?ï‹¨èœ“æ†¿?*/
 .a1-hero-card.hero-card-1,
 .a1-hero-card.rank-1 {
   border: 2px solid #ffd700;
@@ -1682,7 +1666,7 @@ mark {
   box-shadow: 0 0 12px rgba(24, 198, 167, 0.12), 0 12px 28px rgba(0,0,0,0.35);
 }
 
-/* 3D ?¢å¹£/ç¾é?å®¹å™¨ */
+/* 3D ?ï¼·é¦³/è¢î˜?æ‘°å­µî¨– */
 .money-canvas-container {
   position: absolute;
   inset: 0;
@@ -1702,7 +1686,7 @@ mark {
 .a1-hero-card .hero-content-wrap {
   position: relative;
   z-index: 10;
-  pointer-events: none; /* è®“é??Šç©¿?åˆ°?¡ç??¬èº«ä½†æ?å­—ä??‹ä??¹æ? */
+  pointer-events: none; /* éœˆîš©??ï“‚å¿½?î±ï‘?âˆ ??ç¥ˆæ¾ˆé›¿ï‰?æ‘®î¤˜??ï•œ??å¯? */
 }
 
 .a1-hero-rank {
@@ -1716,7 +1700,7 @@ mark {
   gap: 4px;
 }
 
-/* æ¦®è­½?–ç¤º */
+/* ç’æ ªäº³?î¡¾å…§ */
 .gold-icon::before { content: '??'; }
 .silver-icon::before { content: '??'; }
 .bronze-icon::before { content: '??'; }
@@ -1739,24 +1723,24 @@ mark {
 .a1-hero-card.hero-card-4 .a1-hero-rank { color: #18c6a7; }
 
 .a1-hero-name {
-  font-size: 21px;
+  font-size: 18px;
   font-weight: 900;
   color: var(--text);
-  margin: 0 0 2px;
+  margin: 0 0 1px;
   line-height: 1.1;
   overflow-wrap: anywhere;
 }
 
 .a1-hero-card.rank-1 .a1-hero-name {
-  font-size: 26px;
+  font-size: 22px;
   color: #fff;
 }
 
 .a1-hero-score-row {
   display: flex;
   align-items: baseline;
-  gap: 5px;
-  margin: 6px 0 10px;
+  gap: 4px;
+  margin: 4px 0 6px;
   min-width: 0;
 }
 
@@ -1767,7 +1751,7 @@ mark {
 }
 
 .a1-hero-score-value {
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 900;
   color: #f3c14b;
   letter-spacing: 0;
@@ -1775,15 +1759,15 @@ mark {
 }
 
 .a1-hero-card.rank-1 .a1-hero-score-value {
-  font-size: 22px;
+  font-size: 18px;
   color: #ffdf6a;
 }
 
 .a1-hero-score-track {
-  height: 5px;
+  height: 4px;
   border-radius: 999px;
   background: rgba(0,0,0,0.45);
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   overflow: hidden;
   box-shadow: inset 0 2px 3px rgba(0,0,0,0.6),
               inset 0 1px 1px rgba(0,0,0,0.4),
@@ -1817,14 +1801,15 @@ mark {
   gap: 5px;
 }
 
-.a1-hero-card.rank-1 .a1-hero-metrics,
-.a1-hero-card.rank-4 .a1-hero-metrics {
+.a1-hero-card.rank-1 .a1-hero-metrics {
   grid-template-columns: repeat(3, 1fr);
   gap: 6px;
 }
 
 .a1-hero-card.rank-2 .a1-hero-metrics,
-.a1-hero-card.rank-3 .a1-hero-metrics {
+.a1-hero-card.rank-3 .a1-hero-metrics,
+.a1-hero-card.rank-4 .a1-hero-metrics,
+.a1-hero-card.rank-5 .a1-hero-metrics {
   grid-template-columns: 1fr;
   gap: 4px;
 }
@@ -1848,29 +1833,29 @@ mark {
 }
 
 .a1-metric {
-  border-radius: 6px;
-  padding: 6px 7px;
+  border-radius: 4px;
+  padding: 4px 5px;
   background: rgba(0,0,0,0.25);
 }
 
 .a1-metric span {
   display: block;
-  font-size: 9px;
+  font-size: 8px;
   color: var(--muted);
   font-weight: 700;
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 }
 
 .a1-metric strong {
   display: block;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 900;
   color: var(--text);
   overflow-wrap: anywhere;
 }
 
 .a1-hero-card.rank-1 .a1-metric strong {
-  font-size: 14px;
+  font-size: 13px;
   color: #ffe8a0;
 }
 

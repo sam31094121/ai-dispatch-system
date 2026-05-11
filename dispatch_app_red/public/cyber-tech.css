@@ -15,12 +15,22 @@
     --oil-glow: 0 0 20px rgba(243, 193, 75, 0.2);
 }
 
-/* 全局油畫科技感背景 - 強化捲動覆蓋 */
+/* 全局油畫科技感背景 - 效能優化版 */
 html,
 body.mobile-command-center, 
 body.cyber-war-room,
 body.command-center {
     background-color: var(--oil-bg-deep) !important;
+    color: var(--oil-text-warm) !important;
+    min-height: 100%;
+}
+
+/* 使用偽元素替代 background-attachment: fixed，解決手機捲動卡頓 */
+body.mobile-command-center::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
     background-image: 
         radial-gradient(circle at 10% 10%, rgba(243, 193, 75, 0.08) 0%, transparent 40%),
         radial-gradient(circle at 90% 90%, rgba(169, 53, 53, 0.08) 0%, transparent 40%),
@@ -28,22 +38,19 @@ body.command-center {
         linear-gradient(90deg, rgba(243, 193, 75, 0.02) 1px, transparent 1px),
         linear-gradient(180deg, #2b180d 0%, #130c08 100%) !important;
     background-size: cover, cover, 40px 40px, 40px 40px, cover !important;
-    background-attachment: fixed !important;
     background-repeat: no-repeat, no-repeat, repeat, repeat, no-repeat !important;
-    color: var(--oil-text-warm) !important;
-    min-height: 100%;
+    pointer-events: none;
 }
 
-/* 疊加噪點濾鏡 (油畫質感) */
+/* 簡化噪點濾鏡，移除昂貴的 mix-blend-mode */
 body::after {
     content: "";
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 100;
-    opacity: 0.15;
+    opacity: 0.08; /* 調低不透明度以補償移除混合模式的視覺差異 */
     background: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='oil'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23oil)'/%3E%3C/svg%3E");
-    mix-blend-mode: overlay;
 }
 
 /* 廣播系統專屬優化 (Oil Broadcast) */

@@ -735,7 +735,7 @@ class MapleCoinRain {
   }
 
   explode() {
-    const count = 40;
+    const count = 20;
     const rank = parseInt(this.cv.dataset.rank || '1');
     for (let i = 0; i < count; i++) {
         const angle = Math.random() * Math.PI * 2;
