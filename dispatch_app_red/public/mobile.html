@@ -116,7 +116,11 @@
     <header class="topbar-compact">
       <div class="brand-mini">
         <h1 id="main-title">AI 派單公告</h1>
-        <span id="audit-result" class="status-badge-mini">--</span>
+        <!-- 系統心跳波形 (New) -->
+        <div class="system-vitals">
+          <canvas id="vital-pulse" width="60" height="20"></canvas>
+          <span id="audit-result" class="status-badge-mini">SYNCING</span>
+        </div>
       </div>
       <div class="topbar-actions-mini">
         <button id="refresh-data" class="mini-btn">↻</button>
@@ -157,10 +161,19 @@
       <section class="panel" id="summary">
         <div class="section-head">
           <div>
-            <p class="kicker">Overall Stats</p>
-            <h2>整合總盤</h2>
+            <h2 style="color: var(--oil-gold-bright);">AI 戰術預測與整合總盤</h2>
           </div>
         </div>
+        
+        <!-- AI 戰術建議區塊 (New) -->
+        <div class="ai-tactical-panel">
+          <div class="tactical-header">AI COMMANDER TACTICS</div>
+          <div class="tactical-content" id="ai-tactical-advice">
+            分析目前派單動能中... 建議 A1 首席加強資源覆蓋...
+          </div>
+          <div class="tactical-footer">REAL-TIME STRATEGY OPTIMIZER</div>
+        </div>
+
         <div id="summary-grid" class="summary-grid"></div>
         <div id="dual-totals" class="dual-totals"></div>
       </section>

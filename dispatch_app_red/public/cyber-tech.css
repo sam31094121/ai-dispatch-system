@@ -143,6 +143,60 @@
 .section-head { margin-bottom: 8px !important; padding: 0 10px !important; }
 .section-head h2 { font-size: 16px !important; margin: 5px 0 !important; }
 
+/* ── 系統心跳與戰術面板 (Tactical Apex UI) ── */
+.system-vitals {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 10px;
+}
+#vital-pulse {
+    filter: drop-shadow(0 0 3px #00ff00);
+    opacity: 0.8;
+}
+
+.ai-tactical-panel {
+    background: linear-gradient(135deg, rgba(0, 150, 255, 0.1), rgba(0, 50, 100, 0.2));
+    border: 1px solid rgba(0, 150, 255, 0.3);
+    border-radius: 12px;
+    padding: 12px;
+    margin: 0 10px 15px 10px;
+    position: relative;
+    overflow: hidden;
+}
+.ai-tactical-panel::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 2px;
+    background: linear-gradient(90deg, transparent, #0096ff, transparent);
+    animation: flow-line 2s infinite;
+}
+@keyframes flow-line {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.tactical-header {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 9px;
+    color: #0096ff;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+.tactical-content {
+    font-size: 13px;
+    color: #fff;
+    line-height: 1.5;
+    font-family: 'Noto Sans TC', sans-serif;
+}
+.tactical-footer {
+    font-size: 8px;
+    color: rgba(0, 150, 255, 0.5);
+    margin-top: 8px;
+    text-align: right;
+}
+
 /* 全局行動優先 (Mobile-First) 強制規範 */
 :root {
     --mobile-width: 430px;
