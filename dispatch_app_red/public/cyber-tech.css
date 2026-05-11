@@ -15,6 +15,48 @@
     --oil-glow: 0 0 20px rgba(243, 193, 75, 0.2);
 }
 
+/* ── 手機極致壓縮佈局 (Absolute Compact) ── */
+.topbar-compact {
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--oil-border);
+}
+.brand-mini h1 { font-size: 18px !important; margin: 0; background: none; -webkit-text-fill-color: var(--oil-gold-bright); }
+.status-badge-mini { font-size: 9px; padding: 2px 6px; border: 1px solid var(--oil-gold-bright); border-radius: 4px; opacity: 0.8; }
+.topbar-actions-mini { display: flex; gap: 8px; }
+.mini-btn { background: none; border: 1px solid var(--oil-border); color: var(--oil-gold-bright); width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+
+.ai-ticker-mini { height: 22px; background: rgba(243, 193, 75, 0.05); overflow: hidden; display: flex; align-items: center; }
+.ticker-content-mini { font-size: 10px; color: var(--oil-gold-bright); padding-left: 100%; animation: ticker-scroll 15s linear infinite; white-space: nowrap; }
+
+.hero-section-compact { padding: 10px 0; background: linear-gradient(to bottom, rgba(0,0,0,0.2), transparent); }
+.hero-scroll-container { overflow-x: auto; padding: 0 10px; scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch; }
+.hero-scroll-container::-webkit-scrollbar { display: none; }
+.hero-flex-row { display: flex; gap: 12px; width: max-content; padding-bottom: 10px; }
+
+/* 橫向滑動中的卡片寬度 */
+.hero-flex-row > div {
+    width: 280px !important; /* 強制寬度，確保可以橫向滑動 */
+    flex-shrink: 0;
+    margin: 0 !important;
+}
+
+.date-strip {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    padding: 10px !important;
+    gap: 5px !important;
+    margin: 0 !important;
+    background: rgba(0,0,0,0.2) !important;
+}
+.date-strip span { font-size: 9px !important; }
+.date-strip strong { font-size: 14px !important; }
+
 /* 全局行動優先 (Mobile-First) 強制規範 */
 :root {
     --mobile-width: 430px;
