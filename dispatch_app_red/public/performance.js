@@ -157,7 +157,7 @@
 
     grid.replaceChildren(...top5.map((row) => {
       const rank = row.rank;
-      const rankClass = `hero-card-${rank} spotlight-item`;
+      const rankClass = `spotlight-card spotlight-item hero-card-${rank} rank-${rank}`;
       const vfxCanvas = `<div class="money-canvas-container"><canvas id="hero-${rank}-canvas"></canvas></div>`;
       const iconClass = rank === 1 ? 'champion-icon' : (rank === 2 ? 'gold-icon' : '');
       const honorTitle = TITLES[rank] || 'HONORED MEMBER';
