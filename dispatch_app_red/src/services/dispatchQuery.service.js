@@ -14,10 +14,12 @@ const {
 const { validateDispatchReport } = require('./dispatchValidate.service');
 const { formatTaipeiTimestamp } = require('../utils/date.util');
 const sseService = require('./sse.service');
+const officialSync = require('./officialSync.service');
 
 const storagePaths = {
   root: appConfig.storageRoot,
   reportsDir: path.join(appConfig.storageRoot, 'reports'),
+  backupsDir: path.join(appConfig.storageRoot, 'backups'),
   latestFile: path.join(appConfig.storageRoot, 'latest.json')
 };
 
@@ -116,7 +118,7 @@ function createAppError(code, status, message, errors = []) {
 }
 
 function ensureStorageDirs() {
-  [storagePaths.root, storagePaths.reportsDir].forEach((dirPath) => {
+  [storagePaths.root, storagePaths.reportsDir, storagePaths.backupsDir].forEach((dirPath) => {
     if (!fs.existsSync(dirPath)) {
       fs.mkdirSync(dirPath, { recursive: true });
     }
@@ -142,6 +144,36 @@ function getReportDir(reportId) {
 
 function getVersionFile(reportId, version) {
   return path.join(getReportDir(reportId), `v${version}.json`);
+}
+
+function getBackupFileName(record) {
+  const report = record?.report || {};
+  const safeId = String(report.reportId || 'unknown').replace(/[^\w.-]+/g, '_');
+  const safeVersion = String(report.version || '0').replace(/[^\w.-]+/g, '_');
+  const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+  return path.join(storagePaths.backupsDir, `latest-before-${safeId}-v${safeVersion}-${stamp}.json`);
+}
+
+function backupLatestRecord(reason = 'before-overwrite') {
+  const currentLatest = readJson(storagePaths.latestFile);
+  if (!currentLatest?.report?.reportId) return null;
+
+  const backupFile = getBackupFileName(currentLatest);
+  writeJson(backupFile, {
+    ...currentLatest,
+    backupMeta: {
+      reason,
+      backedUpAt: formatTaipeiTimestamp()
+    }
+  });
+
+  officialSync.writeJsonLine('backup_created', {
+    reason,
+    backupFile,
+    reportId: currentLatest.report.reportId,
+    version: currentLatest.report.version
+  });
+  return backupFile;
 }
 
 function wrapStoredRecord(report, meta = {}) {
@@ -245,6 +277,7 @@ function persistStoredRecord(storedRecord, updateLatest = true) {
   const report = storedRecord.report;
   writeJson(getVersionFile(report.reportId, report.version), storedRecord);
   if (updateLatest) {
+    backupLatestRecord(storedRecord.meta?.reason || 'publish');
     writeJson(storagePaths.latestFile, storedRecord);
   }
 
@@ -257,6 +290,16 @@ function persistStoredRecord(storedRecord, updateLatest = true) {
   const nextLatestRecord = updateLatest ? storedRecord : getLatestStoredRecord();
   applyStorageIndex(buildStorageIndex(nextRecords, nextLatestRecord));
   if (updateLatest) {
+    const stampedSnapshot = officialSync.stampSnapshot(getLegacySnapshot(storedRecord.report, {
+      persisted: true,
+      source: storedRecord.meta?.source || 'persist',
+      operator: storedRecord.meta?.operator || 'system'
+    }));
+    officialSync.recordPublish(officialSync.getOfficialContract(stampedSnapshot), {
+      reportId: report.reportId,
+      reportVersion: report.version,
+      reason: storedRecord.meta?.reason || ''
+    });
     sseService.notifyDataUpdated({
       source: 'persist',
       reportId: report.reportId,

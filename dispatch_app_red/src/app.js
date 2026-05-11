@@ -8,6 +8,7 @@ const healthRoutes = require('./routes/health.routes');
 const lineNotifyRoutes = require('./routes/lineNotify.routes');
 const dispatchReportRoutes = require('./routes/dispatchReport.routes');
 const legacyRoutes = require('./routes/legacy.routes');
+const syncRoutes = require('./routes/sync.routes');
 const versionRoutes = require('./routes/version.routes');
 const sseService = require('./services/sse.service');
 
@@ -62,6 +63,7 @@ function createApp() {
   app.use('/api/line', lineNotifyRoutes);
   app.use('/api', legacyRoutes);
   app.use('/api', dispatchReportRoutes);
+  app.use('/api', syncRoutes);
   app.use('/api/version', versionRoutes);
 
   // SSE 即時推播路由

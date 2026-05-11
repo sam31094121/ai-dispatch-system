@@ -140,6 +140,63 @@
     }
   }
 
+  const SCREEN_ALIASES = {
+    '/mobile': 'mobile',
+    '/m': 'mobile',
+    '/broadcast': 'broadcast'
+  };
+
+  function detectScreenId() {
+    const path = window.location.pathname.toLowerCase();
+    const page = new URLSearchParams(window.location.search).get('page') || '';
+    if (page.includes('mobile')) return 'mobile';
+    if (page.includes('broadcast')) return 'broadcast';
+    if (path.endsWith('/mobile.html') || SCREEN_ALIASES[path] === 'mobile') return 'mobile';
+    if (path.endsWith('/broadcast.html') || SCREEN_ALIASES[path] === 'broadcast') return 'broadcast';
+    return 'desktop';
+  }
+
+  const ReportOfficialSync = {
+    screenId: detectScreenId(),
+
+    stamp(snapshot) {
+      if (!snapshot || typeof snapshot !== 'object') return snapshot;
+      return snapshot;
+    },
+
+    report(snapshot) {
+      const officialVersion = snapshot?.officialVersion || snapshot?.backendMaster?.officialVersion || '';
+      const officialFingerprint = snapshot?.officialFingerprint || snapshot?.backendMaster?.officialFingerprint || '';
+      if (!officialVersion || !officialFingerprint) return;
+
+      const body = JSON.stringify({
+        screenId: this.screenId,
+        officialVersion,
+        officialFingerprint,
+        displayedAt: new Date().toISOString(),
+        userAgent: navigator.userAgent
+      });
+
+      try {
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon('/api/sync/report', new Blob([body], { type: 'application/json' }));
+          return;
+        }
+      } catch (_) {
+        // fall through to fetch
+      }
+
+      fetch('/api/sync/report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body,
+        keepalive: true,
+        cache: 'no-store'
+      }).catch(() => {});
+    }
+  };
+
   window.normalizeReport = normalizeReport;
+  window.ReportOfficialSync = ReportOfficialSync;
   window.RealtimeSyncEngine = RealtimeSyncEngine;
 })();

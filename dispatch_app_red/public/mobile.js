@@ -282,6 +282,7 @@ async function loadData() {
     localStorage.setItem(CACHE_KEY, JSON.stringify({ version: CACHE_VERSION, report }));
     
     render(report);
+    window.ReportOfficialSync?.report(snapshot);
     showToast('資料已同步');
     initCoinRain();
     hideSplashScreen();

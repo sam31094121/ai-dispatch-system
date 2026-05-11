@@ -61,6 +61,30 @@ async function main() {
     assert.equal(current.status, 200);
     assert.equal(current.body.success, true);
     assert.ok(current.body.data);
+    assert.equal(current.body.data.frontendLock.sourceOfTruth, 'backend-master');
+    assert.equal(current.body.data.frontendLock.frontendMayComputeRanking, false);
+    assert.ok(current.body.data.officialVersion);
+    assert.ok(current.body.data.officialFingerprint);
+
+    const syncReport = await request(apiBaseUrl, '/sync/report', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        screenId: 'mobile',
+        officialVersion: current.body.data.officialVersion,
+        officialFingerprint: current.body.data.officialFingerprint
+      })
+    });
+    assert.equal(syncReport.status, 200);
+    assert.equal(syncReport.body.success, true);
+    assert.equal(syncReport.body.data.officialVersion, current.body.data.officialVersion);
+
+    const syncStatus = await request(apiBaseUrl, '/sync/status');
+    assert.equal(syncStatus.status, 200);
+    assert.equal(syncStatus.body.success, true);
+    assert.ok(Array.isArray(syncStatus.body.data.endpoints));
 
     const performance = await request(apiBaseUrl, '/performance/current');
     assert.equal(performance.status, 200);

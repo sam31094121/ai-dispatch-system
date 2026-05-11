@@ -937,6 +937,7 @@
     renderScoringPolicy(snapshot);
     renderCompactOutput(snapshot);
     renderProposal(snapshot);
+    window.ReportOfficialSync?.report(snapshot);
   }
 
   async function loadCurrent() {

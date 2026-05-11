@@ -13,6 +13,7 @@ const {
   saveReportVersion
 } = require('../services/dispatchQuery.service');
 const { smartFixRawInput } = require('../services/smartFix.service');
+const officialSync = require('../services/officialSync.service');
 const { formatTaipeiTimestamp } = require('../utils/date.util');
 
 const router = express.Router();
@@ -50,10 +51,10 @@ function fail(res, status, message, data = null) {
 router.get('/current', (_req, res) => {
   try {
     const report     = getLatestReport();
-    const snapshot   = getLegacySnapshot(report, {
+    const snapshot   = officialSync.stampSnapshot(getLegacySnapshot(report, {
       persisted: report.status === 'published',
       source:    'legacy-bridge'
-    });
+    }));
     snapshot.auditWarnings  = report.auditWarnings  || [];
     snapshot.reportTotal    = report.reportTotal    || null;
     snapshot.assignmentTotal = report.assignmentTotal || null;
@@ -113,10 +114,10 @@ router.post('/save', (req, res) => {
     }
 
     const finalReport = getLatestReport();
-    const snapshot = getLegacySnapshot(finalReport, {
+    const snapshot = officialSync.stampSnapshot(getLegacySnapshot(finalReport, {
       persisted: true,
       source:    'save'
-    });
+    }));
     res.json({ success: true, persisted: true, message: '正式版已存檔', data: snapshot });
   } catch (error) {
     fail(res, 400, error.message || '存檔失敗');
@@ -148,10 +149,10 @@ router.post('/smart-fix', (req, res) => {
 router.get('/broadcast/current', (_req, res) => {
   try {
     const report     = getLatestReport();
-    const snapshot   = getLegacySnapshot(report, {
+    const snapshot   = officialSync.stampSnapshot(getLegacySnapshot(report, {
       persisted: true,
       source:    'broadcast'
-    });
+    }));
     res.json({ success: true, message: '播報資料讀取成功', data: snapshot });
   } catch (error) {
     fail(res, 500, error.message || '系統錯誤');

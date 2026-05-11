@@ -1259,21 +1259,22 @@ function buildLegacySnapshot(report, validation, options = {}) {
       status: validation.ok ? 'PASS' : 'FAIL',
       contradictionCount: validation.errors.length,
       contradictions: validation.errors.map((error) => error.reason),
-      backendSourceLocked: false,
-      frontendComputationAllowed: true,
-      frontendRewriteAllowed: true
+      backendSourceLocked: true,
+      frontendComputationAllowed: false,
+      frontendRewriteAllowed: false
     },
     frontendLock: {
-      sourceOfTruth: 'hybrid',
-      frontendMustUseBackendSnapshot: false,
-      frontendMayComputeRanking: true,
-      frontendMayComputeGroups: true,
-      frontendMayRewriteAnnouncement: true,
-      frontendMayRewriteAudit: true
+      sourceOfTruth: 'backend-master',
+      frontendMustUseBackendSnapshot: true,
+      frontendMayComputeRanking: false,
+      frontendMayComputeGroups: false,
+      frontendMayRewriteAnnouncement: false,
+      frontendMayRewriteAudit: false
     },
     scoringPolicy: clone(WEIGHTING_POLICY),
     rules: clone(FRONTEND_LOCK_RULES),
     reportId: snapshotReport.reportId,
+    reportVersion: snapshotReport.version,
     title: snapshotReport.title
   };
 }

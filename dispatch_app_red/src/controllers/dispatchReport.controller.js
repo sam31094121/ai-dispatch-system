@@ -15,6 +15,7 @@ const {
   saveReportVersion
 } = require('../services/dispatchQuery.service');
 const { processUnifiedUpdate } = require('../services/unifiedDispatch.service');
+const officialSync = require('../services/officialSync.service');
 const { buildPerformanceAnalysis } = require('../services/performanceAnalysis.service');
 const { errorResponse, successResponse } = require('../utils/response.util');
 const { validateParseRequestBody, validateRebuildRequestBody } = require('../validators/dispatchReport.validator');
@@ -139,11 +140,11 @@ function rebuildDispatchReport(req, res) {
 function getCurrentSnapshot(_req, res) {
   try {
     const latest = getLatestReport();
-    const snapshot = getLegacySnapshot(latest, {
+    const snapshot = officialSync.stampSnapshot(getLegacySnapshot(latest, {
       persisted: true,
       source: 'saved',
       operator: 'system'
-    });
+    }));
     res.json(successResponse(errorCodes.OK, '取得目前正式資料成功', snapshot));
   } catch (error) {
     sendAppError(res, error);
@@ -153,11 +154,11 @@ function getCurrentSnapshot(_req, res) {
 function getCurrentBroadcast(_req, res) {
   try {
     const latest = getLatestReport();
-    const snapshot = getLegacySnapshot(latest, {
+    const snapshot = officialSync.stampSnapshot(getLegacySnapshot(latest, {
       persisted: true,
       source: 'saved',
       operator: 'system'
-    });
+    }));
     res.json(successResponse(errorCodes.OK, '正式播報稿讀取成功', snapshot));
   } catch (error) {
     sendAppError(res, error);
@@ -167,11 +168,11 @@ function getCurrentBroadcast(_req, res) {
 function getBaselineLatest(_req, res) {
   try {
     const latest = getLatestReport();
-    const snapshot = getLegacySnapshot(latest, {
+    const snapshot = officialSync.stampSnapshot(getLegacySnapshot(latest, {
       persisted: true,
       source: 'saved',
       operator: 'system'
-    });
+    }));
     res.json(
       successResponse(errorCodes.OK, '取得最新基準成功', {
         rawText: latest.sourceText,
@@ -211,11 +212,11 @@ async function saveInput(req, res) {
       appDir: req.app.get('projectRoot') || process.cwd()
     });
 
-    const snapshot = getLegacySnapshot(result.snapshot, {
+    const snapshot = officialSync.stampSnapshot(getLegacySnapshot(result.snapshot, {
       persisted: true,
       source: 'saved',
       operator: req.body.operator || 'system'
-    });
+    }));
 
     res.json(successResponse(errorCodes.OK, '正式版已鎖定儲存 (經 AI 專業處理)', snapshot));
   } catch (error) {
@@ -237,11 +238,11 @@ async function handleUnifiedUpdate(req, res) {
 function zeroWorkspace(_req, res) {
   try {
     const latest = getLatestReport();
-    const snapshot = getLegacySnapshot(latest, {
+    const snapshot = officialSync.stampSnapshot(getLegacySnapshot(latest, {
       persisted: true,
       source: 'saved',
       operator: 'system'
-    });
+    }));
     res.json(
       successResponse(errorCodes.OK, '工作區已清空', {
         rawText: '',
@@ -273,11 +274,11 @@ function getPerformanceAnalysis(_req, res) {
 function getLineOutput(_req, res) {
   try {
     const latest = getLatestReport();
-    const snapshot = getLegacySnapshot(latest, {
+    const snapshot = officialSync.stampSnapshot(getLegacySnapshot(latest, {
       persisted: true,
       source: 'saved',
       operator: 'system'
-    });
+    }));
     const lineText = snapshot?.standardData?.['群組超精簡版'] || latest.groupShortText || '';
     res.json(successResponse(errorCodes.OK, 'LINE 輸出稿讀取成功', {
       text: lineText,
