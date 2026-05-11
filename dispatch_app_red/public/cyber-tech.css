@@ -31,8 +31,72 @@
 .topbar-actions-mini { display: flex; gap: 8px; }
 .mini-btn { background: none; border: 1px solid var(--oil-border); color: var(--oil-gold-bright); width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
 
+/* ── AI 權重解析區 (AI Decision Logic UI) ── */
+.ai-formula-box {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(243, 193, 75, 0.1);
+    border-radius: 8px;
+    padding: 10px;
+    margin: 12px 0;
+    text-align: left;
+}
+.formula-label {
+    font-family: 'Oxanium', sans-serif;
+    font-size: 8px;
+    color: var(--oil-gold-bright);
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+    opacity: 0.7;
+}
+.formula-bar {
+    display: flex;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+.formula-segment {
+    height: 100%;
+    transition: width 1s ease-out;
+}
+.ai-insight-text {
+    font-size: 11px;
+    color: #fff;
+    font-style: italic;
+    line-height: 1.4;
+    opacity: 0.9;
+}
+
 .ai-ticker-mini { height: 22px; background: rgba(243, 193, 75, 0.05); overflow: hidden; display: flex; align-items: center; }
 .ticker-content-mini { font-size: 10px; color: var(--oil-gold-bright); padding-left: 100%; animation: ticker-scroll 15s linear infinite; white-space: nowrap; }
+
+/* ── 雷達波與邊框優化 ── */
+@keyframes radar-scan {
+    0% { transform: translateY(-100%); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateY(100%); opacity: 0; }
+}
+
+/* 邊角數位鎖定器增加旋轉動畫 */
+.panel::after, .a1-hero-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(to right, var(--oil-gold-bright) 2px, transparent 2px),
+        linear-gradient(to bottom, var(--oil-gold-bright) 2px, transparent 2px);
+    background-size: 12px 12px;
+    background-repeat: no-repeat;
+    opacity: 0.4;
+    pointer-events: none;
+    animation: corner-flicker 4s infinite;
+}
+
+@keyframes corner-flicker {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.8; filter: drop-shadow(0 0 5px var(--oil-gold-bright)); }
+}
 
 .hero-section-compact { padding: 10px 0; background: linear-gradient(to bottom, rgba(0,0,0,0.2), transparent); }
 .hero-scroll-container { overflow-x: auto; padding: 0 10px; scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch; }

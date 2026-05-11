@@ -335,24 +335,40 @@ function renderA1Hero(rankings) {
     const vfxCanvas = isTopFour ? `<div class="money-canvas-container"><canvas id="hero-${row.rank}-canvas" data-rank="${row.rank}"></canvas></div>` : '';
     const iconClass = row.rank === 2 ? 'gold-icon' : (row.rank === 3 ? 'silver-icon' : (row.rank === 4 ? 'bronze-icon' : ''));
 
+    // AI 計算解析邏輯 (極致透明化)
+    const revenueWeight = (row.actualRevenue / (row.totalRevenue || 1) * 100).toFixed(0);
+    const aiReason = row.advice || `該員實收佔比達 ${revenueWeight}%，且追續表現穩定，經 AI 運算判定為 A1 級別。`;
+
     const metricHtml = `
-      <div class="a1-metric"><span>實收</span><strong>${fmt(row.actualRevenue)}</strong></div>
-      <div class="a1-metric"><span>追續金額</span><strong>${fmt(row.renewalRevenue)}</strong></div>
-      <div class="a1-metric"><span>總業績</span><strong>${fmt(row.totalRevenue)}</strong></div>
+      <div class="a1-metric"><span>實收金額</span><strong>$${fmt(row.actualRevenue)}</strong></div>
+      <div class="a1-metric"><span>追續金額</span><strong>$${fmt(row.renewalRevenue)}</strong></div>
+      <div class="a1-metric"><span>總業績</span><strong>$${fmt(row.totalRevenue)}</strong></div>
     `;
+
     return `
       <article class="a1-hero-card ${rankClass}">
         ${vfxCanvas}
         <div class="hero-content-wrap">
           ${crown}
           <div class="a1-hero-gloss"></div>
-          <div class="a1-hero-rank ${iconClass}">#${row.rank} ${row.isNew ? '新人' : ''}</div>
+          <div class="a1-hero-rank ${iconClass}">RANK #${row.rank}</div>
           <div class="a1-hero-name">${escapeHtml(row.name)}</div>
+          
+          <!-- AI 權重解析區 (新) -->
+          <div class="ai-formula-box">
+            <div class="formula-label">AI DECISION LOGIC</div>
+            <div class="formula-bar">
+               <div class="formula-segment" style="width: 60%; background: var(--oil-gold-bright);">實收</div>
+               <div class="formula-segment" style="width: 25%; background: #fff;">追續</div>
+               <div class="formula-segment" style="width: 15%; background: var(--oil-gold-dark);">加成</div>
+            </div>
+            <div class="ai-insight-text">“ ${escapeHtml(aiReason)} ”</div>
+          </div>
+
           <div class="a1-hero-score-row">
-            <span class="a1-hero-score-label">AI分</span>
+            <span class="a1-hero-score-label">FINAL AI SCORE</span>
             <span class="a1-hero-score-value">${fmt(row.score, 2)}</span>
           </div>
-          <div class="a1-hero-score-track"><div class="a1-hero-score-fill" data-pct="${pct}" style="width:0%"></div></div>
           <div class="a1-hero-metrics">${metricHtml}</div>
         </div>
       </article>`;
