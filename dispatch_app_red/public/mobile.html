@@ -6,12 +6,11 @@
   <meta name="theme-color" content="#09111f">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="AI 派單">
-  <meta name="description" content="AI 比例原則動態加權，每日正式派單順序同步更新。">
-  <title>正式派單公告｜已同步最新資料</title>
-  <!-- Open Graph：控制 LINE / FB 分享預覽顯示 -->
-  <meta property="og:title" content="正式派單公告｜已同步最新資料">
-  <meta property="og:description" content="AI 比例原則動態加權，每日正式派單順序同步更新。">
+  <meta name="apple-mobile-web-app-title" content="AI Dispatch">
+  <meta name="description" content="Mobile AI dispatch ranking and LINE announcement view">
+  <title>Zhaogui AI Dispatch Mobile</title>
+  <meta property="og:title" content="Zhaogui AI Dispatch Mobile">
+  <meta property="og:description" content="Mobile AI dispatch ranking and LINE announcement view">
   <meta property="og:type" content="website">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,7 +51,7 @@
   <div id="splash-screen">
     <div class="splash-loader">
       <div class="splash-circle"></div>
-      <div class="splash-logo">⚡</div>
+      <div class="splash-logo">AI</div>
     </div>
     <div style="color: #18c6a7; font-weight: 900; letter-spacing: 4px; font-size: 12px;">LOADING SYSTEM</div>
   </div>
@@ -78,7 +77,7 @@
     </header>
 
     <!-- ① 前4名英雄區：topbar 下方，第一眼主角 -->
-    <section id="a1-hero" aria-label="A1 高優先主力">
+    <section id="a1-hero" aria-label="A1 top ranking cards">
       <canvas id="mobile-coin-canvas" class="mobile-coin-canvas" aria-hidden="true"></canvas>
       <div class="a1-hero-header">
         <div class="a1-hero-title-block">
@@ -213,7 +212,7 @@
           <h2 id="search-title">搜尋姓名</h2>
           <button id="search-close" class="icon-button" type="button" aria-label="關閉">×</button>
         </div>
-        <input id="lookup-input" type="search" placeholder="輸入姓名，例如：馬秋香" autocomplete="off">
+        <input id="lookup-input" type="search" placeholder="Search name" autocomplete="off">
         <div id="lookup-results" class="lookup-results"></div>
       </div>
     </div>
