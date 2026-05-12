@@ -87,8 +87,11 @@
     <section class="nexus-module animate-up" style="animation-delay: 0.2s;">
       <div class="module-header">
         <div>
-          <h2 class="module-title">STRIKE FORCE TOP 5</h2>
-          <p>正式資料前五名與推進目標。</p>
+          <h2 class="module-title">高端科技榮耀榜 (STRIKE FORCE TOP 5)</h2>
+          <p>
+             <span style="color:var(--accent);">✓ 本區數據全部來自後端正式審計與正式排序結果。</span><br>
+             前端僅負責即時高端展示，絕不自行排序或補值。
+          </p>
         </div>
       </div>
       <div class="hero-slider" id="hero-slider">
@@ -146,6 +149,7 @@
     <a href="launcher.html" class="nav-item">RUN</a>
   </nav>
 
+  <script src="vfx-engine.js"></script>
   <script src="utils.js"></script>
   <script src="sync-client.js"></script>
   <script>
@@ -297,16 +301,66 @@
         const rank = row.rank || index + 1;
         const score = getMetric(row, ['加權分數', 'weightedScore', '甇??甈??', 'score']);
         const revenue = getMetric(row, ['總業績', 'totalRevenue', '蝮賣平蝮?']);
+        const actualRevenue = getMetric(row, ['實收', 'actualRevenue', '實收總金額']);
+        const renewalRevenue = getMetric(row, ['續單金額', 'renewalRevenue', '追續金額']);
+        const renewalDeals = getMetric(row, ['追續成交總數', 'renewalDeals', '追續單數']);
+        const prevRank = row.prevRank || rank;
+        const advice = row.advice || `實收與追續動能強勁，經正式審計鎖定第 ${rank} 名。`;
+        
+        let moveHtml = '<span class="move-flat">-</span>';
+        if (rank < prevRank) moveHtml = `<span class="move-up">▲ ${prevRank - rank}</span>`;
+        else if (rank > prevRank) moveHtml = `<span class="move-down">▼ ${rank - prevRank}</span>`;
+        else if (row.isNew) moveHtml = '<span class="move-new">NEW</span>';
+
         return `
-          <article class="nexus-hero-card rank-${rank}">
-            <img src="${index === 0 ? 'assets/diamond.png' : index === 1 ? 'assets/gold.png' : 'assets/money.png'}" alt="" class="hero-asset">
-            <span class="hero-rank">RANK #${rank}</span>
-            <span class="hero-name">${cleanText(row.name, `第 ${rank} 名`)}</span>
-            <span class="hero-group">${cleanText(row.group, '未分組')}</span>
-            <span class="hero-metric">業績 ${fmt.format(revenue || score)}</span>
+          <article class="nexus-hero-card rank-${rank}" onclick="if(window.vfxEngines && window.vfxEngines[${rank}]) window.vfxEngines[${rank}].triggerBurst();">
+            <div class="money-canvas-container" style="position:absolute; inset:0; z-index:0; pointer-events:none;">
+               <canvas id="nexus-hero-${rank}-canvas" data-rank="${rank}" style="width:100%; height:100%;"></canvas>
+            </div>
+            <div style="position:relative; z-index:1;">
+               <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span class="hero-rank">RANK #${rank}</span>
+                  <span class="rank-move" style="font-size:12px; font-weight:bold; background:rgba(0,0,0,0.5); padding:2px 6px; border-radius:4px;">${moveHtml}</span>
+               </div>
+               <span class="hero-name">${cleanText(row.name, `第 ${rank} 名`)} <span style="font-size:10px; background:#d4af37; color:#000; padding:2px 4px; border-radius:3px;">${cleanText(row.group, 'A')}</span></span>
+               
+               <div style="margin: 12px 0; padding: 8px; background: rgba(24, 198, 167, 0.05); border-left: 2px solid var(--accent); font-size:12px; color: #a0aabf; line-height:1.4;">
+                  <div style="color:var(--accent); font-size:10px; font-weight:bold; margin-bottom:4px;">OFFICIAL AI LOGIC</div>
+                  " ${escapeHtml(advice)} "
+               </div>
+               
+               <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px;">
+                  <div><span style="color:#8892b0;">真實總業績</span> <br><strong class="decode-target" data-val="${fmt.format(revenue)}" style="color:#18c6a7; font-size:14px;">--</strong></div>
+                  <div><span style="color:#8892b0;">綜合分數</span> <br><strong class="decode-target" data-val="${fmt.format(score)}" style="color:#f3c14b; font-size:14px;">--</strong></div>
+                  <div><span style="color:#8892b0;">續單金額</span> <br><strong class="decode-target" data-val="${fmt.format(renewalRevenue)}">--</strong></div>
+                  <div><span style="color:#8892b0;">追續成交</span> <br><strong class="decode-target" data-val="${fmt.format(renewalDeals)}">--</strong></div>
+               </div>
+            </div>
           </article>
         `;
       }).join('');
+
+      // 觸發解碼特效與 3D 寶物
+      setTimeout(() => {
+        document.querySelectorAll('.decode-target').forEach(el => {
+          const val = el.getAttribute('data-val');
+          el.textContent = val;
+        });
+        
+        if (typeof window.MapleCoinRain === 'function') {
+           window.vfxEngines = window.vfxEngines || {};
+           for (let i = 1; i <= 5; i++) {
+              const canvas = document.getElementById(`nexus-hero-${i}-canvas`);
+              if (canvas && !window.vfxEngines[i]) {
+                 const engine = new window.MapleCoinRain(canvas);
+                 engine.start();
+                 window.vfxEngines[i] = engine;
+              } else if (canvas && window.vfxEngines[i]) {
+                 window.vfxEngines[i].explode();
+              }
+           }
+        }
+      }, 300);
     }
 
     function pushLog(message) {
