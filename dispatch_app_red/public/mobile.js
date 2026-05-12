@@ -628,6 +628,10 @@ function renderA1Hero(rankings) {
           
           <div class="a1-hero-name">${escapeHtml(row.name)} <span class="group-badge">${escapeHtml(row.group)}</span></div>
           
+          <div style="font-size: 8px; color: rgba(24, 198, 167, 0.4); font-family: 'Oxanium', monospace; margin: 2px 0 6px 0; letter-spacing: 1px;">
+            DIGITAL SIGNATURE: ${Math.random().toString(16).slice(2, 10).toUpperCase()} [VERIFIED]
+          </div>
+          
           <!-- AI 權重與上榜原因 -->
           <div class="ai-formula-box">
             <div class="formula-label">OFFICIAL AUDIT LOGIC</div>

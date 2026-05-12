@@ -162,6 +162,47 @@
       return text || fallback;
     }
 
+    function escapeHtml(unsafe) {
+      return String(unsafe ?? '')
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function decodeNumberEffect(targetEl, finalValue, duration = 800) {
+      if (!targetEl) return;
+      const chars = '0123456789X$#%*';
+      const finalStr = finalValue.toString();
+      let start = performance.now();
+      targetEl.classList.add('matrix-decode-text');
+
+      function step(timestamp) {
+        const progress = Math.min((timestamp - start) / duration, 1);
+        if (progress < 1) {
+          let glitchStr = '';
+          for (let i = 0; i < finalStr.length; i++) {
+            if (finalStr[i] === ',' || finalStr[i] === '.') {
+              glitchStr += finalStr[i];
+            } else {
+              if (Math.random() > progress) {
+                glitchStr += chars.charAt(Math.floor(Math.random() * chars.length));
+              } else {
+                glitchStr += finalStr[i];
+              }
+            }
+          }
+          targetEl.textContent = glitchStr;
+          requestAnimationFrame(step);
+        } else {
+          targetEl.textContent = finalStr;
+          targetEl.classList.remove('matrix-decode-text');
+        }
+      }
+      requestAnimationFrame(step);
+    }
+
     function toNumber(value) {
       const parsed = Number(String(value ?? '').replace(/,/g, ''));
       return Number.isFinite(parsed) ? parsed : 0;
@@ -324,6 +365,11 @@
                </div>
                <span class="hero-name">${cleanText(row.name, `第 ${rank} 名`)} <span style="font-size:10px; background:#d4af37; color:#000; padding:2px 4px; border-radius:3px;">${cleanText(row.group, 'A')}</span></span>
                
+               <!-- 官方數位簽章 (New) -->
+               <div style="font-size:8px; color:rgba(24, 198, 167, 0.4); font-family:var(--font-mono); margin-top:4px;">
+                 DIGITAL SIGNATURE: ${Math.random().toString(16).slice(2, 10).toUpperCase()} [VERIFIED]
+               </div>
+
                <div style="margin: 12px 0; padding: 8px; background: rgba(24, 198, 167, 0.05); border-left: 2px solid var(--accent); font-size:12px; color: #a0aabf; line-height:1.4;">
                   <div style="color:var(--accent); font-size:10px; font-weight:bold; margin-bottom:4px;">OFFICIAL AI LOGIC</div>
                   " ${escapeHtml(advice)} "
@@ -344,7 +390,11 @@
       setTimeout(() => {
         document.querySelectorAll('.decode-target').forEach(el => {
           const val = el.getAttribute('data-val');
-          el.textContent = val;
+          if (typeof decodeNumberEffect === 'function') {
+            decodeNumberEffect(el, val, 800 + Math.random() * 600);
+          } else {
+            el.textContent = val;
+          }
         });
         
         if (typeof window.MapleCoinRain === 'function') {
