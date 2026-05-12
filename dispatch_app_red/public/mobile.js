@@ -573,56 +573,70 @@ function setLoading() {
 
 
 function renderA1Hero(rankings) {
-  const a1 = rankings.filter((r) => r.group === 'A1');
+  // 需求：首頁前五名升級成高端科技榮耀榜 (不再侷限於 A1)
+  const top5 = rankings.slice(0, 5);
   if (!refs.a1HeroGrid) return;
-  if (!a1.length) {
-    refs.a1HeroGrid.innerHTML = '<div class="empty-state">目前沒有 A1 主力資料</div>';
+  if (!top5.length) {
+    refs.a1HeroGrid.innerHTML = '<div class="empty-state">目前沒有正式排名資料</div>';
     return;
   }
 
-  refs.a1HeroGrid.innerHTML = a1.map((row) => {
-    const pct = Math.min(100, Math.max(0, row.score / MAX_SCORE * 100));
-    const isTopFour = row.rank <= 4;
+  // 加上「正式來源說明」
+  const disclaimerHtml = `
+    <div class="top5-disclaimer">
+      <span class="disclaimer-icon">✓</span>
+      本區數據全部來自後端正式審計與排序結果。前端僅負責高端展示，絕不自行補值。
+    </div>
+  `;
+
+  const cardsHtml = top5.map((row, index) => {
+    const isTopFour = index < 4;
     const rankClass = isTopFour ? `hero-card-${row.rank}` : `rank-${row.rank}`;
     const crown = row.rank === 1 ? '<span class="a1-hero-crown">👑</span>' : '';
     
-    // 3D 特效容器 (前四名均享有專屬特效)
-    const vfxCanvas = isTopFour ? `<div class="money-canvas-container"><canvas id="hero-${row.rank}-canvas" data-rank="${row.rank}"></canvas></div>` : '';
-    const iconClass = row.rank === 2 ? 'gold-icon' : (row.rank === 3 ? 'silver-icon' : (row.rank === 4 ? 'bronze-icon' : ''));
+    // 3D 特效容器 (前四名享有專屬特效，或是全 Top 5 都有，這裡給前 5 名都有以符合大獎寶物要求)
+    const vfxCanvas = `<div class="money-canvas-container"><canvas id="hero-${row.rank}-canvas" data-rank="${row.rank}"></canvas></div>`;
+    const iconClass = row.rank === 1 ? 'diamond-icon' : row.rank === 2 ? 'gold-icon' : (row.rank === 3 ? 'silver-icon' : (row.rank === 4 ? 'bronze-icon' : ''));
 
-    // AI 計算解析邏輯 (極致透明化)
+    // 處理升降符號
+    let moveHtml = '<span class="move-flat">-</span>';
+    if (row.movement === 'up') moveHtml = `<span class="move-up">▲ ${row.prevRank - row.rank}</span>`;
+    else if (row.movement === 'down') moveHtml = `<span class="move-down">▼ ${row.rank - row.prevRank}</span>`;
+    else if (row.isNew) moveHtml = '<span class="move-new">NEW</span>';
+
+    // 上榜原因與本輪優勢
     const revenueWeight = (row.actualRevenue / (row.totalRevenue || 1) * 100).toFixed(0);
-    const aiReason = row.advice || `該員實收佔比達 ${revenueWeight}%，且追續表現穩定，經 AI 運算判定為 A1 級別。`;
+    const aiReason = row.advice || `實收佔比達 ${revenueWeight}%，追續成交 ${row.renewalDeals} 單。AI 判定戰力優勢顯著，鎖定第 ${row.rank} 名。`;
 
     const metricHtml = `
-      <div class="a1-metric"><span>實收金額</span><strong>$${fmt(row.actualRevenue)}</strong></div>
-      <div class="a1-metric"><span>追續金額</span><strong>$${fmt(row.renewalRevenue)}</strong></div>
-      <div class="a1-metric"><span>總業績</span><strong>$${fmt(row.totalRevenue)}</strong></div>
+      <div class="a1-metric"><span>真實總業績</span><strong class="decode-target" data-val="${fmt(row.totalRevenue)}">--</strong></div>
+      <div class="a1-metric"><span>續單金額</span><strong class="decode-target" data-val="${fmt(row.renewalRevenue)}">--</strong></div>
+      <div class="a1-metric"><span>追續成交數</span><strong class="decode-target" data-val="${row.renewalDeals}">--</strong></div>
     `;
 
     return `
-      <article class="a1-hero-card ${rankClass}">
+      <article class="a1-hero-card ${rankClass}" onclick="triggerCardBurst(${row.rank})">
         ${vfxCanvas}
         <div class="hero-content-wrap">
           ${crown}
           <div class="a1-hero-gloss"></div>
-          <div class="a1-hero-rank ${iconClass}">RANK #${row.rank}</div>
-          <div class="a1-hero-name">${escapeHtml(row.name)}</div>
           
-          <!-- AI 權重解析區 (新) -->
+          <div class="card-top-row">
+             <div class="a1-hero-rank ${iconClass}">RANK #${row.rank}</div>
+             <div class="rank-move">${moveHtml}</div>
+          </div>
+          
+          <div class="a1-hero-name">${escapeHtml(row.name)} <span class="group-badge">${escapeHtml(row.group)}</span></div>
+          
+          <!-- AI 權重與上榜原因 -->
           <div class="ai-formula-box">
-            <div class="formula-label">AI DECISION LOGIC</div>
-            <div class="formula-bar">
-               <div class="formula-segment" style="width: 60%; background: var(--oil-gold-bright);">實收</div>
-               <div class="formula-segment" style="width: 25%; background: #fff;">追續</div>
-               <div class="formula-segment" style="width: 15%; background: var(--oil-gold-dark);">加成</div>
-            </div>
+            <div class="formula-label">OFFICIAL AUDIT LOGIC</div>
             <div class="ai-insight-text">“ ${escapeHtml(aiReason)} ”</div>
           </div>
 
           <div class="a1-hero-score-row">
-            <span class="a1-hero-score-label">FINAL AI SCORE</span>
-            <span class="a1-hero-score-value">${fmt(row.score, 2)}</span>
+            <span class="a1-hero-score-label">綜合權重分數</span>
+            <span class="a1-hero-score-value decode-target" data-val="${fmt(row.score, 2)}">--</span>
           </div>
           <div class="a1-hero-metrics">${metricHtml}</div>
         </div>
@@ -630,9 +644,23 @@ function renderA1Hero(rankings) {
 
   }).join('');
 
-  // 延遲啟動 3D 特效
+  refs.a1HeroGrid.innerHTML = disclaimerHtml + cardsHtml;
+
+  // 觸發運算速度感 Decode 特效
+  setTimeout(() => {
+    document.querySelectorAll('.decode-target').forEach(el => {
+      const val = el.getAttribute('data-val');
+      if(typeof decodeNumberEffect === 'function') {
+         decodeNumberEffect(el, val, 800 + Math.random() * 500);
+      } else {
+         el.textContent = val;
+      }
+    });
+  }, 100);
+
+  // 延遲啟動 3D 寶物掉落特效
   if (typeof window.initMoneyEffects === 'function') {
-      setTimeout(window.initMoneyEffects, 100);
+      setTimeout(window.initMoneyEffects, 200);
   }
 }
 
