@@ -27,6 +27,9 @@ class MapleCoinRain {
     this.silverBarImg = new Image();
     this.silverBarImg.src = 'ultra_realistic_rank3_rank4_assets_1778482757686.png';
     
+    this.mapleCoinImg = new Image();
+    this.mapleCoinImg.src = 'swiss_maple_coin.png';
+    
     this.cashBundleImg = new Image();
     this.cashBundleImg.src = 'ultra_realistic_rank3_rank4_assets_1778482757686.png';
   }
@@ -116,7 +119,7 @@ class MapleCoinRain {
     let type = 'coin';
     if (rank === 1) type = Math.random() < 0.6 ? 'diamond' : 'glitter';
     else if (rank === 2) type = Math.random() < 0.7 ? 'goldbar' : 'coin';
-    else if (rank === 3) type = Math.random() < 0.7 ? 'silverbar' : 'silver';
+    else if (rank === 3) type = Math.random() < 0.8 ? 'maplecoin' : 'glitter';
     else if (rank === 4) type = Math.random() < 0.7 ? 'cashbundle' : 'bill';
 
     if (type === 'diamond') {
@@ -143,6 +146,19 @@ class MapleCoinRain {
             bw, bh: bw * 0.45,
             tilt: Math.random() * Math.PI * 2,
             tiltSpd: (Math.random() - 0.5) * 0.06,
+            done: false
+        });
+    } else if (type === 'maplecoin') {
+        const bw = 30 + Math.random() * 10;
+        this.coins.push({
+            type: 'maplecoin',
+            x: Math.random() * this.W,
+            y: -20,
+            vx: (Math.random() - 0.5) * 1.5,
+            vy: 3.0 + Math.random() * 1.5,
+            bw, bh: bw,
+            tilt: Math.random() * Math.PI * 2,
+            tiltSpd: (Math.random() - 0.5) * 0.1,
             done: false
         });
     } else if (type === 'cashbundle') {
@@ -211,7 +227,7 @@ class MapleCoinRain {
             vy: Math.sin(angle) * speed,
             tilt: Math.random() * 360,
             tiltSpd: Math.random() * 0.2 - 0.1,
-            type: this.rank === 1 ? 'diamond' : (this.rank === 2 ? 'goldbar' : 'silverbar'),
+            type: parseInt(this.cv.dataset.rank || '1') === 1 ? 'diamond' : (parseInt(this.cv.dataset.rank || '1') === 2 ? 'goldbar' : (parseInt(this.cv.dataset.rank || '1') === 3 ? 'maplecoin' : 'silverbar')),
             life: 80 + Math.random() * 40
         });
     }
@@ -413,6 +429,39 @@ class MapleCoinRain {
     ctx.restore();
   }
 
+  _drawMapleCoin(c, t) {
+    const ctx = this.cx;
+    const { x, y, bw, bh, tilt } = c;
+    const progress = Math.min(1, y / this.H);
+    const perspectiveScale = 0.6 + progress * 0.6;
+
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(perspectiveScale, perspectiveScale);
+    ctx.rotate(tilt);
+    
+    // 3D 扭曲模擬金幣翻轉
+    const flip = Math.sin(t * 0.005 + x) * 0.8;
+    ctx.transform(1, 0, 0, Math.max(0.1, Math.abs(flip)), 0, 0);
+
+    if (this.mapleCoinImg.complete) {
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = 'rgba(255, 215, 0, 0.5)';
+        ctx.drawImage(this.mapleCoinImg, -bw/2, -bh/2, bw, bh);
+        
+        // 增強金屬反光
+        ctx.globalCompositeOperation = 'overlay';
+        const shineY = (Math.sin(t * 0.01) * bh);
+        const grad = ctx.createLinearGradient(0, shineY - 15, 0, shineY + 15);
+        grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+        grad.addColorStop(0.5, 'rgba(255, 255, 255, 0.7)');
+        grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(-bw/2, -bh/2, bw, bh);
+    }
+    ctx.restore();
+  }
+
   _drawCashBundle(c, t) {
     const ctx = this.cx;
     const { x, y, bw, bh, tilt } = c;
@@ -492,6 +541,7 @@ class MapleCoinRain {
     else if (c.type === 'diamond') this._drawDiamond(c, t);
     else if (c.type === 'goldbar') this._drawGoldBar(c, t);
     else if (c.type === 'silverbar') this._drawSilverBar(c, t);
+    else if (c.type === 'maplecoin') this._drawMapleCoin(c, t);
     else if (c.type === 'cashbundle') this._drawCashBundle(c, t);
     else this._drawItemCoin(c, t);
     ctx.restore();
