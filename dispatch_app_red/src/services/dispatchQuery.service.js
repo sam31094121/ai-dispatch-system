@@ -322,6 +322,9 @@ function persistStoredRecord(storedRecord, updateLatest = true) {
       reportVersion: report.version,
       updatedAt: report.updatedAt || storedRecord.meta?.savedAt || ''
     });
+
+    // 通知 Master Supreme Commander 更新正式快照與版本
+    masterCommander.updateOfficialSnapshot(storedRecord.report);
   }
   return storedRecord.report;
 }
