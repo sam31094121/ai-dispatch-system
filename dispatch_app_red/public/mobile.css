@@ -2319,3 +2319,25 @@ mark {
   text-shadow: 0 0 8px rgba(24, 198, 167, 0.6);
   letter-spacing: 1px;
 }
+
+/* ¢w¢w Tactical HUD Ranking Upgrade ¢w¢w */
+.ranking-card { position: relative; overflow: hidden; border-left: 3px solid var(--border); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.ranking-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, rgba(24,198,167,0.02) 0%, transparent 100%); pointer-events: none; }
+.ranking-card.rank-1 { border-left-color: #f3c14b; background: linear-gradient(135deg, rgba(243,193,75,0.05) 0%, var(--surface) 100%); }
+.ranking-card.rank-2 { border-left-color: #e0e8f0; }
+.ranking-card.rank-3 { border-left-color: #cd8b4a; }
+
+.digital-signature-mini { font-family: 'Oxanium', monospace; font-size: 8px; color: rgba(24, 198, 167, 0.3); letter-spacing: 1px; margin-top: 8px; border-top: 1px dashed rgba(24, 198, 167, 0.1); padding-top: 4px; }
+.ranking-card:active { transform: scale(0.98); background: var(--surface-2); }
+
+/* ¢w¢w Audit Platform Upgrade ¢w¢w */
+.audit-platform-container { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 15px; }
+.audit-platform-card { background: rgba(24, 198, 167, 0.05); border: 1px solid rgba(24, 198, 167, 0.15); border-radius: 8px; padding: 12px; position: relative; overflow: hidden; }
+.audit-platform-card::after { content: 'VERIFIED'; position: absolute; top: 5px; right: 5px; font-size: 8px; font-weight: 900; color: rgba(24, 198, 167, 0.2); transform: rotate(15deg); border: 1px solid rgba(24, 198, 167, 0.2); padding: 1px 4px; border-radius: 2px; }
+.audit-platform-name { color: var(--accent); font-weight: bold; font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+.audit-metrics-row { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+.audit-metric-item { font-size: 11px; color: var(--muted); }
+.audit-metric-item strong { color: var(--text); font-family: 'Oxanium', monospace; margin-left: 4px; }
+
+.matrix-decode-text { color: var(--accent) !important; text-shadow: 0 0 8px var(--accent); }
+
