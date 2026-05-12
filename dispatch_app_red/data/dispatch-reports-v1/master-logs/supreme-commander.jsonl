@@ -88,3 +88,8 @@
 {"timestamp":"2026-05-12T06:27:32.854Z","event":"SYNC_FAIL","version":"unknown","fingerprint":"unknown","details":{"screenId":"desktop","reported":"","expected":"report::1::"}}
 {"timestamp":"2026-05-12T06:27:34.567Z","event":"SYNC_FAIL","version":"unknown","fingerprint":"unknown","details":{"screenId":"mobile","reported":"","expected":"report::1::"}}
 {"timestamp":"2026-05-12T06:27:37.855Z","event":"SYNC_FAIL","version":"unknown","fingerprint":"unknown","details":{"screenId":"desktop","reported":"","expected":"report::1::"}}
+{"timestamp":"2026-05-12T06:27:41.588Z","event":"SYNC_FAIL","version":"unknown","fingerprint":"unknown","details":{"screenId":"mobile","reported":"","expected":"report::1::"}}
+{"timestamp":"2026-05-12T06:27:42.850Z","event":"SYNC_FAIL","version":"unknown","fingerprint":"unknown","details":{"screenId":"desktop","reported":"","expected":"report::1::"}}
+{"timestamp":"2026-05-12T06:27:45.132Z","event":"SYNC_FAIL","version":"unknown","fingerprint":"unknown","details":{"screenId":"mobile","reported":"","expected":"report::1::"}}
+{"timestamp":"2026-05-12T06:27:47.852Z","event":"SYNC_FAIL","version":"unknown","fingerprint":"unknown","details":{"screenId":"desktop","reported":"","expected":"report::1::"}}
+{"timestamp":"2026-05-12T06:27:49.469Z","event":"SYNC_FAIL","version":"unknown","fingerprint":"unknown","details":{"screenId":"mobile","reported":"","expected":"report::1::"}}
