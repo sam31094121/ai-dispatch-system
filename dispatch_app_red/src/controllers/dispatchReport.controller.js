@@ -16,6 +16,7 @@ const {
 } = require('../services/dispatchQuery.service');
 const { processUnifiedUpdate } = require('../services/unifiedDispatch.service');
 const officialSync = require('../services/officialSync.service');
+const syncGuard = require('../services/syncGuard.service');
 const { buildPerformanceAnalysis } = require('../services/performanceAnalysis.service');
 const { errorResponse, successResponse } = require('../utils/response.util');
 const { validateParseRequestBody, validateRebuildRequestBody } = require('../validators/dispatchReport.validator');
@@ -145,6 +146,7 @@ function getCurrentSnapshot(_req, res) {
       source: 'saved',
       operator: 'system'
     }));
+    snapshot.dataVersion = syncGuard.getDataVersion();
     res.json(successResponse(errorCodes.OK, '取得目前正式資料成功', snapshot));
   } catch (error) {
     sendAppError(res, error);
@@ -159,6 +161,7 @@ function getCurrentBroadcast(_req, res) {
       source: 'saved',
       operator: 'system'
     }));
+    snapshot.dataVersion = syncGuard.getDataVersion();
     res.json(successResponse(errorCodes.OK, '正式播報稿讀取成功', snapshot));
   } catch (error) {
     sendAppError(res, error);

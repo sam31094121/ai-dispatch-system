@@ -450,6 +450,9 @@ async function loadData() {
     
     render(report);
     window.ReportOfficialSync?.report(snapshot);
+    if (window._dispatchSyncClient && snapshot.dataVersion) {
+      window._dispatchSyncClient.setDataVersion(snapshot.dataVersion);
+    }
     hideSplashScreen();
     
     // 啟動心跳動畫
