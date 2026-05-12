@@ -17,10 +17,10 @@ const logger = require('../utils/logger');
 const { appConfig } = require('../config/appConfig');
 
 // ─── 常量 ───
-const SYNC_CHECK_INTERVAL_MS = 10_000;   // 每 10 秒檢查一次同步狀態
+const SYNC_CHECK_INTERVAL_MS = 5_000;    // 每 5 秒檢查一次同步狀態 (Pro 版)
 const CLIENT_TIMEOUT_MS = 60_000;        // 60 秒未心跳視為離線
-const MAX_REPAIR_ATTEMPTS = 3;           // 最大維修嘗試次數
-const MAX_RECOVERY_ATTEMPTS = 2;         // 最大恢復嘗試次數
+const MAX_REPAIR_ATTEMPTS = 5;           // 最大維修嘗試次數 (提升容錯)
+const MAX_RECOVERY_ATTEMPTS = 3;         // 最大恢復嘗試次數
 const LOG_DIR = path.join(appConfig.projectRoot, 'logs');
 const SYNC_LOG_FILE = path.join(LOG_DIR, 'sync-guard.log');
 
@@ -553,6 +553,7 @@ function startSyncGuard(deps = {}) {
   guardState.checkTimer.unref?.();
 
   writeLog('GUARD_STARTED', {
+    version: 'Professional AI Execution Edition v3.0',
     checkInterval: SYNC_CHECK_INTERVAL_MS,
     clientTimeout: CLIENT_TIMEOUT_MS
   });

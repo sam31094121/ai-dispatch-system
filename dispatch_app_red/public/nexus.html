@@ -146,9 +146,11 @@
     <a href="launcher.html" class="nav-item">RUN</a>
   </nav>
 
+  <script src="utils.js"></script>
+  <script src="sync-client.js"></script>
   <script>
     const fmt = new Intl.NumberFormat('zh-TW');
-    const state = { snapshot: null, plan: null };
+    const state = { snapshot: null, plan: null, dataVersion: 0 };
     const $ = (id) => document.getElementById(id);
 
     function cleanText(value, fallback = '未命名') {
@@ -262,7 +264,11 @@
     function renderPlan(plan) {
       $('report-title').textContent = plan.title;
       $('report-subtitle').textContent = `正式資料 ${plan.rows.length} 筆，${plan.groupText}`;
-      $('system-status').textContent = `SYSTEM ONLINE // ${new Date().toLocaleTimeString('zh-TW')}`;
+      
+      const vText = state.dataVersion ? ` [V:${String(state.dataVersion).slice(-4)}]` : '';
+      $('system-status').textContent = `SYSTEM ONLINE // ${new Date().toLocaleTimeString('zh-TW')}${vText}`;
+      $('system-status').style.color = 'var(--accent)';
+      
       $('audit-state').textContent = plan.audit;
       $('optimization-score').textContent = `${plan.score}%`;
       $('next-step').textContent = plan.nextStep;
@@ -318,8 +324,14 @@
       const json = await response.json();
       const snapshot = json.data || json;
       state.snapshot = snapshot;
+      state.dataVersion = snapshot.dataVersion || 0;
       state.plan = buildPlan(snapshot);
       renderPlan(state.plan);
+      
+      if (window._dispatchSyncClient && state.dataVersion) {
+        window._dispatchSyncClient.setDataVersion(state.dataVersion);
+      }
+      
       pushLog('PLAN READY');
     }
 
@@ -393,6 +405,27 @@
     $('optimize-btn').addEventListener('click', runOptimization);
     $('copy-plan-btn').addEventListener('click', copyPlan);
     startField();
+    
+    // 初始化同步守衛
+    (function() {
+      const sync = new DispatchSyncClient({
+        type: 'desktop',
+        onForceSync: () => {
+          pushLog('CORE REQUESTED FORCE SYNC');
+          loadNexusData();
+        },
+        onStatusChange: (s) => {
+          console.log('[Sync] Status:', s);
+          if (s === 'mismatch') {
+            $('system-status').textContent = 'SYSTEM SYNCING...';
+            $('system-status').style.color = '#f3c14b';
+          }
+        }
+      });
+      sync.start();
+      window._dispatchSyncClient = sync;
+    })();
+
     loadNexusData().catch((error) => {
       console.error(error);
       pushLog('LOAD FAILED: ' + error.message);
