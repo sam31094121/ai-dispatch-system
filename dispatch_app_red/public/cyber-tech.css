@@ -1200,3 +1200,446 @@ body.mobile-command-center::before {
     0%, 100% { box-shadow: inset 0 0 30px rgba(24, 198, 167, 0.05); }
     50% { box-shadow: inset 0 0 60px rgba(24, 198, 167, 0.15); }
 }
+
+/* ── 前六名科技榮耀榜 (STRIKE FORCE TOP 6) 鎖死版 ── */
+.glory-board-container {
+    margin: 15px;
+    padding: 20px;
+    background: linear-gradient(145deg, rgba(20, 15, 10, 0.95), rgba(5, 5, 5, 0.98));
+    border: 2px solid var(--oil-gold-bright);
+    border-radius: 16px;
+    box-shadow: 0 0 30px rgba(243, 193, 75, 0.2), inset 0 0 20px rgba(243, 193, 75, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.glory-board-container::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, transparent, var(--oil-gold-bright), #fff, var(--oil-gold-bright), transparent);
+    animation: scan-line-glory 3s infinite;
+}
+
+@keyframes scan-line-glory {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.glory-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.glory-title {
+    font-size: 26px !important;
+    font-weight: 900;
+    margin: 0 0 10px 0;
+    text-shadow: 0 0 15px rgba(243, 193, 75, 0.8);
+    letter-spacing: 2px;
+}
+
+.glory-subtitle {
+    font-size: 13px;
+    color: var(--oil-text-warm);
+    opacity: 0.9;
+    margin-bottom: 15px;
+}
+
+.glory-note-box {
+    background: rgba(243, 193, 75, 0.05);
+    border: 1px solid rgba(243, 193, 75, 0.3);
+    padding: 12px;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.glory-note {
+    font-size: 11px;
+    color: #ccc;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.glory-card {
+    /* 深色高級背景與玻璃質感 */
+    background-color: rgba(15, 18, 22, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    display: flex;
+    flex-direction: column;
+    /* 科技粒子微光 */
+    background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 15px 15px;
+    /* 基礎 3D 陰影與內發光 */
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6), 0 8px 15px rgba(0, 0, 0, 0.8);
+}
+
+.glory-card:hover {
+    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.05), 0 12px 30px rgba(0, 0, 0, 0.9);
+}
+
+/* 桌面版排版：分兩排，1號最大，2/3號次大，4/5/6號較小 */
+@media (min-width: 1024px) {
+    .glory-board-container {
+        width: 100%;
+        min-height: 55vh; /* 前六名卡片區整體高度：首頁首屏高度的55％到65％ */
+        margin: 20px 0;
+    }
+    
+    .top6-grid {
+        display: grid;
+        grid-template-columns: repeat(30, 1fr);
+        gap: 24px;
+        padding: 10px;
+    }
+    
+    /* 第一排總高度55%，第二排45% -> 透過內容與 align-items 拉伸或由子元素自適應 */
+    .glory-card.rank-1 { grid-column: span 12; transform: scale(1.05); } /* 約40%寬度，最大 */
+    .glory-card.rank-2 { grid-column: span 9; } /* 約30%寬度，左右對稱 */
+    .glory-card.rank-3 { grid-column: span 9; } /* 約30%寬度，左右對稱 */
+    .glory-card.rank-4 { grid-column: span 10; transform: scale(0.96); } /* 第二排33%，略縮 */
+    .glory-card.rank-5 { grid-column: span 10; transform: scale(0.96); }
+    .glory-card.rank-6 { grid-column: span 10; transform: scale(0.96); }
+    
+    .glory-card:hover { transform: translateY(-5px) scale(1.06); }
+    .glory-card.rank-4:hover, .glory-card.rank-5:hover, .glory-card.rank-6:hover { transform: translateY(-5px) scale(0.98); }
+    
+    .glory-layer-top { flex: 0 0 20%; margin-bottom: 20px; }
+    .glory-layer-mid { flex: 0 0 45%; margin-bottom: 20px; }
+    .glory-layer-bot { flex: 0 0 35%; }
+    
+    .mobile-text { display: none !important; }
+    .desktop-text { display: inline-block; }
+}
+
+/* 手機版排版：單列 */
+@media (max-width: 1023px) {
+    .glory-board-container {
+        width: 100%;
+        margin: 10px 0;
+        padding: 15px 10px;
+    }
+    
+    .top6-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .glory-layer-top { flex: 0 0 18%; margin-bottom: 12px; }
+    .glory-layer-mid { flex: 0 0 50%; margin-bottom: 12px; }
+    .glory-layer-bot { flex: 0 0 32%; }
+    
+    .mobile-text { display: inline-block; }
+    .desktop-text { display: none !important; }
+}
+
+/* --- 卡片三層結構細節 --- */
+
+/* 上層 */
+.glory-layer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(243, 193, 75, 0.2);
+    padding-bottom: 10px;
+}
+
+/* 名次最大級 */
+.glory-rank-label {
+    font-weight: 900;
+    color: var(--oil-gold-bright);
+    font-family: 'Oxanium', sans-serif;
+    font-size: 26px; /* 預設第三層級 (4~6) */
+}
+
+/* 榮耀標題第二級 */
+.glory-title-label {
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+    flex: 1;
+    margin: 0 10px;
+    text-shadow: 0 0 5px rgba(243, 193, 75, 0.3);
+    font-size: 16px; /* 比名次小 */
+}
+
+/* 榮耀標記第三級 (最小) */
+.glory-badge-label {
+    background: rgba(243, 193, 75, 0.15);
+    border: 1px solid var(--oil-gold-bright);
+    color: var(--oil-gold-bright);
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    font-size: 11px;
+}
+
+/* 中層 */
+.glory-layer-mid {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 姓名居中且清晰 */
+.glory-name-label {
+    font-weight: 900;
+    color: #fff;
+    margin: 0 0 15px 0;
+    text-align: center;
+    font-size: 24px; /* 姓名第二大字級 */
+}
+
+.glory-score-box {
+    text-align: center;
+    margin-bottom: 15px;
+    background: rgba(243, 193, 75, 0.05);
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(243, 193, 75, 0.1);
+}
+
+.glory-score-label {
+    display: block;
+    font-size: 12px;
+    color: #aaa;
+    margin-bottom: 5px;
+}
+
+/* 正式權重分數中層最大 */
+.glory-score-value {
+    font-weight: 900;
+    color: var(--oil-gold-bright);
+    font-family: 'Oxanium', monospace;
+    text-shadow: 0 0 10px rgba(243, 193, 75, 0.5);
+    font-size: 34px; 
+}
+
+.glory-metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.metric {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* 說明文字最小 */
+.m-label {
+    font-size: 11px;
+    color: #8892b0;
+    display: block;
+    margin-bottom: 6px;
+}
+
+/* 實收、追續、總業績核心數字大群 */
+.m-val {
+    font-weight: 700;
+    color: #fff;
+    font-family: 'Oxanium', monospace;
+    font-size: 20px; 
+}
+
+/* 追續客單價與追續單數量次核心 (略小) */
+.metric:nth-child(4) .m-val, .glory-metric-extra .m-val {
+    font-size: 16px;
+}
+
+.glory-metric-extra {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 12px;
+    color: #888;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 8px;
+    border-radius: 4px;
+}
+.glory-metric-extra .m-val {
+    color: #18c6a7;
+}
+
+/* 下層 */
+.glory-layer-bot {
+    line-height: 1.6;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 2px solid var(--oil-gold-dark);
+}
+
+.glory-reason {
+    color: var(--oil-gold-bright);
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: block;
+    font-size: 14px; /* 上榜原因最大 */
+}
+
+.glory-source {
+    color: #777;
+    margin-bottom: 8px;
+    display: block;
+    font-size: 11px; /* 數據來源第二 */
+}
+
+.glory-summary {
+    display: block;
+    color: #eee;
+    font-size: 12px; /* 優勢總結第三 */
+}
+
+/* === 字級層級覆蓋 (Desktop 放大效果) === */
+
+/* 第1名卡片字級強化 */
+.glory-card.rank-1 .glory-rank-label { font-size: 40px; text-shadow: 0 0 10px rgba(243, 193, 75, 0.5); } /* 最大級 */
+.glory-card.rank-1 .glory-name-label { font-size: 32px; color: var(--oil-gold-bright); }
+.glory-card.rank-1 .glory-score-value { font-size: 48px; }
+.glory-card.rank-1 .m-val { font-size: 24px; }
+.glory-card.rank-1 .metric:nth-child(4) .m-val, .glory-card.rank-1 .glory-metric-extra .m-val { font-size: 18px; }
+
+/* 第2名與第3名卡片字級強化 */
+.glory-card.rank-2 .glory-rank-label, .glory-card.rank-3 .glory-rank-label { font-size: 34px; } /* 次大級 */
+.glory-card.rank-2 .glory-name-label, .glory-card.rank-3 .glory-name-label { font-size: 28px; }
+.glory-card.rank-2 .glory-score-value, .glory-card.rank-3 .glory-score-value { font-size: 40px; }
+.glory-card.rank-2 .m-val, .glory-card.rank-3 .m-val { font-size: 22px; }
+.glory-card.rank-2 .metric:nth-child(4) .m-val, .glory-card.rank-3 .metric:nth-child(4) .m-val,
+.glory-card.rank-2 .glory-metric-extra .m-val, .glory-card.rank-3 .glory-metric-extra .m-val { font-size: 16px; }
+
+/* === 3D 立體科技光效與顏色鎖死 (Rank 1 to 6) === */
+
+/* 第1名：冠軍金耀 (Champion Gold) */
+.glory-card.rank-1 {
+    background-color: rgba(30, 20, 5, 0.85);
+    border: 2px solid #ffd700;
+    box-shadow: 
+        inset 0 0 30px rgba(255, 215, 0, 0.15), /* 內發光 */
+        0 0 25px rgba(255, 215, 0, 0.3), /* 外發光穩重光暈 */
+        0 10px 20px rgba(0, 0, 0, 0.8); /* 3D立體陰影 */
+    /* 金屬反光邊框效果 */
+    border-image: linear-gradient(135deg, #ffd700, #ff8c00, #ffd700) 1;
+}
+.glory-card.rank-1 .glory-rank-label, .glory-card.rank-1 .glory-score-value {
+    color: #ffd700;
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+}
+.glory-card.rank-1 .glory-badge-label { border-color: #ffd700; color: #ffd700; background: rgba(255, 215, 0, 0.15); }
+.glory-card.rank-1 .glory-reason { color: #ffd700; }
+
+/* 第2名：白銀鈦光 (Silver Titanium) */
+.glory-card.rank-2 {
+    background-color: rgba(20, 22, 25, 0.85);
+    border: 2px solid #e0e6ed;
+    box-shadow: 
+        inset 0 0 25px rgba(224, 230, 237, 0.1),
+        0 0 20px rgba(224, 230, 237, 0.2),
+        0 10px 20px rgba(0, 0, 0, 0.8);
+    border-image: linear-gradient(135deg, #ffffff, #8892b0, #ffffff) 1;
+}
+.glory-card.rank-2 .glory-rank-label, .glory-card.rank-2 .glory-score-value {
+    color: #e0e6ed;
+    text-shadow: 0 0 12px rgba(224, 230, 237, 0.5);
+}
+.glory-card.rank-2 .glory-badge-label { border-color: #e0e6ed; color: #e0e6ed; background: rgba(224, 230, 237, 0.15); }
+.glory-card.rank-2 .glory-reason { color: #e0e6ed; }
+
+/* 第3名：玫瑰銅光 (Rose Bronze) */
+.glory-card.rank-3 {
+    background-color: rgba(25, 15, 15, 0.85);
+    border: 2px solid #b87333;
+    box-shadow: 
+        inset 0 0 25px rgba(184, 115, 51, 0.15),
+        0 0 20px rgba(184, 115, 51, 0.25),
+        0 10px 20px rgba(0, 0, 0, 0.8);
+    border-image: linear-gradient(135deg, #e6a87c, #b87333, #e6a87c) 1;
+}
+.glory-card.rank-3 .glory-rank-label, .glory-card.rank-3 .glory-score-value {
+    color: #e6a87c;
+    text-shadow: 0 0 12px rgba(184, 115, 51, 0.6);
+}
+.glory-card.rank-3 .glory-badge-label { border-color: #e6a87c; color: #e6a87c; background: rgba(184, 115, 51, 0.15); }
+.glory-card.rank-3 .glory-reason { color: #e6a87c; }
+
+/* 第4名：深藍科技光 (Deep Blue Tech) */
+.glory-card.rank-4 {
+    background-color: rgba(5, 10, 25, 0.85);
+    border: 1px solid #1e90ff;
+    box-shadow: 
+        inset 0 0 20px rgba(30, 144, 255, 0.1),
+        0 0 15px rgba(30, 144, 255, 0.2),
+        0 8px 15px rgba(0, 0, 0, 0.8);
+}
+.glory-card.rank-4 .glory-rank-label, .glory-card.rank-4 .glory-score-value {
+    color: #1e90ff;
+    text-shadow: 0 0 10px rgba(30, 144, 255, 0.5);
+}
+.glory-card.rank-4 .glory-badge-label { border-color: #1e90ff; color: #1e90ff; background: rgba(30, 144, 255, 0.15); }
+.glory-card.rank-4 .glory-reason { color: #1e90ff; }
+
+/* 第5名：藍青科技光 (Cyan Blue Tech) */
+.glory-card.rank-5 {
+    background-color: rgba(5, 20, 20, 0.85);
+    border: 1px solid #00ffff;
+    box-shadow: 
+        inset 0 0 20px rgba(0, 255, 255, 0.1),
+        0 0 15px rgba(0, 255, 255, 0.15),
+        0 8px 15px rgba(0, 0, 0, 0.8);
+}
+.glory-card.rank-5 .glory-rank-label, .glory-card.rank-5 .glory-score-value {
+    color: #00ffff;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+}
+.glory-card.rank-5 .glory-badge-label { border-color: #00ffff; color: #00ffff; background: rgba(0, 255, 255, 0.15); }
+.glory-card.rank-5 .glory-reason { color: #00ffff; }
+
+/* 第6名：紫藍科技光 (Purple Blue Tech) */
+.glory-card.rank-6 {
+    background-color: rgba(15, 5, 25, 0.85);
+    border: 1px solid #8a2be2;
+    box-shadow: 
+        inset 0 0 20px rgba(138, 43, 226, 0.15),
+        0 0 15px rgba(138, 43, 226, 0.2),
+        0 8px 15px rgba(0, 0, 0, 0.8);
+}
+.glory-card.rank-6 .glory-rank-label, .glory-card.rank-6 .glory-score-value {
+    color: #b175ff;
+    text-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+}
+.glory-card.rank-6 .glory-badge-label { border-color: #8a2be2; color: #b175ff; background: rgba(138, 43, 226, 0.15); }
+.glory-card.rank-6 .glory-reason { color: #b175ff; }
+
+/* 手機版限制與收斂 (不可過長過擠) */
+@media (max-width: 768px) {
+    /* 姓名與分數不可明顯縮小，確保一眼辨識 */
+    .glory-card.rank-1 .glory-rank-label { font-size: 32px; }
+    .glory-card.rank-1 .glory-score-value { font-size: 38px; }
+    .glory-card.rank-1 .glory-name-label { font-size: 28px; }
+    
+    .glory-title-label { font-size: 14px; margin: 0 5px; }
+    .glory-badge-label { font-size: 10px; padding: 3px 6px; }
+    
+    /* 核心數字略縮但需保持大群 */
+    .m-val, .glory-card.rank-1 .m-val, .glory-card.rank-2 .m-val, .glory-card.rank-3 .m-val { font-size: 18px; }
+    
+    /* 次核心略小一階 */
+    .metric:nth-child(4) .m-val, .glory-metric-extra .m-val { font-size: 14px !important; }
+    
+    .glory-layer-top { padding-bottom: 8px; margin-bottom: 10px; }
+    .glory-score-box { margin-bottom: 10px; padding: 8px; }
+    .glory-name-label { margin-bottom: 10px; }
+    
+    .glory-reason { font-size: 13px; }
+    .glory-source { font-size: 10px; }
+    .glory-summary { font-size: 11px; }
+    
+    .glory-layer-bot { padding: 12px; }
+}
+

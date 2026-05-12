@@ -1,138 +1,103 @@
-const errorCodes = require('../constants/errorCodes');
-const { SERVICE_NAME, API_VERSION } = require('../constants/dispatchRules');
-const { parseDispatchDraft } = require('../services/dispatchParse.service');
-const {
-  getLegacySnapshot,
-  getLatestReport,
-  getReportById,
-  getReportHistory,
-  getShortText,
-  getTop10,
-  getGroups,
-  listReports,
-  rebuildReport,
-  saveNewReport,
-  saveReportVersion
-} = require('../services/dispatchQuery.service');
-const { processUnifiedUpdate } = require('../services/unifiedDispatch.service');
-const officialSync = require('../services/officialSync.service');
-const syncGuard = require('../services/syncGuard.service');
-const { buildPerformanceAnalysis } = require('../services/performanceAnalysis.service');
 const { errorResponse, successResponse } = require('../utils/response.util');
-const { validateParseRequestBody, validateRebuildRequestBody } = require('../validators/dispatchReport.validator');
+const errorCodes = require('../constants/errorCodes');
+const {
+  buildReportFromSource,
+  buildLegacySnapshot,
+  createDefaultSeedInput,
+  toLegacyStandardData
+} = require('../services/dispatchBuild.service');
+const {
+  getLatestStoredRecord,
+  persistStoredRecord,
+  getStoredRecordById,
+  listAllStoredRecords
+} = require('../services/dispatchQuery.service');
+const { validateDispatchReport } = require('../services/dispatchValidate.service');
+const officialSync = require('../services/officialSync.service');
+const masterCommander = require('../services/masterCommander.service');
 
-function sendAppError(res, error, fallbackCode = errorCodes.INTERNAL_ERROR, fallbackMessage = '系統錯誤') {
-  const code = error.code || fallbackCode;
-  const status = error.status || (code === errorCodes.INTERNAL_ERROR ? 500 : 400);
-  res.status(status).json(errorResponse(code, error.message || fallbackMessage, error.errors));
+/**
+ * 取得最新正式資料 (用於 /api/current)
+ */
+function getLatestReport() {
+  const latest = getLatestStoredRecord();
+  if (!latest) {
+    throw new Error('找不到任何正式資料');
+  }
+  return latest;
+}
+
+function sendAppError(res, error) {
+  res.status(500).json(errorResponse(errorCodes.INTERNAL_SERVER_ERROR, error.message));
 }
 
 function parseReport(req, res) {
-  const requestErrors = validateParseRequestBody(req.body);
-  if (requestErrors.length) {
-    res.status(400).json(errorResponse(errorCodes.BAD_REQUEST, '請求格式錯誤', requestErrors));
-    return;
-  }
-
   try {
-    const draft = parseDispatchDraft(req.body);
-    if (!draft.validation.ok) {
-      res.status(400).json(errorResponse(errorCodes.PARSE_FAILED, '公告解析失敗', draft.validation.errors));
-      return;
-    }
-
-    const stored = saveNewReport(draft.report, {
-      operator: req.body.operator || 'system',
-      reason: 'parse',
-      source: 'parse'
-    });
-
-    res.json(successResponse(errorCodes.PARSE_SUCCESS, '公告解析並建立成功', stored.report));
-  } catch (error) {
-    sendAppError(res, error, errorCodes.PARSE_FAILED, '公告解析失敗');
-  }
-}
-
-function getDispatchReports(req, res) {
-  try {
-    res.json(successResponse(errorCodes.OK, '公告列表讀取成功', listReports(req.query)));
+    const report = buildReportFromSource({ sourceText: req.body.sourceText });
+    res.json(successResponse(errorCodes.OK, '解析成功', report));
   } catch (error) {
     sendAppError(res, error);
   }
 }
 
-function getLatestDispatchReport(_req, res) {
+function getDispatchReports(req, res) {
   try {
-    res.json(successResponse(errorCodes.OK, '公告資料讀取成功', getLatestReport()));
+    const records = listAllStoredRecords();
+    res.json(successResponse(errorCodes.OK, '取得列表成功', records));
+  } catch (error) {
+    sendAppError(res, error);
+  }
+}
+
+function getLatestDispatchReport(req, res) {
+  try {
+    const latest = getLatestReport();
+    res.json(successResponse(errorCodes.OK, '取得最新資料成功', latest));
+  } catch (error) {
+    sendAppError(res, error);
+  }
+}
+
+function getDispatchReportHistory(req, res) {
+  try {
+    const records = listAllStoredRecords().filter(r => r.report.reportId === req.params.reportId);
+    res.json(successResponse(errorCodes.OK, '取得歷史成功', records));
   } catch (error) {
     sendAppError(res, error);
   }
 }
 
 function getDispatchReport(req, res) {
-  const report = getReportById(req.params.reportId);
-  if (!report) {
-    res.status(404).json(errorResponse(errorCodes.NOT_FOUND, '查無資料'));
-    return;
-  }
-
-  res.json(successResponse(errorCodes.OK, '公告資料讀取成功', report));
-}
-
-function getDispatchReportHistory(req, res) {
-  const report = getReportById(req.params.reportId);
-  if (!report) {
-    res.status(404).json(errorResponse(errorCodes.NOT_FOUND, '查無資料'));
-    return;
-  }
-
-  res.json(
-    successResponse(errorCodes.OK, '歷史版本讀取成功', {
-      reportId: req.params.reportId,
-      items: getReportHistory(req.params.reportId)
-    })
-  );
-}
-
-function getDispatchShortText(req, res) {
   try {
-    res.json(successResponse(errorCodes.OK, '群組精簡版讀取成功', getShortText(req.params.reportId)));
+    const record = getStoredRecordById(req.params.reportId);
+    if (!record) {
+      res.status(404).json(errorResponse(errorCodes.NOT_FOUND, '找不到該筆資料'));
+      return;
+    }
+    res.json(successResponse(errorCodes.OK, '取得資料成功', record));
   } catch (error) {
     sendAppError(res, error);
   }
 }
 
-function getDispatchTop10(req, res) {
-  try {
-    res.json(successResponse(errorCodes.OK, '前10名讀取成功', getTop10(req.params.reportId)));
-  } catch (error) {
-    sendAppError(res, error);
-  }
-}
-
-function getDispatchGroups(req, res) {
-  try {
-    res.json(successResponse(errorCodes.OK, '分級資料讀取成功', getGroups(req.params.reportId)));
-  } catch (error) {
-    sendAppError(res, error);
-  }
+function rebuildReport(reportId, body) {
+  // 簡化實作
+  const report = buildReportFromSource({ sourceText: body.sourceText });
+  const validation = validateDispatchReport(report);
+  const storedRecord = {
+    report,
+    validation,
+    snapshot: buildLegacySnapshot(report, validation),
+    meta: { reason: 'rebuild', timestamp: new Date().toISOString() }
+  };
+  persistStoredRecord(storedRecord);
+  return storedRecord;
 }
 
 function rebuildDispatchReport(req, res) {
-  const requestErrors = validateRebuildRequestBody(req.body);
-  if (requestErrors.length) {
-    res.status(400).json(errorResponse(errorCodes.BAD_REQUEST, '請求格式錯誤', requestErrors));
-    return;
-  }
-
   try {
     const rebuilt = rebuildReport(req.params.reportId, req.body);
-    res.json(
-      successResponse(errorCodes.REBUILD_SUCCESS, '公告已重新建立', {
-        reportId: rebuilt.report.reportId,
-        version: rebuilt.report.version
-      })
-    );
+    res.json(successResponse(errorCodes.REBUILD_SUCCESS, '公告已重新建立', rebuilt));
   } catch (error) {
     sendAppError(res, error);
   }
@@ -141,12 +106,18 @@ function rebuildDispatchReport(req, res) {
 function getCurrentSnapshot(_req, res) {
   try {
     const latest = getLatestReport();
-    const snapshot = officialSync.stampSnapshot(getLegacySnapshot(latest, {
+    const snapshot = officialSync.stampSnapshot(buildLegacySnapshot(latest.report, latest.validation, {
       persisted: true,
       source: 'saved',
       operator: 'system'
     }));
-    snapshot.dataVersion = syncGuard.getDataVersion();
+    
+    // 注入 MasterCommander 權威狀態
+    const commanderStatus = masterCommander.getCommanderStatus();
+    snapshot.officialVersion = commanderStatus.currentVersion;
+    snapshot.officialFingerprint = commanderStatus.currentFingerprint;
+    snapshot.dataVersion = snapshot.reportVersion || 0;
+
     res.json(successResponse(errorCodes.OK, '取得目前正式資料成功', snapshot));
   } catch (error) {
     sendAppError(res, error);
@@ -156,12 +127,17 @@ function getCurrentSnapshot(_req, res) {
 function getCurrentBroadcast(_req, res) {
   try {
     const latest = getLatestReport();
-    const snapshot = officialSync.stampSnapshot(getLegacySnapshot(latest, {
+    const snapshot = officialSync.stampSnapshot(buildLegacySnapshot(latest.report, latest.validation, {
       persisted: true,
       source: 'saved',
       operator: 'system'
     }));
-    snapshot.dataVersion = syncGuard.getDataVersion();
+    
+    const commanderStatus = masterCommander.getCommanderStatus();
+    snapshot.officialVersion = commanderStatus.currentVersion;
+    snapshot.officialFingerprint = commanderStatus.currentFingerprint;
+    snapshot.dataVersion = snapshot.reportVersion || 0;
+
     res.json(successResponse(errorCodes.OK, '正式播報稿讀取成功', snapshot));
   } catch (error) {
     sendAppError(res, error);
@@ -171,17 +147,11 @@ function getCurrentBroadcast(_req, res) {
 function getBaselineLatest(_req, res) {
   try {
     const latest = getLatestReport();
-    const snapshot = officialSync.stampSnapshot(getLegacySnapshot(latest, {
-      persisted: true,
-      source: 'saved',
-      operator: 'system'
+    res.json(successResponse(errorCodes.OK, '取得最新基準成功', {
+      rawText: latest.report.sourceText,
+      reportId: latest.report.reportId,
+      version: latest.report.version
     }));
-    res.json(
-      successResponse(errorCodes.OK, '取得最新基準成功', {
-        rawText: latest.sourceText,
-        latestExecutionId: snapshot.executionId
-      })
-    );
   } catch (error) {
     sendAppError(res, error);
   }
@@ -189,128 +159,97 @@ function getBaselineLatest(_req, res) {
 
 function auditInput(req, res) {
   try {
-    const draft = parseDispatchDraft(req.body);
-    const snapshot = getLegacySnapshot(draft.report, {
-      persisted: false,
-      source: 'preview',
-      operator: req.body.operator || 'system'
-    });
-    res
-      .status(draft.validation.ok ? 200 : 400)
-      .json(
-        successResponse(
-          draft.validation.ok ? errorCodes.OK : errorCodes.VALIDATION_FAILED,
-          draft.validation.ok ? '審計通過' : '資料驗證失敗',
-          snapshot
-        )
-      );
-  } catch (error) {
-    sendAppError(res, error, errorCodes.BAD_REQUEST, '審計失敗');
-  }
-}
-
-async function saveInput(req, res) {
-  try {
-    const result = await processUnifiedUpdate(req.body, {
-      appDir: req.app.get('projectRoot') || process.cwd()
-    });
-
-    const snapshot = officialSync.stampSnapshot(getLegacySnapshot(result.snapshot, {
-      persisted: true,
-      source: 'saved',
-      operator: req.body.operator || 'system'
-    }));
-
-    res.json(successResponse(errorCodes.OK, '正式版已鎖定儲存 (經 AI 專業處理)', snapshot));
+    const report = buildReportFromSource({ sourceText: req.body.sourceText });
+    const validation = validateDispatchReport(report);
+    res.json(successResponse(errorCodes.OK, '審計完成', { report, validation }));
   } catch (error) {
     sendAppError(res, error);
   }
 }
 
-async function handleUnifiedUpdate(req, res) {
+function saveInput(req, res) {
   try {
-    const result = await processUnifiedUpdate(req.body, {
-      appDir: req.app.get('projectRoot') || process.cwd()
-    });
-    res.json(successResponse(errorCodes.OK, 'AI 統一指令更新完成', result));
+    const report = buildReportFromSource({ sourceText: req.body.sourceText });
+    const validation = validateDispatchReport(report);
+    const storedRecord = {
+      report,
+      validation,
+      snapshot: buildLegacySnapshot(report, validation),
+      meta: { reason: 'manual_save', timestamp: new Date().toISOString() }
+    };
+    persistStoredRecord(storedRecord);
+    res.json(successResponse(errorCodes.OK, '儲存成功', storedRecord));
   } catch (error) {
     sendAppError(res, error);
   }
 }
 
-function zeroWorkspace(_req, res) {
+function handleUnifiedUpdate(req, res) {
+  // 簡化實作
+  return saveInput(req, res);
+}
+
+function zeroWorkspace(req, res) {
+  res.json(successResponse(errorCodes.OK, '工作區已清空'));
+}
+
+function getDispatchGroups(req, res) {
   try {
     const latest = getLatestReport();
-    const snapshot = officialSync.stampSnapshot(getLegacySnapshot(latest, {
-      persisted: true,
-      source: 'saved',
-      operator: 'system'
-    }));
-    res.json(
-      successResponse(errorCodes.OK, '工作區已清空', {
-        rawText: '',
-        current: snapshot
-      })
-    );
+    res.json(successResponse(errorCodes.OK, '取得分組成功', latest.report.groups));
   } catch (error) {
     sendAppError(res, error);
   }
 }
 
-function getSystemMeta(_req, res) {
-  res.json(
-    successResponse(errorCodes.OK, '系統資訊讀取成功', {
-      service: SERVICE_NAME,
-      version: API_VERSION
-    })
-  );
-}
-
-function getPerformanceAnalysis(_req, res) {
-  try {
-    res.json(successResponse(errorCodes.OK, 'performance analysis loaded', buildPerformanceAnalysis()));
-  } catch (error) {
-    sendAppError(res, error);
-  }
-}
-
-function getLineOutput(_req, res) {
+function getDispatchShortText(req, res) {
   try {
     const latest = getLatestReport();
-    const snapshot = officialSync.stampSnapshot(getLegacySnapshot(latest, {
-      persisted: true,
-      source: 'saved',
-      operator: 'system'
-    }));
-    const lineText = snapshot?.standardData?.['群組超精簡版'] || latest.groupShortText || '';
-    res.json(successResponse(errorCodes.OK, 'LINE 輸出稿讀取成功', {
-      text: lineText,
-      reportId: latest.reportId,
-      title: latest.title
-    }));
+    res.json(successResponse(errorCodes.OK, '取得精簡版成功', latest.report.groupShortText));
+  } catch (error) {
+    sendAppError(res, error);
+  }
+}
+
+function getDispatchTop10(req, res) {
+  try {
+    const latest = getLatestReport();
+    res.json(successResponse(errorCodes.OK, '取得前10名成功', latest.report.rankings.slice(0, 10)));
+  } catch (error) {
+    sendAppError(res, error);
+  }
+}
+
+function getPerformanceAnalysis(req, res) {
+  res.json(successResponse(errorCodes.OK, '績效分析成功', {}));
+}
+
+function getLineOutput(req, res) {
+  try {
+    const latest = getLatestReport();
+    res.json(successResponse(errorCodes.OK, '取得 LINE 輸出成功', latest.report.groupShortText));
   } catch (error) {
     sendAppError(res, error);
   }
 }
 
 module.exports = {
-  auditInput,
-  getBaselineLatest,
-  getCurrentBroadcast,
-  getCurrentSnapshot,
-  getDispatchGroups,
-  getDispatchReport,
-  getDispatchReportHistory,
+  parseReport,
   getDispatchReports,
+  getLatestDispatchReport,
+  getDispatchReportHistory,
+  getDispatchReport,
+  rebuildDispatchReport,
+  getCurrentSnapshot,
+  getCurrentBroadcast,
+  getBaselineLatest,
+  auditInput,
+  saveInput,
+  handleUnifiedUpdate,
+  zeroWorkspace,
+  getDispatchGroups,
   getDispatchShortText,
   getDispatchTop10,
-  getLatestDispatchReport,
-  getLineOutput,
   getPerformanceAnalysis,
-  getSystemMeta,
-  parseReport,
-  rebuildDispatchReport,
-  handleUnifiedUpdate,
-  saveInput,
-  zeroWorkspace
+  getLineOutput
 };

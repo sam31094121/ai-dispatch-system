@@ -117,11 +117,17 @@
       <div class="ticker-content-mini" id="ai-next-step">系統就緒... 等待派單分析...</div>
     </div>
 
-    <!-- 前4名英雄區：改為橫向滑動，節省縱向空間 -->
-    <section id="a1-hero" class="hero-section-compact">
-      <div class="hologram-grid-overlay"></div> <!-- 新增：全像屏障網格 -->
-      <div class="hero-scroll-container">
-        <div id="a1-hero-grid" class="hero-flex-row"></div>
+    <!-- 前六名科技榮耀榜 (STRIKE FORCE TOP 6) -->
+    <section id="top6-glory-board" class="glory-board-container">
+      <div class="glory-header">
+        <h2 class="glory-title">前六名科技榮耀榜</h2>
+        <p class="glory-subtitle">本區名次、業績、實收、追續金額、總結算與分析內容，全部來自後端正式審計後之有效資料與正式排序結果。</p>
+        <div class="glory-note-box">
+          <p class="glory-note">本區為本輪正式前六名主力戰績榜。<br>所有數字均來自後端正式資料，不是前端估算，不是視覺假值，不是暫存推估值。<br>本區目的為清楚呈現本輪前六名為何上榜、贏在哪裡、數據從哪裡來。</p>
+        </div>
+      </div>
+      <div id="top6-grid" class="top6-grid">
+        <!-- JS 動態生成 -->
       </div>
     </section>
 

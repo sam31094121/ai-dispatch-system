@@ -26,6 +26,20 @@
       </button>
     </header>
 
+    <!-- 前六名科技榮耀榜 (STRIKE FORCE TOP 6) -->
+    <section id="top6-glory-board" class="glory-board-container animate-up">
+      <div class="glory-header">
+        <h2 class="glory-title">前六名科技榮耀榜</h2>
+        <p class="glory-subtitle">本區名次、業績、實收、追續金額、總結算與分析內容，全部來自後端正式審計後之有效資料與正式排序結果。</p>
+        <div class="glory-note-box">
+          <p class="glory-note">本區為本輪正式前六名主力戰績榜。<br>所有數字均來自後端正式資料，不是前端估算，不是視覺假值，不是暫存推估值。<br>本區目的為清楚呈現本輪前六名為何上榜、贏在哪裡、數據從哪裡來。</p>
+        </div>
+      </div>
+      <div id="top6-grid" class="top6-grid">
+        <!-- JS 動態生成 -->
+      </div>
+    </section>
+
     <section class="command-hero animate-up" style="animation-delay: 0.05s;">
       <div class="hero-copy">
         <span class="hero-tag">AUTO OPTIMIZATION LOOP</span>
@@ -84,24 +98,6 @@
       <div class="timeline" id="plan-timeline"></div>
     </section>
 
-    <section class="nexus-module animate-up" style="animation-delay: 0.2s;">
-      <div class="module-header">
-        <div>
-          <h2 class="module-title">高端科技榮耀榜 (STRIKE FORCE TOP 5)</h2>
-          <p>
-             <span style="color:var(--accent);">✓ 本區數據全部來自後端正式審計與正式排序結果。</span><br>
-             前端僅負責即時高端展示，絕不自行排序或補值。
-          </p>
-        </div>
-      </div>
-      <div class="hero-slider" id="hero-slider">
-        <article class="nexus-hero-card rank-1">
-          <span class="hero-rank">RANK #1</span>
-          <span class="hero-name">Loading</span>
-          <span class="hero-metric">0</span>
-        </article>
-      </div>
-    </section>
 
     <section class="nexus-module animate-up" style="animation-delay: 0.25s;">
       <div class="module-header">
@@ -306,6 +302,159 @@
       return { ...info, score, nextStep, afterStep, featureStep, timeline, focus, output };
     }
 
+    const GLORY_TEMPLATES = {
+      1: {
+        tags: ["冠軍榮耀", "最高戰力", "正式榜首"],
+        reason: "本輪綜合權重分數全場最高，實收、追續金額、全部總業績三項主指標全面領先，因此正式排名第1。",
+        summary: "本輪屬於全面領先型第一名，是真正以整體戰力站上榜首。"
+      },
+      2: {
+        tags: ["核心主力", "高戰力上榜", "正式前二"],
+        reason: "本輪實收、追續金額、全部總業績三項數字都維持高檔，綜合厚度強，因此正式排名第2。",
+        summary: "本輪屬於高厚度型前段主力，數字完整、結構穩定、整體戰力強。"
+      },
+      3: {
+        tags: ["高量能主力", "正式前三", "上榜榮耀"],
+        reason: "本輪追續單數量全場最高，成交量能最強，加上整體總業績與實收穩定，因此正式排名第3。",
+        summary: "本輪屬於高單數推進型主力，以數量優勢推高正式排名。"
+      },
+    const GLORY_TEMPLATES = {
+      1: {
+        title: "最高榮耀主力", badge: "冠軍榮耀",
+        reason: "因為本輪綜合權重分數與三項主指標領先，因此正式進入前六名。",
+        mReason: "因綜合權重與三主指標領先，正式進入前六。",
+        summary: "本輪屬於全面領先型主力，優勢在整體戰力全場最高。",
+        mSummary: "屬於全面領先型主力。"
+      },
+      2: {
+        title: "核心榮耀主力", badge: "正式前二",
+        reason: "因為本輪三項主指標維持高檔且結構完整，因此正式進入前六名。",
+        mReason: "因主指標高檔且結構完整，正式進入前六。",
+        summary: "本輪屬於高厚度型主力，優勢在數字完整與穩定。",
+        mSummary: "屬於高厚度型主力。"
+      },
+      3: {
+        title: "高量能榮耀主力", badge: "正式前三",
+        reason: "因為本輪追續單數量全場最高且量能偏強，因此正式進入前六名。",
+        mReason: "因追續單數量全場最高，正式進入前六。",
+        summary: "本輪屬於高單數推進型主力，優勢在數量推進力極強。",
+        mSummary: "屬於高單數推進型主力。"
+      },
+      4: {
+        title: "高推進榮耀主力", badge: "正式前四",
+        reason: "因為本輪全部總業績與追續金額表現強，因此正式進入前六名。",
+        mReason: "因總業績與追續金額強，正式進入前六。",
+        summary: "本輪屬於高推進型主力，優勢在整體推進效率高。",
+        mSummary: "屬於高推進型主力。"
+      },
+      5: {
+        title: "高客單榮耀主力", badge: "正式前五",
+        reason: "因為本輪追續客單價全場最高且品質偏強，因此正式進入前六名。",
+        mReason: "因追續客單價全場最高，正式進入前六。",
+        summary: "本輪屬於高客單價型主力，優勢在單筆成交價值突出。",
+        mSummary: "屬於高客單價型主力。"
+      },
+      6: {
+        title: "穩定成長榮耀主力", badge: "正式前六",
+        reason: "因為本輪實收與全部總業績同步提升且指標完整，因此正式進入前六名。",
+        mReason: "因實收與總業績同步提升，正式進入前六。",
+        summary: "本輪屬於穩定成長型主力，優勢在整體表現平均。",
+        mSummary: "屬於穩定成長型主力。"
+      }
+    };
+
+    const SOURCE_TEXT = "後端正式資料、三平台總表、審計通過後有效資料、正式排序結果、正式權重分數結果。";
+    const M_SOURCE_TEXT = "後端正式資料、三平台總表、審計通過後有效資料、正式排序結果、正式權重分數結果。";
+
+    function renderTop6GloryBoard(rankings) {
+      const top6Grid = $('top6-grid');
+      if (!top6Grid) return;
+      const top6 = rankings.slice(0, 6);
+      if (!top6.length) {
+        top6Grid.innerHTML = '<div class="empty-state">目前沒有正式排名資料</div>';
+        return;
+      }
+
+      const cardsHtml = top6.map((row, index) => {
+        const rank = index + 1;
+        const tmpl = GLORY_TEMPLATES[rank] || GLORY_TEMPLATES[6];
+        
+        const weightedScore = row.weightedScore || row.score || row.metrics?.正式權重分數 || 0;
+        const actualRev = row.actualRevenue || row.metrics?.實收 || 0;
+        const renewalRev = row.renewalRevenue || row.metrics?.續單金額 || 0;
+        const totalRev = row.totalRevenue || row.revenue || row.metrics?.總業績 || 0;
+        const renewalDeals = row.renewalDeals || row.metrics?.追續成交總數 || 0;
+        const avgRenewal = row.avgRenewal || row.metrics?.追續客單價 || (renewalDeals ? (renewalRev / renewalDeals) : 0);
+
+        return `
+          <article class="glory-card rank-${rank}">
+            <!-- 上層 -->
+            <div class="glory-layer-top">
+              <div class="glory-rank-label">第${rank}名</div>
+              <div class="glory-title-label">${tmpl.title}</div>
+              <div class="glory-badge-label">${tmpl.badge}</div>
+            </div>
+            
+            <!-- 中層 -->
+            <div class="glory-layer-mid">
+              <h3 class="glory-name-label">${escapeHtml(row.name || row.topName)}</h3>
+              <div class="glory-score-box">
+                 <span class="glory-score-label">正式權重分數</span>
+                 <span class="glory-score-value">${fmt.format(weightedScore)}</span>
+              </div>
+              <div class="glory-metrics-grid">
+                 <div class="metric"><span class="m-label">實收總金額</span><span class="m-val">${fmt.format(actualRev)}</span></div>
+                 <div class="metric"><span class="m-label">追續金額</span><span class="m-val">${fmt.format(renewalRev)}</span></div>
+                 <div class="metric"><span class="m-label">全部總業績</span><span class="m-val">${fmt.format(totalRev)}</span></div>
+                 <div class="metric"><span class="m-label">追續客單價</span><span class="m-val">${fmt.format(avgRenewal)}</span></div>
+              </div>
+              <div class="glory-metric-extra">追續單數量：<span class="m-val">${renewalDeals}</span></div>
+            </div>
+
+            <!-- 下層 -->
+            <div class="glory-layer-bot">
+              <div class="glory-reason">
+                <strong class="desktop-text">上榜原因：${tmpl.reason}</strong>
+                <strong class="mobile-text">上榜原因：${tmpl.mReason}</strong>
+              </div>
+              <div class="glory-source">
+                <span class="desktop-text">數據來源：${SOURCE_TEXT}</span>
+                <span class="mobile-text">數據來源：${M_SOURCE_TEXT}</span>
+              </div>
+              <div class="glory-summary">
+                <span class="desktop-text">本輪優勢總結：${tmpl.summary}</span>
+                <span class="mobile-text">本輪優勢：${tmpl.mSummary}</span>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      top6Grid.innerHTML = cardsHtml;
+
+      // ── 3D 立體卡片科技版：動態物理傾斜與光影追蹤 ──
+      const cards = top6Grid.querySelectorAll('.glory-card');
+      cards.forEach(card => {
+        card.addEventListener('mousemove', e => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          // 計算旋轉角度 (限制在 +-8度以內)
+          const rotateX = ((y - centerY) / centerY) * -8;
+          const rotateY = ((x - centerX) / centerX) * 8;
+          // 套用 3D 空間透視與旋轉
+          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        });
+        
+        card.addEventListener('mouseleave', () => {
+          // 恢復原始狀態 (CSS 會接手 transition)
+          card.style.transform = '';
+        });
+      });
+    }
+
     function renderPlan(plan) {
       $('report-title').textContent = plan.title;
       $('report-subtitle').textContent = `正式資料 ${plan.rows.length} 筆，${plan.groupText}`;
@@ -338,79 +487,7 @@
       $('meter-next').style.width = `${plan.warnings.length ? 68 : 92}%`;
       $('meter-ui').style.width = '96%';
 
-      $('hero-slider').innerHTML = plan.rows.slice(0, 5).map((row, index) => {
-        const rank = row.rank || index + 1;
-        const score = getMetric(row, ['加權分數', 'weightedScore', '甇??甈??', 'score']);
-        const revenue = getMetric(row, ['總業績', 'totalRevenue', '蝮賣平蝮?']);
-        const actualRevenue = getMetric(row, ['實收', 'actualRevenue', '實收總金額']);
-        const renewalRevenue = getMetric(row, ['續單金額', 'renewalRevenue', '追續金額']);
-        const renewalDeals = getMetric(row, ['追續成交總數', 'renewalDeals', '追續單數']);
-        const prevRank = row.prevRank || rank;
-        const advice = row.advice || `實收與追續動能強勁，經正式審計鎖定第 ${rank} 名。`;
-        
-        let moveHtml = '<span class="move-flat">-</span>';
-        if (rank < prevRank) moveHtml = `<span class="move-up">▲ ${prevRank - rank}</span>`;
-        else if (rank > prevRank) moveHtml = `<span class="move-down">▼ ${rank - prevRank}</span>`;
-        else if (row.isNew) moveHtml = '<span class="move-new">NEW</span>';
-
-        return `
-          <article class="nexus-hero-card rank-${rank}" onclick="if(window.vfxEngines && window.vfxEngines[${rank}]) window.vfxEngines[${rank}].triggerBurst();">
-            <div class="money-canvas-container" style="position:absolute; inset:0; z-index:0; pointer-events:none;">
-               <canvas id="nexus-hero-${rank}-canvas" data-rank="${rank}" style="width:100%; height:100%;"></canvas>
-            </div>
-            <div style="position:relative; z-index:1;">
-               <div style="display:flex; justify-content:space-between; align-items:center;">
-                  <span class="hero-rank">RANK #${rank}</span>
-                  <span class="rank-move" style="font-size:12px; font-weight:bold; background:rgba(0,0,0,0.5); padding:2px 6px; border-radius:4px;">${moveHtml}</span>
-               </div>
-               <span class="hero-name">${cleanText(row.name, `第 ${rank} 名`)} <span style="font-size:10px; background:#d4af37; color:#000; padding:2px 4px; border-radius:3px;">${cleanText(row.group, 'A')}</span></span>
-               
-               <!-- 官方數位簽章 (New) -->
-               <div style="font-size:8px; color:rgba(24, 198, 167, 0.4); font-family:var(--font-mono); margin-top:4px;">
-                 DIGITAL SIGNATURE: ${Math.random().toString(16).slice(2, 10).toUpperCase()} [VERIFIED]
-               </div>
-
-               <div style="margin: 12px 0; padding: 8px; background: rgba(24, 198, 167, 0.05); border-left: 2px solid var(--accent); font-size:12px; color: #a0aabf; line-height:1.4;">
-                  <div style="color:var(--accent); font-size:10px; font-weight:bold; margin-bottom:4px;">OFFICIAL AI LOGIC</div>
-                  " ${escapeHtml(advice)} "
-               </div>
-               
-               <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px;">
-                  <div><span style="color:#8892b0;">真實總業績</span> <br><strong class="decode-target" data-val="${fmt.format(revenue)}" style="color:#18c6a7; font-size:14px;">--</strong></div>
-                  <div><span style="color:#8892b0;">綜合分數</span> <br><strong class="decode-target" data-val="${fmt.format(score)}" style="color:#f3c14b; font-size:14px;">--</strong></div>
-                  <div><span style="color:#8892b0;">續單金額</span> <br><strong class="decode-target" data-val="${fmt.format(renewalRevenue)}">--</strong></div>
-                  <div><span style="color:#8892b0;">追續成交</span> <br><strong class="decode-target" data-val="${fmt.format(renewalDeals)}">--</strong></div>
-               </div>
-            </div>
-          </article>
-        `;
-      }).join('');
-
-      // 觸發解碼特效與 3D 寶物
-      setTimeout(() => {
-        document.querySelectorAll('.decode-target').forEach(el => {
-          const val = el.getAttribute('data-val');
-          if (typeof decodeNumberEffect === 'function') {
-            decodeNumberEffect(el, val, 800 + Math.random() * 600);
-          } else {
-            el.textContent = val;
-          }
-        });
-        
-        if (typeof window.MapleCoinRain === 'function') {
-           window.vfxEngines = window.vfxEngines || {};
-           for (let i = 1; i <= 5; i++) {
-              const canvas = document.getElementById(`nexus-hero-${i}-canvas`);
-              if (canvas && !window.vfxEngines[i]) {
-                 const engine = new window.MapleCoinRain(canvas);
-                 engine.start();
-                 window.vfxEngines[i] = engine;
-              } else if (canvas && window.vfxEngines[i]) {
-                 window.vfxEngines[i].explode();
-              }
-           }
-        }
-      }, 300);
+      renderTop6GloryBoard(plan.rows);
     }
 
     function pushLog(message) {

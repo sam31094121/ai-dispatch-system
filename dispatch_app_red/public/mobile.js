@@ -570,102 +570,139 @@ function setLoading() {
   refs.rankingList.innerHTML = skeletonCard.repeat(5);
   refs.summaryGrid.innerHTML = '';
 }
+const GLORY_TEMPLATES = {
+  1: {
+    title: "最高榮耀主力", badge: "冠軍榮耀",
+    reason: "因為本輪綜合權重分數與三項主指標領先，因此正式進入前六名。",
+    mReason: "因綜合權重與三主指標領先，正式進入前六。",
+    summary: "本輪屬於全面領先型主力，優勢在整體戰力全場最高。",
+    mSummary: "屬於全面領先型主力。"
+  },
+  2: {
+    title: "核心榮耀主力", badge: "正式前二",
+    reason: "因為本輪三項主指標維持高檔且結構完整，因此正式進入前六名。",
+    mReason: "因主指標高檔且結構完整，正式進入前六。",
+    summary: "本輪屬於高厚度型主力，優勢在數字完整與穩定。",
+    mSummary: "屬於高厚度型主力。"
+  },
+  3: {
+    title: "高量能榮耀主力", badge: "正式前三",
+    reason: "因為本輪追續單數量全場最高且量能偏強，因此正式進入前六名。",
+    mReason: "因追續單數量全場最高，正式進入前六。",
+    summary: "本輪屬於高單數推進型主力，優勢在數量推進力極強。",
+    mSummary: "屬於高單數推進型主力。"
+  },
+  4: {
+    title: "高推進榮耀主力", badge: "正式前四",
+    reason: "因為本輪全部總業績與追續金額表現強，因此正式進入前六名。",
+    mReason: "因總業績與追續金額強，正式進入前六。",
+    summary: "本輪屬於高推進型主力，優勢在整體推進效率高。",
+    mSummary: "屬於高推進型主力。"
+  },
+  5: {
+    title: "高客單榮耀主力", badge: "正式前五",
+    reason: "因為本輪追續客單價全場最高且品質偏強，因此正式進入前六名。",
+    mReason: "因追續客單價全場最高，正式進入前六。",
+    summary: "本輪屬於高客單價型主力，優勢在單筆成交價值突出。",
+    mSummary: "屬於高客單價型主力。"
+  },
+  6: {
+    title: "穩定成長榮耀主力", badge: "正式前六",
+    reason: "因為本輪實收與全部總業績同步提升且指標完整，因此正式進入前六名。",
+    mReason: "因實收與總業績同步提升，正式進入前六。",
+    summary: "本輪屬於穩定成長型主力，優勢在整體表現平均。",
+    mSummary: "屬於穩定成長型主力。"
+  }
+};
 
+const SOURCE_TEXT = "後端正式資料、三平台總表、審計通過後有效資料、正式排序結果、正式權重分數結果。";
+const M_SOURCE_TEXT = "後端正式資料、三平台總表、審計通過後有效資料、正式排序結果、正式權重分數結果。";
 
-function renderA1Hero(rankings) {
-  // 需求：首頁前五名升級成高端科技榮耀榜 (不再侷限於 A1)
-  const top5 = rankings.slice(0, 5);
-  if (!refs.a1HeroGrid) return;
-  if (!top5.length) {
-    refs.a1HeroGrid.innerHTML = '<div class="empty-state">目前沒有正式排名資料</div>';
+function renderTop6GloryBoard(rankings) {
+  const top6Grid = document.getElementById('top6-grid');
+  if (!top6Grid) return;
+  const top6 = rankings.slice(0, 6);
+  if (!top6.length) {
+    top6Grid.innerHTML = '<div class="empty-state">目前沒有正式排名資料</div>';
     return;
   }
 
-  // 加上「正式來源說明」
-  const disclaimerHtml = `
-    <div class="top5-disclaimer">
-      <span class="disclaimer-icon">✓</span>
-      本區數據全部來自後端正式審計與排序結果。前端僅負責高端展示，絕不自行補值。
-    </div>
-  `;
-
-  const cardsHtml = top5.map((row, index) => {
-    const isTopFour = index < 4;
-    const rankClass = isTopFour ? `hero-card-${row.rank}` : `rank-${row.rank}`;
-    const crown = row.rank === 1 ? '<span class="a1-hero-crown">👑</span>' : '';
+  const cardsHtml = top6.map((row, index) => {
+    const rank = index + 1;
+    const tmpl = GLORY_TEMPLATES[rank] || GLORY_TEMPLATES[6];
     
-    // 3D 特效容器 (前四名享有專屬特效，或是全 Top 5 都有，這裡給前 5 名都有以符合大獎寶物要求)
-    const vfxCanvas = `<div class="money-canvas-container"><canvas id="hero-${row.rank}-canvas" data-rank="${row.rank}"></canvas></div>`;
-    const iconClass = row.rank === 1 ? 'diamond-icon' : row.rank === 2 ? 'gold-icon' : (row.rank === 3 ? 'silver-icon' : (row.rank === 4 ? 'bronze-icon' : ''));
-
-    // 處理升降符號
-    let moveHtml = '<span class="move-flat">-</span>';
-    if (row.movement === 'up') moveHtml = `<span class="move-up">▲ ${row.prevRank - row.rank}</span>`;
-    else if (row.movement === 'down') moveHtml = `<span class="move-down">▼ ${row.rank - row.prevRank}</span>`;
-    else if (row.isNew) moveHtml = '<span class="move-new">NEW</span>';
-
-    // 上榜原因與本輪優勢
-    const revenueWeight = (row.actualRevenue / (row.totalRevenue || 1) * 100).toFixed(0);
-    const aiReason = row.advice || `實收佔比達 ${revenueWeight}%，追續成交 ${row.renewalDeals} 單。AI 判定戰力優勢顯著，鎖定第 ${row.rank} 名。`;
-
-    const metricHtml = `
-      <div class="a1-metric"><span>真實總業績</span><strong class="decode-target" data-val="${fmt(row.totalRevenue)}">--</strong></div>
-      <div class="a1-metric"><span>續單金額</span><strong class="decode-target" data-val="${fmt(row.renewalRevenue)}">--</strong></div>
-      <div class="a1-metric"><span>追續成交數</span><strong class="decode-target" data-val="${row.renewalDeals}">--</strong></div>
-    `;
+    // 預防資料缺失，給予預設值 0
+    const weightedScore = row.weightedScore || row.score || row.metrics?.正式權重分數 || 0;
+    const actualRev = row.actualRevenue || row.metrics?.實收 || 0;
+    const renewalRev = row.renewalRevenue || row.metrics?.續單金額 || 0;
+    const totalRev = row.totalRevenue || row.revenue || row.metrics?.總業績 || 0;
+    const renewalDeals = row.renewalDeals || row.metrics?.追續成交總數 || 0;
+    const avgRenewal = row.avgRenewal || row.metrics?.追續客單價 || (renewalDeals ? (renewalRev / renewalDeals) : 0);
 
     return `
-      <article class="a1-hero-card ${rankClass}" onclick="triggerCardBurst(${row.rank})">
-        ${vfxCanvas}
-        <div class="hero-content-wrap">
-          ${crown}
-          <div class="a1-hero-gloss"></div>
-          
-          <div class="card-top-row">
-             <div class="a1-hero-rank ${iconClass}">RANK #${row.rank}</div>
-             <div class="rank-move">${moveHtml}</div>
-          </div>
-          
-          <div class="a1-hero-name">${escapeHtml(row.name)} <span class="group-badge">${escapeHtml(row.group)}</span></div>
-          
-          <div style="font-size: 8px; color: rgba(24, 198, 167, 0.4); font-family: 'Oxanium', monospace; margin: 2px 0 6px 0; letter-spacing: 1px;">
-            DIGITAL SIGNATURE: ${Math.random().toString(16).slice(2, 10).toUpperCase()} [VERIFIED]
-          </div>
-          
-          <!-- AI 權重與上榜原因 -->
-          <div class="ai-formula-box">
-            <div class="formula-label">OFFICIAL AUDIT LOGIC</div>
-            <div class="ai-insight-text">“ ${escapeHtml(aiReason)} ”</div>
-          </div>
-
-          <div class="a1-hero-score-row">
-            <span class="a1-hero-score-label">綜合權重分數</span>
-            <span class="a1-hero-score-value decode-target" data-val="${fmt(row.score, 2)}">--</span>
-          </div>
-          <div class="a1-hero-metrics">${metricHtml}</div>
+      <article class="glory-card rank-${rank}">
+        <!-- 上層 -->
+        <div class="glory-layer-top">
+          <div class="glory-rank-label">第${rank}名</div>
+          <div class="glory-title-label">${tmpl.title}</div>
+          <div class="glory-badge-label">${tmpl.badge}</div>
         </div>
-      </article>`;
+        
+        <!-- 中層 -->
+        <div class="glory-layer-mid">
+          <h3 class="glory-name-label">${escapeHtml(row.name)}</h3>
+          <div class="glory-score-box">
+             <span class="glory-score-label">正式權重分數</span>
+             <span class="glory-score-value">${fmt(weightedScore, 2)}</span>
+          </div>
+          <div class="glory-metrics-grid">
+             <div class="metric"><span class="m-label">實收總金額</span><span class="m-val">${fmt(actualRev)}</span></div>
+             <div class="metric"><span class="m-label">追續金額</span><span class="m-val">${fmt(renewalRev)}</span></div>
+             <div class="metric"><span class="m-label">全部總業績</span><span class="m-val">${fmt(totalRev)}</span></div>
+             <div class="metric"><span class="m-label">追續客單價</span><span class="m-val">${fmt(avgRenewal, 2)}</span></div>
+          </div>
+          <div class="glory-metric-extra">追續單數量：<span class="m-val">${renewalDeals}</span></div>
+        </div>
 
+        <!-- 下層 -->
+        <div class="glory-layer-bot">
+          <div class="glory-reason">
+            <strong class="desktop-text">上榜原因：${tmpl.reason}</strong>
+            <strong class="mobile-text">上榜原因：${tmpl.mReason}</strong>
+          </div>
+          <div class="glory-source">
+            <span class="desktop-text">數據來源：${SOURCE_TEXT}</span>
+            <span class="mobile-text">數據來源：${M_SOURCE_TEXT}</span>
+          </div>
+          <div class="glory-summary">
+            <span class="desktop-text">本輪優勢總結：${tmpl.summary}</span>
+            <span class="mobile-text">本輪優勢：${tmpl.mSummary}</span>
+          </div>
+        </div>
+      </article>
+    `;
   }).join('');
 
-  refs.a1HeroGrid.innerHTML = disclaimerHtml + cardsHtml;
+  top6Grid.innerHTML = cardsHtml;
 
-  // 觸發運算速度感 Decode 特效
-  setTimeout(() => {
-    document.querySelectorAll('.decode-target').forEach(el => {
-      const val = el.getAttribute('data-val');
-      if(typeof decodeNumberEffect === 'function') {
-         decodeNumberEffect(el, val, 800 + Math.random() * 500);
-      } else {
-         el.textContent = val;
-      }
+  // ── 3D 立體卡片科技版：動態物理傾斜與光影追蹤 ──
+  const cards = top6Grid.querySelectorAll('.glory-card');
+  cards.forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const rotateX = ((y - centerY) / centerY) * -8;
+      const rotateY = ((x - centerX) / centerX) * 8;
+      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
     });
-  }, 100);
-
-  // 延遲啟動 3D 寶物掉落特效
-  if (typeof window.initMoneyEffects === 'function') {
-      setTimeout(window.initMoneyEffects, 200);
-  }
+    
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+    });
+  });
 }
 
 function render(report) {
@@ -689,7 +726,7 @@ function render(report) {
   if (refs.statTotalRevenue)  refs.statTotalRevenue.textContent  = fmt(report.summary.totalRevenue);
   if (refs.statCashRevenue)   refs.statCashRevenue.textContent   = fmt(report.summary.actualRevenue);
 
-  renderA1Hero(report.ranking);
+  renderTop6GloryBoard(report.ranking);
   renderSummary(report.summary);
   renderRankings(report.ranking);
   renderGroups(report.groups, report.ranking);

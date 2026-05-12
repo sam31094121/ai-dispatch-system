@@ -3,12 +3,12 @@ const path = require('path');
 const logger = require('../utils/logger');
 
 // 延遲載入以避免循環依賴
-let _syncGuard = null;
-function getSyncGuard() {
-  if (!_syncGuard) {
-    try { _syncGuard = require('./syncGuard.service'); } catch { _syncGuard = null; }
+let _masterCommander = null;
+function getMasterCommander() {
+  if (!_masterCommander) {
+    try { _masterCommander = require('./masterCommander.service'); } catch { _masterCommander = null; }
   }
-  return _syncGuard;
+  return _masterCommander;
 }
 
 const HEARTBEAT_INTERVAL_MS = 25000;
@@ -24,10 +24,15 @@ let lastKnownMtimeMs = 0;
 
 function writeEvent(client, data) {
   try {
-    client.res.write(`data: ${JSON.stringify(data)}\n\n`);
+    // 確保 data 是乾淨的 POJO (防止循環參照)
+    const cleanData = JSON.parse(JSON.stringify(data, (key, value) => {
+      if (key === 'timer' || key === 'res' || key === 'watcher') return undefined;
+      return value;
+    }));
+    client.res.write(`data: ${JSON.stringify(cleanData)}\n\n`);
     return true;
   } catch (err) {
-    logger.error('Failed to write SSE event', { clientId: client.id, error: err });
+    logger.error('Failed to write SSE event', { clientId: client.id, error: err.message });
     return false;
   }
 }
@@ -101,16 +106,15 @@ function notifyDataUpdated(meta = {}) {
   if (now - lastBroadcastAt < FILE_EVENT_DEBOUNCE_MS) return;
   lastBroadcastAt = now;
 
-  // 若有 syncGuard 則使用其正式 dataVersion
-  const guard = getSyncGuard();
-  const dataVersion = guard ? guard.getDataVersion() : now;
+  const commander = getMasterCommander();
+  const status = commander ? commander.getCommanderStatus() : null;
 
   broadcastUpdate({
     type: 'data_updated',
     timestamp: new Date().toISOString(),
     ...meta,
-    version: now,
-    dataVersion
+    officialVersion: status ? status.currentVersion : '',
+    officialFingerprint: status ? status.currentFingerprint : ''
   });
 }
 
