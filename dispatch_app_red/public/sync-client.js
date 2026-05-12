@@ -47,8 +47,10 @@
       this.onVersionUpdate = options.onVersionUpdate || (() => {});
 
       this.clientKey = generateClientKey(this.type);
-      this.currentDataVersion = 0;
-      this.serverDataVersion = 0;
+      this.currentVersion = '';
+      this.currentFingerprint = '';
+      this.serverVersion = '';
+      this.serverFingerprint = '';
       this.heartbeatTimer = null;
       this.consecutiveMismatches = 0;
       this.syncStatus = 'INIT';
@@ -56,11 +58,11 @@
     }
 
     /**
-     * 更新前端目前顯示的版本號（每次 render 後呼叫）
-     * @param {number} version
+     * 更新前端目前顯示的版本與指紋（每次 render 後由應用程式呼叫）
      */
-    setDataVersion(version) {
-      this.currentDataVersion = Number(version) || 0;
+    setOfficialStatus(version, fingerprint) {
+      this.currentVersion = version || '';
+      this.currentFingerprint = fingerprint || '';
     }
 
     /**
@@ -69,140 +71,66 @@
     start() {
       if (this.started) return;
       this.started = true;
-
-      // 監聽 SSE force_sync 事件
       this._hookSSE();
-
-      // 啟動心跳
       this._startHeartbeat();
-
-      // 頁面可見性切換時的處理
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden) return;
-        // 頁面從背景恢復：立即送一次心跳
-        this._sendHeartbeat();
-      });
-
-      console.log(`[SyncClient] 已啟動 (${this.type}) clientKey=${this.clientKey}`);
+      console.log(`[SyncClient] 已啟動 (${this.type})`);
     }
 
-    /**
-     * 停止同步客戶端
-     */
-    stop() {
-      this.started = false;
-      if (this.heartbeatTimer) {
-        clearInterval(this.heartbeatTimer);
-        this.heartbeatTimer = null;
-      }
-    }
-
-    // ─── 內部方法 ───
-
-    /**
-     * 攔截 SSE 事件，處理 force_sync
-     */
     _hookSSE() {
-      // 增強現有的 RealtimeSyncEngine：監聽 force_sync
-      const originalOnMessage = EventSource.prototype.addEventListener;
-
-      // 使用 MutationObserver 或直接 patch 不太優雅
-      // 改用更安全的方式：在 SSE message 事件中額外處理
-      const self = this;
-
-      // 透過覆寫 EventSource 的 onmessage 來注入 force_sync 處理
-      // 但更安全的做法：直接建立獨立的監聽迴路
-      const checkForSSESource = () => {
-        // 每次心跳時檢查 serverDataVersion 是否變了
-        if (this.serverDataVersion > this.currentDataVersion && this.serverDataVersion > 0) {
-          console.log('[SyncClient] 偵測到伺服器版本更新，觸發同步');
-          this.consecutiveMismatches += 1;
-
-          if (this.consecutiveMismatches >= MAX_CONSECUTIVE_MISMATCHES) {
-            console.warn('[SyncClient] 連續版本不一致，強制重新載入頁面');
-            window.location.reload();
-            return;
+      // 監聽全局 SSE 事件（由 RealtimeSyncEngine 廣播）
+      window.addEventListener('message', (e) => {
+        try {
+          const data = JSON.parse(e.data);
+          if (data.type === 'force_sync') {
+            console.log('[SyncClient] 收到強制同步命令', data);
+            this.onForceSync(data);
           }
-
-          this.onForceSync();
-        }
-      };
-
-      // 將 checkForSSESource 掛在心跳後
-      this._postHeartbeatCheck = checkForSSESource;
+        } catch(err) {}
+      });
     }
 
-    /**
-     * 啟動定期心跳
-     */
     _startHeartbeat() {
-      // 立即送一次
       this._sendHeartbeat();
-
-      this.heartbeatTimer = setInterval(() => {
-        this._sendHeartbeat();
-      }, HEARTBEAT_INTERVAL_MS);
+      this.heartbeatTimer = setInterval(() => this._sendHeartbeat(), HEARTBEAT_INTERVAL_MS);
     }
 
-    /**
-     * 向後端回報版本狀態
-     */
     async _sendHeartbeat() {
       try {
         const response = await fetch('/api/sync/heartbeat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            clientKey: this.clientKey,
-            type: this.type,
-            dataVersion: this.currentDataVersion,
-            screenState: document.hidden ? 'hidden' : 'active',
-            metadata: {
-              userAgent: navigator.userAgent.slice(0, 100),
-              screenWidth: window.innerWidth,
-              screenHeight: window.innerHeight,
-              url: window.location.pathname
-            }
+            screenId: this.type,
+            officialVersion: this.currentVersion,
+            officialFingerprint: this.currentFingerprint,
+            metadata: { userAgent: navigator.userAgent.slice(0, 50) }
           })
         });
 
         if (!response.ok) return;
-
         const result = await response.json();
 
         if (result.success) {
-          const prevServerVersion = this.serverDataVersion;
-          this.serverDataVersion = result.serverDataVersion || 0;
-          if (!this.currentDataVersion && this.serverDataVersion) {
-            this.currentDataVersion = this.serverDataVersion;
-          }
+          this.serverVersion = result.serverVersion;
+          this.serverFingerprint = result.serverFingerprint;
+          this.syncStatus = result.syncStatus;
 
-          // 同步狀態更新
-          const prevStatus = this.syncStatus;
-          this.syncStatus = result.syncStatus || 'NORMAL';
-
-          if (prevStatus !== this.syncStatus) {
-            this.onStatusChange(this.syncStatus, prevStatus);
-          }
-
-          // 版本號更新
-          if (prevServerVersion !== this.serverDataVersion) {
-            this.onVersionUpdate(this.serverDataVersion);
-          }
-
-          // 版本一致性確認
-          if (this.currentDataVersion === this.serverDataVersion) {
+          // 自動補救：版本不一致且不是修復中時觸發同步
+          if (this.currentVersion !== this.serverVersion && this.syncStatus !== 'REPAIRING') {
+            this.consecutiveMismatches++;
+            if (this.consecutiveMismatches >= MAX_CONSECUTIVE_MISMATCHES) {
+              console.warn('[SyncClient] 版本不一致，觸發自動補救');
+              this.onForceSync();
+              this.consecutiveMismatches = 0;
+            }
+          } else {
             this.consecutiveMismatches = 0;
           }
 
-          // 執行後續檢查
-          if (this._postHeartbeatCheck) {
-            this._postHeartbeatCheck();
-          }
+          this.onStatusChange(this.syncStatus);
         }
       } catch (err) {
-        // 網路錯誤不阻斷，靜默處理
-        console.warn('[SyncClient] 心跳發送失敗', err.message);
+        console.warn('[SyncClient] 心跳失敗', err.message);
       }
     }
 

@@ -673,9 +673,12 @@ async function loadSystemAnnouncement(preferStored = false) {
     }
 
     applyBroadcastPayload(result.broadcast, '後端正式播報稿', String(result.snapshot.executionId || '-'));
-    window.ReportOfficialSync?.report(result.snapshot);
-    if (window._dispatchSyncClient && result.snapshot.dataVersion) {
-      window._dispatchSyncClient.setDataVersion(result.snapshot.dataVersion);
+    
+    if (window._dispatchSyncClient) {
+      window._dispatchSyncClient.setOfficialStatus(
+        result.snapshot.officialVersion || result.snapshot.dataVersion,
+        result.snapshot.officialFingerprint || ''
+      );
     }
     setStatus('播報就緒', '後端正式播報稿已同步，可直接進入首頁或會議室播報。', 'green');
   } catch {

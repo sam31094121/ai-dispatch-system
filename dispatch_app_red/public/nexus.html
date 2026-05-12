@@ -432,8 +432,11 @@
       state.plan = buildPlan(snapshot);
       renderPlan(state.plan);
       
-      if (window._dispatchSyncClient && state.dataVersion) {
-        window._dispatchSyncClient.setDataVersion(state.dataVersion);
+      if (window._dispatchSyncClient) {
+        window._dispatchSyncClient.setOfficialStatus(
+          snapshot.officialVersion || snapshot.dataVersion,
+          snapshot.officialFingerprint || ''
+        );
       }
       
       pushLog('PLAN READY');
