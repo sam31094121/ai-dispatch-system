@@ -11,8 +11,7 @@ const legacyRoutes = require('./routes/legacy.routes');
 const syncRoutes = require('./routes/sync.routes');
 const versionRoutes = require('./routes/version.routes');
 const sseService = require('./services/sse.service');
-const syncGuard = require('./services/syncGuard.service');
-
+const masterCommander = require('./services/masterCommander.service');
 const { errorResponse } = require('./utils/response.util');
 const errorCodes = require('./constants/errorCodes');
 
@@ -78,11 +77,8 @@ function createApp() {
   // 啟動資料監看器
   sseService.initDataWatcher(appConfig.storageRoot);
 
-  // 啟動同步守衛服務（注入 SSE 廣播函式）
-  syncGuard.startSyncGuard({
-    broadcastFn: (data) => sseService.broadcastUpdate(data),
-    notifyUpdateFn: (meta) => sseService.notifyDataUpdated(meta)
-  });
+  // 啟動 Master Supreme Commander (永久鎖死版)
+  masterCommander.start();
 
   app.use('/api', (_req, res) => {
     res
