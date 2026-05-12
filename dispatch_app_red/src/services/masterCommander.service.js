@@ -211,6 +211,13 @@ module.exports = {
   start,
   updateOfficialSnapshot,
   reportScreen,
-  getCommanderStatus: () => ({ ...state, endpoints: Array.from(state.endpoints.values()) }),
+  getCommanderStatus: () => ({
+    status: state.status,
+    currentVersion: state.currentVersion,
+    currentFingerprint: state.currentFingerprint,
+    repairCount: state.repairCount,
+    recoveryCount: state.recoveryCount,
+    endpoints: Array.from(state.endpoints.values())
+  }),
   unlock: () => { state.status = 'NORMAL'; state.repairCount = 0; state.recoveryCount = 0; }
 };
