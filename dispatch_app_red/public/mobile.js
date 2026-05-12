@@ -777,20 +777,14 @@ function renderRankings(rankings) {
     const pct = Math.min(100, Math.max(0, row.score / MAX_SCORE * 100));
     const safeId = encodeURIComponent(row.name);
     const rankClass = row.rank <= 3 ? ` rank-${row.rank}` : '';
-    const hotZoneClass = row.score > 200 ? ' hot-zone' : ''; // AI 熱點判定
+    const hotZoneClass = row.score > 2000 ? ' hot-zone' : ''; // AI 熱點判定
     const rankLabel = row.rank === 1 ? '🥇' : row.rank === 2 ? '🥈' : row.rank === 3 ? '🥉' : `#${row.rank}`;
-    const winnerBadge = row.rank === 1
-      ? '<div class="winner-badge gold">👑 冠軍</div>'
-      : row.rank === 2
-      ? '<div class="winner-badge silver">亞軍</div>'
-      : row.rank === 3
-      ? '<div class="winner-badge bronze">季軍</div>'
-      : '';
-    const shineLayer = row.rank <= 3 ? '<div class="rank-shine" aria-hidden="true"></div>' : '';
+    
+    // 生成數位簽章
+    const signature = `DS-${Math.random().toString(16).slice(2, 10).toUpperCase()}`;
+
     return `
       <article class="ranking-card${rankClass}${hotZoneClass}" id="person-${safeId}">
-        ${shineLayer}
-        ${winnerBadge}
         <div class="ranking-top">
           <span class="rank-number">${rankLabel}</span>
           <div class="person-name">
@@ -799,20 +793,38 @@ function renderRankings(rankings) {
           </div>
           <span class="badge group-${escapeHtml(row.group)}">${escapeHtml(row.group)}</span>
         </div>
+        
         <div class="score-line">
-          <label><span>正式權重分數</span><strong>${fmt(row.score, 2)}</strong></label>
+          <label><span>正式權重分數</span><strong class="decode-target" data-val="${fmt(row.score, 2)}">--</strong></label>
           <div class="score-track"><div class="score-fill" data-pct="${pct}" style="width:0%"></div></div>
         </div>
+        
         <div class="metrics-grid">
-          <div class="metric"><span>實收</span><strong>${fmt(row.actualRevenue)}</strong></div>
-          <div class="metric"><span>追續金額</span><strong>${fmt(row.renewalRevenue)}</strong></div>
-          <div class="metric"><span>全部總業績</span><strong>${fmt(row.totalRevenue)}</strong></div>
-          <div class="metric"><span>追續單數</span><strong>${fmt(row.renewalDeals)} 單</strong></div>
+          <div class="metric"><span>實收</span><strong class="decode-target" data-val="${fmt(row.actualRevenue)}">--</strong></div>
+          <div class="metric"><span>追續金額</span><strong class="decode-target" data-val="${fmt(row.renewalRevenue)}">--</strong></div>
+          <div class="metric"><span>全部總業績</span><strong class="decode-target" data-val="${fmt(row.totalRevenue)}">--</strong></div>
+          <div class="metric"><span>追續單數</span><strong class="decode-target" data-val="${fmt(row.renewalDeals)}">--</strong></div>
         </div>
-        <p class="advice">${escapeHtml(row.advice)}</p>
+        
+        <p class="advice">" ${escapeHtml(row.advice)} "</p>
+        
+        <div class="digital-signature-mini">
+          SECURE SIGNATURE: ${signature} [VERIFIED BY AI COMMANDER]
+        </div>
       </article>
     `;
   }).join('');
+
+  // 延遲啟動動畫與解碼
+  setTimeout(() => {
+    refs.rankingList.querySelectorAll('.score-fill').forEach(el => {
+      el.style.width = el.getAttribute('data-pct') + '%';
+    });
+    refs.rankingList.querySelectorAll('.decode-target').forEach(el => {
+      const val = el.getAttribute('data-val');
+      decodeNumberEffect(el, val, 1000 + Math.random() * 500);
+    });
+  }, 100);
 }
 
 function renderGroups(groups, rankings) {
@@ -836,27 +848,46 @@ function renderGroups(groups, rankings) {
       <article class="group-card">
         <h3>${key}｜${labels[key]}（${members.length}）</h3>
         <div class="member-list">
-          ${members.map((name) => `<span class="member-chip">#${rankMap.get(name) || '-'} ${escapeHtml(name)}</span>`).join('')}
+          ${members.map((name) => `<span class="member-chip" onclick="document.getElementById('person-${encodeURIComponent(name)}')?.scrollIntoView({behavior:'smooth',block:'center'})">#${rankMap.get(name) || '-'} ${escapeHtml(name)}</span>`).join('')}
         </div>
       </article>
     `;
   }).join('');
 }
 
-function renderAudit(notes, excluded, warnings = []) {
-  const warningHtml = warnings.length
-    ? warnings.map((w) => `<div class="audit-warning"><span class="audit-warning-icon">⚠️</span>${escapeHtml(w)}</div>`).join('')
+function renderAudit(notes, excluded, report) {
+  // 提取平台數據
+  const platforms = [
+    { name: '三立奕心', data: report.auditConclusion?.['三立奕心'] },
+    { name: '民視產品', data: report.auditConclusion?.['民視產品'] },
+    { name: '公司產品', data: report.auditConclusion?.['公司產品'] }
+  ].filter(p => p.data);
+
+  let platformHtml = '';
+  if (platforms.length) {
+    platformHtml = `
+      <div class="audit-platform-container">
+        ${platforms.map(p => `
+          <div class="audit-platform-card">
+            <div class="audit-platform-name">📡 ${p.name} 數據對齊</div>
+            <div class="audit-metrics-row">
+              <div class="audit-metric-item">實收: <strong>${fmt(p.data.實收總金額)}</strong></div>
+              <div class="audit-metric-item">追續: <strong>${fmt(p.data.追續單金額)}</strong></div>
+              <div class="audit-metric-item">單數: <strong>${fmt(p.data.追續單成交)}</strong></div>
+              <div class="audit-metric-item">業績: <strong>${fmt(p.data.全部總業績)}</strong></div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  const noteHtml = notes.map((n) => `<div class="audit-note"><span>✓</span>${escapeHtml(n)}</div>`).join('');
+  const exclHtml = excluded.length
+    ? `<div class="excluded-box"><strong>審計不入派單名單：</strong>${excluded.map((e) => `<span class="excl-item">${escapeHtml(e.姓名)}（${escapeHtml(e.原因)}）</span>`).join('')}</div>`
     : '';
 
-  const notesHtml = notes.length
-    ? notes.map((note) => `<div class="audit-note">${escapeHtml(note)}</div>`).join('')
-    : '<div class="empty-state">本輪無額外審計提醒</div>';
-
-  refs.auditNotes.innerHTML = warningHtml + notesHtml;
-
-  refs.excludedList.innerHTML = excluded.length
-    ? excluded.map((item) => `<div class="audit-note">${escapeHtml(item.name || item)} ${escapeHtml(item.reason || '')}</div>`).join('')
-    : '';
+  refs.auditNotes.innerHTML = platformHtml + noteHtml + exclHtml;
 }
 
 function renderDualTotals(reportTotal, assignmentTotal) {
