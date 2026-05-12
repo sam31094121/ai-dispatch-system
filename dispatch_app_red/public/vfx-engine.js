@@ -445,19 +445,43 @@ class MapleCoinRain {
     ctx.transform(1, 0, 0, Math.max(0.1, Math.abs(flip)), 0, 0);
 
     if (this.mapleCoinImg.complete) {
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = 'rgba(255, 215, 0, 0.5)';
+        // 核心金光擴散陰影
+        ctx.shadowBlur = 30;
+        ctx.shadowColor = 'rgba(255, 220, 0, 0.8)';
         ctx.drawImage(this.mapleCoinImg, -bw/2, -bh/2, bw, bh);
         
-        // 增強金屬反光
+        // 動態金屬高光帶
         ctx.globalCompositeOperation = 'overlay';
-        const shineY = (Math.sin(t * 0.01) * bh);
-        const grad = ctx.createLinearGradient(0, shineY - 15, 0, shineY + 15);
+        const shineY = (Math.sin(t * 0.01 + x) * bh);
+        const grad = ctx.createLinearGradient(0, shineY - 20, 0, shineY + 20);
         grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
-        grad.addColorStop(0.5, 'rgba(255, 255, 255, 0.7)');
+        grad.addColorStop(0.5, 'rgba(255, 240, 150, 0.9)');
         grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
         ctx.fillStyle = grad;
         ctx.fillRect(-bw/2, -bh/2, bw, bh);
+
+        // 頂級爆閃光芒 (Sparkle Light Effect)
+        if (Math.sin(t * 0.02 + x) > 0.85) {
+            ctx.globalCompositeOperation = 'screen';
+            ctx.beginPath();
+            const flareSize = bw * 1.5;
+            ctx.fillStyle = '#fff';
+            ctx.shadowBlur = 15; 
+            ctx.shadowColor = '#ffea00';
+            // 十字爆閃星光
+            ctx.fillRect(-1, -flareSize/2, 2, flareSize);
+            ctx.fillRect(-flareSize/2, -1, flareSize, 2);
+            
+            // 四周灑落金色星塵
+            for(let i=0; i<4; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const dist = (bw/2) * (1 + Math.random());
+                ctx.fillStyle = `hsla(50, 100%, 70%, 0.8)`;
+                ctx.beginPath();
+                ctx.arc(Math.cos(angle)*dist, Math.sin(angle)*dist, 1.5, 0, Math.PI*2);
+                ctx.fill();
+            }
+        }
     }
     ctx.restore();
   }
