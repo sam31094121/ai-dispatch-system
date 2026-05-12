@@ -794,3 +794,19 @@ a {
     width: 100%;
   }
 }
+
+.move-up { color: #18c6a7; }
+.move-down { color: #f25f5c; }
+.move-new { color: #ffe066; letter-spacing: 1px; }
+.move-flat { color: #8892b0; }
+
+.decode-target {
+  font-family: var(--font-mono);
+  transition: color 0.2s;
+}
+
+.matrix-decode-text {
+  color: var(--accent-cyan);
+  text-shadow: var(--neon-cyan);
+  letter-spacing: 1px;
+}
