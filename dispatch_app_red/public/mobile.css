@@ -409,7 +409,8 @@ h2 {
 
 .status-badge,
 .badge,
-.move-chip {
+.move-chip,
+.status-badge-mini {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -420,6 +421,28 @@ h2 {
   font-size: 12px;
   font-weight: 800;
   white-space: nowrap;
+}
+
+.status-badge-mini {
+  min-height: 18px;
+  font-size: 9px;
+  padding: 2px 8px;
+  letter-spacing: 1px;
+  background: rgba(24, 198, 167, 0.05);
+  border-color: rgba(24, 198, 167, 0.2);
+  transition: all 0.3s;
+}
+
+.system-vitals {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+#vital-pulse {
+  opacity: 0.8;
+  filter: drop-shadow(0 0 2px rgba(24, 198, 167, 0.4));
 }
 
 .status-badge.pass {

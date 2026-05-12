@@ -15,7 +15,7 @@
 (function () {
   'use strict';
 
-  const HEARTBEAT_INTERVAL_MS = 8000;  // 每 8 秒向後端回報
+  const HEARTBEAT_INTERVAL_MS = 5000;  // 每 5 秒向後端回報 (Professional 版提升同步率)
   const VERSION_CHECK_DELAY_MS = 3000; // 收到 force_sync 後等待 3 秒再驗證
   const MAX_CONSECUTIVE_MISMATCHES = 3; // 連續 N 次版本不一致則強制 reload
 

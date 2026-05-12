@@ -13,6 +13,7 @@ const refs = {
   statTotalRevenue: document.getElementById('stat-total-revenue'),
   statCashRevenue: document.getElementById('stat-cash-revenue'),
   a1HeroGrid: document.getElementById('a1-hero-grid'),
+  vitalPulse: document.getElementById('vital-pulse'),
   summaryGrid: document.getElementById('summary-grid'),
   rankingList: document.getElementById('ranking-list'),
   groupsGrid: document.getElementById('groups-grid'),
@@ -37,7 +38,8 @@ const refs = {
 const state = {
   report: null,
   sendText: '',
-  isFirstLoad: true
+  isFirstLoad: true,
+  isSyncing: false
 };
 
 const CACHE_KEY = 'zhaogui_last_report_unified';
@@ -91,7 +93,6 @@ function initAutoAesthetic() {
     });
 
     // 觸覺回饋...
-}
     document.querySelectorAll('button').forEach(btn => {
         btn.addEventListener('click', () => {
             if (navigator.vibrate) navigator.vibrate(15); // 微秒級脈衝震動
@@ -434,6 +435,7 @@ async function loadData() {
   }
 
   setLoading();
+  state.isSyncing = true;
   try {
     const [snapshot, lineOutput] = await Promise.all([
       requestJson(API_CURRENT),
@@ -444,6 +446,7 @@ async function loadData() {
     state.report = report;
     state.sendText = report.sendText;
     state.isFirstLoad = false;
+    state.isSyncing = false;
     
     // 儲存最新版本到快取
     localStorage.setItem(CACHE_KEY, JSON.stringify({ version: CACHE_VERSION, report }));
@@ -452,13 +455,15 @@ async function loadData() {
     window.ReportOfficialSync?.report(snapshot);
     if (window._dispatchSyncClient && snapshot.dataVersion) {
       window._dispatchSyncClient.setDataVersion(snapshot.dataVersion);
+      updateSyncBadge('PRO ACTIVE', 'var(--accent)');
     }
     hideSplashScreen();
     
     // 啟動心跳動畫
-    if (typeof initVitalPulse === 'function') initVitalPulse();
+    startVitalPulse();
     
   } catch (error) {
+    state.isSyncing = false;
     console.error('[System-Recovery] 正在自動修復連線...', error);
     // 即使報錯也不顯示錯誤畫面，維持快取內容並提示同步中
     if (refs.auditResult) {
@@ -864,8 +869,9 @@ function renderError(error) {
   console.warn('[System-Recovery] 背景同步中，忽略顯示錯誤。');
   
   if (refs.auditResult) {
-    refs.auditResult.textContent = 'SYNCING';
-    refs.auditResult.style.color = 'var(--oil-gold-bright)';
+    refs.auditResult.textContent = 'REPAIRING';
+    refs.auditResult.style.color = 'var(--accent-2)';
+    refs.auditResult.style.boxShadow = '0 0 10px rgba(243, 193, 75, 0.3)';
   }
 
   // 即使報錯也不清空畫面，確保原本的快取內容持續顯示
@@ -963,6 +969,14 @@ function showToast(message) {
   refs.toast.textContent = message;
   refs.toast.classList.add('is-visible');
   toastTimer = setTimeout(() => refs.toast.classList.remove('is-visible'), 1800);
+}
+
+function updateSyncBadge(text, color) {
+  if (refs.auditResult) {
+    refs.auditResult.textContent = text;
+    refs.auditResult.style.color = color;
+    refs.auditResult.style.boxShadow = `0 0 10px ${color}44`;
+  }
 }
 
 function debounce(fn, delay) {
@@ -1115,14 +1129,43 @@ function hideSplashScreen() {
 // ── 全線串連：SSE 即時推播 ──
 function initRealtimeSync() {
   const sync = new RealtimeSyncEngine('/api/updates/stream', (data) => {
-    showToast('🔄 偵測到新派單，即時同步中...');
+    updateSyncBadge('DATA PUSH', 'var(--accent-2)');
     loadData();
   });
   sync.connect();
 }
 
+function startVitalPulse() {
+  const canvas = refs.vitalPulse;
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let offset = 0;
+
+  function draw() {
+    if (document.visibilityState === 'visible') {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.beginPath();
+      ctx.setLineDash([2, 2]);
+      ctx.strokeStyle = state.isSyncing ? 'rgba(243, 193, 75, 0.5)' : 'rgba(24, 198, 167, 0.6)';
+      ctx.lineWidth = 1;
+      
+      for (let x = 0; x < canvas.width; x++) {
+        const y = 10 + Math.sin((x + offset) * 0.2) * 5;
+        if (x === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      offset += 1;
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
 bindEvents();
 initActiveNav();
 initHeroTilt();
+initRealtimeSync();
+startVitalPulse();
 loadData();
 initRealtimeSync();
