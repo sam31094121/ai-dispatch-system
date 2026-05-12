@@ -4,8 +4,8 @@ const crypto = require('crypto');
 const { isDateLocked, IMMUTABLE_REPORTS } = require('../src/constants/systemLocks');
 
 /**
- * 兆櫃 AI 派單系統 - 5月9號總決算保護企劃案 (Settlement Protection Plan)
- * 目標：串連優化，確保不產生異常業績，全部都不動，禁止修改 5/9 總決算。
+ * 兆櫃 AI 派單系統 - 5月11號總決算保護企劃案 (Settlement Protection Plan)
+ * 目標：串連優化，確保不產生異常業績，全部都不動，禁止修改 5/11 總決算。
  */
 
 const PROJECT_ROOT = path.resolve(__dirname, '..');
@@ -31,13 +31,13 @@ function protectFile(filePath) {
 
 async function executePlan() {
     log('======================================================');
-    log('   兆櫃 AI 派單系統｜5月9號總決算保護企劃正式啟動');
+    log('   兆櫃 AI 派單系統｜5月11號總決算保護企劃正式啟動');
     log('======================================================');
 
-    // 1. 偵測 5/9 資料夾
-    const targetDir = path.join(REPORT_DIR, 'dispatch_2026_05_09_v1');
+    // 1. 偵測 5/11 資料夾
+    const targetDir = path.join(REPORT_DIR, 'dispatch_2026_05_11_v1');
     if (fs.existsSync(targetDir)) {
-        log('偵測到 5月9號總決算目錄，開始執行硬鎖定程序...');
+        log('偵測到 5月11號總決算目錄，開始執行硬鎖定程序...');
         
         const files = fs.readdirSync(targetDir);
         files.forEach(file => {
@@ -45,20 +45,20 @@ async function executePlan() {
             protectFile(fullPath);
         });
 
-        log('5月9號所有業績數據已鎖定，確保「全部都不動」。', 'SUCCESS');
+        log('5月11號所有業績數據已鎖定，確保「全部都不動」。', 'SUCCESS');
     } else {
-        log('未偵測到 5月9號目錄，跳過物理鎖定。', 'WARN');
+        log('未偵測到 5月11號目錄，跳過物理鎖定。', 'WARN');
     }
 
     // 2. 建立防偽校驗 (Checksum)
-    // 確保未來任何操作若動到 5/9 的資料，系統會拒絕啟動
+    // 確保未來任何操作若動到 5/11 的資料，系統會拒絕啟動
     log('建立歷史業績基準點，防止異常業績產生...');
     
     // 3. 串連啟動
     log('優化程序已串連：智慧修復將自動跳過鎖定日期。');
     
     log('======================================================');
-    log('   企劃案執行完畢：5月9號總決算已進入「絕對禁止變動」狀態。');
+    log('   企劃案執行完畢：5月11號總決算已進入「絕對禁止變動」狀態。');
     log('======================================================');
 }
 
