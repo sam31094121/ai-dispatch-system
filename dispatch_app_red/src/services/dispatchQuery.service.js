@@ -15,6 +15,7 @@ const { validateDispatchReport } = require('./dispatchValidate.service');
 const { formatTaipeiTimestamp } = require('../utils/date.util');
 const sseService = require('./sse.service');
 const officialSync = require('./officialSync.service');
+const masterCommander = require('./masterCommander.service');
 
 // 延遲載入 syncGuard 以避免循環依賴
 let _syncGuard = null;
