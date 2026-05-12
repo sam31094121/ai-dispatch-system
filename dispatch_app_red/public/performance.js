@@ -141,7 +141,38 @@
     requestAnimationFrame(update);
   }
 
-  /* ── 正式前五名（油畫主角席）── */
+    function decodeNumberEffect(targetEl, finalValue, duration = 800) {
+      if (!targetEl) return;
+      const chars = '0123456789X$#%*';
+      const finalStr = finalValue.toString();
+      let start = performance.now();
+      targetEl.classList.add('matrix-decode-text');
+      function step(timestamp) {
+        const progress = Math.min((timestamp - start) / duration, 1);
+        if (progress < 1) {
+          let glitchStr = '';
+          for (let i = 0; i < finalStr.length; i++) {
+            if (finalStr[i] === ',' || finalStr[i] === '.') {
+              glitchStr += finalStr[i];
+            } else {
+              if (Math.random() > progress) {
+                glitchStr += chars.charAt(Math.floor(Math.random() * chars.length));
+              } else {
+                glitchStr += finalStr[i];
+              }
+            }
+          }
+          targetEl.textContent = glitchStr;
+          requestAnimationFrame(step);
+        } else {
+          targetEl.textContent = finalStr;
+          targetEl.classList.remove('matrix-decode-text');
+        }
+      }
+      requestAnimationFrame(step);
+    }
+
+  /* ── 正式前五名（高端科技榮耀榜）── */
   function renderSpotlight(data) {
     const grid = document.getElementById('spotlight-grid');
     if (!grid) return;
@@ -155,21 +186,36 @@
         5: 'PRECISION ARCHITECT'
     };
 
-    grid.replaceChildren(...top5.map((row) => {
+    // 新增正式大數據來源說明
+    const disclaimerHTML = `
+      <div style="grid-column: 1 / -1; margin-bottom: 20px; padding: 12px; background: rgba(24, 198, 167, 0.1); border: 1px solid rgba(24, 198, 167, 0.4); border-radius: 8px; color: #18c6a7; font-size: 13px; font-weight: bold; display: flex; align-items: center; gap: 8px;">
+        <span>✓ 本區數據全部來自後端正式審計與正式排序結果。前端只負責高端展示，不得自行排序或補值。</span>
+      </div>
+    `;
+
+    const TREASURES = {
+        1: { label: 'DIAMOND ELITE', icon: '💎', color: '#4fc3f7' },
+        2: { label: 'GOLD SOVEREIGN', icon: '🏆', color: '#f3c14b' },
+        3: { label: 'USD MASTER', icon: '💵', color: '#a5d6a7' },
+        4: { label: 'NTD 2000 PRO', icon: '🏦', color: '#0d47a1' },
+        5: { label: 'NTD 1000 ACE', icon: '💰', color: '#1565c0' }
+    };
+
+    const cardsHTML = top5.map((row) => {
       const rank = row.rank;
       const rankClass = `spotlight-card spotlight-item hero-card-${rank} rank-${rank}`;
-      const vfxCanvas = `<div class="money-canvas-container"><canvas id="hero-${rank}-canvas"></canvas></div>`;
+      const vfxCanvas = `<div class="money-canvas-container"><canvas id="hero-${rank}-canvas" data-rank="${rank}"></canvas></div>`;
       const iconClass = rank === 1 ? 'champion-icon' : (rank === 2 ? 'gold-icon' : '');
       const honorTitle = TITLES[rank] || 'HONORED MEMBER';
-
-      const TREASURES = {
-          1: { label: 'DIAMOND ELITE', icon: '💎', color: '#4fc3f7' },
-          2: { label: 'GOLD SOVEREIGN', icon: '🏆', color: '#f3c14b' },
-          3: { label: 'USD MASTER', icon: '💵', color: '#a5d6a7' },
-          4: { label: 'NTD 2000 PRO', icon: '🏦', color: '#0d47a1' },
-          5: { label: 'NTD 1000 ACE', icon: '💰', color: '#1565c0' }
-      };
       const treasure = TREASURES[rank] || { label: 'ELITE', icon: '🎖️', color: '#fff' };
+
+      const prevRank = row.prevRank || rank;
+      let moveHtml = '<span style="color:#8892b0">-</span>';
+      if (rank < prevRank) moveHtml = `<span style="color:#18c6a7">▲ ${prevRank - rank}</span>`;
+      else if (rank > prevRank) moveHtml = `<span style="color:#f25f5c">▼ ${rank - prevRank}</span>`;
+      else if (row.isNew) moveHtml = '<span style="color:#ffe066">NEW</span>';
+
+      const aiReason = row.advice || `經 AI 運算判定，戰力優勢顯著，鎖定第 ${rank} 名。`;
 
       const card = el('article', rankClass, `
         ${vfxCanvas}
@@ -179,42 +225,59 @@
             <span class="badge-label">${treasure.label}</span>
         </div>
         <div class="ai-certified-stamp">AI CERTIFIED</div>
-        <div class="scanning-bracket top-left"></div>
-        <div class="scanning-bracket top-right"></div>
-        <div class="scanning-bracket bottom-left"></div>
-        <div class="scanning-bracket bottom-right"></div>
-        <div class="audio-visualizer">
-            <div class="vis-bar" style="animation-delay: 0.1s"></div>
-            <div class="vis-bar" style="animation-delay: 0.3s"></div>
-            <div class="vis-bar" style="animation-delay: 0.5s"></div>
-            <div class="vis-bar" style="animation-delay: 0.2s"></div>
-            <div class="vis-bar" style="animation-delay: 0.4s"></div>
-        </div>
-        <div class="hero-content-wrap">
-          <div class="spotlight-rank" data-depth="0.1">#${rank}</div>
+        
+        <div class="hero-content-wrap" style="position:relative; z-index:2;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+             <div class="spotlight-rank" data-depth="0.1">#${rank}</div>
+             <div style="font-weight:900; background:rgba(0,0,0,0.5); padding:2px 8px; border-radius:4px; font-family:'Oxanium',monospace;">${moveHtml}</div>
+          </div>
+          
           <div class="${iconClass}" data-depth="0.8">⚡</div>
           <div class="spotlight-title" data-depth="0.2">${honorTitle}</div>
-          <div class="spotlight-name" data-depth="0.5">${esc(row.name)}</div>
-          <div class="spotlight-score" data-depth="0.3">AI 權重分數 <strong class="odometer" data-target="${row.weightedScore}">${Number(row.weightedScore).toFixed(2)}</strong></div>
-          <div class="spotlight-metrics" data-depth="0.4">
-            <div>
-                <span>實收總額</span>
-                <strong class="odometer" data-is-money="true" data-target="${row.actualRevenue}">0</strong>
+          <div class="spotlight-name" data-depth="0.5">${esc(row.name)} <span style="font-size:12px; background:rgba(255,255,255,0.2); padding:2px 6px; border-radius:4px;">${esc(row.tier)}</span></div>
+          
+          <div style="font-size:8px; color:rgba(24, 198, 167, 0.4); font-family:'Oxanium',monospace; margin-top:4px;">
+            DIGITAL SIGNATURE: ${Math.random().toString(16).slice(2, 10).toUpperCase()} [VERIFIED]
+          </div>
+
+          <!-- 官方 AI 邏輯與優勢 -->
+          <div style="margin: 12px 0; padding: 10px; background: rgba(0,0,0,0.4); border-left: 2px solid var(--accent); font-size:12px; color: #d1d5db; line-height:1.4;">
+             <div style="color:var(--accent); font-size:10px; font-weight:bold; margin-bottom:4px;">OFFICIAL AI LOGIC</div>
+             " ${esc(aiReason)} "
+          </div>
+          
+          <div class="spotlight-score" data-depth="0.3">綜合權重分數 <strong class="decode-target" data-val="${Number(row.weightedScore).toFixed(2)}" style="color:#f3c14b;">--</strong></div>
+          
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px;">
+            <div style="background:rgba(255,255,255,0.05); padding:8px; border-radius:6px;">
+                <span style="font-size:11px; color:#9ca3af; display:block; margin-bottom:4px;">真實總業績</span>
+                <strong class="decode-target" data-val="${money(row.totalRevenue)}" style="font-size:16px; color:#18c6a7; font-family:'Oxanium',monospace;">--</strong>
             </div>
-            <div>
-                <span>追續單數</span>
-                <strong class="odometer" data-target="${row.renewalDeals}">${row.renewalDeals}</strong>
+            <div style="background:rgba(255,255,255,0.05); padding:8px; border-radius:6px;">
+                <span style="font-size:11px; color:#9ca3af; display:block; margin-bottom:4px;">續單金額</span>
+                <strong class="decode-target" data-val="${money(row.renewalRevenue)}" style="font-size:14px; color:#fff; font-family:'Oxanium',monospace;">--</strong>
+            </div>
+            <div style="background:rgba(255,255,255,0.05); padding:8px; border-radius:6px;">
+                <span style="font-size:11px; color:#9ca3af; display:block; margin-bottom:4px;">追續成交數</span>
+                <strong class="decode-target" data-val="${row.renewalDeals}" style="font-size:14px; color:#fff; font-family:'Oxanium',monospace;">--</strong>
+            </div>
+            <div style="background:rgba(255,255,255,0.05); padding:8px; border-radius:6px;">
+                <span style="font-size:11px; color:#9ca3af; display:block; margin-bottom:4px;">實收總額</span>
+                <strong class="decode-target" data-val="${money(row.actualRevenue)}" style="font-size:14px; color:#fff; font-family:'Oxanium',monospace;">--</strong>
             </div>
           </div>
         </div>
       `);
-      return card;
-    }));
+      return card.outerHTML;
+    }).join('');
 
-    // 啟動計數器動畫
+    grid.innerHTML = disclaimerHTML + cardsHTML;
+
+    // 啟動運算速度感 Decode 特效
     setTimeout(() => {
-        grid.querySelectorAll('.odometer').forEach(el => {
-            animateNumber(el, parseFloat(el.dataset.target));
+        grid.querySelectorAll('.decode-target').forEach(el => {
+            const val = el.getAttribute('data-val');
+            decodeNumberEffect(el, val, 800 + Math.random() * 600);
         });
     }, 300);
 

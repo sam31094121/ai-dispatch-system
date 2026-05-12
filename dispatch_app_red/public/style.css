@@ -4621,3 +4621,6 @@ body.oil-announcement {
     opacity: 0.28 !important;
   }
 }
+
+.decode-target { font-family: 'Oxanium', monospace; transition: color 0.2s; }
+.matrix-decode-text { color: #18c6a7 !important; text-shadow: 0 0 10px rgba(24, 198, 167, 0.8) !important; letter-spacing: 1px; }
