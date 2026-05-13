@@ -820,8 +820,15 @@ function renderRankings(rankings) {
       `;
     }
 
+    const winnerBadge = row.rank === 1
+      ? '<div class="winner-badge rank-badge-1">🥇 冠軍</div>'
+      : row.rank === 2 ? '<div class="winner-badge rank-badge-2">🥈 亞軍</div>'
+      : row.rank === 3 ? '<div class="winner-badge rank-badge-3">🥉 季軍</div>'
+      : '';
+
     return `
       <article class="ranking-card${rankClass}${hotZoneClass}" id="person-${safeId}">
+        ${winnerBadge}
         <div class="ranking-top">
           <span class="rank-number">${rankLabel}</span>
           <div class="person-name">
@@ -865,12 +872,6 @@ function renderRankings(rankings) {
             <span class="s-weight">權重 15%</span>
             <strong class="s-val decode-target" data-val="${fmt(row.renewalDeals)} 單">--</strong>
           </div>
-          <div class="settlement-row settlement-total">
-            <span class="s-num">🏁</span>
-            <span class="s-label">AI 權重總分</span>
-            <span class="s-weight">滿分 10,000</span>
-            <strong class="s-val decode-target" data-val="${fmt(row.score, 2)} 分">--</strong>
-          </div>
         </div>
         
         ${comparisonHtml}
@@ -892,6 +893,31 @@ function renderRankings(rankings) {
     refs.rankingList.querySelectorAll('.decode-target').forEach(el => {
       const val = el.getAttribute('data-val');
       decodeNumberEffect(el, val, 1000 + Math.random() * 500);
+    });
+
+    // 3D 觸控傾斜效果（ranking 卡片）
+    refs.rankingList.querySelectorAll('.ranking-card').forEach(card => {
+      card.addEventListener('touchmove', e => {
+        const touch = e.touches[0];
+        const rect = card.getBoundingClientRect();
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+        const rotX = ((y / rect.height) - 0.5) * -6;
+        const rotY = ((x / rect.width) - 0.5) * 6;
+        card.style.transform = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.01,1.01,1.01)`;
+      }, { passive: true });
+      card.addEventListener('touchend', () => {
+        card.style.transform = '';
+      }, { passive: true });
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const rotX = ((e.clientY - rect.top) / rect.height - 0.5) * -8;
+        const rotY = ((e.clientX - rect.left) / rect.width - 0.5) * 8;
+        card.style.transform = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.01,1.01,1.01)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+      });
     });
   }, 100);
 }
