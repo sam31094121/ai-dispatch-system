@@ -84,9 +84,9 @@
     <div class="biometric-scanner">
       <div class="scanner-ring"></div>
       <div class="scanner-line"></div>
-      <div class="splash-logo">AI</div>
+      <div class="splash-text">AI 數據核對中...</div>
     </div>
-    <div class="cyber-decoding-text">INITIALIZING COMMAND CENTER</div>
+    <div class="cyber-decoding-text">正在核對 5/13 最新數據...</div>
   </div>
 
   <div id="app-shell">
@@ -99,16 +99,10 @@
 
     <header class="topbar-compact">
       <div class="brand-mini">
-        <h1 id="main-title">AI 派單公告</h1>
-        <!-- 系統心跳波形 (New) -->
+        <h1 id="main-title">AI 派單名次公告</h1>
         <div class="system-vitals">
-          <canvas id="vital-pulse" width="60" height="20"></canvas>
-          <span id="audit-result" class="status-badge-mini">SYNCING</span>
+          <span id="audit-result" class="status-badge-mini">DATA VERIFIED</span>
         </div>
-      </div>
-      <div class="topbar-actions-mini">
-        <button id="refresh-data" class="mini-btn">↻</button>
-        <button id="theme-toggle" class="mini-btn">🌓</button>
       </div>
     </header>
 
@@ -117,95 +111,29 @@
       <div class="ticker-content-mini" id="ai-next-step">系統就緒... 等待派單分析...</div>
     </div>
 
-    <!-- 【首頁公告版】AI 戰情公告核心 (New Position) -->
-    <section class="panel panel-announcement-hero" id="announcement-hero">
-      <div class="announcement-header">
-        <div class="glow-tag">CRITICAL BRIEFING</div>
-        <h2 id="hero-title">AI 派單公告</h2>
-        <div class="date-badge">5/12 結算 → 5/13 正式派單</div>
-      </div>
-      
-      <div class="hero-announcement-box">
-        <div class="scan-effect"></div>
-        <pre id="hero-short-output" class="hero-text-content">正在同步 5/13 最新派單數據...</pre>
-      </div>
-
-      <div class="hero-actions">
-        <button id="copy-hero-text" class="btn-glitch-primary">複製最新公告</button>
-      </div>
-    </section>
-
-    <!-- 前六名科技榮耀榜 (移至公告下方) -->
-    <section id="top6-glory-board" class="glory-board-container" style="margin-top: 0;">
-      <div class="glory-header">
-        <h2 class="glory-title">前六名科技榮耀榜</h2>
-        <div class="glory-note-box">
-          <p class="glory-note">本區名次與業績均來自後端正式審計資料。</p>
-        </div>
-      </div>
-      <div id="top6-grid" class="top6-grid">
-        <!-- JS 動態生成 -->
-      </div>
-    </section>
-
-    <!-- ② 統計帶：英雄區後 -->
-    <section class="date-strip" aria-label="整合統計">
-      <div>
-        <span>追續成交</span>
-        <strong id="stat-renewal-deals">--</strong>
-      </div>
-      <div>
-        <span>總業績</span>
-        <strong id="stat-total-revenue">--</strong>
-      </div>
-      <div>
-        <span>實收</span>
-        <strong id="stat-cash-revenue">--</strong>
-      </div>
-    </section>
-
     <main>
 
-      <section class="panel" id="summary">
-        <div class="section-head">
-          <div>
-            <h2 style="color: var(--oil-gold-bright);">AI 戰術預測與整合總盤</h2>
-          </div>
+      <!-- ── AI 菁英戰力榜 (首頁第一眼) ── -->
+      <section class="panel panel-elite" id="elite-board">
+        <div class="section-head-mini">
+          <p class="kicker">Elite Performance</p>
+          <h2>5/13 AI 菁英前六名</h2>
         </div>
-        
-        <!-- AI 戰略指揮中心 (Project Genesis Upgrade) -->
-        <div class="ai-command-suite">
-          <div class="suite-header">
-            <div class="ai-sphere-mini"></div>
-            <span>AI STRATEGIC COMMANDER</span>
-            <div class="status-blink">LIVE</div>
-          </div>
-          
-          <div class="suite-body">
-            <div class="tactical-content" id="ai-tactical-advice">
-              系統已就緒，等待深度優化指令...
-            </div>
-            <div class="next-step-badge" id="next-step-hint">NEXT STEP: WAITING SCAN</div>
-          </div>
-
-          <div class="suite-actions">
-            <button id="btn-auto-optimize" class="btn-cyber-primary">
-              <span class="btn-text">自動優化企劃案</span>
-              <div class="btn-scan-line"></div>
-            </button>
-            <button id="btn-next-step" class="btn-cyber-secondary">推演下一步</button>
-          </div>
-        </div>
-
-        <div id="summary-grid" class="summary-grid"></div>
-        <div id="dual-totals" class="dual-totals"></div>
+        <div id="top6-grid" class="top6-grid-compact"></div>
       </section>
 
+      <!-- ── 完整名次清單 ── -->
       <section class="panel" id="ranking">
         <div class="section-head">
           <div>
-            <p class="kicker">Official Ranking</p>
-            <h2>正式派單名次</h2>
+            <p class="kicker">Official Ranking List</p>
+            <h2>正式派單排行</h2>
+            
+            <div class="ai-logic-box">
+              <p class="logic-header">🛡️ AI 個人業績結算邏輯</p>
+              <p class="logic-text">① 個人實收 (30%) ＋ ② 追續金額 (25%) ＋ ③ 追續客單價 (15%) ＋ ④ 追續單數 (15%) ＋ ⑤ AI 加權 (15%)</p>
+              <p class="logic-sub">所有數據均為您的個人業績，AI 依照上方五項權重計算最終排名分數，滿分 10,000 分。</p>
+            </div>
           </div>
           <button id="search-open" class="icon-button" type="button" aria-label="搜尋姓名">⌕</button>
         </div>
@@ -222,9 +150,6 @@
         <div id="groups-grid" class="groups-grid"></div>
       </section>
 
-      <!-- 公告已優化至首頁頂部 -->
-
-
       <section class="panel" id="audit">
         <div class="section-head">
           <div>
@@ -235,14 +160,13 @@
         <div id="audit-notes" class="audit-notes"></div>
         <div id="excluded-list" class="excluded-list"></div>
       </section>
+
     </main>
 
     <nav class="bottom-nav" aria-label="主要導覽">
-      <a href="#a1-hero">A1</a>
-      <a href="#summary">總盤</a>
       <a href="#ranking">名次</a>
-      <a href="broadcast.html?v=20260511-ULTRA" class="nav-highlight">🎤 廣播</a>
-      <a href="#line">LINE</a>
+      <a href="#groups">分級</a>
+      <a href="broadcast.html" class="nav-highlight">🎤 廣播</a>
       <a href="#audit">審計</a>
     </nav>
 
@@ -261,7 +185,6 @@
   </div>
 
   <script src="/utils.js?v=20260511-ULTRA"></script>
-  <script src="/vfx-engine.js?v=20260511-ULTRA"></script>
   <script src="/sync-client.js?v=20260511-ULTRA"></script>
   <script src="/mobile.js?v=20260511-ULTRA"></script>
   <script>

@@ -2320,7 +2320,7 @@ mark {
   letter-spacing: 1px;
 }
 
-/* �w�w Tactical HUD Ranking Upgrade �w�w */
+/* �w�w Tactical HUD Ranking Upgrade �w�w */
 .ranking-card { position: relative; overflow: hidden; border-left: 3px solid var(--border); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 .ranking-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, rgba(24,198,167,0.02) 0%, transparent 100%); pointer-events: none; }
 .ranking-card.rank-1 { border-left-color: #f3c14b; background: linear-gradient(135deg, rgba(243,193,75,0.05) 0%, var(--surface) 100%); }
@@ -2330,7 +2330,7 @@ mark {
 .digital-signature-mini { font-family: 'Oxanium', monospace; font-size: 8px; color: rgba(24, 198, 167, 0.3); letter-spacing: 1px; margin-top: 8px; border-top: 1px dashed rgba(24, 198, 167, 0.1); padding-top: 4px; }
 .ranking-card:active { transform: scale(0.98); background: var(--surface-2); }
 
-/* �w�w Audit Platform Upgrade �w�w */
+/* �w�w Audit Platform Upgrade �w�w */
 .audit-platform-container { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 15px; }
 .audit-platform-card { background: rgba(24, 198, 167, 0.05); border: 1px solid rgba(24, 198, 167, 0.15); border-radius: 8px; padding: 12px; position: relative; overflow: hidden; }
 .audit-platform-card::after { content: 'VERIFIED'; position: absolute; top: 5px; right: 5px; font-size: 8px; font-weight: 900; color: rgba(24, 198, 167, 0.2); transform: rotate(15deg); border: 1px solid rgba(24, 198, 167, 0.2); padding: 1px 4px; border-radius: 2px; }
@@ -2342,12 +2342,324 @@ mark {
 .matrix-decode-text { color: var(--accent) !important; text-shadow: 0 0 8px var(--accent); }
 
 
-/* �w�w Group Card Premium Upgrade �w�w */
+/* �w�w Group Card Premium Upgrade �w�w */
 .group-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px; position: relative; box-shadow: var(--depth-1); }
 .group-card h3 { font-size: 14px; font-weight: 900; color: var(--accent); margin-bottom: 12px; border-bottom: 1px solid rgba(24, 198, 167, 0.2); padding-bottom: 8px; font-family: 'Oxanium', sans-serif; letter-spacing: 1px; }
 .member-list { display: flex; flex-wrap: wrap; gap: 8px; }
 .member-chip { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; padding: 6px 10px; font-size: 12px; color: var(--text); font-weight: 500; transition: all 0.2s; }
 .member-chip:active { background: var(--accent); color: #000; border-color: var(--accent); }
 
-$css
-$cssUpdate
+/* ── 前六名科技榮耀榜 ── */
+.panel-glory {
+  background: linear-gradient(160deg, #0e1a10 0%, #091309 60%, #060d08 100%);
+  border-color: rgba(24, 198, 167, 0.35);
+  border-top-color: rgba(24, 198, 167, 0.55);
+  box-shadow: 0 0 0 1px rgba(24,198,167,0.12),
+              0 8px 32px rgba(0,0,0,0.6),
+              inset 0 1px 0 rgba(24,198,167,0.08);
+}
+
+.glory-disclaimer {
+  margin: 6px 0 0;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.5;
+  border-left: 2px solid var(--accent);
+  padding-left: 8px;
+}
+
+.section-note {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.top6-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 榮耀卡片基底 */
+.glory-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 14px;
+  animation: cardEnter3D 0.45s cubic-bezier(0.22,1,0.36,1) both;
+}
+
+.glory-card.rank-1 {
+  background: linear-gradient(160deg, #1f1600 0%, #2c1e00 45%, #1a1200 100%);
+  border-color: rgba(220,170,0,0.6);
+  border-top-color: rgba(255,220,60,0.5);
+  box-shadow: 0 0 0 1px rgba(220,170,0,0.18),
+              0 4px 24px rgba(255,180,0,0.2),
+              0 8px 40px rgba(0,0,0,0.65);
+}
+.glory-card.rank-2 {
+  background: linear-gradient(160deg, #141925 0%, #1c2232 45%, #0e1420 100%);
+  border-color: rgba(170,190,230,0.5);
+  box-shadow: 0 0 0 1px rgba(170,190,230,0.15),
+              0 4px 20px rgba(120,150,200,0.15),
+              0 8px 40px rgba(0,0,0,0.6);
+}
+.glory-card.rank-3 {
+  background: linear-gradient(160deg, #1a1008 0%, #221608 45%, #160d05 100%);
+  border-color: rgba(190,110,40,0.5);
+  box-shadow: 0 0 0 1px rgba(190,110,40,0.15),
+              0 4px 20px rgba(160,90,20,0.15),
+              0 8px 40px rgba(0,0,0,0.6);
+}
+.glory-card.rank-4,
+.glory-card.rank-5,
+.glory-card.rank-6 {
+  background: linear-gradient(160deg, #111d2b 0%, #0e1720 100%);
+  border-color: rgba(43,58,78,0.9);
+}
+
+/* 榮耀榜頂部列 */
+.glory-layer-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.glory-rank-label {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.06);
+  color: var(--muted);
+  font-family: 'Oxanium', monospace;
+}
+.glory-card.rank-1 .glory-rank-label { background: rgba(255,200,0,0.18); color: #ffd700; }
+.glory-card.rank-2 .glory-rank-label { background: rgba(192,210,240,0.15); color: #c0d0e8; }
+.glory-card.rank-3 .glory-rank-label { background: rgba(200,110,40,0.18); color: #cd8b4a; }
+
+.glory-title-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.glory-badge-label {
+  margin-left: auto;
+  font-size: 20px;
+}
+
+/* 中層 */
+.glory-layer-mid { margin-bottom: 10px; }
+
+.glory-name-label {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 900;
+}
+.glory-card.rank-1 .glory-name-label {
+  background: linear-gradient(90deg, #ffe590, #ffc930, #ffe590);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.glory-card.rank-2 .glory-name-label { color: #c8d8f0; }
+.glory-card.rank-3 .glory-name-label { color: #e8b070; }
+
+.glory-score-box {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.glory-score-label { font-size: 11px; color: var(--muted); }
+.glory-score-value {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--accent-2);
+  font-family: 'Oxanium', monospace;
+}
+
+.glory-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.glory-metric-extra {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* 下層 */
+.glory-layer-bot {
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.glory-reason {
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.6;
+  margin-bottom: 6px;
+}
+.glory-source {
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.glory-summary {
+  font-size: 11px;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* 榮耀榜不顯示公司總數字 */
+.glory-company-total { display: none !important; }
+
+/* ── 個人業績結算明細區塊 ── */
+.settlement-block {
+  margin: 14px 0 10px;
+  background: rgba(24, 198, 167, 0.05);
+  border: 1px solid rgba(24, 198, 167, 0.18);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.settlement-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid rgba(24, 198, 167, 0.15);
+}
+
+.settlement-row {
+  display: grid;
+  grid-template-columns: 18px 1fr auto auto;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.settlement-row:last-child {
+  border-bottom: none;
+}
+
+.s-num {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.s-label {
+  font-size: 13px;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.s-weight {
+  font-size: 10px;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.s-val {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent-2);
+  font-family: 'Oxanium', monospace;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* 最後一行 AI 總分 */
+.settlement-total {
+  margin-top: 4px;
+  padding-top: 10px !important;
+  border-top: 1px solid rgba(24, 198, 167, 0.2) !important;
+  border-bottom: none !important;
+}
+
+.settlement-total .s-label {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.settlement-total .s-val {
+  color: #fff;
+  font-size: 14px;
+}
+
+/* 排名勝負比較標籤 */
+.rank-comparison-tag {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 10px 0 6px;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 8px 8px 0;
+  font-size: 12px;
+}
+
+.compare-up {
+  color: var(--good);
+}
+
+.compare-down {
+  color: var(--accent-2);
+}
+
+/* ai-logic-box 優化 */
+.ai-logic-box {
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: rgba(24, 198, 167, 0.06);
+  border: 1px solid rgba(24, 198, 167, 0.2);
+  border-radius: 8px;
+}
+
+.logic-header {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 5px;
+  letter-spacing: 0.5px;
+}
+
+.logic-text {
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.6;
+  margin: 0 0 4px;
+}
+
+.logic-sub {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* reduced-motion: 結算動畫停用 */
+@media (prefers-reduced-motion: reduce) {
+  .settlement-block,
+  .settlement-row,
+  .s-val { animation: none !important; transition: none !important; }
+}
+$cssHide

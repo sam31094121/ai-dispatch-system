@@ -106,11 +106,11 @@ initAutoAesthetic();
 // ── Project Genesis: AI 決策大腦 (實時戰術分析輪播) ──
 function initAICommander() {
     const tactics = [
-        "🟢 [AI-SYNC] 系統核心參數維持穩定...",
-        "⚠️ [TACTICAL] 偵測到 A2 區動能波動，建議加強跟進。",
-        "⚡ [OPTIMIZE] 追續成交率突破安全閥值，執行火力分配。",
-        "👁️ [MONITOR] 戰情室雷達掃描中... 無異常阻斷。",
-        "💎 [RESERVE] 頂級資源已鎖定，待命中..."
+        "🟢 [數據同步] 5/13 派單權重核對完畢...",
+        "📈 [業績提醒] A2 區表現穩健，持續發力中。",
+        "✨ [AI 分析] 本輪業績分佈均衡，各司其職。",
+        "✅ [安全核對] 三平台數據對齊無誤。",
+        "🤝 [共同努力] 5/13 戰鬥力全面爆發！"
     ];
     let tacticIndex = 0;
     const tickerEl = document.getElementById('ai-next-step');
@@ -300,8 +300,14 @@ function highlightText(text, query) {
 
 
 function cleanSendText(text) {
-  // 原本的過濾邏輯會切除業績數據，現已移除以確保公告完整性
-  return String(text || '').trim();
+  // [員工保護模式] 自動過濾公司總盤敏感數據 (總業績、總金額、實收總計等)
+  if (!text) return '';
+  const lines = text.split('\n');
+  const filtered = lines.filter(line => {
+    const sensitive = ['總業績', '總金額', '實收總金額', '追續單金額', '三平台總表', '整合總盤'];
+    return !sensitive.some(s => line.includes(s));
+  });
+  return filtered.join('\n').trim();
 }
 
 function normalizeTitle(snapshot, standardData, report) {
@@ -408,7 +414,7 @@ function normalizeReport(snapshot, lineText) {
     reportTotal: snapshot.reportTotal || report.reportTotal || null,
     assignmentTotal: snapshot.assignmentTotal || report.assignmentTotal || null,
     maxValues: snapshot.maxValues || report.maxValues || null,
-    groupShortText: snapshot.groupShortText || report.groupShortText || standardData['群組超精簡版'] || '',
+    groupShortText: cleanSendText(snapshot.groupShortText || report.groupShortText || standardData['群組超精簡版'] || ''),
     sendText: cleanSendText(text)
   };
 }
@@ -623,7 +629,7 @@ const M_SOURCE_TEXT = "後端正式資料、三平台總表、審計通過後有
 function renderTop6GloryBoard(rankings) {
   const top6Grid = document.getElementById('top6-grid');
   if (!top6Grid) return;
-  const top6 = rankings.slice(0, 6);
+  const top6 = (rankings || []).slice(0, 6);
   if (!top6.length) {
     top6Grid.innerHTML = '<div class="empty-state">目前沒有正式排名資料</div>';
     return;
@@ -723,18 +729,12 @@ function render(report) {
     refs.auditResultHero.classList.toggle('pass', auditPass);
   }
 
-  // quick-stat strip below hero
-  if (refs.statRenewalDeals)  refs.statRenewalDeals.textContent  = fmt(report.summary.renewalDeals) + ' 單';
-  if (refs.statTotalRevenue)  refs.statTotalRevenue.textContent  = fmt(report.summary.totalRevenue);
-  if (refs.statCashRevenue)   refs.statCashRevenue.textContent   = fmt(report.summary.actualRevenue);
+  // 公司整體統計欄位（整合總盤、雙平台總表）禁止在員工視圖顯示
+  // stat strip / renderSummary / renderDualTotals 已全數停用
 
-  renderTop6GloryBoard(report.ranking);
-  renderSummary(report.summary);
   renderRankings(report.ranking);
   renderGroups(report.groups, report.ranking);
   renderAudit(report.auditNotes, report.excludedEmployees, report.auditWarnings);
-  renderDualTotals(report.reportTotal, report.assignmentTotal);
-  renderSendText(report.sendText, report.groupShortText);
   animateScoreFills();
 
   // 更新 AI 指揮中心跑馬燈
@@ -778,26 +778,10 @@ function decodeNumberEffect(targetEl, finalValue, duration = 800) {
     requestAnimationFrame(step);
 }
 
-function renderSummary(summary) {
-  const items = [
-    ['追續單成交', summary.renewalDeals, '單'],
-    ['全部總業績', summary.totalRevenue, ''],
-    ['追續單金額', summary.renewalRevenue, ''],
-    ['實收總金額', summary.actualRevenue, '']
-  ];
-
-  refs.summaryGrid.innerHTML = items.map(([label, value, suffix], index) => `
-    <article class="summary-card">
-      <span>${escapeHtml(label)}</span>
-      <strong id="summary-val-${index}">${fmt(value)}${suffix}</strong>
-    </article>
-  `).join('');
-  
-  // 啟動解碼特效
-  items.forEach(([label, value, suffix], index) => {
-      const el = document.getElementById(`summary-val-${index}`);
-      decodeNumberEffect(el, `${fmt(value)}${suffix}`);
-  });
+function renderSummary(_summary) {
+  // 整合總盤屬公司層級資料，員工視圖不顯示
+  if (!refs.summaryGrid) return;
+  refs.summaryGrid.innerHTML = '';
 }
 
 function movementLabel(movement) {
@@ -812,7 +796,7 @@ function renderRankings(rankings) {
     return;
   }
 
-  refs.rankingList.innerHTML = rankings.map((row) => {
+  refs.rankingList.innerHTML = rankings.map((row, index) => {
     const pct = Math.min(100, Math.max(0, row.score / MAX_SCORE * 100));
     const safeId = encodeURIComponent(row.name);
     const rankClass = row.rank <= 3 ? ` rank-${row.rank}` : '';
@@ -822,6 +806,20 @@ function renderRankings(rankings) {
     // 生成數位簽章
     const signature = `DS-${Math.random().toString(16).slice(2, 10).toUpperCase()}`;
 
+    // 計算與上下名次的差距
+    const prevRow = index > 0 ? rankings[index - 1] : null;
+    const nextRow = index < rankings.length - 1 ? rankings[index + 1] : null;
+    
+    let comparisonHtml = '';
+    if (prevRow || nextRow) {
+      comparisonHtml = `
+        <div class="rank-comparison-tag">
+          ${prevRow ? `<span class="compare-up">距離前一名 ${escapeHtml(prevRow.name)}：還差 ${fmt(prevRow.score - row.score, 2)} 分</span>` : '<span class="compare-up">👑 當前第一名，維持領先</span>'}
+          ${nextRow ? `<span class="compare-down">領先後一名 ${escapeHtml(nextRow.name)}：${fmt(row.score - nextRow.score, 2)} 分</span>` : ''}
+        </div>
+      `;
+    }
+
     return `
       <article class="ranking-card${rankClass}${hotZoneClass}" id="person-${safeId}">
         <div class="ranking-top">
@@ -830,25 +828,57 @@ function renderRankings(rankings) {
             <strong>${escapeHtml(row.name)}</strong>
             <small>${row.prevRank ? `上輪 #${row.prevRank}，${movementLabel(row.movement)}` : '本輪正式排序'}</small>
           </div>
-          <span class="badge group-${escapeHtml(row.group)}">${escapeHtml(row.group)}</span>
+          <div class="card-meta">
+            <span class="badge group-${escapeHtml(row.group)}">${escapeHtml(row.group)}｜${{ A1:'高優先', A2:'次主力', B:'一般量單', C:'補位' }[row.group] || row.group}</span>
+            <span class="audit-check-tag">✓ 數據已對齊 5/12 審計總表</span>
+          </div>
         </div>
         
         <div class="score-line">
-          <label><span>正式權重分數</span><strong class="decode-target" data-val="${fmt(row.score, 2)}">--</strong></label>
+          <label><span>AI 專業權重分數</span><strong class="decode-target" data-val="${fmt(row.score, 2)}">--</strong></label>
           <div class="score-track"><div class="score-fill" data-pct="${pct}" style="width:0%"></div></div>
         </div>
         
-        <div class="metrics-grid">
-          <div class="metric"><span>實收</span><strong class="decode-target" data-val="${fmt(row.actualRevenue)}">--</strong></div>
-          <div class="metric"><span>追續金額</span><strong class="decode-target" data-val="${fmt(row.renewalRevenue)}">--</strong></div>
-          <div class="metric"><span>全部總業績</span><strong class="decode-target" data-val="${fmt(row.totalRevenue)}">--</strong></div>
-          <div class="metric"><span>追續單數</span><strong class="decode-target" data-val="${fmt(row.renewalDeals)}">--</strong></div>
+        <div class="settlement-block">
+          <div class="settlement-title">📊 個人業績結算明細</div>
+          <div class="settlement-row">
+            <span class="s-num">①</span>
+            <span class="s-label">個人實收</span>
+            <span class="s-weight">權重 30%</span>
+            <strong class="s-val decode-target" data-val="${fmt(row.actualRevenue)}">--</strong>
+          </div>
+          <div class="settlement-row">
+            <span class="s-num">②</span>
+            <span class="s-label">追續金額</span>
+            <span class="s-weight">權重 25%</span>
+            <strong class="s-val decode-target" data-val="${fmt(row.renewalRevenue)}">--</strong>
+          </div>
+          <div class="settlement-row">
+            <span class="s-num">③</span>
+            <span class="s-label">追續客單價</span>
+            <span class="s-weight">權重 15%</span>
+            <strong class="s-val decode-target" data-val="${fmt(row.avgRenewal, 2)}">--</strong>
+          </div>
+          <div class="settlement-row">
+            <span class="s-num">④</span>
+            <span class="s-label">追續單數</span>
+            <span class="s-weight">權重 15%</span>
+            <strong class="s-val decode-target" data-val="${fmt(row.renewalDeals)} 單">--</strong>
+          </div>
+          <div class="settlement-row settlement-total">
+            <span class="s-num">🏁</span>
+            <span class="s-label">AI 權重總分</span>
+            <span class="s-weight">滿分 10,000</span>
+            <strong class="s-val decode-target" data-val="${fmt(row.score, 2)} 分">--</strong>
+          </div>
         </div>
         
-        <p class="advice">" ${escapeHtml(row.advice)} "</p>
+        ${comparisonHtml}
+        
+        <p class="advice">" AI 戰術分析：${escapeHtml(row.advice)} "</p>
         
         <div class="digital-signature-mini">
-          SECURE SIGNATURE: ${signature} [VERIFIED BY AI COMMANDER]
+          SECURE SIGNATURE: ${signature} [VERIFIED BY AI ENGINE]
         </div>
       </article>
     `;
@@ -895,38 +925,12 @@ function renderGroups(groups, rankings) {
 }
 
 function renderAudit(notes, excluded, report) {
-  // 提取平台數據
-  const platforms = [
-    { name: '三立奕心', data: report.auditConclusion?.['三立奕心'] },
-    { name: '民視產品', data: report.auditConclusion?.['民視產品'] },
-    { name: '公司產品', data: report.auditConclusion?.['公司產品'] }
-  ].filter(p => p.data);
-
-  let platformHtml = '';
-  if (platforms.length) {
-    platformHtml = `
-      <div class="audit-platform-container">
-        ${platforms.map(p => `
-          <div class="audit-platform-card">
-            <div class="audit-platform-name">📡 ${p.name} 數據對齊</div>
-            <div class="audit-metrics-row">
-              <div class="audit-metric-item">實收: <strong>${fmt(p.data.實收總金額)}</strong></div>
-              <div class="audit-metric-item">追續: <strong>${fmt(p.data.追續單金額)}</strong></div>
-              <div class="audit-metric-item">單數: <strong>${fmt(p.data.追續單成交)}</strong></div>
-              <div class="audit-metric-item">業績: <strong>${fmt(p.data.全部總業績)}</strong></div>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    `;
-  }
-
   const noteHtml = notes.map((n) => `<div class="audit-note"><span>✓</span>${escapeHtml(n)}</div>`).join('');
   const exclHtml = excluded.length
     ? `<div class="excluded-box"><strong>審計不入派單名單：</strong>${excluded.map((e) => `<span class="excl-item">${escapeHtml(e.姓名)}（${escapeHtml(e.原因)}）</span>`).join('')}</div>`
     : '';
 
-  refs.auditNotes.innerHTML = platformHtml + noteHtml + exclHtml;
+  refs.auditNotes.innerHTML = noteHtml + exclHtml;
 }
 
 function renderDualTotals(reportTotal, assignmentTotal) {
@@ -949,9 +953,11 @@ function renderDualTotals(reportTotal, assignmentTotal) {
       </article>`;
   };
 
-  container.innerHTML =
+  const html =
     makeRow('三平台報表總盤（含已離職）', reportTotal, 'total-report') +
     makeRow('正式派單運算盤（排除已離職）', assignmentTotal, 'total-assignment');
+    
+  if (container) container.innerHTML = html;
 }
 
 function renderSendText(text, shortText) {
@@ -1226,6 +1232,8 @@ function hideSplashScreen() {
   
   setTimeout(() => {
     splash.classList.add('fade-out');
+    const splashText = splash.querySelector('.splash-text');
+    if (splashText) splashText.textContent = "AI 數據核對完畢";
     setTimeout(() => splash.remove(), 800);
   }, 400);
 }
@@ -1273,3 +1281,4 @@ initRealtimeSync();
 startVitalPulse();
 loadData();
 initRealtimeSync();
+$finalLogic

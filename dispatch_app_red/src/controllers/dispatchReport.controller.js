@@ -17,6 +17,42 @@ const officialSync = require('../services/officialSync.service');
 const masterCommander = require('../services/masterCommander.service');
 
 /**
+ * [機密保護] 屏蔽公司總帳數據，僅保留個人名次與業績。
+ */
+function maskSecretData(data) {
+  if (!data) return data;
+  const masked = JSON.parse(JSON.stringify(data));
+  
+  const target = masked.report || masked.snapshot || masked;
+  
+  // 徹底移除公司總結算數據
+  delete target.summaryBoard;
+  delete target.auditConclusion;
+  delete target.reportTotal;
+  delete target.assignmentTotal;
+  delete target.overallStats;
+  delete target.auditWarnings;
+  
+  // 屏蔽審計中的平台總額
+  if (target.audit && target.audit.platforms) {
+    delete target.audit.platforms;
+  }
+
+  // [公信力加固] 伺服器端自動過濾公告文字中的總帳數據
+  const cleanText = (text) => {
+    if (!text) return '';
+    return text.split('\n')
+      .filter(line => !['總業績', '總金額', '實收總額', '實收總計', '三平台總盤', '總結算'].some(s => line.includes(s)))
+      .join('\n').trim();
+  };
+
+  if (target.groupShortText) target.groupShortText = cleanText(target.groupShortText);
+  if (target.sendText) target.sendText = cleanText(target.sendText);
+  
+  return masked;
+}
+
+/**
  * 取得最新正式資料 (用於 /api/current)
  */
 function getLatestReport() {
@@ -52,7 +88,7 @@ function getDispatchReports(req, res) {
 function getLatestDispatchReport(req, res) {
   try {
     const latest = getLatestReport();
-    res.json(successResponse(errorCodes.OK, '取得最新資料成功', latest));
+    res.json(successResponse(errorCodes.OK, '取得最新資料成功', maskSecretData(latest)));
   } catch (error) {
     sendAppError(res, error);
   }
@@ -74,7 +110,7 @@ function getDispatchReport(req, res) {
       res.status(404).json(errorResponse(errorCodes.NOT_FOUND, '找不到該筆資料'));
       return;
     }
-    res.json(successResponse(errorCodes.OK, '取得資料成功', record));
+    res.json(successResponse(errorCodes.OK, '取得資料成功', maskSecretData(record)));
   } catch (error) {
     sendAppError(res, error);
   }
@@ -118,7 +154,7 @@ function getCurrentSnapshot(_req, res) {
     snapshot.officialFingerprint = commanderStatus.currentFingerprint;
     snapshot.dataVersion = snapshot.reportVersion || 0;
 
-    res.json(successResponse(errorCodes.OK, '取得目前正式資料成功', snapshot));
+    res.json(successResponse(errorCodes.OK, '取得目前正式資料成功', maskSecretData(snapshot)));
   } catch (error) {
     sendAppError(res, error);
   }
