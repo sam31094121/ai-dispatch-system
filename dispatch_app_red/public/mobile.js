@@ -32,7 +32,9 @@ const refs = {
   shareLineText: document.getElementById('share-line-text'),
   lineShare: document.getElementById('line-share'),
   toast: document.getElementById('toast'),
-  aiNextStep: document.getElementById('ai-next-step')
+  aiNextStep: document.getElementById('ai-next-step'),
+  heroShortOutput: document.getElementById('hero-short-output'),
+  copyHeroText: document.getElementById('copy-hero-text')
 };
 
 const state = {
@@ -956,6 +958,7 @@ function renderSendText(text, shortText) {
   state.sendText = text || '';
   if (refs.broadcastOutput) refs.broadcastOutput.value = state.sendText;
   if (refs.groupShortOutput) refs.groupShortOutput.textContent = shortText || '';
+  if (refs.heroShortOutput) refs.heroShortOutput.textContent = shortText || '暫無公告數據';
   if (refs.lineShare) {
     refs.lineShare.href = state.sendText
       ? `https://line.me/R/share?text=${encodeURIComponent(state.sendText)}`
@@ -1094,6 +1097,7 @@ function bindEvents() {
   refs.refreshData.addEventListener('click', debouncedLoadData);
   refs.copyLineText?.addEventListener('click', copyText);
   refs.copyShortText?.addEventListener('click', copyShortTextFn);
+  refs.copyHeroText?.addEventListener('click', copyShortTextFn);
   refs.shareLineText?.addEventListener('click', shareText);
   refs.searchOpen?.addEventListener('click', openSearch);
   refs.searchClose?.addEventListener('click', closeSearch);
