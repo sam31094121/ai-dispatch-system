@@ -117,13 +117,30 @@
       <div class="ticker-content-mini" id="ai-next-step">系統就緒... 等待派單分析...</div>
     </div>
 
-    <!-- 前六名科技榮耀榜 (STRIKE FORCE TOP 6) -->
-    <section id="top6-glory-board" class="glory-board-container">
+    <!-- 【首頁公告版】AI 戰情公告核心 (New Position) -->
+    <section class="panel panel-announcement-hero" id="announcement-hero">
+      <div class="announcement-header">
+        <div class="glow-tag">CRITICAL BRIEFING</div>
+        <h2 id="hero-title">AI 派單公告</h2>
+        <div class="date-badge">5/12 結算 → 5/13 正式派單</div>
+      </div>
+      
+      <div class="hero-announcement-box">
+        <div class="scan-effect"></div>
+        <pre id="hero-short-output" class="hero-text-content">正在同步 5/13 最新派單數據...</pre>
+      </div>
+
+      <div class="hero-actions">
+        <button id="copy-hero-text" class="btn-glitch-primary">複製最新公告</button>
+      </div>
+    </section>
+
+    <!-- 前六名科技榮耀榜 (移至公告下方) -->
+    <section id="top6-glory-board" class="glory-board-container" style="margin-top: 0;">
       <div class="glory-header">
         <h2 class="glory-title">前六名科技榮耀榜</h2>
-        <p class="glory-subtitle">本區名次、業績、實收、追續金額、總結算與分析內容，全部來自後端正式審計後之有效資料與正式排序結果。</p>
         <div class="glory-note-box">
-          <p class="glory-note">本區為本輪正式前六名主力戰績榜。<br>所有數字均來自後端正式資料，不是前端估算，不是視覺假值，不是暫存推估值。<br>本區目的為清楚呈現本輪前六名為何上榜、贏在哪裡、數據從哪裡來。</p>
+          <p class="glory-note">本區名次與業績均來自後端正式審計資料。</p>
         </div>
       </div>
       <div id="top6-grid" class="top6-grid">
