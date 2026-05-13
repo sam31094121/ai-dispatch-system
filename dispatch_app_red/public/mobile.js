@@ -643,7 +643,6 @@ function renderTop6GloryBoard(rankings) {
     const weightedScore = row.weightedScore || row.score || row.metrics?.正式權重分數 || 0;
     const actualRev = row.actualRevenue || row.metrics?.實收 || 0;
     const renewalRev = row.renewalRevenue || row.metrics?.續單金額 || 0;
-    const totalRev = row.totalRevenue || row.revenue || row.metrics?.總業績 || 0;
     const renewalDeals = row.renewalDeals || row.metrics?.追續成交總數 || 0;
     const avgRenewal = row.avgRenewal || row.metrics?.追續客單價 || (renewalDeals ? (renewalRev / renewalDeals) : 0);
 
@@ -664,12 +663,11 @@ function renderTop6GloryBoard(rankings) {
              <span class="glory-score-value">${fmt(weightedScore, 2)}</span>
           </div>
           <div class="glory-metrics-grid">
-             <div class="metric"><span class="m-label">實收總金額</span><span class="m-val">${fmt(actualRev)}</span></div>
+             <div class="metric"><span class="m-label">個人實收</span><span class="m-val">${fmt(actualRev)}</span></div>
              <div class="metric"><span class="m-label">追續金額</span><span class="m-val">${fmt(renewalRev)}</span></div>
-             <div class="metric"><span class="m-label">全部總業績</span><span class="m-val">${fmt(totalRev)}</span></div>
              <div class="metric"><span class="m-label">追續客單價</span><span class="m-val">${fmt(avgRenewal, 2)}</span></div>
+             <div class="metric"><span class="m-label">追續單數</span><span class="m-val">${renewalDeals} 單</span></div>
           </div>
-          <div class="glory-metric-extra">追續單數量：<span class="m-val">${renewalDeals}</span></div>
         </div>
 
         <!-- 下層 -->
@@ -732,16 +730,39 @@ function render(report) {
   // 公司整體統計欄位（整合總盤、雙平台總表）禁止在員工視圖顯示
   // stat strip / renderSummary / renderDualTotals 已全數停用
 
+  renderTop6GloryBoard(report.ranking);
   renderRankings(report.ranking);
   renderGroups(report.groups, report.ranking);
   renderAudit(report.auditNotes, report.excludedEmployees, report.auditWarnings);
   animateScoreFills();
 
-  // 更新 AI 指揮中心跑馬燈
+  // 更新 AI 指揮中心跑馬燈 — 使用真實數據
   if (refs.aiNextStep) {
     const auditStatus = auditPass ? '🟢 審計通過' : '🔴 審計警告';
     const a1Count = report.ranking.filter(r => r.group === 'A1').length;
-    refs.aiNextStep.textContent = `[系統狀態] ${auditStatus} | [A1 分佈] 已鎖定 ${a1Count} 位主力 | [派單進度] ${report.dispatchDate} 公告同步完畢... 準備執行下一步推送...`;
+    const top1 = report.ranking[0];
+    const topName = top1 ? top1.name : '—';
+    const topScore = top1 ? fmt(top1.score, 1) : '0';
+    const totalMembers = report.ranking.length;
+    const ticker = refs.aiNextStep;
+    const messages = [
+      `${auditStatus} ｜ ${report.dispatchDate} 正式名次已同步`,
+      `🏆 本輪第一名：${topName}，AI 權重分 ${topScore} 分`,
+      `👥 本輪共 ${totalMembers} 位有效成員入榜`,
+      `⚡ A1 高優先主力：${a1Count} 位已鎖定派單優先權`,
+      `📊 數據來源：三平台審計通過後有效記錄`
+    ];
+    let mIdx = 0;
+    function rotateTicker() {
+      ticker.style.opacity = '0';
+      setTimeout(() => {
+        ticker.textContent = messages[mIdx];
+        ticker.style.opacity = '1';
+        mIdx = (mIdx + 1) % messages.length;
+        setTimeout(rotateTicker, 4500);
+      }, 300);
+    }
+    rotateTicker();
   }
 }
 
