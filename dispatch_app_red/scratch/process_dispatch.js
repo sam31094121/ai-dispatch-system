@@ -1,6 +1,5 @@
-const { buildReportFromSource, buildLegacySnapshot } = require('../src/services/dispatchBuild.service');
-const { validateDispatchReport } = require('../src/services/dispatchValidate.service');
-const { persistStoredRecord } = require('../src/services/dispatchQuery.service');
+const { buildReportFromSource } = require('../src/services/dispatchBuild.service');
+const { saveReportVersion, saveNewReport, getReportById } = require('../src/services/dispatchQuery.service');
 
 const sourceText = `📣【AI 派單公告｜5/12 結算 → 5/13 正式派單順序｜AI 比例原則版】
 
@@ -225,30 +224,29 @@ const sourceText = `📣【AI 派單公告｜5/12 結算 → 5/13 正式派單�
 
 群組超精簡版：
 
-📣【AI 派單公告｜5/12 結算 → 5/13 正式派單】審計通過，三平台總表全數核對通過，無漏算、無多算、無衝突。正式前10名：1馬秋香 2王梅慧 3王珍珠 4湯玉琦 5許喬恩 6林宜靜 7林沛昕 8徐華妤 9廖姿惠 10李玲玲。A1：馬秋香、王梅慧、王珍珠、湯玉琦。A2：許喬恩、林宜靜、林沛昕、徐華妤、廖姿惠、李玲玲、高美雲。B組：梁依萍、高如郁、鄭珮恩、江沛林、陳百玲、謝啟芳、江麗勉。C組：林佩君、鄭上官、莉莉、陳玲華、周美蓁。正式派單順序以本則為準。`;
+📣【AI 派單公告｜5/12 結算 → 5/13 正式派單】審計通過，三平台總表全數核對通過，無漏算、無多算、無衝突。正式前10名：1馬秋香 2王梅慧 3王珍珠 4湯玉琦 5許喬恩 6林宜靜 7林沛昕 8徐華妤 9廖姿惠 10李玲玲。A1：馬秋香、王梅慧、王珍珠、湯玉琦。A2：許喬恩、林宜靜、林沛昕、徐華妤、廖姿惠、李玲玲、高美雲。B組：梁依萍、高如郁、鄭珮恩、江沛林、陳百玲、謝啟芳、江麗勉。C組：林佩君、鄭上官、周美蓁、莉莉、陳玲華。正式派單順序以本則為準。`;
 
 async function run() {
   try {
     const report = buildReportFromSource({ sourceText });
     
-    // 手動覆寫一些欄位確保完全一致
+    // 手動覆寫確保 ID 一致
     report.reportId = "DISPATCH_SUPREME_0513";
-    report.version = 513;
     report.settlementDate = "2026-05-12T00:00:00.000Z";
     report.dispatchDate = "2026-05-13T00:00:00.000Z";
 
-    const validation = validateDispatchReport(report);
-    const storedRecord = {
-      report,
-      validation,
-      snapshot: buildLegacySnapshot(report, validation),
-      meta: { reason: 'manual_save_via_ai_optimization', timestamp: new Date().toISOString() }
-    };
-    
-    persistStoredRecord(storedRecord);
+    let result;
+    const existing = getReportById(report.reportId);
+    if (existing) {
+      result = saveReportVersion(report, { reason: 'manual_update_0513', operator: 'AI_Assistant' });
+    } else {
+      result = saveNewReport(report, { reason: 'manual_init_0513', operator: 'AI_Assistant' });
+    }
+
     console.log("SUCCESS_PROCESS_DISPATCH");
-    console.log("Report ID: " + report.reportId);
-    console.log("Rankings count: " + report.rankings.length);
+    console.log("Report ID: " + result.report.reportId);
+    console.log("Version: " + result.report.version);
+    console.log("Rankings count: " + result.report.rankings.length);
   } catch (error) {
     console.error("FAILED_PROCESS_DISPATCH");
     console.error(error);
