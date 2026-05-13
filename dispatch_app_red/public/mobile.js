@@ -752,6 +752,10 @@ function render(report) {
       `⚡ A1 高優先主力：${a1Count} 位已鎖定派單優先權`,
       `📊 數據來源：三平台審計通過後有效記錄`
     ];
+    // 停用 cyber-tech.css 的跑馬燈捲動，改為靜態淡入輪播
+    ticker.style.animation = 'none';
+    ticker.style.paddingLeft = '0';
+    ticker.style.transition = 'opacity 0.3s ease';
     let mIdx = 0;
     function rotateTicker() {
       ticker.style.opacity = '0';

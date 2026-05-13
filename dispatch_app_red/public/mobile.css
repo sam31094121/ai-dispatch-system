@@ -1290,8 +1290,15 @@ main {
 .score-fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 50%, var(--accent) 100%);
+  background-size: 200% 100%;
+  transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: score-bar-shimmer 2.5s linear infinite;
+}
+
+@keyframes score-bar-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 .metrics-grid {
