@@ -100,7 +100,8 @@ function createApp() {
       return;
     }
 
-    res.sendFile(path.join(appConfig.publicDir, 'index.html'));
+    // 已修改：統一前端預設為手機版
+    res.sendFile(path.join(appConfig.publicDir, 'mobile.html'));
   });
 
   app.use((req, res, next) => {
