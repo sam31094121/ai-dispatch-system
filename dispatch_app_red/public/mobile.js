@@ -842,9 +842,9 @@ function renderRankings(rankings) {
     }
 
     const winnerBadge = row.rank === 1
-      ? '<div class="winner-badge rank-badge-1">🥇 冠軍</div>'
-      : row.rank === 2 ? '<div class="winner-badge rank-badge-2">🥈 亞軍</div>'
-      : row.rank === 3 ? '<div class="winner-badge rank-badge-3">🥉 季軍</div>'
+      ? '<div class="winner-badge gold">🥇 冠軍</div>'
+      : row.rank === 2 ? '<div class="winner-badge silver">🥈 亞軍</div>'
+      : row.rank === 3 ? '<div class="winner-badge bronze">🥉 季軍</div>'
       : '';
 
     return `
