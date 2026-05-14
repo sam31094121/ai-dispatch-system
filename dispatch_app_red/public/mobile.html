@@ -4,9 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <style>
-    /* 強制捲動補強：核彈級解除所有潛在鎖定 */
+    /* 強制捲動補強：最高級別解放 */
     html, body {
       overflow: auto !important;
+      overflow-x: hidden !important;
       overflow-y: auto !important;
       height: auto !important;
       min-height: 100% !important;
@@ -18,7 +19,15 @@
       overflow: visible !important;
       height: auto !important;
       display: block !important;
-      min-height: 100vh !important;
+      min-height: 100% !important;
+      pointer-events: auto !important;
+    }
+    /* 確保所有特效層不擋住觸控 */
+    #splash-screen, .skeleton-placeholder, .lens-flare-overlay {
+      pointer-events: none !important;
+    }
+    #splash-screen:not(.fade-out) {
+      pointer-events: auto !important;
     }
     section.panel, #ranking, #ranking-list {
       display: block !important;
@@ -298,14 +307,26 @@
           }
         });
         
-        // 3. 智慧移除阻塞遮罩
-        const blockers = ['splash-screen', 'initial-skeleton'];
+        // 3. 智慧移除阻塞遮罩並解除指針鎖定
+        const blockers = ['splash-screen', 'initial-skeleton', 'lens-flare'];
         blockers.forEach(id => {
           const el = document.getElementById(id);
-          if (el && (window.getComputedStyle(el).opacity === '0' || el.classList.contains('fade-out'))) {
-            el.remove();
+          if (el) {
+            const isHidden = window.getComputedStyle(el).opacity === '0' || el.classList.contains('fade-out');
+            if (isHidden) {
+              el.style.pointerEvents = 'none';
+              el.style.zIndex = '-1000';
+              // 如果是啟動畫面或骨架屏，直接移除
+              if (id !== 'lens-flare') el.remove();
+            }
           }
         });
+        
+        // 4. 針對 iOS 的特殊修正
+        if (window.scrollY === 0 && document.body.scrollHeight > window.innerHeight) {
+          window.scrollTo(0, 1);
+          window.scrollTo(0, 0);
+        }
       };
 
       // 執行週期性校準，防止捲動權限被收回
