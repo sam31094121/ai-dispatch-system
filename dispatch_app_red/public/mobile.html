@@ -81,6 +81,7 @@
       align-items: center; justify-content: center;
       transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s;
       overflow: hidden;
+      pointer-events: none; /* 穿透觸控：splash 僅視覺，不阻擋任何手勢 */
     }
     #splash-screen::before {
       content: ""; position: absolute; inset: 0;
