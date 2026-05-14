@@ -1183,11 +1183,14 @@ main {
 .ranking-list {
   display: grid;
   gap: 10px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .ranking-card {
   padding: 10px 12px;
   scroll-margin-top: 130px; /* 增加捲動補償，防止被 sticky 索引列擋住 */
+  overflow: visible !important;
 }
 
 .ranking-card.is-highlight {
@@ -2335,7 +2338,7 @@ mark {
 }
 
 /* ww Tactical HUD Ranking Upgrade ww */
-.ranking-card { position: relative; overflow: hidden; border-left: 3px solid var(--border); transition: transform 0.25s ease, box-shadow 0.25s ease; }
+.ranking-card { position: relative; overflow: visible !important; border-left: 3px solid var(--border); transition: transform 0.25s ease, box-shadow 0.25s ease; }
 .ranking-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, rgba(24,198,167,0.02) 0%, transparent 100%); pointer-events: none; }
 .ranking-card.rank-1 { border-left-color: #f3c14b; background: linear-gradient(135deg, rgba(243,193,75,0.05) 0%, var(--surface) 100%); }
 .ranking-card.rank-2 { border-left-color: #e0e8f0; }
