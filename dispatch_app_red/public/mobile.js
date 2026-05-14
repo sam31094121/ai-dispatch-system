@@ -566,7 +566,7 @@ function setLoading() {
     </article>
   `;
   refs.rankingList.innerHTML = skeletonCard.repeat(5);
-  refs.summaryGrid.innerHTML = '';
+  if (refs.summaryGrid) refs.summaryGrid.innerHTML = '';
 }
 const GLORY_TEMPLATES = {
   1: {
@@ -1156,7 +1156,7 @@ function renderError(_error) {
     render(state.report);
   } else {
     // 若完全沒有快取，顯示科技感初始化畫面
-    refs.summaryGrid.innerHTML = '<div class="empty-state">AI 核心初始化中...</div>';
+    if (refs.rankingList) refs.rankingList.innerHTML = '<div class="empty-state">AI 核心初始化中，請稍候...</div>';
   }
 }
 
