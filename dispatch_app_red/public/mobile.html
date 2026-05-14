@@ -134,13 +134,23 @@
   </style>
 </head>
 <body class="mobile-command-center" style="overflow-y:auto;height:auto;position:relative;touch-action:pan-y;">
-  <!-- ── 捲動解鎖：body 第一個 style，第一幀就生效，優先級高於所有外部 CSS ── -->
+  <!-- ── 手機效能解鎖：body 第一個 style，第一幀生效，覆蓋所有外部 CSS ── -->
   <style>
+    /* 1. 捲動解鎖 */
     html { overflow-y: auto !important; height: auto !important; touch-action: pan-y !important; }
     body { overflow-y: auto !important; height: auto !important; position: relative !important; touch-action: pan-y !important; }
     #app-shell { overflow: visible !important; height: auto !important; min-height: 100vh !important; display: block !important; padding-bottom: 80px !important; }
     main { overflow: visible !important; height: auto !important; }
     section.panel, #ranking, #ranking-list, #elite-board, #groups { overflow: visible !important; height: auto !important; max-height: none !important; }
+    /* 2. GPU 過載修復：關閉所有 backdrop-filter（最主要凍結原因）*/
+    .panel, .lc-card, .a1-hero-grid > div, .ranking-card, .a1-hero-card, .hero-line-compact, .glory-card {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      background: #101c2e !important;
+    }
+    /* 3. 關閉無限動畫 pseudo-element（次要 GPU 消耗）*/
+    .panel::before, .panel::after, .a1-hero-card::before, .a1-hero-card::after { animation: none !important; }
+    /* 4. 移除固定位置遮擋層 */
     body.mobile-command-center::after, .screen-overlay-scan, .lens-flare-overlay { display: none !important; }
   </style>
   <div class="lens-flare-overlay" id="lens-flare"></div>
