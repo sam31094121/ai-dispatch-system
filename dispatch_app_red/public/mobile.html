@@ -4,22 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <style>
-    /* 強制捲動補強：解除所有潛在鎖定 */
+    /* 強制捲動補強：核彈級解除所有潛在鎖定 */
     html, body {
+      overflow: auto !important;
       overflow-y: auto !important;
       height: auto !important;
+      min-height: 100% !important;
       -webkit-overflow-scrolling: touch !important;
       touch-action: pan-y !important;
+      position: relative !important;
     }
-    #app-shell {
+    #app-shell, main {
       overflow: visible !important;
       height: auto !important;
       display: block !important;
+      min-height: 100vh !important;
     }
     section.panel, #ranking, #ranking-list {
       display: block !important;
       visibility: visible !important;
       opacity: 1 !important;
+      height: auto !important;
+      overflow: visible !important;
+    }
+    /* 修正前六名網格在窄螢幕下的撐開問題 */
+    .top6-grid-compact {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 12px !important;
+      height: auto !important;
     }
   </style>
   <meta name="theme-color" content="#09111f">
@@ -260,30 +273,55 @@
         const html = document.documentElement;
         
         // 1. 強制解除溢出鎖定
-        body.style.setProperty('overflow', 'auto', 'important');
-        body.style.setProperty('overflow-y', 'auto', 'important');
-        body.style.setProperty('position', 'relative', 'important');
-        html.style.setProperty('overflow', 'auto', 'important');
-        html.style.setProperty('overflow-y', 'auto', 'important');
+        const scrollStyles = {
+          'overflow': 'auto',
+          'overflow-y': 'auto',
+          'height': 'auto',
+          'min-height': '100%',
+          'position': 'relative',
+          '-webkit-overflow-scrolling': 'touch'
+        };
         
-        // 2. 智慧移除阻塞遮罩
+        for (let [prop, val] of Object.entries(scrollStyles)) {
+          body.style.setProperty(prop, val, 'important');
+          html.style.setProperty(prop, val, 'important');
+        }
+        
+        // 2. 強制確保容器可見且撐開
+        const containers = ['app-shell', 'ranking-list', 'elite-board', 'ranking'];
+        containers.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) {
+            el.style.setProperty('display', 'block', 'important');
+            el.style.setProperty('height', 'auto', 'important');
+            el.style.setProperty('overflow', 'visible', 'important');
+          }
+        });
+        
+        // 3. 智慧移除阻塞遮罩
         const blockers = ['splash-screen', 'initial-skeleton'];
         blockers.forEach(id => {
           const el = document.getElementById(id);
           if (el && (window.getComputedStyle(el).opacity === '0' || el.classList.contains('fade-out'))) {
-            el.remove(); // 徹底從 DOM 移除，不留痕跡
+            el.remove();
           }
         });
       };
 
-      // 執行三次校準：立即、500ms、2000ms
+      // 執行週期性校準，防止捲動權限被收回
       rescue();
       setTimeout(rescue, 500);
       setTimeout(rescue, 2000);
+      setTimeout(rescue, 5000);
       
-      // 監聽任何可能的 DOM 變動，確保捲動權限不被收回
+      // 監聽任何可能的 DOM 變動
       const observer = new MutationObserver(rescue);
-      observer.observe(document.body, { attributes: true, attributeFilter: ['style', 'class'] });
+      observer.observe(document.body, { attributes: true, childList: true, subtree: true });
+      
+      // 監聽捲動事件，如果發現捲動不動，強制重置
+      window.addEventListener('scroll', () => {
+        if (document.body.style.overflow === 'hidden') rescue();
+      }, { passive: true });
     })();
   </script>
 </body>
