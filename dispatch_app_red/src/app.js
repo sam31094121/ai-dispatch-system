@@ -28,11 +28,20 @@ function wantsHtmlDocument(req) {
 }
 
 function setStaticCacheHeaders(res, filePath) {
-  if (filePath.endsWith('.html') || filePath.endsWith('.js') || filePath.endsWith('.css')) {
+  // HTML：no-cache（每次驗證，確保取得最新版本）
+  if (filePath.endsWith('.html')) {
     res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Vary', 'Accept-Encoding');
     return;
   }
-
+  // JS / CSS：有版本號 query → 長期快取 7 天（瀏覽器端）
+  // Service Worker 會用 stale-while-revalidate 在背景更新
+  if (filePath.endsWith('.js') || filePath.endsWith('.css')) {
+    res.setHeader('Cache-Control', 'public, max-age=604800, stale-while-revalidate=86400');
+    res.setHeader('Vary', 'Accept-Encoding');
+    return;
+  }
+  // 其他靜態資源（圖片、字型）
   if (STATIC_ASSET_PATTERN.test(filePath)) {
     res.setHeader('Cache-Control', `public, max-age=${appConfig.staticAssetMaxAgeSeconds}`);
   }

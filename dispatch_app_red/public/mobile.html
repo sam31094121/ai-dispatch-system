@@ -222,36 +222,36 @@
     }
   </style>
 
-  <script src="/utils.js?v=20260511-ULTRA"></script>
-  <script src="/sync-client.js?v=20260511-ULTRA"></script>
-  <script src="/mobile.js?v=20260511-ULTRA"></script>
+  <script src="/utils.js?v=20260511-ULTRA" defer></script>
+  <script src="/sync-client.js?v=20260511-ULTRA" defer></script>
+  <script src="/mobile.js?v=20260511-ULTRA" defer></script>
+  <script src="/mobile-standard.js?v=1.0" defer></script>
   <script>
-    // 同步守衛客戶端初始化
-    (function(){
-      var sync = new DispatchSyncClient({
-        type: 'mobile',
-        onForceSync: function() { if (typeof loadData === 'function') loadData(); },
-        onStatusChange: function(s) { console.log('[SyncClient] 狀態:', s); }
+    // Service Worker 註冊（手機快取核心）
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js')
+          .then(function(reg) { console.log('[SW] 已啟動, scope:', reg.scope); })
+          .catch(function(e) { console.warn('[SW] 註冊失敗:', e); });
       });
-      sync.start();
-      window._dispatchSyncClient = sync;
-    })();
-  </script>
-  <script>
-    // 主題切換邏輯
+    }
+    // 同步守衛客戶端初始化（defer 後執行）
+    window.addEventListener('DOMContentLoaded', function(){
+      if (typeof DispatchSyncClient !== 'undefined') {
+        var sync = new DispatchSyncClient({
+          type: 'mobile',
+          onForceSync: function() { if (typeof loadData === 'function') loadData(); },
+          onStatusChange: function(s) { console.log('[SyncClient] 狀態:', s); }
+        });
+        sync.start();
+        window._dispatchSyncClient = sync;
+      }
+    });
+    // 主題切換
     (function(){
-      const root = document.documentElement;
       const saved = localStorage.getItem('theme');
-      if (saved) root.setAttribute('data-theme', saved);
-      const btn = document.getElementById('theme-toggle');
-      if (!btn) return;
-      btn.addEventListener('click',()=>{
-        const current = root.getAttribute('data-theme')=== 'light' ? 'dark' : 'light';
-        root.setAttribute('data-theme', current);
-        localStorage.setItem('theme', current);
-      });
+      if (saved) document.documentElement.setAttribute('data-theme', saved);
     })();
   </script>
-  <script src="/mobile-standard.js?v=1.0"></script>
 </body>
 </html>
