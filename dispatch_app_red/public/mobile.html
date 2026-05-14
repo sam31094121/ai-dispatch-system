@@ -338,11 +338,11 @@
         unlock();
       });
 
-      // 保險絲 A：4 秒後強制清除 splash（防止 API 失敗時卡住）
+      // 保險絲 A：1.5 秒後強制清除 splash（穿透觸控已開，此為視覺清除）
       setTimeout(function() {
         dismissSplash();
         unlock();
-      }, 4000);
+      }, 1500);
 
       // 保險絲 B：6 秒後再確認一次（應對極慢的網路環境）
       setTimeout(unlock, 6000);
