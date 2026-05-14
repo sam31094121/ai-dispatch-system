@@ -34,30 +34,40 @@
     .glory-header { margin-bottom: 8px !important; }
     .glory-name-label { font-size: 20px !important; }
     
-    /* 快速索引導覽列 */
+    /* 快速索引導覽列：吸附於頂部 */
     .quick-jump-bar {
       display: flex;
       gap: 8px;
-      margin: 12px 0;
-      padding: 4px 0;
+      margin: 8px 0 12px;
+      padding: 10px 4px;
       overflow-x: auto;
       scrollbar-width: none;
       -ms-overflow-style: none;
+      position: sticky;
+      top: 54px; /* 避開 topbar */
+      z-index: 150;
+      background: rgba(10, 15, 24, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(24, 198, 167, 0.15);
+      animation: slideDownFade 0.5s ease-out both;
     }
+    @keyframes slideDownFade { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
     .quick-jump-bar::-webkit-scrollbar { display: none; }
     .jump-btn {
       flex: 0 0 auto;
-      padding: 6px 16px;
-      border-radius: 99px;
-      background: rgba(24, 198, 167, 0.1);
-      border: 1px solid rgba(24, 198, 167, 0.3);
+      padding: 6px 14px;
+      border-radius: 8px;
+      background: rgba(24, 198, 167, 0.08);
+      border: 1px solid rgba(24, 198, 167, 0.25);
       color: var(--accent);
       font-size: 11px;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 1px;
+      transition: all 0.2s;
     }
-    .jump-btn:active { background: var(--accent); color: #000; }
+    .jump-btn:active { background: var(--accent); color: #000; transform: scale(0.95); }
     /* 修正前六名網格在窄螢幕下的撐開問題 */
     .top6-grid-compact {
       display: flex !important;
