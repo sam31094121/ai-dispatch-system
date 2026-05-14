@@ -6719,3 +6719,5 @@
 {"timestamp":"2026-05-14T09:33:04.675Z","event":"SYNC_FAIL","version":"unknown","fingerprint":"unknown","details":{"screenId":"mobile","reported":"","expected":"report::1::","reason":"version_mismatch"}}
 {"timestamp":"2026-05-14T09:33:06.700Z","event":"SYNC_FAIL","version":"unknown","fingerprint":"unknown","details":{"screenId":"mobile","reported":"","expected":"report::1::","reason":"version_mismatch"}}
 {"timestamp":"2026-05-14T09:33:06.721Z","event":"SYNC_FAIL","version":"unknown","fingerprint":"unknown","details":{"screenId":"mobile","reported":"DISPATCH_SUPREME_0513::2::2026-05-13T12:51:25+08:00","expected":"report::1::","reason":"version_mismatch"}}
+{"timestamp":"2026-05-14T09:33:11.705Z","event":"SYNC_FAIL","version":"unknown","fingerprint":"unknown","details":{"screenId":"mobile","reported":"","expected":"report::1::","reason":"version_mismatch"}}
+{"timestamp":"2026-05-14T09:33:16.696Z","event":"SYNC_FAIL","version":"unknown","fingerprint":"unknown","details":{"screenId":"mobile","reported":"","expected":"report::1::","reason":"version_mismatch"}}
