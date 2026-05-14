@@ -20,6 +20,8 @@ class MobileStandardEngine {
      * 強制觸控優化：防止縮放、處理延遲
      */
     enforceTouchOptimizations() {
+        // 暫時解除攔截，確保原生捲動順暢
+        /*
         document.addEventListener('touchstart', (e) => {
             if (e.touches.length > 1) e.preventDefault(); // 禁止多指縮放
         }, { passive: false });
@@ -30,6 +32,7 @@ class MobileStandardEngine {
             if (now - lastTouchEnd <= 300) e.preventDefault(); // 禁止雙擊縮放
             lastTouchEnd = now;
         }, false);
+        */
     }
 
     /**

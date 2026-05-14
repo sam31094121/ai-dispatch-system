@@ -111,33 +111,33 @@
 
 html {
   scroll-behavior: smooth;
-  overflow-y: scroll;
+  overflow-y: auto !important;
+  height: auto !important;
 }
 
 /* --- 深度優化：手機模擬器專用模式 (桌機適配) --- */
 @media screen and (min-width: 1024px) {
   body.mobile-command-center {
     background: radial-gradient(circle at center, #111a27 0%, #05080c 100%) !important;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: block !important; /* 強制改為 block，防止 flex 置中裁切 */
     min-height: 100vh;
     padding: 0;
-    overflow: hidden !important;
+    overflow-y: auto !important;
+    touch-action: pan-y !important; /* 顯式允許垂直滑動 */
   }
 
   #app-shell {
     width: 420px;
-    height: 880px;
+    height: auto !important;
     background: var(--bg);
     border: 14px solid #1a2332;
-    border-radius: 54px;
+    border-radius: 0 !important;
     position: relative;
     box-shadow: 
       0 0 0 2px #0a0f18,
       0 50px 100px -20px rgba(0,0,0,0.9),
       0 0 100px rgba(24, 198, 167, 0.05);
-    overflow-y: auto;
+    overflow-y: visible !important;
     overflow-x: hidden;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -195,7 +195,7 @@ html {
   }
 }
 
-/* ?? 3D ?亙? ?? */
+/* ?€?€ 3D ?亙? ?€?€ */
 @keyframes cardEnter3D {
   from { opacity: 0; transform: translateY(10px) scale(0.98); }
   to { opacity: 1; transform: translateY(0) scale(1); }
@@ -291,7 +291,7 @@ a {
   cursor: pointer;
 }
 
-/* ?? Splash Screen ?? */
+/* ?€?€ Splash Screen ?€?€ */
 #splash-screen {
   position: fixed;
   inset: 0;
@@ -525,7 +525,7 @@ h2 {
   box-shadow: 0 0 0 1px var(--accent), var(--depth-3);
 }
 
-/* ?? 敺??∠? ?? */
+/* ?€?€ 敺??∠? ?€?€ */
 .ranking-card.rank-1,
 .ranking-card.rank-2,
 .ranking-card.rank-3 {
@@ -768,7 +768,7 @@ main {
   color: var(--text);
 }
 
-/* ?? LINE 頛詨???????????????????????????????????? */
+/* ?€?€ LINE 頛詨????€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€ */
 
 @keyframes lcCoinGlint {
   0%   { transform: translateX(-180%) skewX(-22deg); opacity: 0; }
@@ -926,7 +926,7 @@ main {
   margin-top: 1px;
 }
 
-/* ?? ?馳敺賜? ???????????????????????????????????? */
+/* ?€?€ ?馳敺賜? ?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€ */
 
 .lc-badge {
   flex-shrink: 0;
@@ -1003,7 +1003,7 @@ main {
     drop-shadow(0px 0px 2px rgba(180,100,0,0.45));
 }
 
-/* ?? 蝢??巨敺賜? ???????????????????????????????? */
+/* ?€?€ 蝢??巨敺賜? ?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€ */
 
 .lc-badge-bill {
   width: 86px;
@@ -1089,7 +1089,7 @@ main {
   pointer-events: none;
 }
 
-/* ?? 蝎曄陛??摮? ???????????????????????????????? */
+/* ?€?€ 蝎曄陛??摮? ?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€ */
 
 .lc-short-box {
   margin: 0;
@@ -1109,7 +1109,7 @@ main {
   overflow-y: auto;
 }
 
-/* ?? 蝎曄陛??鋆賣???????????????????????????????? */
+/* ?€?€ 蝎曄陛??鋆賣????€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€ */
 
 .lc-action-btn {
   align-self: start;
@@ -1131,7 +1131,7 @@ main {
   box-shadow: 0 0 8px rgba(200,140,10,0.25);
 }
 
-/* ?? 撱???獢?蝢??∪?函匱?蹂蜓憿嚗????????? */
+/* ?€?€ 撱???獢?蝢??∪?函匱?蹂蜓憿嚗??€?€?€?€?€?€?€?€ */
 
 .lc-card-bill .broadcast-box {
   border-color: rgba(60,170,70,0.32);
@@ -1525,7 +1525,7 @@ mark {
   border-radius: 2px;
 }
 
-/* ?? 撉冽撅??? */
+/* ?€?€ 撉冽撅??€?€ */
 .ranking-card.skeleton {
   pointer-events: none;
   border-color: transparent;
@@ -1652,7 +1652,7 @@ mark {
   transform: translateX(-50%) translateY(0);
 }
 
-/* ?? A1 ?梢?擐? ????????????????????????????????????? */
+/* ?€?€ A1 ?梢?擐? ?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€?€ */
 #a1-hero {
   position: relative;
   margin-bottom: 14px;
@@ -2332,7 +2332,7 @@ mark {
   letter-spacing: 1px;
 }
 
-/* �w�w Tactical HUD Ranking Upgrade �w�w */
+/* ww Tactical HUD Ranking Upgrade ww */
 .ranking-card { position: relative; overflow: hidden; border-left: 3px solid var(--border); transition: transform 0.25s ease, box-shadow 0.25s ease; }
 .ranking-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, rgba(24,198,167,0.02) 0%, transparent 100%); pointer-events: none; }
 .ranking-card.rank-1 { border-left-color: #f3c14b; background: linear-gradient(135deg, rgba(243,193,75,0.05) 0%, var(--surface) 100%); }
@@ -2342,7 +2342,7 @@ mark {
 .digital-signature-mini { font-family: 'Oxanium', monospace; font-size: 8px; color: rgba(24, 198, 167, 0.3); letter-spacing: 1px; margin-top: 8px; border-top: 1px dashed rgba(24, 198, 167, 0.1); padding-top: 4px; }
 .ranking-card:active { transform: scale(0.98); background: var(--surface-2); }
 
-/* �w�w Audit Platform Upgrade �w�w */
+/* ww Audit Platform Upgrade ww */
 .audit-platform-container { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 15px; }
 .audit-platform-card { background: rgba(24, 198, 167, 0.05); border: 1px solid rgba(24, 198, 167, 0.15); border-radius: 8px; padding: 12px; position: relative; overflow: hidden; }
 .audit-platform-card::after { content: 'VERIFIED'; position: absolute; top: 5px; right: 5px; font-size: 8px; font-weight: 900; color: rgba(24, 198, 167, 0.2); transform: rotate(15deg); border: 1px solid rgba(24, 198, 167, 0.2); padding: 1px 4px; border-radius: 2px; }
@@ -2354,7 +2354,7 @@ mark {
 .matrix-decode-text { color: var(--accent) !important; text-shadow: 0 0 8px var(--accent); }
 
 
-/* �w�w Group Card Premium Upgrade �w�w */
+/* ww Group Card Premium Upgrade ww */
 .group-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px; position: relative; box-shadow: var(--depth-1); }
 .group-card h3 { font-size: 14px; font-weight: 900; color: var(--accent); margin-bottom: 12px; border-bottom: 1px solid rgba(24, 198, 167, 0.2); padding-bottom: 8px; font-family: 'Oxanium', sans-serif; letter-spacing: 1px; }
 .member-list { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -2386,10 +2386,11 @@ mark {
   color: var(--muted);
 }
 
-.top6-grid {
+.top6-grid, .top6-grid-compact {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  width: 100% !important;
 }
 
 /* 榮耀卡片基底 */

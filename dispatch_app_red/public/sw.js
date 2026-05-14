@@ -1,5 +1,5 @@
 /* Service Worker — 手機靜態資源快取 */
-const CACHE = 'dispatch-mobile-v20260514';
+const CACHE = 'dispatch-mobile-v20260514-v3';
 const ASSETS = [
   '/mobile.html',
   '/mobile.css',

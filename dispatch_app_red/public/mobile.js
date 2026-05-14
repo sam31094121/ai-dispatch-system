@@ -848,8 +848,14 @@ function render(report) {
   // 公司整體統計欄位（整合總盤、雙平台總表）禁止在員工視圖顯示
   // stat strip / renderSummary / renderDualTotals 已全數停用
 
-  renderTop6GloryBoard(report.ranking);
-  renderRankings(report.ranking);
+  // 強制排序，防止數據源順序異常
+  const sortedRanking = [...(report.ranking || [])].sort((a, b) => (a.rank || 999) - (b.rank || 999));
+  
+  renderTop6GloryBoard(sortedRanking);
+  renderRankings(sortedRanking);
+  
+  // 強制所有區塊顯示，防止被隱藏
+  document.querySelectorAll('section.panel').forEach(s => s.style.setProperty('display', 'block', 'important'));
   renderGroups(report.groups, report.ranking);
   renderAudit(report.auditNotes, report.excludedEmployees, report.auditWarnings);
   animateScoreFills();

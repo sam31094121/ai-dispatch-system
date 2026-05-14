@@ -455,6 +455,8 @@ body.command-center {
         margin: 0 !important;
         border: none !important;
         border-radius: 0 !important;
+        overflow-y: auto !important; /* 補上缺失的滑動屬性 */
+        -webkit-overflow-scrolling: touch;
     }
 }
 
