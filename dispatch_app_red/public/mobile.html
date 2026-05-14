@@ -153,6 +153,60 @@
     /* 4. 移除固定位置遮擋層 */
     body.mobile-command-center::after, .screen-overlay-scan, .lens-flare-overlay { display: none !important; }
   </style>
+  <!-- ══ 捲動守衛：全面禁止螢幕卡住，確保手動上下滑動永遠可用 ══ -->
+  <script>
+  (function() {
+    function guardScroll() {
+      // 最高優先級 inline style，覆蓋所有 CSS（含 !important）
+      [document.documentElement, document.body].forEach(function(el) {
+        el.style.setProperty('overflow-y', 'auto', 'important');
+        el.style.setProperty('overflow-x', 'hidden', 'important');
+        el.style.setProperty('height', 'auto', 'important');
+        el.style.setProperty('max-height', 'none', 'important');
+        el.style.setProperty('position', 'relative', 'important');
+        el.style.setProperty('touch-action', 'pan-y', 'important');
+        el.style.setProperty('overscroll-behavior-y', 'auto', 'important');
+      });
+      var ids = ['app-shell', 'ranking', 'ranking-list', 'elite-board', 'groups'];
+      ids.forEach(function(id) {
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.style.setProperty('overflow', 'visible', 'important');
+        el.style.setProperty('height', 'auto', 'important');
+        el.style.setProperty('max-height', 'none', 'important');
+        el.style.setProperty('touch-action', 'pan-y', 'important');
+      });
+      var main = document.querySelector('main');
+      if (main) {
+        main.style.setProperty('overflow', 'visible', 'important');
+        main.style.setProperty('height', 'auto', 'important');
+      }
+    }
+
+    // ① 立即執行（此 script 是 body 第一個 JS）
+    guardScroll();
+
+    // ② DOM 解析完成後再執行一次
+    document.addEventListener('DOMContentLoaded', guardScroll);
+
+    // ③ 所有資源（CSS、圖片）載入完成後再執行
+    window.addEventListener('load', guardScroll);
+
+    // ④ 使用者從其他 App 回到頁面時執行
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) guardScroll();
+    });
+
+    // ⑤ 頁面初始化的前 12 秒，每 2 秒巡查一次（攔截任何延遲載入的 CSS 所造成的鎖定）
+    var tick = 0;
+    var watcher = setInterval(function() {
+      guardScroll();
+      tick++;
+      if (tick >= 6) clearInterval(watcher);
+    }, 2000);
+  })();
+  </script>
+
   <div class="lens-flare-overlay" id="lens-flare"></div>
 
   <!-- 雙重保障啟動畫面：生物識別系統 -->
