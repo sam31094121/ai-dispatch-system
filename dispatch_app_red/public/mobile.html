@@ -220,6 +220,13 @@
       .glory-card::before { display: none !important; }
       .glory-beam { display: none !important; }
     }
+    /* 隱藏員工不需要的功能：廣播與審計 */
+    #audit, 
+    #audit-result,
+    .bottom-nav a[href="broadcast.html"],
+    .bottom-nav a[href="#audit"] {
+      display: none !important;
+    }
   </style>
 
   <script src="/utils.js?v=20260511-ULTRA" defer></script>
