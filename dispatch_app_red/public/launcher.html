@@ -44,10 +44,26 @@
   </div>
 
   <script>
-    // 啟動器強制手機版導向
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetPage = urlParams.get('page') || 'index.html';
+    const isOptimize = urlParams.get('autoOptimize') === '1';
+    const isFast = urlParams.get('fast') === '1';
+
+    if (isOptimize) {
+      document.querySelector('.loading-text').textContent = 'AUTONOMOUS OPTIMIZATION ENGAGED';
+      document.querySelector('.loading-text').style.color = '#f3c14b';
+      document.querySelector('.biometric-scan').style.background = '#f3c14b';
+      document.querySelector('.biometric-scan').style.boxShadow = '0 0 15px #f3c14b';
+    }
+
+    // 啟動器導向
     setTimeout(() => {
-      window.location.href = 'index.html';
-    }, 3000);
+      let nextUrl = targetPage;
+      if (isOptimize) {
+        nextUrl += (nextUrl.includes('?') ? '&' : '?') + 'autoOptimize=1';
+      }
+      window.location.href = nextUrl;
+    }, isFast ? 1500 : 3000);
   </script>
 </body>
 </html>

@@ -74,32 +74,23 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
   } catch(e) {}
 })();
 
-// ── Project Genesis: 自動化視察與感知引擎 ──
+// ── 感知引擎：rAF 節流，只更新 CSS 變數，不旋轉整個 app ──
 function initAutoAesthetic() {
-    const shell = document.getElementById('app-shell');
-    window.addEventListener('deviceorientation', (e) => {
-        if (!e.gamma || !e.beta) return;
-        
-        // 1. 背景視差 (原有)
-        const x = e.gamma / 15; 
-        const y = e.beta / 15;
-        document.body.style.setProperty('--parallax-x', `${x}px`);
-        document.body.style.setProperty('--parallax-y', `${y}px`);
-        
-        // 2. 3D 空間面板傾斜 (新增)
-        if (shell) {
-            const rotX = (e.beta - 45) / 10; // 以 45 度為基準
-            const rotY = e.gamma / 10;
-            shell.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
-        }
+  let rafPending = false;
+  let lx = 0, ly = 0;
+  window.addEventListener('deviceorientation', (e) => {
+    lx = e.gamma || 0; ly = e.beta || 0;
+    if (rafPending) return;
+    rafPending = true;
+    requestAnimationFrame(() => {
+      document.body.style.setProperty('--parallax-x', (lx / 20).toFixed(1) + 'px');
+      document.body.style.setProperty('--parallax-y', (ly / 20).toFixed(1) + 'px');
+      rafPending = false;
     });
-
-    // 觸覺回饋...
-    document.querySelectorAll('button').forEach(btn => {
-        btn.addEventListener('click', () => {
-            if (navigator.vibrate) navigator.vibrate(15); // 微秒級脈衝震動
-        });
-    });
+  }, { passive: true });
+  document.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => { if (navigator.vibrate) navigator.vibrate(12); }, { passive: true });
+  });
 }
 initAutoAesthetic();
 
@@ -580,46 +571,46 @@ function setLoading() {
 }
 const GLORY_TEMPLATES = {
   1: {
-    title: "最高榮耀主力", badge: "冠軍榮耀",
-    reason: "因為本輪綜合權重分數與三項主指標領先，因此正式進入前六名。",
-    mReason: "因綜合權重與三主指標領先，正式進入前六。",
-    summary: "本輪屬於全面領先型主力，優勢在整體戰力全場最高。",
-    mSummary: "屬於全面領先型主力。"
+    title: "頂尖戰略執行官", badge: "DIAMOND AUTH",
+    reason: "偵測到核心指標全面突破，AI 綜合權重居全場之冠，正式授勳頂尖執行官。",
+    mReason: "核心指標全面突破，AI 權重全場第一。",
+    summary: "具備極致的數據推進力與執行穩定性，為本輪戰略核心。",
+    mSummary: "極致推進力與穩定性。"
   },
   2: {
-    title: "核心榮耀主力", badge: "正式前二",
-    reason: "因為本輪三項主指標維持高檔且結構完整，因此正式進入前六名。",
-    mReason: "因主指標高檔且結構完整，正式進入前六。",
-    summary: "本輪屬於高厚度型主力，優勢在數字完整與穩定。",
-    mSummary: "屬於高厚度型主力。"
+    title: "首席營運領航員", badge: "GOLD RESERVE",
+    reason: "高價值資產對齊率 100%，各項增長曲線符合 AI 優化預期，正式鎖定領航席位。",
+    mReason: "資產對齊率 100%，增長符合 AI 預期。",
+    summary: "高厚度戰力輸出，在穩定性與爆發力之間取得完美平衡。",
+    mSummary: "高厚度戰力輸出，表現完美。"
   },
   3: {
-    title: "高量能榮耀主力", badge: "正式前三",
-    reason: "因為本輪追續單數量全場最高且量能偏強，因此正式進入前六名。",
-    mReason: "因追續單數量全場最高，正式進入前六。",
-    summary: "本輪屬於高單數推進型主力，優勢在數量推進力極強。",
-    mSummary: "屬於高單數推進型主力。"
+    title: "量能推進特遣員", badge: "MOMENTUM CORE",
+    reason: "追續單動能爆發，單日處理頻率超越系統均值 180%，獲選量能推進核心。",
+    mReason: "追續單動能爆發，處理頻率超越均值。",
+    summary: "高頻率推進型主力，優勢在於極強的市場適應力與滲透度。",
+    mSummary: "高頻推進主力，滲透度極強。"
   },
   4: {
-    title: "高推進榮耀主力", badge: "正式前四",
-    reason: "因為本輪全部總業績與追續金額表現強，因此正式進入前六名。",
-    mReason: "因總業績與追續金額強，正式進入前六。",
-    summary: "本輪屬於高推進型主力，優勢在整體推進效率高。",
-    mSummary: "屬於高推進型主力。"
+    title: "高效價值構築師", badge: "BOOST PROTOCOL",
+    reason: "業績結算結構精準，關鍵路徑轉換率達標，正式列入高效價值矩陣。",
+    mReason: "業績結構精準，關鍵路徑轉換率達標。",
+    summary: "高效執行型主力，優勢在於資源配置精準且轉化率高。",
+    mSummary: "資源配置精準，轉化率高。"
   },
   5: {
-    title: "高客單榮耀主力", badge: "正式前五",
-    reason: "因為本輪追續客單價全場最高且品質偏強，因此正式進入前六名。",
-    mReason: "因追續客單價全場最高，正式進入前六。",
-    summary: "本輪屬於高客單價型主力，優勢在單筆成交價值突出。",
-    mSummary: "屬於高客單價型主力。"
+    title: "精密客單優化師", badge: "VALUE MAX",
+    reason: "追續客單價觸及系統高位點，單筆產值具備高度示範意義，入選精密優化名單。",
+    mReason: "客單價觸及高位點，單筆產值示範強。",
+    summary: "精緻化運營型主力，優勢在於精準鎖定高價值交易節點。",
+    mSummary: "鎖定高價值節點，運營精緻。"
   },
   6: {
-    title: "穩定成長榮耀主力", badge: "正式前六",
-    reason: "因為本輪實收與全部總業績同步提升且指標完整，因此正式進入前六名。",
-    mReason: "因實收與總業績同步提升，正式進入前六。",
-    summary: "本輪屬於穩定成長型主力，優勢在整體表現平均。",
-    mSummary: "屬於穩定成長型主力。"
+    title: "數位資產維護官", badge: "DIGITAL ASSET",
+    reason: "實收指標穩定爬升，數據鏈路完整且無異常偏移，獲封數位資產維護官。",
+    mReason: "實收穩定爬升，數據鏈路完整無偏移。",
+    summary: "成長穩健型主力，優勢在於持續產出且風險控制極佳。",
+    mSummary: "持續產出，風險控制極佳。"
   }
 };
 
@@ -910,40 +901,58 @@ function renderRankings(rankings) {
     `;
   }).join('');
 
-  // 延遲啟動動畫與解碼
+  // 延遲啟動：score bar 先走，decode 依序錯開（每張卡間隔 80ms）
   setTimeout(() => {
     refs.rankingList.querySelectorAll('.score-fill').forEach(el => {
       el.style.width = el.getAttribute('data-pct') + '%';
     });
-    refs.rankingList.querySelectorAll('.decode-target').forEach(el => {
-      const val = el.getAttribute('data-val');
-      decodeNumberEffect(el, val, 1000 + Math.random() * 500);
+    // 錯開 decode 動畫，避免 20+ rAF 同時競爭
+    refs.rankingList.querySelectorAll('.decode-target').forEach((el, i) => {
+      setTimeout(() => {
+        decodeNumberEffect(el, el.getAttribute('data-val'), 700);
+      }, i * 60);
     });
 
-    // 3D 觸控傾斜效果（ranking 卡片）
-    refs.rankingList.querySelectorAll('.ranking-card').forEach(card => {
-      card.addEventListener('touchmove', e => {
-        const touch = e.touches[0];
-        const rect = card.getBoundingClientRect();
-        const x = touch.clientX - rect.left;
-        const y = touch.clientY - rect.top;
-        const rotX = ((y / rect.height) - 0.5) * -6;
-        const rotY = ((x / rect.width) - 0.5) * 6;
-        card.style.transform = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.01,1.01,1.01)`;
-      }, { passive: true });
-      card.addEventListener('touchend', () => {
-        card.style.transform = '';
-      }, { passive: true });
-      card.addEventListener('mousemove', e => {
-        const rect = card.getBoundingClientRect();
-        const rotX = ((e.clientY - rect.top) / rect.height - 0.5) * -8;
-        const rotY = ((e.clientX - rect.left) / rect.width - 0.5) * 8;
-        card.style.transform = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.01,1.01,1.01)`;
-      });
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = '';
+    // 3D tilt：用 rAF 節流，事件委派到容器（不是每張卡各自綁）
+    let tiltRaf = false;
+    let tiltCard = null, tiltRX = 0, tiltRY = 0;
+    refs.rankingList.addEventListener('mousemove', e => {
+      tiltCard = e.target.closest('.ranking-card');
+      if (!tiltCard) return;
+      const r = tiltCard.getBoundingClientRect();
+      tiltRX = ((e.clientY - r.top) / r.height - 0.5) * -8;
+      tiltRY = ((e.clientX - r.left) / r.width - 0.5) * 8;
+      if (tiltRaf) return;
+      tiltRaf = true;
+      requestAnimationFrame(() => {
+        if (tiltCard) tiltCard.style.transform = `perspective(800px) rotateX(${tiltRX.toFixed(2)}deg) rotateY(${tiltRY.toFixed(2)}deg) scale3d(1.01,1.01,1.01)`;
+        tiltRaf = false;
       });
     });
+    refs.rankingList.addEventListener('mouseleave', e => {
+      const card = e.target.closest?.('.ranking-card');
+      if (card) card.style.transform = '';
+      tiltCard = null;
+    }, true);
+    // Touch tilt（同樣 rAF 節流）
+    let touchRaf = false;
+    refs.rankingList.addEventListener('touchmove', e => {
+      const t = e.touches[0];
+      const card = document.elementFromPoint(t.clientX, t.clientY)?.closest('.ranking-card');
+      if (!card) return;
+      const r = card.getBoundingClientRect();
+      const rx = ((t.clientY - r.top) / r.height - 0.5) * -5;
+      const ry = ((t.clientX - r.left) / r.width - 0.5) * 5;
+      if (touchRaf) return;
+      touchRaf = true;
+      requestAnimationFrame(() => {
+        card.style.transform = `perspective(800px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) scale3d(1.01,1.01,1.01)`;
+        touchRaf = false;
+      });
+    }, { passive: true });
+    refs.rankingList.addEventListener('touchend', () => {
+      refs.rankingList.querySelectorAll('.ranking-card').forEach(c => { c.style.transform = ''; });
+    }, { passive: true });
   }, 100);
 }
 
@@ -1274,20 +1283,61 @@ function initActiveNav() {
 function hideSplashScreen() {
   const splash = document.getElementById('splash-screen');
   const skeleton = document.getElementById('initial-skeleton');
-  
-  if (skeleton) {
-    skeleton.style.display = 'none';
-  }
 
+  if (skeleton) skeleton.style.display = 'none';
   if (!splash) return;
-  
+
+  const splashText = splash.querySelector('.splash-text');
+  const decodeEl = splash.querySelector('.cyber-decoding-text');
+
+  // 倒數確認動畫
+  if (decodeEl) decodeEl.textContent = 'DATA VERIFIED // READY';
+  if (splashText) splashText.textContent = '✓ AI 數據核對完畢';
+
   setTimeout(() => {
     splash.classList.add('fade-out');
-    const splashText = splash.querySelector('.splash-text');
-    if (splashText) splashText.textContent = "AI 數據核對完畢";
     setTimeout(() => splash.remove(), 800);
-  }, 400);
+  }, 500);
 }
+
+// ── Pull-to-Refresh 下拉更新 ──
+(function initPullToRefresh() {
+  let startY = 0;
+  let pulling = false;
+  const threshold = 72;
+
+  const indicator = document.createElement('div');
+  indicator.id = 'pull-refresh-indicator';
+  indicator.innerHTML = '↓ 下拉更新資料';
+  document.getElementById('app-shell')?.prepend(indicator);
+
+  document.addEventListener('touchstart', (e) => {
+    if (window.scrollY === 0) { startY = e.touches[0].clientY; pulling = true; }
+  }, { passive: true });
+
+  document.addEventListener('touchmove', (e) => {
+    if (!pulling) return;
+    const dy = e.touches[0].clientY - startY;
+    if (dy > 10) {
+      indicator.style.height = Math.min(dy, threshold) + 'px';
+      indicator.style.opacity = Math.min(dy / threshold, 1);
+      indicator.textContent = dy >= threshold ? '↑ 放開即更新' : '↓ 下拉更新資料';
+    }
+  }, { passive: true });
+
+  document.addEventListener('touchend', (e) => {
+    if (!pulling) return;
+    const dy = e.changedTouches[0].clientY - startY;
+    pulling = false;
+    indicator.style.height = '0';
+    indicator.style.opacity = '0';
+    indicator.textContent = '↓ 下拉更新資料';
+    if (dy >= threshold) {
+      showToast('正在更新最新資料…');
+      loadData();
+    }
+  }, { passive: true });
+}());
 
 // ── 全線串連：SSE 即時推播 ──
 function initRealtimeSync() {
@@ -1303,26 +1353,30 @@ function startVitalPulse() {
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   let offset = 0;
+  let rafId = null;
 
   function draw() {
-    if (document.visibilityState === 'visible') {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.beginPath();
-      ctx.setLineDash([2, 2]);
-      ctx.strokeStyle = state.isSyncing ? 'rgba(243, 193, 75, 0.5)' : 'rgba(24, 198, 167, 0.6)';
-      ctx.lineWidth = 1;
-      
-      for (let x = 0; x < canvas.width; x++) {
-        const y = 10 + Math.sin((x + offset) * 0.2) * 5;
-        if (x === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      }
-      ctx.stroke();
-      offset += 1;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath();
+    ctx.setLineDash([2, 2]);
+    ctx.strokeStyle = state.isSyncing ? 'rgba(243,193,75,0.5)' : 'rgba(24,198,167,0.6)';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < canvas.width; x++) {
+      const y = 10 + Math.sin((x + offset) * 0.2) * 5;
+      x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
     }
-    requestAnimationFrame(draw);
+    ctx.stroke();
+    offset += 1;
+    rafId = requestAnimationFrame(draw);
   }
-  draw();
+
+  // 分頁隱藏時暫停，顯示時恢復
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) { cancelAnimationFrame(rafId); rafId = null; }
+    else if (!rafId) rafId = requestAnimationFrame(draw);
+  });
+
+  rafId = requestAnimationFrame(draw);
 }
 
 bindEvents();
@@ -1331,5 +1385,3 @@ initHeroTilt();
 initRealtimeSync();
 startVitalPulse();
 loadData();
-initRealtimeSync();
-$finalLogic

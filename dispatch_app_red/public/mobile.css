@@ -461,8 +461,8 @@ h2 {
   z-index: 100;
   padding: 10px 4px;
   background: rgba(10, 15, 24, 0.6);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--glass-border);
 }
 
@@ -500,11 +500,10 @@ h2 {
 
 .ranking-card {
   animation: cardEnter3D 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
-  background: var(--glass);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: #101c2e;
   border: 1px solid var(--glass-border);
   box-shadow: var(--depth-1);
+  contain: layout style;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.3, 1);
   overflow: hidden;
 }
@@ -1290,9 +1289,17 @@ main {
 .score-fill {
   height: 100%;
   width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: width;
+}
+
+/* shimmer 只給冠亞季軍，其他靜態 */
+.ranking-card.rank-1 .score-fill,
+.ranking-card.rank-2 .score-fill,
+.ranking-card.rank-3 .score-fill {
   background: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 50%, var(--accent) 100%);
   background-size: 200% 100%;
-  transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
   animation: score-bar-shimmer 2.5s linear infinite;
 }
 
@@ -1565,8 +1572,8 @@ mark {
   width: min(calc(100% - 32px), 480px);
   height: 68px;
   background: rgba(17, 26, 39, 0.85);
-  backdrop-filter: blur(25px) saturate(180%);
-  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 24px;
   display: flex;
@@ -2120,7 +2127,6 @@ mark {
   margin: 10px 0 20px;
   position: relative;
   overflow: hidden;
-  backdrop-filter: blur(12px);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.05);
 }
 
@@ -2250,7 +2256,7 @@ mark {
 .btn-cyber-secondary:active { transform: scale(0.96); background: rgba(0, 229, 255, 0.15); }
 
 .glitch-text {
-  animation: text-glitch 0.3s infinite;
+  animation: text-glitch 1.2s ease-in-out infinite;
 }
 
 @keyframes text-glitch {
@@ -2328,7 +2334,7 @@ mark {
 }
 
 /* �w�w Tactical HUD Ranking Upgrade �w�w */
-.ranking-card { position: relative; overflow: hidden; border-left: 3px solid var(--border); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.ranking-card { position: relative; overflow: hidden; border-left: 3px solid var(--border); transition: transform 0.25s ease, box-shadow 0.25s ease; }
 .ranking-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, rgba(24,198,167,0.02) 0%, transparent 100%); pointer-events: none; }
 .ranking-card.rank-1 { border-left-color: #f3c14b; background: linear-gradient(135deg, rgba(243,193,75,0.05) 0%, var(--surface) 100%); }
 .ranking-card.rank-2 { border-left-color: #e0e8f0; }
@@ -2669,4 +2675,37 @@ mark {
   .settlement-row,
   .s-val { animation: none !important; transition: none !important; }
 }
-$cssHide
+
+/* ── Pull-to-Refresh 指示條 ── */
+#pull-refresh-indicator {
+  height: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--accent);
+  background: rgba(24, 198, 167, 0.06);
+  border-bottom: 1px solid rgba(24, 198, 167, 0.15);
+  transition: height 0.15s ease, opacity 0.15s ease;
+  opacity: 0;
+}
+
+/* ── Score bar shimmer: 停用 reduced-motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .score-fill { animation: none !important; }
+}
+
+/* ── 搜尋高亮 ── */
+.ranking-card.is-highlight {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  animation: highlight-pulse 1.5s ease-out forwards;
+}
+
+@keyframes highlight-pulse {
+  0%   { outline-color: var(--accent); box-shadow: 0 0 0 4px rgba(24,198,167,0.3); }
+  100% { outline-color: transparent;  box-shadow: none; }
+}

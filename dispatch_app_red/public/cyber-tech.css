@@ -1261,82 +1261,67 @@ body.mobile-command-center::before {
     margin: 0;
 }
 
+/* --- 科技高端優化：前六名全像榮耀卡 (Holographic Glory Cards) --- */
 .glory-card {
-    /* 深色高級背景與玻璃質感 */
-    background-color: rgba(15, 18, 22, 0.85);
-    backdrop-filter: blur(12px);
+    background: rgba(10, 15, 25, 0.7);
+    backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 20px;
-    position: relative;
-    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-    display: flex;
-    flex-direction: column;
-    /* 科技粒子微光 */
-    background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-    background-size: 15px 15px;
-    /* 基礎 3D 陰影與內發光 */
-    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6), 0 8px 15px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    transform-style: preserve-3d;
 }
 
+.glory-card::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(circle at center, rgba(255,255,255,0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* 全像掃描線 (Holographic Scan Line) */
+.glory-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 255, 255, 0.05) 50%), 
+                linear-gradient(90deg, rgba(0, 255, 255, 0.02), rgba(0, 255, 255, 0.02));
+    background-size: 100% 4px, 4px 100%;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.3;
+}
+
+/* 排名專屬色調與光暈 */
+.glory-card.rank-1 { border-color: rgba(0, 255, 255, 0.5); box-shadow: 0 0 40px rgba(0, 255, 255, 0.2); }
+.glory-card.rank-2 { border-color: rgba(243, 193, 75, 0.5); box-shadow: 0 0 35px rgba(243, 193, 75, 0.15); }
+.glory-card.rank-3 { border-color: rgba(255, 127, 80, 0.5); box-shadow: 0 0 30px rgba(255, 127, 80, 0.1); }
+.glory-card.rank-4, .glory-card.rank-5, .glory-card.rank-6 { border-color: rgba(255, 255, 255, 0.2); }
+
+/* 名次數字跳動感 */
+.glory-rank-label {
+    font-family: 'Oxanium', cursive;
+    text-shadow: 0 0 10px currentColor;
+    letter-spacing: 2px;
+}
+
+.glory-card.rank-1 .glory-rank-label { color: #00f2ff; }
+.glory-card.rank-2 .glory-rank-label { color: #f3c14b; }
+.glory-card.rank-3 .glory-rank-label { color: #ff7f50; }
+
+/* 核心數值解碼動畫 */
+.glory-score-value {
+    background: linear-gradient(to bottom, #fff, #888);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 900;
+}
+
+/* 互動：滑動時的光學偏移 */
 .glory-card:hover {
-    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.05), 0 12px 30px rgba(0, 0, 0, 0.9);
-}
-
-/* 桌面版排版：分兩排，1號最大，2/3號次大，4/5/6號較小 */
-@media (min-width: 1024px) {
-    .glory-board-container {
-        width: 100%;
-        min-height: 55vh; /* 前六名卡片區整體高度：首頁首屏高度的55％到65％ */
-        margin: 20px 0;
-    }
-    
-    .top6-grid {
-        display: grid;
-        grid-template-columns: repeat(30, 1fr);
-        gap: 24px;
-        padding: 10px;
-    }
-    
-    /* 第一排總高度55%，第二排45% -> 透過內容與 align-items 拉伸或由子元素自適應 */
-    .glory-card.rank-1 { grid-column: span 12; transform: scale(1.05); } /* 約40%寬度，最大 */
-    .glory-card.rank-2 { grid-column: span 9; } /* 約30%寬度，左右對稱 */
-    .glory-card.rank-3 { grid-column: span 9; } /* 約30%寬度，左右對稱 */
-    .glory-card.rank-4 { grid-column: span 10; transform: scale(0.96); } /* 第二排33%，略縮 */
-    .glory-card.rank-5 { grid-column: span 10; transform: scale(0.96); }
-    .glory-card.rank-6 { grid-column: span 10; transform: scale(0.96); }
-    
-    .glory-card:hover { transform: translateY(-5px) scale(1.06); }
-    .glory-card.rank-4:hover, .glory-card.rank-5:hover, .glory-card.rank-6:hover { transform: translateY(-5px) scale(0.98); }
-    
-    .glory-layer-top { flex: 0 0 20%; margin-bottom: 20px; }
-    .glory-layer-mid { flex: 0 0 45%; margin-bottom: 20px; }
-    .glory-layer-bot { flex: 0 0 35%; }
-    
-    .mobile-text { display: none !important; }
-    .desktop-text { display: inline-block; }
-}
-
-/* 手機版排版：單列 */
-@media (max-width: 1023px) {
-    .glory-board-container {
-        width: 100%;
-        margin: 10px 0;
-        padding: 15px 10px;
-    }
-    
-    .top6-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    .glory-layer-top { flex: 0 0 18%; margin-bottom: 12px; }
-    .glory-layer-mid { flex: 0 0 50%; margin-bottom: 12px; }
-    .glory-layer-bot { flex: 0 0 32%; }
-    
-    .mobile-text { display: inline-block; }
-    .desktop-text { display: none !important; }
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(15, 25, 40, 0.8);
 }
 
 /* --- 卡片三層結構細節 --- */

@@ -47,9 +47,8 @@ const server = app.listen(appConfig.port, async () => {
   console.log(`Dispatch app listening at ${appUrl}`);
   
   openPages.forEach((page, index) => {
-    // 稍微延遲開啟，避免瀏覽器同時處理多個請求造成競爭
     setTimeout(() => {
-      const targetUrl = page.startsWith('http') ? page : `${appUrl}/launcher.html?page=${page}`;
+      const targetUrl = page.startsWith('http') ? page : `${appUrl}/${page}`;
       scheduleBrowserOpen(targetUrl);
     }, index * 500);
   });

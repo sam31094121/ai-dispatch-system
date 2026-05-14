@@ -52,9 +52,13 @@ async function startServer() {
     return false;
 }
 
-function openBrowser(page = 'mobile.html') {
-    const url = `http://localhost:${PORT}/launcher.html?page=${page}&fast=1`;
-    log(`正在開啟戰情室: ${page}`, 'SUCCESS');
+function openBrowser(page = 'mobile.html', optimize = false) {
+    let url = `http://localhost:${PORT}/launcher.html?page=${page}&fast=1`;
+    if (optimize) {
+        url += '&autoOptimize=1';
+    }
+    
+    log(`正在開啟戰情室: ${page}${optimize ? ' [AI 優化模式]' : ''}`, 'SUCCESS');
     
     // 使用 msedge app 模式以獲得最優體驗
     const cmd = `start msedge --app="${url}"`;
@@ -62,34 +66,41 @@ function openBrowser(page = 'mobile.html') {
 }
 
 async function main() {
+    console.log('\x1b[95m' + `
+    ┌──────────────────────────────────────────────────┐
+    │  ZHAOGUI AI TURBO LAUNCHER - SYSTEM OPTIMIZED    │
+    └──────────────────────────────────────────────────┘
+    ` + '\x1b[0m');
+
     const page = process.argv[2] || 'mobile.html';
+    const optimize = process.argv.includes('--optimize');
     
-    // 1. 執行輕量級資料檢查 (立此類推)
+    // 1. 執行輕量級資料檢查
     log('正在執行啟動前資料校準...', 'INFO');
     try {
         const repairScript = path.join(PROJECT_ROOT, 'scripts', 'runSmartFix.js');
         if (fs.existsSync(repairScript)) {
-            // 同步執行以確保資料正確後才開啟網頁
             const { execSync } = require('child_process');
             execSync(`node "${repairScript}"`, { cwd: PROJECT_ROOT });
+            log('「立此類推」資料校準完成。', 'SUCCESS');
         }
     } catch (e) {
-        log('資料校準跳過', 'INFO');
+        log('資料校準跳過或無變動', 'INFO');
     }
 
-    // 2. 檢查是否已經運行
+    // 2. 檢查伺服器
     if (!(await isServerRunning())) {
         const ok = await startServer();
         if (!ok) process.exit(1);
     } else {
-        log('伺服器已在運行中，直接連結。', 'INFO');
+        log('伺服器已在運行中。', 'INFO');
     }
 
-    // 2. 啟動瀏覽器
-    openBrowser(page);
+    // 3. 啟動瀏覽器
+    openBrowser(page, optimize);
     
-    log('優化啟動程序完成。', 'SUCCESS');
-    setTimeout(() => process.exit(0), 500);
+    log('極速啟動程序已發動。系統鎖定中...', 'SUCCESS');
+    setTimeout(() => process.exit(0), 1000);
 }
 
 main();
