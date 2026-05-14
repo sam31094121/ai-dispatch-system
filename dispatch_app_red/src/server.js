@@ -41,7 +41,7 @@ const server = app.listen(appConfig.port, async () => {
   const address = server.address();
   const listenPort = typeof address === 'object' && address ? address.port : appConfig.port;
   const appUrl = `http://localhost:${listenPort}`;
-  const openPagesStr = process.env.OPEN_PAGES || process.env.OPEN_PAGE || 'mobile.html';
+  const openPagesStr = process.env.OPEN_PAGES || process.env.OPEN_PAGE || 'index.html';
   const openPages = openPagesStr.split(',').map(p => p.trim());
 
   console.log(`Dispatch app listening at ${appUrl}`);

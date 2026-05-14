@@ -4,7 +4,7 @@ cd /d "%~dp0"
 title 兆櫃系統 - 開機自動啟動安裝
 
 set "STARTUP_DIR=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup"
-set "TARGET_BAT=%~dp0啟動系統.bat"
+set "TARGET_BAT=%~dp0極速啟動.bat"
 set "VBS_PATH=%STARTUP_DIR%\兆櫃AI派單系統.vbs"
 
 echo =======================================================

@@ -396,9 +396,7 @@ body.command-center {
     min-height: 100vh;
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
+    display: block; /* 手機版改回 block 以確保捲動正常 */
     overflow-x: hidden;
 }
 

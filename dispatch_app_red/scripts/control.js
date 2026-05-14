@@ -131,7 +131,7 @@ async function connect() {
     log('正在開啟戰情室主引擎...', 'SUCCESS');
     
     // 設定要開啟的所有頁面
-    const openPages = ['mobile.html', 'index.html', 'broadcast.html'];
+    const openPages = ['index.html', 'mobile.html', 'broadcast.html'];
     
     const server = spawn('node', ['server.js'], {
       cwd: PROJECT_ROOT,

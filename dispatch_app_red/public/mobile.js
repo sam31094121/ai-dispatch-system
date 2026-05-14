@@ -1412,7 +1412,12 @@ function hideSplashScreen() {
   const skeleton = document.getElementById('initial-skeleton');
 
   if (skeleton) skeleton.style.display = 'none';
-  if (!splash) return;
+  if (!splash) {
+    // 若無 splash 也要確保可捲動
+    document.documentElement.style.overflowY = 'auto';
+    document.body.style.overflowY = 'auto';
+    return;
+  }
 
   const splashText = splash.querySelector('.splash-text');
   const decodeEl = splash.querySelector('.cyber-decoding-text');
@@ -1423,7 +1428,19 @@ function hideSplashScreen() {
 
   setTimeout(() => {
     splash.classList.add('fade-out');
-    setTimeout(() => splash.remove(), 800);
+    // 強制恢復捲動能力
+    document.documentElement.style.overflowY = 'auto';
+    document.body.style.overflowY = 'auto';
+    document.body.style.position = 'relative'; // 防止 fixed 鎖死
+    
+    setTimeout(() => {
+      splash.remove();
+      // 二次檢查：確保沒有任何東西擋住捲動
+      if (window.scrollY === 0 && document.body.scrollHeight > window.innerHeight) {
+         window.scrollTo(0, 1); // 輕微移動觸發渲染
+         window.scrollTo(0, 0);
+      }
+    }, 800);
   }, 500);
 }
 
