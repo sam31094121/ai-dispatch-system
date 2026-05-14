@@ -445,20 +445,18 @@ body.command-center {
     #app-shell::-webkit-scrollbar-thumb { background: var(--oil-gold-dark); border-radius: 10px; }
 }
 
-/* ── 手機版全螢幕規範：解放高度，確保捲動 ── */
+/* ── 手機版全螢幕規範 ── */
 @media (max-width: 1024px) {
     #app-shell, 
     .broadcast-shell,
     main.container {
         width: 100% !important;
-        height: auto !important; /* 解除高度鎖定 */
-        min-height: 100% !important;
+        min-height: 100vh !important;
         margin: 0 !important;
         border: none !important;
         border-radius: 0 !important;
-        overflow-y: visible !important; /* 讓內容溢出到 body 處理捲動 */
+        overflow-y: auto !important; /* 補上缺失的滑動屬性 */
         -webkit-overflow-scrolling: touch;
-        display: block !important;
     }
 }
 
