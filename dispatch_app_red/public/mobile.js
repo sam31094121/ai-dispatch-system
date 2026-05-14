@@ -61,9 +61,11 @@ window.onerror = function(msg, _url, lineNo, _col, _err) {
 
 // ── 裝置效能偵測：低階手機自動降載 ──
 const DEVICE_PERF = (function() {
-  const mem = navigator.deviceMemory || 4;        // GB，預設4
+  const mem = navigator.deviceMemory || 4;
   const cores = navigator.hardwareConcurrency || 4;
-  const isLow = mem <= 2 || cores <= 2;
+  // 手機裝置一律啟用低耗能模式：關閉 decode 動畫與高消耗 CSS，確保滑動流暢
+  const isMobile = /iPhone|iPad|iPod|Android|Mobile/i.test(navigator.userAgent);
+  const isLow = isMobile || mem <= 2 || cores <= 2;
   if (isLow) {
     document.documentElement.setAttribute('data-perf', 'low');
     // 直接在 head 插入 style 覆蓋，讓所有動畫靜止

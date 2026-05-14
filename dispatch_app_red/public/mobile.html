@@ -268,6 +268,17 @@
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
   </div>
 
+  <!-- 即時手機效能偵測：在所有 defer 腳本載入前執行，第一幀就停止所有高消耗動畫 -->
+  <script>
+    (function() {
+      if (/iPhone|iPad|iPod|Android|Mobile/i.test(navigator.userAgent)) {
+        document.documentElement.setAttribute('data-perf', 'low');
+        var s = document.createElement('style');
+        s.textContent = '[data-perf="low"] * { animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.1s !important; } [data-perf="low"] .glory-beam, [data-perf="low"] .rank-shine, [data-perf="low"] .scanner-ring, [data-perf="low"] .scanner-line { display:none !important; }';
+        document.head.appendChild(s);
+      }
+    })();
+  </script>
   <script src="/utils.js?v=20260511-ULTRA" defer></script>
   <script src="/sync-client.js?v=20260511-ULTRA" defer></script>
   <script src="/mobile.js?v=20260515-ranking-fix" defer></script>
