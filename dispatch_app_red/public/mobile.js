@@ -851,14 +851,36 @@ function render(report) {
   // 強制排序，防止數據源順序異常
   const sortedRanking = [...(report.ranking || [])].sort((a, b) => (a.rank || 999) - (b.rank || 999));
   
-  renderTop6GloryBoard(sortedRanking);
-  renderRankings(sortedRanking);
+  console.log(`[Render] 開始渲染資料，總計 ${sortedRanking.length} 位員工`);
+
+  try {
+    renderTop6GloryBoard(sortedRanking);
+  } catch (e) { console.error('Top6 渲染失敗', e); }
+
+  try {
+    renderRankings(sortedRanking);
+  } catch (e) { console.error('完整清單渲染失敗', e); }
   
   // 強制所有區塊顯示，防止被隱藏
   document.querySelectorAll('section.panel').forEach(s => s.style.setProperty('display', 'block', 'important'));
-  renderGroups(report.groups, report.ranking);
-  renderAudit(report.auditNotes, report.excludedEmployees, report.auditWarnings);
+  
+  try {
+    renderGroups(report.groups, report.ranking);
+    renderAudit(report.auditNotes, report.excludedEmployees, report.auditWarnings);
+  } catch (e) { console.error('分組或審計渲染失敗', e); }
+
   animateScoreFills();
+
+  // 渲染完畢後的捲動高度檢查：確保容器有被撐開
+  setTimeout(() => {
+    const h = document.body.scrollHeight;
+    console.log(`[Render] 渲染完成，當前總高度: ${h}px`);
+    if (h < window.innerHeight * 1.2 && sortedRanking.length > 10) {
+      console.warn('[Render] 高度異常，強制重置佈局高度');
+      document.body.style.height = 'auto';
+      document.documentElement.style.height = 'auto';
+    }
+  }, 1000);
 
   // 更新 AI 指揮中心跑馬燈 — 使用真實數據
   if (refs.aiNextStep) {
