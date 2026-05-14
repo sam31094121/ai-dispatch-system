@@ -841,6 +841,11 @@ function render(report) {
   // hero section dates + badge
   if (refs.heroSettlementDate) refs.heroSettlementDate.textContent = report.settlementDate;
   if (refs.heroDispatchDate)   refs.heroDispatchDate.textContent   = report.dispatchDate;
+  
+  // 同步到頂部標題與各處動態容器
+  const headerDate = document.getElementById('header-settlement-date');
+  if (headerDate) headerDate.textContent = report.settlementDate;
+  
   if (refs.auditResultHero)    {
     refs.auditResultHero.textContent = report.auditResult;
     refs.auditResultHero.classList.toggle('pass', auditPass);
@@ -1581,13 +1586,13 @@ initRealtimeSync();
 startVitalPulse();
 
 // 核心優化：開機保險絲
-// 啟動後 4.5 秒內若沒隱藏開機畫面，則強制作動
+// 啟動後 2 秒內若沒隱藏開機畫面（可能資料載入太慢），則強制作動，確保用戶能看到快取資料並捲動
 setTimeout(() => {
   const s = document.getElementById('splash-screen');
   if (s) {
     console.warn('[Safety-Trigger] 檢測到系統加載超時，執行暴力開機程序...');
     hideSplashScreen();
   }
-}, 4500);
+}, 2000);
 
 loadData();

@@ -184,7 +184,6 @@
     padding: 16px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(24, 198, 167, 0.05);
     position: relative;
-    overflow: hidden;
 }
 
 /* 面板動態流光邊框 */
@@ -455,7 +454,7 @@ body.command-center {
         margin: 0 !important;
         border: none !important;
         border-radius: 0 !important;
-        overflow-y: auto !important; /* 補上缺失的滑動屬性 */
+        overflow: visible !important; /* 解鎖，交由 body 捲動 */
         -webkit-overflow-scrolling: touch;
     }
 }

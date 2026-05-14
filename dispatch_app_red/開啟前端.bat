@@ -26,17 +26,18 @@ echo   [93m[4] [0m 僅重啟後端服務 (Restart Server)
 echo   [93m[Q] [0m 退出系統
 echo.
 echo   [96m------------------------------------------------------ [0m
-set /p choice=" [97m請選擇欲執行的項目 [A, T, 1-4, Q]:  [0m"
+set /p choice=" [97m請選擇欲執行的項目 [A, T, 1-4, Q] (3秒後自動啟動手機版):  [0m" <nul
+choice /c AT1234Q /t 3 /d 1 /n >nul
+set "choice_code=%errorlevel%"
 
-if /i "%choice%"=="A" goto launch_all
-if /i "%choice%"=="T" goto launch_turbo
-if /i "%choice%"=="1" set "PAGE=mobile.html" & goto launch
-if /i "%choice%"=="2" set "PAGE=index.html" & goto launch
-if /i "%choice%"=="3" set "PAGE=broadcast.html" & goto launch
-if /i "%choice%"=="4" set "PAGE=NONE" & goto launch
-if /i "%choice%"=="q" exit
-if /i "%choice%"=="" goto launch_turbo
-goto menu
+if "%choice_code%"=="1" goto launch_all
+if "%choice_code%"=="2" goto launch_turbo
+if "%choice_code%"=="3" set "PAGE=mobile.html" & goto launch
+if "%choice_code%"=="4" set "PAGE=index.html" & goto launch
+if "%choice_code%"=="5" set "PAGE=broadcast.html" & goto launch
+if "%choice_code%"=="6" set "PAGE=NONE" & goto launch
+if "%choice_code%"=="7" exit
+goto launch_process
 
 :launch_turbo
 set "IS_ALL=0"

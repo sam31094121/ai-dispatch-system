@@ -157,6 +157,7 @@
       <div class="brand-mini">
         <h1 id="main-title">AI 派單名次公告</h1>
         <div class="system-vitals">
+          <span class="date-label">結算日：<span id="header-settlement-date">--/--</span></span>
           <span id="audit-result" class="status-badge-mini">DATA VERIFIED</span>
         </div>
       </div>
@@ -231,8 +232,6 @@
     <nav class="bottom-nav" aria-label="主要導覽">
       <a href="#ranking">名次</a>
       <a href="#groups">分級</a>
-      <a href="broadcast.html" class="nav-highlight">🎤 廣播</a>
-      <a href="#audit">審計</a>
     </nav>
 
     <div id="search-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="search-title">
@@ -249,11 +248,10 @@
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
   </div>
 
-  <!-- ── 手機效能鎖：覆蓋所有 cyber-tech.css 的重效果 ── -->
+  <!-- ── 手機效能鎖：全面解鎖捲動能力（核心根治版） ── -->
   <style id="mobile-perf-override">
-    /* ── 捲動解鎖核心（放在 body 內確保覆蓋 head 的 cyber-tech.css）── */
     html, body {
-      overflow: auto !important;
+      overflow: visible !important;
       overflow-y: auto !important;
       overflow-x: hidden !important;
       height: auto !important;
@@ -261,60 +259,31 @@
       max-height: none !important;
       position: relative !important;
       -webkit-overflow-scrolling: touch !important;
-      touch-action: pan-y !important;
+      touch-action: pan-y !important; /* 確保垂直滑動權限 */
     }
     #app-shell {
       overflow: visible !important;
-      overflow-y: visible !important;
       height: auto !important;
       min-height: 100vh !important;
-      max-height: none !important;
+      display: block !important;
+      padding-bottom: 80px !important; /* 留出底導航空間 */
     }
     main {
       overflow: visible !important;
       height: auto !important;
-      max-height: none !important;
-      padding-bottom: 100px !important;
     }
-    section.panel, #ranking, #ranking-list, #elite-board, #groups {
-      overflow: visible !important;
-      height: auto !important;
-      max-height: none !important;
-    }
-
-    /* 核彈級：覆蓋 cyber-tech.css 的 !important backdrop-filter */
-    .panel, .ranking-card, .a1-hero-card, .hero-line-compact,
-    .lc-card, .a1-hero-grid > div {
+    
+    /* 效能優化：關閉昂貴的濾鏡 */
+    .panel, .ranking-card, .glory-card {
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
       background: #101c2e !important;
     }
-    /* 榮耀卡不需要 blur，用純色背景代替 */
-    .glory-card {
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-    }
-    /* 關閉 button:active 的無限閃爍 */
-    button:active, .icon-button:active, .mini-btn:active {
-      animation: none !important;
-      transform: scale(0.96) !important;
-    }
-    /* 手機關閉全域 CRT 掃描線（body::after 每幀重繪整個視口）*/
-    body.mobile-command-center::after { display: none !important; }
-    /* 關閉 cyber-tech 的 radar-scan（透明掃描層覆蓋整個畫面）*/
-    .screen-overlay-scan { display: none !important; }
-    /* 統一 panel 背景，避免各 CSS 衝突 */
-    .panel { background: linear-gradient(160deg,#141e2e 0%,#0f1824 100%) !important; }
-    /* 關閉手機不顯示的 glory-card::before 粒子層 */
-    @media (max-width: 768px) {
-      .glory-card::before { display: none !important; }
-      .glory-beam { display: none !important; }
-    }
-    /* 隱藏員工不需要的功能：廣播與審計 */
-    #audit, 
-    #audit-result,
-    .bottom-nav a[href="broadcast.html"],
-    .bottom-nav a[href="#audit"] {
+    
+    /* 移除所有可能遮擋滑動的透明層 */
+    body.mobile-command-center::after,
+    .screen-overlay-scan,
+    .lens-flare-overlay {
       display: none !important;
     }
   </style>
