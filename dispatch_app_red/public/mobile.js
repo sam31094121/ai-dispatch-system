@@ -1449,7 +1449,7 @@ function hideSplashScreen() {
 
 // ── 全線串連：SSE 即時推播 ──
 function initRealtimeSync() {
-  const sync = new RealtimeSyncEngine('/api/updates/stream', (data) => {
+  const sync = new RealtimeSyncEngine('/api/updates/stream', () => {
     updateSyncBadge('DATA PUSH', 'var(--accent-2)');
     loadData();
   });
