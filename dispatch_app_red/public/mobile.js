@@ -862,8 +862,8 @@ function render(report) {
     renderRankings(sortedRanking);
   } catch (e) { console.error('完整清單渲染失敗', e); }
   
-  // 強制所有區塊顯示，防止被隱藏
-  document.querySelectorAll('section.panel').forEach(s => s.style.setProperty('display', 'block', 'important'));
+  // 強制可見區塊顯示（排除 #audit，員工介面不顯示）
+  document.querySelectorAll('section.panel:not(#audit)').forEach(s => s.style.setProperty('display', 'block', 'important'));
   
   try {
     renderGroups(report.groups, report.ranking);
