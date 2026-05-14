@@ -28,8 +28,8 @@ function wantsHtmlDocument(req) {
 }
 
 function setStaticCacheHeaders(res, filePath) {
-  // HTML：no-cache（每次驗證，確保取得最新版本）
-  if (filePath.endsWith('.html')) {
+  // HTML / Service Worker：no-cache（每次驗證，確保取得最新版本）
+  if (filePath.endsWith('.html') || filePath.endsWith('sw.js')) {
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Vary', 'Accept-Encoding');
     return;
@@ -64,7 +64,7 @@ function createApp() {
   });
   app.use(express.static(appConfig.publicDir, {
     etag: true,
-    maxAge: 0,
+    cacheControl: false,
     setHeaders: setStaticCacheHeaders
   }));
 
