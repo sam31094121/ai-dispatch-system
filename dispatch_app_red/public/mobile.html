@@ -27,6 +27,37 @@
       height: auto !important;
       overflow: visible !important;
     }
+    /* 極致空間壓縮樣式補強 */
+    .section-head { margin-bottom: 6px !important; }
+    .ai-logic-box { padding: 8px 12px !important; margin-top: 6px !important; }
+    .glory-card { padding: 10px 12px !important; }
+    .glory-header { margin-bottom: 8px !important; }
+    .glory-name-label { font-size: 20px !important; }
+    
+    /* 快速索引導覽列 */
+    .quick-jump-bar {
+      display: flex;
+      gap: 8px;
+      margin: 12px 0;
+      padding: 4px 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .quick-jump-bar::-webkit-scrollbar { display: none; }
+    .jump-btn {
+      flex: 0 0 auto;
+      padding: 6px 16px;
+      border-radius: 99px;
+      background: rgba(24, 198, 167, 0.1);
+      border: 1px solid rgba(24, 198, 167, 0.3);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .jump-btn:active { background: var(--accent); color: #000; }
     /* 修正前六名網格在窄螢幕下的撐開問題 */
     .top6-grid-compact {
       display: flex !important;
@@ -174,6 +205,15 @@
             </div>
           </div>
           <button id="search-open" class="icon-button" type="button" aria-label="搜尋姓名">⌕</button>
+        </div>
+        
+        <!-- 23人快速跳轉索引 -->
+        <div class="quick-jump-bar">
+          <button class="jump-btn" onclick="document.getElementById('elite-board').scrollIntoView({behavior:'smooth'})">Top 6</button>
+          <button class="jump-btn" onclick="scrollToGroup('A1')">A1 主力</button>
+          <button class="jump-btn" onclick="scrollToGroup('A2')">A2 次主力</button>
+          <button class="jump-btn" onclick="scrollToGroup('B')">B 一般</button>
+          <button class="jump-btn" onclick="scrollToGroup('C')">C 觀察</button>
         </div>
         <div id="ranking-list" class="ranking-list"></div>
       </section>

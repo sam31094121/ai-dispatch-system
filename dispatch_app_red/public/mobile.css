@@ -1186,7 +1186,8 @@ main {
 }
 
 .ranking-card {
-  padding: 12px;
+  padding: 10px 12px;
+  scroll-margin-top: 130px; /* 增加捲動補償，防止被 sticky 索引列擋住 */
 }
 
 .ranking-card.is-highlight {
@@ -2650,8 +2651,8 @@ mark {
 
 /* 四項指標列（含迷你進度條）*/
 .glory-metrics-v2 {
-  display: flex; flex-direction: column; gap: 7px;
-  margin-bottom: 12px; position: relative; z-index: 1;
+  display: flex; flex-direction: column; gap: 5px; /* 縮減間距 (原7px) */
+  margin-bottom: 8px; position: relative; z-index: 1;
 }
 .gm-row {
   display: grid; grid-template-columns: 16px 80px 1fr auto;
@@ -2731,11 +2732,11 @@ mark {
 
 /* ── 個人業績結算明細區塊 ── */
 .settlement-block {
-  margin: 14px 0 10px;
-  background: rgba(24, 198, 167, 0.05);
-  border: 1px solid rgba(24, 198, 167, 0.18);
-  border-radius: 10px;
-  padding: 12px 14px;
+  margin: 10px 0 8px; /* 縮減 margin (原14px 0 10px) */
+  background: rgba(24, 198, 167, 0.04);
+  border: 1px solid rgba(24, 198, 167, 0.12);
+  border-radius: 8px;
+  padding: 10px 12px; /* 縮減 padding (原12px 14px) */
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -2757,8 +2758,8 @@ mark {
   grid-template-columns: 18px 1fr auto auto;
   align-items: center;
   gap: 6px;
-  padding: 6px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 4px 0; /* 縮減 padding (原6px) */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
 }
 
 .settlement-row:last-child {
@@ -2817,14 +2818,15 @@ mark {
 /* 排名勝負比較標籤 */
 .rank-comparison-tag {
   display: flex;
-  flex-direction: column;
-  gap: 5px;
-  margin: 10px 0 6px;
-  padding: 8px 12px;
-  background: rgba(0, 0, 0, 0.2);
-  border-left: 3px solid var(--accent);
-  border-radius: 0 8px 8px 0;
-  font-size: 12px;
+  flex-direction: row; /* 改為橫向排列節省垂直空間 */
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 8px 0 4px;
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.15);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 4px 4px 0;
+  font-size: 11px;
 }
 
 .compare-up {

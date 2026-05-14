@@ -979,6 +979,11 @@ function renderRankings(rankings) {
     // 生成數位簽章
     const signature = `DS-${Math.random().toString(16).slice(2, 10).toUpperCase()}`;
 
+    // 為每個分級的第一個人加上 ID 錨點，供快速跳轉使用
+    const groupAnchor = `group-anchor-${row.group}`;
+    const isFirstInGroup = !rankings.slice(0, index).some(r => r.group === row.group);
+    const anchorId = isFirstInGroup ? `id="${groupAnchor}"` : '';
+
     // 計算與上下名次的差距
     const prevRow = index > 0 ? rankings[index - 1] : null;
     const nextRow = index < rankings.length - 1 ? rankings[index + 1] : null;
@@ -1000,7 +1005,7 @@ function renderRankings(rankings) {
       : '';
 
     return `
-      <article class="ranking-card${rankClass}${hotZoneClass}" id="person-${safeId}">
+      <article class="ranking-card${rankClass}${hotZoneClass}" id="person-${safeId}" ${anchorId}>
         ${winnerBadge}
         <div class="ranking-top">
           <span class="rank-number">${rankLabel}</span>
@@ -1286,6 +1291,19 @@ function scrollToPerson(name) {
   el.classList.add('is-highlight');
   el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
+
+// 快速跳轉到分級首位
+window.scrollToGroup = function(groupCode) {
+  const el = document.getElementById(`group-anchor-${groupCode}`);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // 加上短暫高亮提示
+    el.style.borderColor = 'var(--accent)';
+    setTimeout(() => el.style.borderColor = '', 2000);
+  } else {
+    showToast(`本輪暫無 ${groupCode} 級成員`);
+  }
+};
 
 let toastTimer = null;
 function showToast(message) {
