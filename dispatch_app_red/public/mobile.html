@@ -12,13 +12,17 @@
   <meta property="og:title" content="Zhaogui AI Dispatch Mobile">
   <meta property="og:description" content="Mobile AI dispatch ranking and LINE announcement view">
   <meta property="og:type" content="website">
+  <!-- 字型：非阻塞載入（media=print trick） -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet"></noscript>
+  <!-- 關鍵 CSS：preload + 立即載入 -->
   <link rel="preload" href="/mobile.css?v=0511-mobile-v4" as="style">
-  <link rel="preload" href="/mobile.js?v=20260511-ULTRA" as="script">
   <link rel="stylesheet" href="/mobile.css?v=0511-mobile-v4">
-  <link rel="stylesheet" href="/cyber-tech.css?v=20260511-ULTRA">
+  <!-- 非關鍵 CSS：延遲載入 -->
+  <link rel="preload" href="/cyber-tech.css?v=20260511-ULTRA" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/cyber-tech.css?v=20260511-ULTRA"></noscript>
   <style>
     /* ── Project Genesis: 生物識別加載與軍規視覺 ── */
     #splash-screen {
