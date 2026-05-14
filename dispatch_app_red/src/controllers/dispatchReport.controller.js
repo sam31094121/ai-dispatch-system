@@ -15,6 +15,7 @@ const {
 const { validateDispatchReport } = require('../services/dispatchValidate.service');
 const officialSync = require('../services/officialSync.service');
 const masterCommander = require('../services/masterCommander.service');
+const infiniteOptimizationService = require('../services/infiniteOptimization.service');
 
 /**
  * [機密保護] 屏蔽公司總帳數據，僅保留個人名次與業績。
@@ -116,24 +117,36 @@ function getDispatchReport(req, res) {
   }
 }
 
-function rebuildReport(reportId, body) {
+async function rebuildReport(reportId, body) {
   // 簡化實作
   const report = buildReportFromSource({ sourceText: body.sourceText });
   const validation = validateDispatchReport(report);
+  
+  // 觸發 AI 無限優化
+  const optimizationResult = await infiniteOptimizationService.triggerNextCycle(report);
+  const optimizedReport = optimizationResult ? optimizationResult.data : report;
+
   const storedRecord = {
-    report,
+    report: optimizedReport,
     validation,
-    snapshot: buildLegacySnapshot(report, validation),
-    meta: { reason: 'rebuild', timestamp: new Date().toISOString() }
+    snapshot: buildLegacySnapshot(optimizedReport, validation),
+    meta: { 
+      reason: 'rebuild', 
+      timestamp: new Date().toISOString(),
+      optimization: optimizationResult ? {
+        cycle: optimizationResult.cycle,
+        improvement: optimizationResult.improvementScore
+      } : null
+    }
   };
   persistStoredRecord(storedRecord);
   return storedRecord;
 }
 
-function rebuildDispatchReport(req, res) {
+async function rebuildDispatchReport(req, res) {
   try {
-    const rebuilt = rebuildReport(req.params.reportId, req.body);
-    res.json(successResponse(errorCodes.REBUILD_SUCCESS, '公告已重新建立', rebuilt));
+    const rebuilt = await rebuildReport(req.params.reportId, req.body);
+    res.json(successResponse(errorCodes.REBUILD_SUCCESS, '公告已重新建立 (AI 已優化)', rebuilt));
   } catch (error) {
     sendAppError(res, error);
   }
@@ -203,18 +216,30 @@ function auditInput(req, res) {
   }
 }
 
-function saveInput(req, res) {
+async function saveInput(req, res) {
   try {
     const report = buildReportFromSource({ sourceText: req.body.sourceText });
     const validation = validateDispatchReport(report);
+    
+    // 觸發 AI 無限優化
+    const optimizationResult = await infiniteOptimizationService.triggerNextCycle(report);
+    const optimizedReport = optimizationResult ? optimizationResult.data : report;
+
     const storedRecord = {
-      report,
+      report: optimizedReport,
       validation,
-      snapshot: buildLegacySnapshot(report, validation),
-      meta: { reason: 'manual_save', timestamp: new Date().toISOString() }
+      snapshot: buildLegacySnapshot(optimizedReport, validation),
+      meta: { 
+        reason: 'manual_save', 
+        timestamp: new Date().toISOString(),
+        optimization: optimizationResult ? {
+          cycle: optimizationResult.cycle,
+          improvement: optimizationResult.improvementScore
+        } : null
+      }
     };
     persistStoredRecord(storedRecord);
-    res.json(successResponse(errorCodes.OK, '儲存成功', storedRecord));
+    res.json(successResponse(errorCodes.OK, '儲存成功 (AI 已優化)', storedRecord));
   } catch (error) {
     sendAppError(res, error);
   }

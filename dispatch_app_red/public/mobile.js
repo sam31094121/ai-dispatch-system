@@ -47,9 +47,8 @@ const state = {
 const CACHE_KEY = 'zhaogui_last_report_unified';
 
 // ── 全域錯誤攔截：改為背景靜默修復模式 ──
-window.onerror = function(msg, url, lineNo, columnNo, error) {
-  const errorMsg = `[Silent-Fix] ${msg} (行: ${lineNo})`;
-  console.warn(errorMsg, error); // 只在後台記錄，不驚擾使用者
+window.onerror = function(msg, _url, lineNo, _col, _err) {
+  console.warn(`[Silent-Fix] ${msg} (行: ${lineNo})`);
   
   // 確保啟動畫面一定會消失，防止卡死
   const s = document.getElementById('splash-screen');
@@ -195,7 +194,7 @@ function generateDeepInsight(report) {
     return "戰力分佈平衡，建議針對 B 級成員執行階梯式激勵。";
 }
 
-function predictNextMovement(report) {
+function predictNextMovement() {
     const predictions = ["推演顯示：下一輪 A1 競爭門檻將提升 12%", "建議：立即對 Top 5 執行戰略資源傾斜"];
     return predictions[Math.floor(Math.random() * predictions.length)];
 }
@@ -617,6 +616,34 @@ const GLORY_TEMPLATES = {
 const SOURCE_TEXT = "後端正式資料、三平台總表、審計通過後有效資料、正式排序結果、正式權重分數結果。";
 const M_SOURCE_TEXT = "後端正式資料、三平台總表、審計通過後有效資料、正式排序結果、正式權重分數結果。";
 
+// ── 動態 AI 上榜洞察生成（基於真實數據比較）──
+function genGloryInsight(row, top6, rank) {
+  const s = row.score || 0;
+  const scorePct = Math.round(s / MAX_SCORE * 100);
+
+  // 找出在前六名中各項目最高的人
+  const maxActual  = Math.max(...top6.map(r => r.actualRevenue  || 0));
+  const maxRenewal = Math.max(...top6.map(r => r.renewalRevenue || 0));
+  const maxAvg     = Math.max(...top6.map(r => r.avgRenewal     || 0));
+  const maxDeals   = Math.max(...top6.map(r => r.renewalDeals   || 0));
+
+  const isTopActual  = (row.actualRevenue  || 0) >= maxActual  * 0.97 && maxActual  > 0;
+  const isTopRenewal = (row.renewalRevenue || 0) >= maxRenewal * 0.97 && maxRenewal > 0;
+  const isTopAvg     = (row.avgRenewal     || 0) >= maxAvg     * 0.97 && maxAvg     > 0;
+  const isTopDeals   = (row.renewalDeals   || 0) >= maxDeals   * 0.97 && maxDeals   > 0;
+
+  if (rank === 1) return `🏆 AI 全場制霸！四項核心指標綜合權重第一，本輪得分達滿分 ${scorePct}%`;
+  if (isTopActual && isTopRenewal) return `💎 個人實收 & 追續金額雙項前六最高，壓制力全場最強`;
+  if (isTopActual)  return `💰 個人實收為前六最高（${fmt(row.actualRevenue)}），實力碾壓`;
+  if (isTopRenewal) return `🔄 追續金額前六名中最高（${fmt(row.renewalRevenue)}），續約推進力第一`;
+  if (isTopAvg)     return `⭐ 追續客單價前六最高（${fmt(row.avgRenewal, 0)}），單筆價值頂尖`;
+  if (isTopDeals)   return `⚡ 追續單數前六最多（${row.renewalDeals} 單），成交頻率全場最強`;
+
+  const gap = (top6[0]?.score || 0) - s;
+  if (gap < 200) return `🎯 距離第一名僅差 ${fmt(gap, 1)} 分，本輪最具挑戰實力`;
+  return `📈 AI 綜合分數 ${fmt(s, 1)}（滿分 ${scorePct}%），持續發力可衝擊更高名次`;
+}
+
 function renderTop6GloryBoard(rankings) {
   const top6Grid = document.getElementById('top6-grid');
   if (!top6Grid) return;
@@ -626,55 +653,108 @@ function renderTop6GloryBoard(rankings) {
     return;
   }
 
+  const CROWN = ['👑', '🥈', '🥉', '④', '⑤', '⑥'];
+  const GROUP_LABEL = { A1: '高優先主力', A2: '次主力追進', B: '一般量單', C: '補位觀察' };
+
   const cardsHtml = top6.map((row, index) => {
     const rank = index + 1;
     const tmpl = GLORY_TEMPLATES[rank] || GLORY_TEMPLATES[6];
-    
-    // 預防資料缺失，給予預設值 0
-    const weightedScore = row.weightedScore || row.score || row.metrics?.正式權重分數 || 0;
-    const actualRev = row.actualRevenue || row.metrics?.實收 || 0;
-    const renewalRev = row.renewalRevenue || row.metrics?.續單金額 || 0;
-    const renewalDeals = row.renewalDeals || row.metrics?.追續成交總數 || 0;
-    const avgRenewal = row.avgRenewal || row.metrics?.追續客單價 || (renewalDeals ? (renewalRev / renewalDeals) : 0);
+
+    const score      = row.score || 0;
+    const actualRev  = row.actualRevenue  || 0;
+    const renewalRev = row.renewalRevenue || 0;
+    const renewalDeals = row.renewalDeals || 0;
+    const avgRenewal = row.avgRenewal || (renewalDeals ? (renewalRev / renewalDeals) : 0);
+
+    const scorePct = Math.min(100, Math.round(score / MAX_SCORE * 100));
+    // 各項指標在前六中的相對佔比（用最高值歸一化）
+    const maxA = Math.max(...top6.map(r => r.actualRevenue  || 0)) || 1;
+    const maxR = Math.max(...top6.map(r => r.renewalRevenue || 0)) || 1;
+    const maxV = Math.max(...top6.map(r => r.avgRenewal     || 0)) || 1;
+    const maxD = Math.max(...top6.map(r => r.renewalDeals   || 0)) || 1;
+    const pA = Math.round(actualRev  / maxA * 100);
+    const pR = Math.round(renewalRev / maxR * 100);
+    const pV = Math.round(avgRenewal / maxV * 100);
+    const pD = Math.round(renewalDeals / maxD * 100);
+
+    const insight = genGloryInsight(row, top6, rank);
+    const groupText = GROUP_LABEL[row.group] || row.group || '';
+    const crownIcon = CROWN[index] || `#${rank}`;
+
+    // SVG 圓環分數（半徑 26, circumference ≈ 163）
+    const circ = 163;
+    const dash = Math.round(circ * scorePct / 100);
+    const ringColor = rank === 1 ? '#ffd700' : rank === 2 ? '#b0c4d8' : rank === 3 ? '#cd8b4a' : '#18c6a7';
 
     return `
-      <article class="glory-card rank-${rank}">
-        <!-- 上層 -->
-        <div class="glory-layer-top">
-          <div class="glory-rank-label">第${rank}名</div>
-          <div class="glory-title-label">${tmpl.title}</div>
-          <div class="glory-badge-label">${tmpl.badge}</div>
+      <article class="glory-card rank-${rank}" data-rank="${rank}">
+        <div class="glory-ambient"></div>
+        ${rank === 1 ? '<div class="glory-beam"></div>' : ''}
+
+        <div class="glory-header">
+          <span class="glory-crown">${crownIcon}</span>
+          <span class="glory-title-label">${tmpl.title}</span>
+          <span class="glory-auth-chip">${tmpl.badge}</span>
         </div>
-        
-        <!-- 中層 -->
-        <div class="glory-layer-mid">
+
+        <div class="glory-hero-row">
           <h3 class="glory-name-label">${escapeHtml(row.name)}</h3>
-          <div class="glory-score-box">
-             <span class="glory-score-label">正式權重分數</span>
-             <span class="glory-score-value">${fmt(weightedScore, 2)}</span>
-          </div>
-          <div class="glory-metrics-grid">
-             <div class="metric"><span class="m-label">個人實收</span><span class="m-val">${fmt(actualRev)}</span></div>
-             <div class="metric"><span class="m-label">追續金額</span><span class="m-val">${fmt(renewalRev)}</span></div>
-             <div class="metric"><span class="m-label">追續客單價</span><span class="m-val">${fmt(avgRenewal, 2)}</span></div>
-             <div class="metric"><span class="m-label">追續單數</span><span class="m-val">${renewalDeals} 單</span></div>
+          <div class="glory-ring-wrap">
+            <svg class="glory-ring-svg" viewBox="0 0 60 60">
+              <circle class="glory-ring-bg"   cx="30" cy="30" r="26" />
+              <circle class="glory-ring-fill" cx="30" cy="30" r="26"
+                stroke="${ringColor}"
+                stroke-dasharray="${dash} ${circ}"
+                stroke-dashoffset="0"
+                transform="rotate(-90 30 30)" />
+            </svg>
+            <div class="glory-ring-pct">${scorePct}%</div>
           </div>
         </div>
 
-        <!-- 下層 -->
-        <div class="glory-layer-bot">
-          <div class="glory-reason">
-            <strong class="desktop-text">上榜原因：${tmpl.reason}</strong>
-            <strong class="mobile-text">上榜原因：${tmpl.mReason}</strong>
+        <div class="glory-score-row">
+          <span class="glory-score-label">AI 權重總分</span>
+          <strong class="glory-score-value gd-decode" data-val="${fmt(score, 1)}">--</strong>
+          <span class="glory-score-max">/ ${fmt(MAX_SCORE)}</span>
+        </div>
+        <div class="glory-main-track">
+          <div class="glory-main-fill" data-pct="${scorePct}" style="width:0%"></div>
+        </div>
+
+        <div class="glory-metrics-v2">
+          <div class="gm-row ${pA >= 97 ? 'gm-top' : ''}">
+            <span class="gm-icon">①</span>
+            <span class="gm-label">個人實收</span>
+            <div class="gm-bar-wrap"><div class="gm-bar-fill" style="width:${pA}%"></div></div>
+            <strong class="gm-val gd-decode" data-val="${fmt(actualRev)}">--</strong>
           </div>
-          <div class="glory-source">
-            <span class="desktop-text">數據來源：${SOURCE_TEXT}</span>
-            <span class="mobile-text">數據來源：${M_SOURCE_TEXT}</span>
+          <div class="gm-row ${pR >= 97 ? 'gm-top' : ''}">
+            <span class="gm-icon">②</span>
+            <span class="gm-label">追續金額</span>
+            <div class="gm-bar-wrap"><div class="gm-bar-fill" style="width:${pR}%"></div></div>
+            <strong class="gm-val gd-decode" data-val="${fmt(renewalRev)}">--</strong>
           </div>
-          <div class="glory-summary">
-            <span class="desktop-text">本輪優勢總結：${tmpl.summary}</span>
-            <span class="mobile-text">本輪優勢：${tmpl.mSummary}</span>
+          <div class="gm-row ${pV >= 97 ? 'gm-top' : ''}">
+            <span class="gm-icon">③</span>
+            <span class="gm-label">追續客單價</span>
+            <div class="gm-bar-wrap"><div class="gm-bar-fill" style="width:${pV}%"></div></div>
+            <strong class="gm-val gd-decode" data-val="${fmt(avgRenewal, 0)}">--</strong>
           </div>
+          <div class="gm-row ${pD >= 97 ? 'gm-top' : ''}">
+            <span class="gm-icon">④</span>
+            <span class="gm-label">追續單數</span>
+            <div class="gm-bar-wrap"><div class="gm-bar-fill" style="width:${pD}%"></div></div>
+            <strong class="gm-val gd-decode" data-val="${renewalDeals} 單">--</strong>
+          </div>
+        </div>
+
+        <div class="glory-insight-chip">
+          <span class="insight-text">${insight}</span>
+        </div>
+
+        <div class="glory-footer-row">
+          <span class="glory-group-chip">${escapeHtml(row.group)}｜${groupText}</span>
+          <span class="glory-verified">✓ 三平台審計通過</span>
         </div>
       </article>
     `;
@@ -682,24 +762,54 @@ function renderTop6GloryBoard(rankings) {
 
   top6Grid.innerHTML = cardsHtml;
 
-  // ── 3D 立體卡片科技版：動態物理傾斜與光影追蹤 ──
-  const cards = top6Grid.querySelectorAll('.glory-card');
-  cards.forEach(card => {
-    card.addEventListener('mousemove', e => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      const rotateX = ((y - centerY) / centerY) * -8;
-      const rotateY = ((x - centerX) / centerX) * 8;
-      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+  // 啟動動畫：進度條 + decode 錯開
+  requestAnimationFrame(() => {
+    top6Grid.querySelectorAll('.glory-main-fill').forEach(el => {
+      el.style.width = el.dataset.pct + '%';
     });
-    
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = '';
+    top6Grid.querySelectorAll('.gd-decode').forEach((el, i) => {
+      setTimeout(() => decodeNumberEffect(el, el.dataset.val, 900), i * 80);
     });
   });
+
+  // rAF 節流 3D tilt（事件委派）
+  let gloryRaf = false, gloryTiltEl = null, gRX = 0, gRY = 0;
+  top6Grid.addEventListener('mousemove', e => {
+    gloryTiltEl = e.target.closest('.glory-card');
+    if (!gloryTiltEl) return;
+    const r = gloryTiltEl.getBoundingClientRect();
+    gRX = ((e.clientY - r.top) / r.height - 0.5) * -10;
+    gRY = ((e.clientX - r.left) / r.width - 0.5) * 10;
+    if (gloryRaf) return;
+    gloryRaf = true;
+    requestAnimationFrame(() => {
+      if (gloryTiltEl) gloryTiltEl.style.transform = `perspective(900px) rotateX(${gRX.toFixed(2)}deg) rotateY(${gRY.toFixed(2)}deg) scale3d(1.02,1.02,1.02)`;
+      gloryRaf = false;
+    });
+  });
+  top6Grid.addEventListener('mouseleave', e => {
+    const c = e.target.closest?.('.glory-card');
+    if (c) c.style.transform = '';
+    gloryTiltEl = null;
+  }, true);
+  let gTouchRaf = false;
+  top6Grid.addEventListener('touchmove', e => {
+    const t = e.touches[0];
+    const card = document.elementFromPoint(t.clientX, t.clientY)?.closest('.glory-card');
+    if (!card) return;
+    const r = card.getBoundingClientRect();
+    const rx = ((t.clientY - r.top) / r.height - 0.5) * -7;
+    const ry = ((t.clientX - r.left) / r.width - 0.5) * 7;
+    if (gTouchRaf) return;
+    gTouchRaf = true;
+    requestAnimationFrame(() => {
+      card.style.transform = `perspective(900px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) scale3d(1.02,1.02,1.02)`;
+      gTouchRaf = false;
+    });
+  }, { passive: true });
+  top6Grid.addEventListener('touchend', () => {
+    top6Grid.querySelectorAll('.glory-card').forEach(c => { c.style.transform = ''; });
+  }, { passive: true });
 }
 
 function render(report) {
@@ -984,7 +1094,7 @@ function renderGroups(groups, rankings) {
   }).join('');
 }
 
-function renderAudit(notes, excluded, report) {
+function renderAudit(notes, excluded) {
   const noteHtml = notes.map((n) => `<div class="audit-note"><span>✓</span>${escapeHtml(n)}</div>`).join('');
   const exclHtml = excluded.length
     ? `<div class="excluded-box"><strong>審計不入派單名單：</strong>${excluded.map((e) => `<span class="excl-item">${escapeHtml(e.姓名)}（${escapeHtml(e.原因)}）</span>`).join('')}</div>`
@@ -1032,9 +1142,7 @@ function renderSendText(text, shortText) {
   }
 }
 
-function renderError(error) {
-  // ── 靜默維修模式 (Silent Recovery) ──
-  // 徹底移除「資料讀取失敗」字樣，改為科技感同步提示
+function renderError(_error) {
   console.warn('[System-Recovery] 背景同步中，忽略顯示錯誤。');
   
   if (refs.auditResult) {

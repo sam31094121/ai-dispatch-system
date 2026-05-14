@@ -580,5 +580,10 @@ module.exports = {
   resetStorageCache,
   rebuildReport,
   saveNewReport,
-  saveReportVersion
+  saveReportVersion,
+  persistStoredRecord,
+  getLatestStoredRecord,
+  getStoredRecordById: getReportById,
+  listAllStoredRecords
 };
+

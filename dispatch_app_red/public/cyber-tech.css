@@ -788,7 +788,54 @@ strong, .stat-value, .a1-hero-score-value {
 .hero-card-3 { border: 3px solid #cd7f32 !important; background: linear-gradient(135deg, #25180d, #130c08) !important; }
 .hero-card-4, .hero-card-5 { border: 2px solid rgba(243, 193, 75, 0.4) !important; }
 
-/* 巨大化名次標記 */
+/* ── AI 榮譽等級視覺效果 (Prestige Status VFX) ── */
+.status-legendary {
+    border: 2px solid var(--oil-gold-bright) !important;
+    box-shadow: 0 0 30px rgba(243, 193, 75, 0.4), inset 0 0 15px rgba(243, 193, 75, 0.2) !important;
+    position: relative;
+}
+.status-legendary::after {
+    content: "LEGENDARY";
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    font-size: 8px;
+    color: var(--oil-gold-bright);
+    letter-spacing: 1px;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(243, 193, 75, 0.8);
+}
+
+.status-elite {
+    border: 1px solid #4db8ff !important;
+    box-shadow: 0 0 20px rgba(77, 184, 255, 0.2) !important;
+}
+.status-elite::after {
+    content: "ELITE";
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    font-size: 8px;
+    color: #4db8ff;
+    opacity: 0.8;
+}
+
+/* AI 優化進度條樣式 */
+.opt-progress-container {
+    height: 2px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    margin: 4px 0;
+    overflow: hidden;
+}
+.opt-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--oil-gold-dark), var(--oil-gold-bright));
+    box-shadow: 0 0 10px var(--oil-gold-bright);
+    transition: width 0.5s ease-in-out;
+}
+
+/* 名次巨大化標記補強 */
 .spotlight-rank {
     position: absolute;
     top: -15px;
@@ -798,6 +845,9 @@ strong, .stat-value, .a1-hero-score-value {
     font-weight: 900;
     opacity: 0.12;
     font-style: italic;
+    pointer-events: none;
+    user-select: none;
+}
     color: var(--oil-gold-bright);
     z-index: 1;
 }
