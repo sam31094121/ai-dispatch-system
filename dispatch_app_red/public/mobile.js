@@ -472,7 +472,6 @@ async function loadData() {
       window._dispatchSyncClient.setDataVersion(snapshot.dataVersion);
       updateSyncBadge('PRO ACTIVE', 'var(--accent)');
     }
-    hideSplashScreen();
     
     // 啟動心跳動畫
     startVitalPulse();
@@ -485,8 +484,11 @@ async function loadData() {
       refs.auditResult.textContent = 'SYNCING';
       refs.auditResult.style.color = 'var(--oil-gold-bright)';
     }
+  } finally {
+    // 核心優化：無論成功或失敗，都必須隱藏開機畫面，防止手機卡死
     hideSplashScreen();
   }
+}
 }
 
 
@@ -1459,11 +1461,15 @@ function hideSplashScreen() {
 
   if (skeleton) skeleton.style.display = 'none';
   if (!splash) {
-    // 若無 splash 也要確保可捲動
     document.documentElement.style.overflowY = 'auto';
     document.body.style.overflowY = 'auto';
+    document.body.classList.remove('lock-scroll');
     return;
   }
+  
+  // 防止重複執行
+  if (splash.dataset.hidden === 'true') return;
+  splash.dataset.hidden = 'true';
 
   const splashText = splash.querySelector('.splash-text');
   const decodeEl = splash.querySelector('.cyber-decoding-text');
@@ -1574,4 +1580,15 @@ initActiveNav();
 initHeroTilt();
 initRealtimeSync();
 startVitalPulse();
+
+// 核心優化：開機保險絲
+// 啟動後 4.5 秒內若沒隱藏開機畫面，則強制作動
+setTimeout(() => {
+  const s = document.getElementById('splash-screen');
+  if (s) {
+    console.warn('[Safety-Trigger] 檢測到系統加載超時，執行暴力開機程序...');
+    hideSplashScreen();
+  }
+}, 4500);
+
 loadData();
