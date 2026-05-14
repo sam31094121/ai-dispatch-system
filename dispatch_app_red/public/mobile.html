@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-Hant-TW">
+<html lang="zh-Hant-TW" style="overflow-y:auto;height:auto;touch-action:pan-y;">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -133,7 +133,16 @@
     @keyframes global-optical-scan { 0% { background-position: 0 0, 0 -200%; } 100% { background-position: 0 0, 0 200%; } }
   </style>
 </head>
-<body class="mobile-command-center">
+<body class="mobile-command-center" style="overflow-y:auto;height:auto;position:relative;touch-action:pan-y;">
+  <!-- ── 捲動解鎖：body 第一個 style，第一幀就生效，優先級高於所有外部 CSS ── -->
+  <style>
+    html { overflow-y: auto !important; height: auto !important; touch-action: pan-y !important; }
+    body { overflow-y: auto !important; height: auto !important; position: relative !important; touch-action: pan-y !important; }
+    #app-shell { overflow: visible !important; height: auto !important; min-height: 100vh !important; display: block !important; padding-bottom: 80px !important; }
+    main { overflow: visible !important; height: auto !important; }
+    section.panel, #ranking, #ranking-list, #elite-board, #groups { overflow: visible !important; height: auto !important; max-height: none !important; }
+    body.mobile-command-center::after, .screen-overlay-scan, .lens-flare-overlay { display: none !important; }
+  </style>
   <div class="lens-flare-overlay" id="lens-flare"></div>
 
   <!-- 雙重保障啟動畫面：生物識別系統 -->
@@ -248,46 +257,6 @@
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
   </div>
-
-  <!-- ── 手機效能鎖：全面解鎖捲動能力（核心根治版） ── -->
-  <style id="mobile-perf-override">
-    html, body {
-      overflow: visible !important;
-      overflow-y: auto !important;
-      overflow-x: hidden !important;
-      height: auto !important;
-      min-height: 100% !important;
-      max-height: none !important;
-      position: relative !important;
-      -webkit-overflow-scrolling: touch !important;
-      touch-action: pan-y !important; /* 確保垂直滑動權限 */
-    }
-    #app-shell {
-      overflow: visible !important;
-      height: auto !important;
-      min-height: 100vh !important;
-      display: block !important;
-      padding-bottom: 80px !important; /* 留出底導航空間 */
-    }
-    main {
-      overflow: visible !important;
-      height: auto !important;
-    }
-    
-    /* 效能優化：關閉昂貴的濾鏡 */
-    .panel, .ranking-card, .glory-card {
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-      background: #101c2e !important;
-    }
-    
-    /* 移除所有可能遮擋滑動的透明層 */
-    body.mobile-command-center::after,
-    .screen-overlay-scan,
-    .lens-flare-overlay {
-      display: none !important;
-    }
-  </style>
 
   <script src="/utils.js?v=20260511-ULTRA" defer></script>
   <script src="/sync-client.js?v=20260511-ULTRA" defer></script>
