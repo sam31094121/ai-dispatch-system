@@ -489,7 +489,6 @@ async function loadData() {
     hideSplashScreen();
   }
 }
-}
 
 
 function renderHeroCard(item) {

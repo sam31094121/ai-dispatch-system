@@ -1,5 +1,5 @@
 /* Service Worker — 手機靜態資源快取 */
-const CACHE = 'dispatch-mobile-v20260515-v1';
+const CACHE = 'dispatch-mobile-v20260515-v2';
 const ASSETS = [
   '/mobile.html',
   '/mobile.css',
@@ -37,26 +37,21 @@ self.addEventListener('fetch', e => {
   /* API / SSE：永遠走網路，不快取 */
   if (url.pathname.startsWith('/api/')) return;
 
-  /* 靜態資源：Cache-First（快取有就用，沒有才抓網路並存入快取）*/
+  /* 靜態資源：Network-First（優先抓網路，失敗才用快取）*/
   e.respondWith(
-    caches.match(e.request, { ignoreSearch: true }).then(cached => {
-      if (cached) {
-        /* 背景更新（stale-while-revalidate）*/
-        fetch(e.request).then(res => {
-          if (res && res.ok) {
-            caches.open(CACHE).then(c => c.put(e.request, res));
-          }
-        }).catch(() => {});
-        return cached;
-      }
-      /* 快取沒有：從網路抓，成功就存入快取 */
-      return fetch(e.request).then(res => {
+    fetch(e.request)
+      .then(res => {
         if (res && res.ok) {
           const clone = res.clone();
           caches.open(CACHE).then(c => c.put(e.request, clone));
         }
         return res;
-      }).catch(() => caches.match('/mobile.html'));
-    })
+      })
+      .catch(() => {
+        return caches.match(e.request, { ignoreSearch: true })
+          .then(cached => {
+            return cached || caches.match('/mobile.html');
+          });
+      })
   );
 });

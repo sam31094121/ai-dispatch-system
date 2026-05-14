@@ -4,30 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <style>
-    /* 強制捲動補強：核彈級解除所有潛在鎖定 */
-    html, body {
-      overflow: auto !important;
-      overflow-y: auto !important;
-      height: auto !important;
-      min-height: 100% !important;
-      -webkit-overflow-scrolling: touch !important;
-      touch-action: pan-y !important;
-      position: relative !important;
-    }
-    #app-shell, main {
-      overflow: visible !important;
-      height: auto !important;
-      display: block !important;
-      min-height: 100vh !important;
-    }
-    section.panel, #ranking, #ranking-list {
-      display: block !important;
-      visibility: visible !important;
-      opacity: 1 !important;
-      height: auto !important;
-      overflow: visible !important;
-    }
-    /* 極致空間壓縮樣式補強 */
+    /* 快速索引跳轉與元件補強 */
     .section-head { margin-bottom: 6px !important; }
     .ai-logic-box { padding: 8px 12px !important; margin-top: 6px !important; }
     .glory-card { padding: 10px 12px !important; }
@@ -344,65 +321,53 @@
 
   <script src="/utils.js?v=20260511-ULTRA" defer></script>
   <script src="/sync-client.js?v=20260511-ULTRA" defer></script>
-  <script src="/mobile.js?v=20260511-ULTRA" defer></script>
+  <script src="/mobile.js?v=20260515-force-v2" defer></script>
   <script src="/mobile-standard.js?v=1.0" defer></script>
   <script>
-    // ── 緊急捲動救援系統 (Emergency Scroll Rescue) ──
+    // ── 捲動解鎖（一次性執行，避免 MutationObserver 無限迴圈凍結手機）──
     (function() {
-      const rescue = () => {
+      let done = false;
+      function unlockScroll() {
+        if (done) return;
+        done = true;
+
         const body = document.body;
         const html = document.documentElement;
-        
-        // 1. 強制解除溢出鎖定
-        const scrollStyles = {
-          'overflow': 'auto',
-          'overflow-y': 'auto',
-          'height': 'auto',
-          'min-height': '100%',
-          'position': 'relative',
-          '-webkit-overflow-scrolling': 'touch'
-        };
-        
-        for (let [prop, val] of Object.entries(scrollStyles)) {
-          body.style.setProperty(prop, val, 'important');
-          html.style.setProperty(prop, val, 'important');
-        }
-        
-        // 2. 強制確保容器可見且撐開
-        const containers = ['app-shell', 'ranking-list', 'elite-board', 'ranking'];
-        containers.forEach(id => {
+
+        // 解除 body/html 的任何溢出鎖定
+        [body, html].forEach(el => {
+          el.style.setProperty('overflow-y', 'auto', 'important');
+          el.style.setProperty('height', 'auto', 'important');
+          el.style.setProperty('position', 'relative', 'important');
+        });
+
+        // 確保主容器可見且可撐開
+        ['app-shell', 'ranking-list', 'elite-board', 'ranking', 'groups'].forEach(id => {
           const el = document.getElementById(id);
           if (el) {
-            el.style.setProperty('display', 'block', 'important');
-            el.style.setProperty('height', 'auto', 'important');
             el.style.setProperty('overflow', 'visible', 'important');
+            el.style.setProperty('height', 'auto', 'important');
           }
         });
-        
-        // 3. 智慧移除阻塞遮罩
-        const blockers = ['splash-screen', 'initial-skeleton'];
-        blockers.forEach(id => {
-          const el = document.getElementById(id);
-          if (el && (window.getComputedStyle(el).opacity === '0' || el.classList.contains('fade-out'))) {
-            el.remove();
-          }
-        });
-      };
+      }
 
-      // 執行週期性校準，防止捲動權限被收回
-      rescue();
-      setTimeout(rescue, 500);
-      setTimeout(rescue, 2000);
-      setTimeout(rescue, 5000);
-      
-      // 監聽任何可能的 DOM 變動
-      const observer = new MutationObserver(rescue);
-      observer.observe(document.body, { attributes: true, childList: true, subtree: true });
-      
-      // 監聽捲動事件，如果發現捲動不動，強制重置
-      window.addEventListener('scroll', () => {
-        if (document.body.style.overflow === 'hidden') rescue();
-      }, { passive: true });
+      // 啟動畫面強制超時消失（最多 4 秒，防止卡在 splash）
+      function forceDismissSplash() {
+        const splash = document.getElementById('splash-screen');
+        if (splash) {
+          splash.classList.add('fade-out');
+          splash.style.setProperty('pointer-events', 'none', 'important');
+          setTimeout(() => { if (splash.parentNode) splash.remove(); }, 900);
+        }
+        const skeleton = document.getElementById('initial-skeleton');
+        if (skeleton) skeleton.style.display = 'none';
+        unlockScroll();
+      }
+
+      // 頁面解析完即執行一次
+      unlockScroll();
+      // 資料通常 1-2 秒載入；4 秒後強制清除 splash
+      setTimeout(forceDismissSplash, 4000);
     })();
   </script>
 </body>
