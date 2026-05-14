@@ -1071,19 +1071,19 @@ function renderRankings(rankings) {
     `;
   }).join('');
 
-  // 延遲啟動：score bar 先走，decode 依序錯開（每張卡間隔 80ms）
+  // 延遲啟動：score bar + decode（手機跳過 3D tilt 避免 layout reflow 卡頓）
   setTimeout(() => {
     refs.rankingList.querySelectorAll('.score-fill').forEach(el => {
       el.style.width = el.getAttribute('data-pct') + '%';
     });
-    // 錯開 decode 動畫，避免 20+ rAF 同時競爭
     refs.rankingList.querySelectorAll('.decode-target').forEach((el, i) => {
       setTimeout(() => {
         decodeNumberEffect(el, el.getAttribute('data-val'), 700);
       }, i * 60);
     });
 
-    // 3D tilt：用 rAF 節流，事件委派到容器（不是每張卡各自綁）
+    // 3D tilt 僅限桌機（手機滑動時 elementFromPoint + getBoundingClientRect 強制 reflow，造成卡頓）
+    if (DEVICE_PERF.isLow) return;
     let tiltRaf = false;
     let tiltCard = null, tiltRX = 0, tiltRY = 0;
     refs.rankingList.addEventListener('mousemove', e => {
@@ -1104,7 +1104,6 @@ function renderRankings(rankings) {
       if (card) card.style.transform = '';
       tiltCard = null;
     }, true);
-    // Touch tilt（同樣 rAF 節流）
     let touchRaf = false;
     refs.rankingList.addEventListener('touchmove', e => {
       const t = e.touches[0];
