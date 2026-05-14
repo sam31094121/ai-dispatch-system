@@ -1,7 +1,7 @@
 const API_CURRENT = '/api/current';
 const API_LINE_OUTPUT = '/api/line-output';
 const MAX_SCORE = 10000;
-const CACHE_VERSION = 'v20260510-production-forced-v2';
+const CACHE_VERSION = 'v20260515-ranking-fix';
 
 const refs = {
   title: document.getElementById('main-title'),
@@ -457,7 +457,7 @@ async function loadData() {
       requestJson(API_LINE_OUTPUT).catch(() => null)
     ]);
     
-    const report = normalizeReport(snapshot, lineOutput?.text);
+    const report = normalizeReport(snapshot.data || snapshot, lineOutput?.text);
     state.report = report;
     state.sendText = report.sendText;
     state.isFirstLoad = false;
