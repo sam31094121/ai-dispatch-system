@@ -14,7 +14,9 @@
   <meta property="og:type" content="website">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="preload" href="/mobile.css?v=0511-mobile-v4" as="style">
+  <link rel="preload" href="/mobile.js?v=20260511-ULTRA" as="script">
   <link rel="stylesheet" href="/mobile.css?v=0511-mobile-v4">
   <link rel="stylesheet" href="/cyber-tech.css?v=20260511-ULTRA">
   <style>
@@ -183,6 +185,38 @@
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
   </div>
+
+  <!-- ── 手機效能鎖：覆蓋所有 cyber-tech.css 的重效果 ── -->
+  <style id="mobile-perf-override">
+    /* 核彈級：覆蓋 cyber-tech.css 的 !important backdrop-filter */
+    .panel, .ranking-card, .a1-hero-card, .hero-line-compact,
+    .lc-card, .a1-hero-grid > div {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      background: #101c2e !important;
+    }
+    /* 榮耀卡不需要 blur，用純色背景代替 */
+    .glory-card {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+    /* 關閉 button:active 的無限閃爍 */
+    button:active, .icon-button:active, .mini-btn:active {
+      animation: none !important;
+      transform: scale(0.96) !important;
+    }
+    /* 手機關閉全域 CRT 掃描線（body::after 每幀重繪整個視口）*/
+    body.mobile-command-center::after { display: none !important; }
+    /* 關閉 cyber-tech 的 radar-scan（透明掃描層覆蓋整個畫面）*/
+    .screen-overlay-scan { display: none !important; }
+    /* 統一 panel 背景，避免各 CSS 衝突 */
+    .panel { background: linear-gradient(160deg,#141e2e 0%,#0f1824 100%) !important; }
+    /* 關閉手機不顯示的 glory-card::before 粒子層 */
+    @media (max-width: 768px) {
+      .glory-card::before { display: none !important; }
+      .glory-beam { display: none !important; }
+    }
+  </style>
 
   <script src="/utils.js?v=20260511-ULTRA"></script>
   <script src="/sync-client.js?v=20260511-ULTRA"></script>

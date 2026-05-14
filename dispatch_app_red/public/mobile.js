@@ -59,6 +59,24 @@ window.onerror = function(msg, _url, lineNo, _col, _err) {
   return true; // 阻止錯誤繼續傳播
 };
 
+// ── 裝置效能偵測：低階手機自動降載 ──
+const DEVICE_PERF = (function() {
+  const mem = navigator.deviceMemory || 4;        // GB，預設4
+  const cores = navigator.hardwareConcurrency || 4;
+  const isLow = mem <= 2 || cores <= 2;
+  if (isLow) {
+    document.documentElement.setAttribute('data-perf', 'low');
+    // 直接在 head 插入 style 覆蓋，讓所有動畫靜止
+    const s = document.createElement('style');
+    s.textContent = `
+      [data-perf="low"] * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.15s !important; }
+      [data-perf="low"] .glory-beam, [data-perf="low"] .rank-shine { display: none !important; }
+    `;
+    document.head.appendChild(s);
+  }
+  return { isLow, mem, cores };
+})();
+
 // 清除舊版不相容快取
 (function() {
   try {
@@ -67,7 +85,6 @@ window.onerror = function(msg, _url, lineNo, _col, _err) {
       const parsed = JSON.parse(raw);
       if (parsed.version !== CACHE_VERSION) {
         localStorage.removeItem(CACHE_KEY);
-        console.log('Cleared incompatible cache');
       }
     }
   } catch(e) {}
@@ -871,11 +888,13 @@ function render(report) {
   }
 }
 
-// ── Project Genesis: AI 數字矩陣解碼引擎 ──
+// ── AI 數字解碼引擎（低階裝置直接顯示，跳過 rAF）──
 function decodeNumberEffect(targetEl, finalValue, duration = 800) {
     if (!targetEl) return;
-    const chars = '0123456789X$#%*';
     const finalStr = finalValue.toString();
+    // 低階裝置跳過動畫，直接顯示
+    if (DEVICE_PERF.isLow) { targetEl.textContent = finalStr; return; }
+    const chars = '0123456789X$#%*';
     let start = performance.now();
     targetEl.classList.add('matrix-decode-text');
 
