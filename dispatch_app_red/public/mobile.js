@@ -792,7 +792,8 @@ function renderTop6GloryBoard(rankings) {
     });
   });
 
-  // rAF 節流 3D tilt（事件委派）
+  // 3D tilt 僅限桌機，手機跳過
+  if (DEVICE_PERF.isLow) return;
   let gloryRaf = false, gloryTiltEl = null, gRX = 0, gRY = 0;
   top6Grid.addEventListener('mousemove', e => {
     gloryTiltEl = e.target.closest('.glory-card');
@@ -1394,6 +1395,7 @@ function initCoinRain() {
 }
 
 function initHeroTilt() {
+  if (DEVICE_PERF.isLow) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   const grid = refs.a1HeroGrid;
