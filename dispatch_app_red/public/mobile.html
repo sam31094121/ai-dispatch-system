@@ -293,50 +293,58 @@
   <script src="/mobile.js?v=20260515-ranking-fix" defer></script>
   <script src="/mobile-standard.js?v=1.0" defer></script>
   <script>
-    // ── 捲動解鎖（一次性執行，避免 MutationObserver 無限迴圈凍結手機）──
+    // ── 全面捲動解鎖系統 ──
+    // 策略：在 window.load（所有 CSS 已完全套用）後執行
+    // inline style + 'important' 優先級高於任何 CSS !important，確保解鎖生效
     (function() {
-      let done = false;
-      function unlockScroll() {
-        if (done) return;
-        done = true;
-
-        const body = document.body;
-        const html = document.documentElement;
-
-        // 解除 body/html 的任何溢出鎖定
-        [body, html].forEach(el => {
+      function unlock() {
+        // html / body：解除溢出鎖定，允許垂直捲動
+        [document.documentElement, document.body].forEach(function(el) {
           el.style.setProperty('overflow-y', 'auto', 'important');
+          el.style.setProperty('overflow-x', 'hidden', 'important');
           el.style.setProperty('height', 'auto', 'important');
+          el.style.setProperty('max-height', 'none', 'important');
           el.style.setProperty('position', 'relative', 'important');
         });
-
-        // 確保主容器可見且可撐開
-        ['app-shell', 'ranking-list', 'elite-board', 'ranking', 'groups'].forEach(id => {
-          const el = document.getElementById(id);
-          if (el) {
-            el.style.setProperty('overflow', 'visible', 'important');
-            el.style.setProperty('height', 'auto', 'important');
-          }
+        // 主容器：確保高度自動撐開、內容不被截斷
+        ['app-shell', 'elite-board', 'ranking', 'ranking-list', 'groups'].forEach(function(id) {
+          var el = document.getElementById(id);
+          if (!el) return;
+          el.style.setProperty('overflow', 'visible', 'important');
+          el.style.setProperty('height', 'auto', 'important');
+          el.style.setProperty('max-height', 'none', 'important');
         });
+        var main = document.querySelector('main');
+        if (main) {
+          main.style.setProperty('overflow', 'visible', 'important');
+          main.style.setProperty('height', 'auto', 'important');
+        }
       }
 
-      // 啟動畫面強制超時消失（最多 4 秒，防止卡在 splash）
-      function forceDismissSplash() {
-        const splash = document.getElementById('splash-screen');
-        if (splash) {
+      function dismissSplash() {
+        var splash = document.getElementById('splash-screen');
+        if (splash && !splash.classList.contains('fade-out')) {
           splash.classList.add('fade-out');
           splash.style.setProperty('pointer-events', 'none', 'important');
-          setTimeout(() => { if (splash.parentNode) splash.remove(); }, 900);
+          setTimeout(function() { if (splash.parentNode) splash.remove(); }, 900);
         }
-        const skeleton = document.getElementById('initial-skeleton');
-        if (skeleton) skeleton.style.display = 'none';
-        unlockScroll();
+        var sk = document.getElementById('initial-skeleton');
+        if (sk) sk.style.display = 'none';
       }
 
-      // 頁面解析完即執行一次
-      unlockScroll();
-      // 資料通常 1-2 秒載入；4 秒後強制清除 splash
-      setTimeout(forceDismissSplash, 4000);
+      // window.load：所有 CSS（含 cyber-tech.css async）已完全套用，此時解鎖必然生效
+      window.addEventListener('load', function() {
+        unlock();
+      });
+
+      // 保險絲 A：4 秒後強制清除 splash（防止 API 失敗時卡住）
+      setTimeout(function() {
+        dismissSplash();
+        unlock();
+      }, 4000);
+
+      // 保險絲 B：6 秒後再確認一次（應對極慢的網路環境）
+      setTimeout(unlock, 6000);
     })();
   </script>
 </body>
