@@ -274,6 +274,37 @@
 
   <!-- ── 手機效能鎖：覆蓋所有 cyber-tech.css 的重效果 ── -->
   <style id="mobile-perf-override">
+    /* ── 捲動解鎖核心（放在 body 內確保覆蓋 head 的 cyber-tech.css）── */
+    html, body {
+      overflow: auto !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      height: auto !important;
+      min-height: 100% !important;
+      max-height: none !important;
+      position: relative !important;
+      -webkit-overflow-scrolling: touch !important;
+      touch-action: pan-y !important;
+    }
+    #app-shell {
+      overflow: visible !important;
+      overflow-y: visible !important;
+      height: auto !important;
+      min-height: 100vh !important;
+      max-height: none !important;
+    }
+    main {
+      overflow: visible !important;
+      height: auto !important;
+      max-height: none !important;
+      padding-bottom: 100px !important;
+    }
+    section.panel, #ranking, #ranking-list, #elite-board, #groups {
+      overflow: visible !important;
+      height: auto !important;
+      max-height: none !important;
+    }
+
     /* 核彈級：覆蓋 cyber-tech.css 的 !important backdrop-filter */
     .panel, .ranking-card, .a1-hero-card, .hero-line-compact,
     .lc-card, .a1-hero-grid > div {
